@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('first_name',50);
-            $table->string('last_name',50);
-            $table->string('gender',10);
+            $table->string('first_name',50)->nullable();
+            $table->string('last_name',50)->nullable();
+            $table->string('gender',10)->nullable();
             $table->string('email')->unique();
-            $table->string('phone',20);
-            $table->string('role_type',50);
-            $table->string('image');
+            $table->string('phone',20)->nullable();
+            $table->string('role_type',50)->nullable();
+            $table->string('image')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('status')->default('active'); // New field 'status'
