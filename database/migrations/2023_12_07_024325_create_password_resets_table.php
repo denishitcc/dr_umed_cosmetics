@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('category', function (Blueprint $table) {
+        Schema::create('password_resets', function (Blueprint $table) {
             $table->id();
-            $table->string('category_name', 100)->nullable();
-            $table->string('parent_category', 100)->nullable();
-            $table->boolean('show_business_summary')->default(true);
-            $table->boolean('trigger_when_sold')->default(false);
+            $table->string('email')->index();
+            $table->string('token');
             $table->timestamps();
         });
     }
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('category');
+        Schema::dropIfExists('password_resets');
     }
 };

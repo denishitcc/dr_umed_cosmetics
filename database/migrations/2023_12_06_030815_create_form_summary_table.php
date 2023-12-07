@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('form_summary', function (Blueprint $table) {
             $table->id();
-            $table->string('title', 100);
-            $table->text('description'); // Changed to 'text' type for potentially longer descriptions
-            $table->string('by_whom', 50);
+            $table->string('title', 100)->nullable();
+            $table->text('description')->nullable(); // Changed to 'text' type for potentially longer descriptions
+            $table->string('by_whom', 50)->nullable();
             $table->string('status', 50)->nullable(); // Marked as nullable, consider using enumerations
             $table->timestamps();
         });

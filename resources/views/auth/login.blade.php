@@ -18,7 +18,7 @@
                 <div class="w-lg-500px p-10">
                     <form action="{{ route('login.post') }}" method="POST">
                           @csrf
-                        <div class="auth-logo text-center"><a href="index.html"><img alt="Logo" src="img/logo.svg"> </a></div>
+                        <div class="auth-logo text-center"><a href="{{URL::to('/')}}"><img alt="Logo" src="img/logo.svg"> </a></div>
                         <h3 class="text-center">Sign In</h3>
                         <div class="form-group">
                             <label for="InputEmail1">Enter Email Address</label>
@@ -34,7 +34,7 @@
                                 @if ($errors->has('password'))
                                     <span class="text-danger">{{ $errors->first('password') }}</span>
                                 @endif
-                            <a href="forgot-password.html" class="forgot-link"> Forgot Password? </a>
+                            <a href="{{URL::to('forgot-password')}}" class="forgot-link"> Forgot Password? </a>
                           </div>
                           
                          <div class="text-center mt-30">

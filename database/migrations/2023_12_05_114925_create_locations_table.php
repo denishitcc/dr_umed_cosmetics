@@ -13,16 +13,16 @@ return new class extends Migration
     {
         Schema::create('locations', function (Blueprint $table) {
             $table->id();
-            $table->string('location_name',100);
-            $table->string('phone',20);
+            $table->string('location_name',100)->nullable();
+            $table->string('phone',20)->nullable();
             $table->string('email');
-            $table->string('street_address',100);
-            $table->string('suburb',100);
-            $table->string('city',50);
-            $table->string('state',50);
-            $table->string('postcode',10);
-            $table->decimal('latitude', 10, 8); // Example precision and scale, adjust as needed
-            $table->decimal('longitude', 11, 8); // Example precision and scale, adjust as needed
+            $table->string('street_address',100)->nullable();
+            $table->string('suburb',100)->nullable();
+            $table->string('city',50)->nullable();
+            $table->string('state',50)->nullable();
+            $table->string('postcode',10)->nullable();
+            $table->decimal('latitude', 10, 8)->nullable(); // Example precision and scale, adjust as needed
+            $table->decimal('longitude', 11, 8)->nullable(); // Example precision and scale, adjust as needed
             $table->timestamps();
         });
     }

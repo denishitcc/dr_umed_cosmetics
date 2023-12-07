@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('services', function (Blueprint $table) {
             $table->id();
-            $table->string('service_name', 100);
-            $table->string('parent_category', 100);
-            $table->string('gender_specific', 100);
-            $table->string('code', 100)->nullable();;
+            $table->string('service_name', 100)->nullable();
+            $table->string('parent_category', 100)->nullable();
+            $table->string('gender_specific', 100)->nullable();
+            $table->string('code', 100)->nullable()->nullable();
             $table->boolean('appear_on_calendar')->default(true);
             $table->string('duration', 50)->nullable();;
             $table->string('processing_time', 50)->nullable();;

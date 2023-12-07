@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('add_leave', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('client_id');
-            $table->foreign('client_id')
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')
                   ->references('id')
-                  ->on('clients')
+                  ->on('users')
                   ->onDelete('cascade')
                   ->onUpdate('cascade');
             $table->unsignedBigInteger('location_id');
@@ -25,10 +25,10 @@ return new class extends Migration
                 ->on('locations')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
-            $table->string('leave_start', 100);
-            $table->string('leave_end', 100);
-            $table->text('leave_reason');
-            $table->text('notes');
+            $table->string('leave_start', 100)->nullable();
+            $table->string('leave_end', 100)->nullable();
+            $table->text('leave_reason')->nullable();
+            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }

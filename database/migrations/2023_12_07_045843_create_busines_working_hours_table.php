@@ -11,15 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('clients_photos', function (Blueprint $table) {
+        Schema::create('busines_working_hours', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('client_id');
-            $table->foreign('client_id')
+            $table->unsignedBigInteger('business_id');
+            $table->foreign('business_id')
                   ->references('id')
-                  ->on('clients')
+                  ->on('business_settings')
                   ->onDelete('cascade')
                   ->onUpdate('cascade');
-            $table->string('client_photos', 255)->nullable(); // Adjust the maximum length as needed
+            $table->string('day', 50)->nullable();
+            $table->string('start_time', 100)->nullable();
+            $table->string('end_time', 100)->nullable();
+            $table->string('day_status', 50)->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('clients_photos');
+        Schema::dropIfExists('busines_working_hours');
     }
 };

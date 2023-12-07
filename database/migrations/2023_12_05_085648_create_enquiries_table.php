@@ -13,15 +13,15 @@ return new class extends Migration
     {
         Schema::create('enquiries', function (Blueprint $table) {
             $table->id();
-            $table->string('firstname',50);
-            $table->string('lastname',50);
-            $table->string('gender',10);
+            $table->string('firstname',50)->nullable();
+            $table->string('lastname',50)->nullable();
+            $table->string('gender',10)->nullable();
             $table->string('email');
-            $table->string('phone_number',20);
-            $table->date('enquiry_date');
-            $table->date('appointment_date');
-            $table->string('about_us',50);
-            $table->string('enquiry_source',50);
+            $table->string('phone_number',20)->nullable();
+            $table->date('enquiry_date')->nullable();
+            $table->date('appointment_date')->nullable();
+            $table->string('about_us',50)->nullable();
+            $table->string('enquiry_source',50)->nullable();
             $table->string('cosmetic_injectables')->nullable(); 
             $table->string('skin')->nullable();
             $table->string('surgical')->nullable();

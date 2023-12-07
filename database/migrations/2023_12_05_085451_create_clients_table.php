@@ -13,20 +13,20 @@ return new class extends Migration
     {
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
-            $table->string('firstname',50);
-            $table->string('lastname',50);
-            $table->string('gender',10);
+            $table->string('firstname',50)->nullable();
+            $table->string('lastname',50)->nullable();
+            $table->string('gender',10)->nullable();
             $table->string('email');
-            $table->date('date_of_birth');
-            $table->string('mobile_number',20);
-            $table->string('home_phone',20);
-            $table->string('work_phone',20);
-            $table->string('contact_method',50);
+            $table->date('date_of_birth')->nullable();
+            $table->string('mobile_number',20)->nullable();
+            $table->string('home_phone',20)->nullable();
+            $table->string('work_phone',20)->nullable();
+            $table->string('contact_method',50)->nullable();
             $table->tinyInteger('send_promotions')->default(0); // Representing boolean with TINYINT(1)
-            $table->string('street_address',100);
-            $table->string('suburb',100);
-            $table->string('city',50);
-            $table->string('postcode',10);
+            $table->string('street_address',100)->nullable();
+            $table->string('suburb',100)->nullable();
+            $table->string('city',50)->nullable();
+            $table->string('postcode',10)->nullable();
             $table->timestamps();
         });
     }

@@ -21,7 +21,7 @@ return new class extends Migration
                   ->on('clients')
                   ->onDelete('cascade')
                   ->onUpdate('cascade');
-
+                $table->string('client_documents', 255)->nullable(); // Adjust the maximum length as needed
             // Add other columns as needed
             $table->timestamps(); // This automatically adds 'created_at' and 'updated_at' columns
         });
