@@ -15,6 +15,7 @@ use Carbon\Carbon;
 use Mail; 
 use Illuminate\Support\Str;
 use DB; 
+use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
@@ -178,4 +179,85 @@ class AuthController extends Controller
   
           return redirect('/login')->with('message', 'Your password has been changed!');
       }
+      public function redirectToGoogle()
+        {
+            return Socialite::driver('google')->redirect();
+        }
+
+        public function handleGoogleCallback()
+        {
+            try {
+        
+                $user = Socialite::driver('google')->user();
+                
+                $finduser = User::where('email', $user->getEmail())->first();
+                // $finduser = User::where('google_id', $user->id)->first();
+                if($finduser){
+        
+                    Auth::login($finduser);
+        
+                    return redirect()->intended('dashboard');
+        
+                }else{
+                    $newUser = User::create([
+                        'first_name' => $user->name,
+                        'email' => $user->email,
+                        'google_id'=> $user->id,
+                        'password' => encrypt('123456'),
+                        'type'=>'admin'
+                    ]);
+        
+                    Auth::login($newUser);
+        
+                    return redirect()->intended('dashboard');
+                }
+        
+            } catch (Exception $e) {
+                dd($e->getMessage());
+            }
+        }
+
+    public function redirectToFacebook()
+    {
+        return Socialite::driver('facebook')->redirect();
+    }
+           
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function handleFacebookCallback()
+    {
+        try {
+        
+            $user = Socialite::driver('facebook')->user();
+         
+            $finduser = User::where('email', $user->getEmail())->first();
+            // $finduser = User::where('facebook_id', $user->id)->first();
+         
+            if($finduser){
+         
+                Auth::login($finduser);
+       
+                return redirect()->intended('dashboard');
+         
+            }else{
+                $newUser = User::updateOrCreate(['email' => $user->email],[
+                        'first_name' => $user->name,
+                        'email' => $user->email,
+                        'facebook_id'=> $user->id,
+                        'password' => encrypt('123456'),
+                        'type'=>'admin'
+                    ]);
+        
+                Auth::login($newUser);
+        
+                return redirect()->intended('dashboard');
+            }
+       
+        } catch (Exception $e) {
+            dd($e->getMessage());
+        }
+    }
 }

@@ -24,6 +24,8 @@ return new class extends Migration
             $table->string('password');
             $table->string('status')->default('active'); // New field 'status'
             $table->rememberToken();
+            $table->string('google_id')->nullable();
+            $table->string('facebook_id')->nullable();
             $table->timestamps();
         });
     }

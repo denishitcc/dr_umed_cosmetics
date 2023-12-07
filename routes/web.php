@@ -31,3 +31,13 @@ Route::post('reset-password', [AuthController::class, 'submitResetPasswordForm']
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
 });
+
+Route::controller(AuthController::class)->group(function(){
+    Route::get('authorized/google', 'redirectToGoogle')->name('auth.google');
+    Route::get('authorized/google/callback', 'handleGoogleCallback');
+});
+
+Route::controller(AuthController::class)->group(function(){
+    Route::get('auth/facebook', 'redirectToFacebook')->name('auth.facebook');
+    Route::get('auth/facebook/callback', 'handleFacebookCallback');
+});

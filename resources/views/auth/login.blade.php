@@ -55,12 +55,12 @@
                         <span>Or</span>
                     </div>
                     <div class="q-log">
-                        <a href="#" class="btn">
+                        <a href="{{ url('authorized/google') }}" class="btn">
                             <img alt="" src="img/google-icon.svg" class="h-15px">   
                             Sign in with Google
                         </a>
 
-                        <a href="#" class="btn">
+                        <a href="{{ url('auth/facebook') }}" class="btn">
                             <img alt="" src="img/facebook.svg" class="h-15px">   
                             Sign in with Facebook
                         </a>
