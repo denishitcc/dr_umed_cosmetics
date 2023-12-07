@@ -28,16 +28,14 @@ Route::post('forget-password', [AuthController::class, 'submitForgetPasswordForm
 Route::get('reset-password/{token}', [AuthController::class, 'showResetPasswordForm'])->name('reset.password.get');
 Route::post('reset-password', [AuthController::class, 'submitResetPasswordForm'])->name('reset.password.post');
 
+//google login
+Route::get('authorized/google', [AuthController::class, 'redirectToGoogle'])->name('auth.google');
+Route::get('authorized/google/callback', [AuthController::class, 'handleGoogleCallback']);
+
+//facebook login
+Route::get('auth/facebook', [AuthController::class, 'redirectToFacebook'])->name('auth.facebook');
+Route::get('auth/facebook/callback', [AuthController::class, 'handleFacebookCallback']);
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
-});
-
-Route::controller(AuthController::class)->group(function(){
-    Route::get('authorized/google', 'redirectToGoogle')->name('auth.google');
-    Route::get('authorized/google/callback', 'handleGoogleCallback');
-});
-
-Route::controller(AuthController::class)->group(function(){
-    Route::get('auth/facebook', 'redirectToFacebook')->name('auth.facebook');
-    Route::get('auth/facebook/callback', 'handleFacebookCallback');
 });
