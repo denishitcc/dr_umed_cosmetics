@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
-
+use App\Http\Controllers\SettingsController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -38,4 +38,7 @@ Route::get('auth/facebook/callback', [AuthController::class, 'handleFacebookCall
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
+    Route::get('/settings', [SettingsController::class, 'settings'])->name('settings');
+    Route::post('/change-password', [App\Http\Controllers\SettingsController::class, 'changePasswordSave'])->name('change-password');
+    Route::post('/my-account', [App\Http\Controllers\SettingsController::class, 'changeMyAccountSave'])->name('my-account');
 });

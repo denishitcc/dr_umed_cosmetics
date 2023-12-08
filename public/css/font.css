@@ -1,0 +1,105 @@
+@font-face {
+  font-family: 'ico';
+  src:  url('../fonts/ico.eot?pn0g2a');
+  src:  url('../fonts/ico.eot?pn0g2a#iefix') format('embedded-opentype'),
+    url('../fonts/ico.ttf?pn0g2a') format('truetype'),
+    url('../fonts/ico.woff?pn0g2a') format('woff'),
+    url('../fonts/ico.svg?pn0g2a#ico') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="ico-"], [class*=" ico-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'ico' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.ico-close:before {
+  content: "\e918";
+}
+.ico-tick:before {
+  content: "\e919";
+}
+.ico-appt-reminder:before {
+  content: "\e900";
+}
+.ico-branding:before {
+  content: "\e901";
+}
+.ico-business-settings:before {
+  content: "\e902";
+}
+.ico-calendar:before {
+  content: "\e903";
+}
+.ico-client:before {
+  content: "\e904";
+}
+.ico-dashboard:before {
+  content: "\e905";
+}
+.ico-double-left-active:before {
+  content: "\e906";
+}
+.ico-enquiries:before {
+  content: "\e907";
+}
+.ico-equalizer:before {
+  content: "\e908";
+}
+.ico-finance:before {
+  content: "\e909";
+}
+.ico-forms:before {
+  content: "\e90a";
+}
+.ico-locations:before {
+  content: "\e90b";
+}
+.ico-my-account:before {
+  content: "\e90c";
+}
+.ico-notification:before {
+  content: "\e90d";
+}
+.ico-payment-gateway:before {
+  content: "\e90e";
+}
+.ico-products:before {
+  content: "\e90f";
+}
+.ico-promotion:before {
+  content: "\e910";
+}
+.ico-reports:before {
+  content: "\e911";
+}
+.ico-search:before {
+  content: "\e912";
+}
+.ico-services:before {
+  content: "\e913";
+}
+.ico-settings:before {
+  content: "\e914";
+}
+.ico-staff:before {
+  content: "\e915";
+}
+.ico-staff-user:before {
+  content: "\e916";
+}
+.ico-templates:before {
+  content: "\e917";
+}
