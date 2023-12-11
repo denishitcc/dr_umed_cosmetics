@@ -78,45 +78,6 @@
                                     </div>
                                 </div>
                                 <div class="form-group mb-5 other_contact">
-                                <!-- <h5 class="small-title mb-4 mt-3">Contact Info</h5> -->
-                                
-                                <!-- <div class="row">
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            <label class="form-label">Business Name </label>
-                                            <input type="text" class="form-control" placeholder="Dr Umed Enterprise" id="business_name" name="business_name">
-                                            </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            <label class="form-label">Name Customers See</label>
-                                            <input type="text" class="form-control" placeholder="Dr Umed Cosmetic and Injectables" id="name_customers_see" name="name_customers_see">
-                                            </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-4">
-                                        
-                                            <div class="form-group">
-                                            <label class="form-label">Business Email</label>
-                                            <input type="text" class="form-control" placeholder="info@drumedcosmetics.com.au" id="business_email" name="business_email">
-                                            </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        
-                                            <div class="form-group">
-                                            <label class="form-label">Business Phone</label>
-                                            <input type="text" class="form-control" placeholder="0407194519" id="business_phone" name="business_phone">
-                                            </div>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="col-lg-12 text-lg-end mt-4">
-                                            <button type="button" class="btn btn-light me-2">Discard</button>
-                                            <button type="submit" class="btn btn-primary">Save Changes</button>
-                                        </div>
-                                    </div>
-                                </div> -->
-                                <!-- </form>  -->
                                 </div>
                                
                                 <div class="form-group mb-5 other_contacts">
@@ -124,12 +85,7 @@
                                     
                                     <div class="form-group mb-0">
                                         
-                                        <!-- <form id="update_business_setting" name="update_business_setting" class="form">
-                                        @csrf -->
-                                        <!-- <input type="hidden" name="business_details_for" id="business_details_fors" value=""> -->
-                                        <!-- start -->
-                                        <!--dont consider hr in your code  -->
-                                        <!-- <hr class="mt-5"> -->
+                                        
                                         <h5 class="small-title mb-4 mt-3">Contact Info</h5>
                                         <div class="row">
                                             <div class="col-lg-4">
@@ -192,13 +148,9 @@
                                     </div>
                             </div>
                         </div>
-                            
-                                
-                            
                         </div>
                         <div class="tab-pane fade" id="tab_3" role="tabpanel">
-                            33
-                        </div>
+                            3
                         <div class="tab-pane fade" id="tab_4" role="tabpanel">
                             4
                         </div>
