@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('busines_working_hours', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('business_id');
-            $table->foreign('business_id')
+            $table->unsignedBigInteger('location_id');
+            $table->foreign('location_id')
                   ->references('id')
-                  ->on('business_settings')
+                  ->on('locations')
                   ->onDelete('cascade')
                   ->onUpdate('cascade');
             $table->string('day', 50)->nullable();

@@ -27,17 +27,6 @@ return new class extends Migration
             $table->string('website', 50)->nullable();
             $table->string('city', 20)->nullable();
             $table->string('post_code', 20)->nullable();
-            $table->string('timezone', 20)->nullable();
-            $table->string('calendar_interval', 100)->nullable();
-            $table->string('online_booking_website', 100)->nullable();
-            $table->boolean('include_more_info')->default(true)->nullable();
-            $table->boolean('general_neutral_mode')->default(true)->nullable();
-            $table->unsignedBigInteger('location_id');
-            $table->foreign('location_id')
-                  ->references('id')
-                  ->on('locations')
-                  ->onDelete('cascade')
-                  ->onUpdate('cascade');
             $table->timestamps();
         });
     }

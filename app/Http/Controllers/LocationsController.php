@@ -1,0 +1,45 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+
+class LocationsController extends Controller
+{
+    public function index()
+    {
+        // $locations = Locations::all();
+        // return view('locations.index', compact('locations'));
+        return view('locations.index');
+    }
+
+    public function create()
+    {
+        return view('locations.create');
+    }
+    public function store(Request $request)
+    {
+        $request->validate([
+            'location_name' => 'required|string',
+            'phone' => 'required|string',
+            'email_address' => 'required|string',
+        ]);
+    }
+    // public function show(Task $task)
+    // {
+    //     return view('tasks.show', compact('task'));
+    // }
+    // public function edit(Task $task)
+    // {
+    //     return view('tasks.edit', compact('task'));
+    // }
+    // public function update(Request $request, Task $task)
+    // {
+    //     // Validation and task update logic
+    // }
+    // public function destroy(Task $task)
+    // {
+    //     $task->delete();
+    //     return redirect()->route('tasks.index');
+    // }
+}

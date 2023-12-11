@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\LocationsController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -39,6 +40,11 @@ Route::get('auth/facebook/callback', [AuthController::class, 'handleFacebookCall
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
     Route::get('/settings', [SettingsController::class, 'settings'])->name('settings');
-    Route::post('/change-password', [App\Http\Controllers\SettingsController::class, 'changePasswordSave'])->name('change-password');
-    Route::post('/my-account', [App\Http\Controllers\SettingsController::class, 'changeMyAccountSave'])->name('my-account');
+    Route::post('/change-password', [SettingsController::class, 'changePasswordSave'])->name('change-password');
+    Route::post('/my-account', [SettingsController::class, 'changeMyAccountSave'])->name('my-account');
+    Route::post('/update-business-settings', [SettingsController::class, 'UpdateBusinessSettings'])->name('update-business-settings');
+    Route::post('/get-business-details', [SettingsController::class, 'GetBusinessDetails'])->name('get-business-details');
+    
+    //locations
+    Route::resource('locations', LocationsController::class);
 });

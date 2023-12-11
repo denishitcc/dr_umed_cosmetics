@@ -8,9 +8,10 @@
     <meta name="author" content="" />
     <title>Settings</title>
     <link rel="icon" href="https://www.drumedcosmetics.com.au/wp-content/uploads/2023/08/favicon.jpg" sizes="32x32" />
-    <link href="css/styles.css" rel="stylesheet" />
-    <link href="css/custom.css" rel="stylesheet" />
-    <link href="css/font.css" rel="stylesheet" />
+    <!-- <link href="css/styles.css" rel="stylesheet" /> -->
+    <link href="{{ asset('css/styles.css') }}" rel="stylesheet"/>
+    <link href="{{ asset('css/custom.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/font.css') }}" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
 </head>
 
@@ -20,7 +21,7 @@
         <div class="bg-white" id="sidebar-wrapper">
             <div class="sidebar-heading">
                 <div class="logo-part">
-                    <img src="img/logo.svg" alt="">
+                    <img src="{{ asset('img/logo.svg') }}" alt="">
                 </div>
 
             </div>
@@ -38,7 +39,7 @@
                     <li><a href="#"><i class="ico-promotion"></i>Promotions </a></li>
                     <li><a href="#"><i class="ico-forms"></i>Forms </a></li>
                     <li><a href="#"><i class="ico-templates"></i>Templates </a></li>
-                    <li><a href="#"><i class="ico-locations"></i>Locations </a></li>
+                    <li class="{{ (request()->is('locations')) ? 'active' : '' }}"><a href="{{ route('locations.index') }}"><i class="ico-locations"></i>Locations </a></li>
                     <li class="{{ (request()->is('settings')) ? 'active' : '' }}"><a href="{{ route('settings') }}"><i class="ico-settings"></i>Settings </a></li>
 
                 </ul>
@@ -49,7 +50,7 @@
             <!-- Top navigation-->
             <nav class="navbar navbar-expand-lg bg-white app-nav">
                 <div class="container-fluid">
-                    <button class="sidetoggle" id="sidebarToggle"><img src="img/toggle-arrow-left.svg" alt=""></button>
+                    <button class="sidetoggle" id="sidebarToggle"><img src="{{ asset('img/toggle-arrow-left.svg') }}" alt=""></button>
                     <div class="navbar-inner">
                         <div class="app-nav-left">
                             <select class="form-select">
@@ -75,7 +76,7 @@
                                 <li><a href="#"><i class="ico-equalizer"></i></a></li>
                                 <li><a href="#"><i class="ico-notification"></i></a></li>
                                 <li><a href="#"><i class="ico-settings"></i></a></li>
-                                <li class="profile">Hi, <span>Umed</span> <img src="img/profile.png" alt=""></li>
+                                <li class="profile">Hi, <span>Umed</span> <img src="{{ asset('img/profile.png') }}" alt=""></li>
                             </ul>
                         </div>
                     </div>
@@ -99,7 +100,12 @@
     <!-- Bootstrap core JS-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Core theme JS-->
-    <script src="js/scripts.js"></script>
+    <script src="{{ asset('js/scripts.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @yield('script')
 </body>
 
 </html>

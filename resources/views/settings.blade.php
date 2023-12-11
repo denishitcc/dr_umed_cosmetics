@@ -1,34 +1,31 @@
 @extends('layouts/sidebar')
 @section('content')
-<!-- Page content-->
-<!-- Page content-->
-<style>
-    .error{color:red;}
-</style>
-    <main>
-            <div class="card">
-                <ul class="nav brand-tabs">
-                    <li class="nav-item">
-                        <a class="nav-link active" data-bs-toggle="tab" href="#tab_1"><i class="ico-my-account"></i> My Account</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="tab" href="#tab_2"><i class="ico-business-settings"></i> Business Settings</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="tab" href="#tab_3"><i class="ico-branding"></i> Branding</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="tab" href="#tab_4"><i class="ico-staff-user"></i> Staff & Users</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="tab" href="#tab_5"><i class="ico-appt-reminder"></i> Appt Reminders</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="tab" href="#tab_6"><i class="ico-payment-gateway"></i> Payment Gateways</a>
-                    </li>
-                </ul>
-                <div class="tab-content" id="myTabContent">
-                    <div class="tab-pane fade show active" id="tab_1" role="tabpanel">
+<meta name="csrf-token" content="{{ csrf_token() }}" />
+        <!-- Page content-->
+        <main>
+                <div class="card">
+                    <ul class="nav brand-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-bs-toggle="tab" href="#tab_1"><i class="ico-my-account"></i> My Account</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#tab_2"><i class="ico-business-settings"></i> Business Settings</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#tab_3"><i class="ico-branding"></i> Branding</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#tab_4"><i class="ico-staff-user"></i> Staff & Users</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#tab_5"><i class="ico-appt-reminder"></i> Appt Reminders</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#tab_6"><i class="ico-payment-gateway"></i> Payment Gateways</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="tab_1" role="tabpanel">
                         <div class="card-body">
                             <h4 class="small-title mb-5">My Account</h4>
                             <div class="row">
@@ -37,11 +34,11 @@
                                 <div class="col-lg-4">
                                     <div class="form-group">
                                         <label for="fname" class="form-label">First Name</label>
-                                        <input type="text" class="form-control" id="first_name" name="first_name" value="{{$user->first_name}}">
+                                        <input type="text" class="form-control" id="first_name" name="first_name" value="{{$user->first_name}}" maxlength="50">
                                         </div>
                                         <div class="form-group">
                                         <label for="lname" class="form-label">Last Name</label>
-                                        <input type="text" class="form-control" id="last_name" name="last_name" value="{{$user->last_name}}">
+                                        <input type="text" class="form-control" id="last_name" name="last_name" value="{{$user->last_name}}" maxlength="50">
                                         </div>
 
                                         <div class="pt-4">
@@ -57,119 +54,165 @@
                                 </form>
                             </div>
                         </div>
-                        
-                    </div>
-                    <div class="tab-pane fade" id="tab_2" role="tabpanel">
-
-                        <div class="card-head">
-                            <h4 class="small-title mb-5">Business Settings</h4>
-                            <h5 class="d-grey mb-0">Business Details</h5>
+                            
                         </div>
-                        <div class="card-body">
+                        <div class="tab-pane fade" id="tab_2" role="tabpanel">
 
-                            <div class="row">
-                                <div class="col-lg-5">
-                                    <div class="form-group">
-                                        <label class="form-label">Business Details For</label>
-                                        <select class="form-select form-control">
-                                            <option>Dr.Umed Enterprise</option>
-                                            <option value="1">Option 1</option>
-                                            <option value="2">Option 2</option>
-                                            <option value="3">Option 3</option>
-                                            <option value="4">Option 4</option>
-                                            <option value="5">Option 5</option>
-                                        </select>
-                                        </div>
-                                </div>
+                            <div class="card-head">
+                                <h4 class="small-title mb-5">Business Settings</h4>
+                                <h5 class="d-grey mb-0">Business Details</h5>
                             </div>
-                            <h5 class="small-title mb-4 mt-3">Contact Info</h5>
-                            <div class="mw-750">
+                            <div class="card-body">
+                                <form id="update_business_settings" name="update_business_settings" class="form">
+                                @csrf
                                 <div class="row">
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-5">
+                                        <div class="form-group">
+                                            <label class="form-label">Business Details For</label>
+                                            <select class="form-select form-control business_details_for" id="business_details_for" name="business_details_for">
+                                                @foreach($locations as $loc)
+                                                <option value="{{ $loc->id }}">{{ $loc->location_name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-5 other_contact">
+                                <!-- <h5 class="small-title mb-4 mt-3">Contact Info</h5> -->
+                                
+                                <!-- <div class="row">
+                                    <div class="col-lg-4">
                                         <div class="form-group">
                                             <label class="form-label">Business Name </label>
-                                            <input type="text" class="form-control" placeholder="Dr Umed Enterprise">
-                                            </div>
-                                            <div class="form-group">
-                                            <label class="form-label">Business Email</label>
-                                            <input type="text" class="form-control" placeholder="info@drumedcosmetics.com.au">
+                                            <input type="text" class="form-control" placeholder="Dr Umed Enterprise" id="business_name" name="business_name">
                                             </div>
                                     </div>
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-4">
                                         <div class="form-group">
                                             <label class="form-label">Name Customers See</label>
-                                            <input type="text" class="form-control" placeholder="Dr Umed Cosmetic and Injectables">
+                                            <input type="text" class="form-control" placeholder="Dr Umed Cosmetic and Injectables" id="name_customers_see" name="name_customers_see">
                                             </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        
+                                            <div class="form-group">
+                                            <label class="form-label">Business Email</label>
+                                            <input type="text" class="form-control" placeholder="info@drumedcosmetics.com.au" id="business_email" name="business_email">
+                                            </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        
                                             <div class="form-group">
                                             <label class="form-label">Business Phone</label>
-                                            <input type="text" class="form-control" placeholder="0407194519">
+                                            <input type="text" class="form-control" placeholder="0407194519" id="business_phone" name="business_phone">
                                             </div>
                                     </div>
-                                </div>
-                            </div>
-
-                            <h5 class="small-title mb-3 mt-3">Give to Client</h5>
-                            <p class="fw-500 d-grey mb-4">You can choose to include or exclude the 'More info' section of the Client Card in Give to Client view.</p>
-                            <div class="form-group mb-5">
-                                <div class="row">
-                                    <div class="col-lg-3">
-                                            <label class="form-label">Include 'More info' </label>
-                                            <div class="toggle mb-1">
-                                                <input type="radio" name="sizeBy" value="" id="yes" checked="checked" />
-                                                <label for="yes">Yes <i class="ico-tick"></i></label>
-                                                <input type="radio" name="sizeBy" value="" id="no" />
-                                                <label for="no">No</label>
-                                            </div>
+                                    <div class="card-body">
+                                        <div class="col-lg-12 text-lg-end mt-4">
+                                            <button type="button" class="btn btn-light me-2">Discard</button>
+                                            <button type="submit" class="btn btn-primary">Save Changes</button>
                                         </div>
                                     </div>
-                                    <div class="form-text">The 'More info' section includes client attributes set up in the umed Admin tab.</div>
+                                </div> -->
+                                <!-- </form>  -->
                                 </div>
-
-                                <h5 class="small-title mb-4 mt-3">Gender Neutral Mode</h5>
-                                
-                                <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-lg-3">
-                                                <label class="form-label">Enable 'Gender Neutral Mode'</label>
-                                                <div class="toggle mb-1">
-                                                    <input type="radio" name="genmod" value="" id="g-yes" checked="checked" />
-                                                    <label for="g-yes">Yes <i class="ico-tick"></i></label>
-                                                    <input type="radio" name="genmod" value="" id="g-no" />
-                                                    <label for="g-no">No</label>
+                               
+                                <div class="form-group mb-5 other_contacts">
+                                    
+                                    
+                                    <div class="form-group mb-0">
+                                        
+                                        <!-- <form id="update_business_setting" name="update_business_setting" class="form">
+                                        @csrf -->
+                                        <!-- <input type="hidden" name="business_details_for" id="business_details_fors" value=""> -->
+                                        <!-- start -->
+                                        <!--dont consider hr in your code  -->
+                                        <!-- <hr class="mt-5"> -->
+                                        <h5 class="small-title mb-4 mt-3">Contact Info</h5>
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                <div class="form-group">
+                                                    <label class="form-label">Business Name </label>
+                                                    <input type="text" class="form-control" placeholder="Chatswood (Sydney) + Byron (NSW)" name="business_name" id="business_name" value="{{ $users_data->business_name ?? '' }}" maxlength="50">
+                                                    </div>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <div class="form-group">
+                                                    <label class="form-label">Name Customers See</label>
+                                                    <input type="text" class="form-control" placeholder="Dr Umed Cosmetic and Injectables" name="name_customers_see" id="name_customers_see" value="{{$users_data->name_customers_see ?? ''}}" maxlength="50">
+                                                    </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                
+                                                    <div class="form-group">
+                                                    <label class="form-label">Business Email</label>
+                                                    <input type="text" class="form-control" placeholder="info@drumedcosmetics.caom.au" name="business_email" id="business_email" value="{{$users_data->business_email ?? ''}}" maxlength="100">
+                                                    </div>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                    <div class="form-group">
+                                                    <label class="form-label">Business Phone</label>
+                                                    <input type="text" class="form-control" placeholder="0407194519" name="business_phone" id="business_phone" value="{{$users_data->business_phone ?? ''}}" maxlength="20">
+                                                    </div>
+                                            </div>
+                                            <div class="col-lg-4 website_info">
+                                                <div class="form-group">
+                                                    <label class="form-label">Website</label>
+                                                    <input type="text" class="form-control" placeholder="-" name="website" id="website" maxlength="30" value="{{$users_data->website ?? ''}}">
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="form-text">The 'More info' section includes client attributes set up in the umed Admin tab.</div>
+                                        <div class="row">
+                                            
+                                            <div class="col-lg-4 city_info">
+                                                    <div class="form-group">
+                                                    <label class="form-label">City</label>
+                                                    <input type="text" class="form-control" placeholder="-" name="city" id="city" maxlength="30" value="{{$users_data->city ?? ''}}">
+                                                    </div>
+                                            </div>
+                                            <div class="col-lg-4 postcode_info">
+                                                <div class="form-group">
+                                                    <label class="form-label">Postcode</label>
+                                                    <input type="text" class="form-control" placeholder="-" name="post_code" id="post_code" maxlength="10" value="{{$users_data->post_code ?? ''}}">
+                                                </div>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="col-lg-12 text-lg-end mt-4">
+                                                    <button type="button" class="btn btn-light me-2">Discard</button>
+                                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        </form> 
+                                        <!-- End -->
                                     </div>
+                            </div>
+                        </div>
                             
-                            
-                            
-
+                                
                             
                         </div>
-                        
-                        
-                            
-                        
+                        <div class="tab-pane fade" id="tab_3" role="tabpanel">
+                            33
+                        </div>
+                        <div class="tab-pane fade" id="tab_4" role="tabpanel">
+                            4
+                        </div>
+                        <div class="tab-pane fade" id="tab_5" role="tabpanel">
+                            5
+                        </div>
+                        <div class="tab-pane fade" id="tab_6" role="tabpanel">
+                            6
+                        </div>
                     </div>
-                    <div class="tab-pane fade" id="tab_3" role="tabpanel">
-                        3
-                    </div>
-                    <div class="tab-pane fade" id="tab_4" role="tabpanel">
-                        4
-                    </div>
-                    <div class="tab-pane fade" id="tab_5" role="tabpanel">
-                        5
-                    </div>
-                    <div class="tab-pane fade" id="tab_6" role="tabpanel">
-                        6
-                    </div>
+                    
                 </div>
-                
-            </div>
-    </main>
-
-    <!-- All Modal  -->
+        </main>
+        <!-- All Modal  -->
             
     <!-- Modal -->
     <div class="modal fade" id="change_pass" tabindex="-1">
@@ -179,21 +222,6 @@
             <h4 class="modal-title" id="exampleModalLabel">Change Password</h4>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            @if($errors->any())
-            {!! implode('', $errors->all('<div style="color:red">:message</div>')) !!}
-            @endif
-            @if(Session::get('error') && Session::get('error') != null)
-            <div style="color:red">{{ Session::get('error') }}</div>
-            @php
-            Session::put('error', null)
-            @endphp
-            @endif
-            @if(Session::get('success') && Session::get('success') != null)
-            <div style="color:green">{{ Session::get('success') }}</div>
-            @php
-            Session::put('success', null)
-            @endphp
-            @endif
             <form id="change_passwords" name="change_passwords" class="form">
             @csrf
             <div class="modal-body">
@@ -221,13 +249,52 @@
 
        
     </div>
-@stop
+    @stop
 @section('script')
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+$.ajaxSetup({
+headers: {
+    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+}
+});
     $(document).ready(function() {
+        $('.website_info').hide();
+        $('.city_info').hide();
+        $('.postcode_info').hide();
+        $("#business_details_for").change(function() {
+            debugger;
+            $('#business_details_fors').val($('option:selected', this).val());
+
+            $.ajax({
+            url: "{{route('get-business-details')}}",
+            data: {'business_details_for' : $('option:selected', this).val()},
+            type: "post",
+            cache: false,
+                success: function(html){
+                    debugger;
+                    $('#business_name').val(html.business_name);
+                    $('#name_customers_see').val(html.name_customers_see);
+                    $('#business_email').val(html.business_email);
+                    $('#business_phone').val(html.business_phone);
+                    $('#website').val(html.website);
+                    $('#city').val(html.city);
+                    $('#post_code').val(html.post_code);
+                }
+            });
+            if($('option:selected', this).text() != 'Dr Umed Enterprise')
+            {
+                $('.website_info').show();
+                $('.city_info').show();
+                $('.postcode_info').show();
+            }
+            else
+            {
+                $('.website_info').hide();
+                $('.city_info').hide();
+                $('.postcode_info').hide();
+            }
+        });
+        
 		$("#change_passwords").validate({
             rules: {
                 current_password: {
@@ -254,6 +321,48 @@
                 }
             }
         });
+        $('#update_business_settings').validate({
+            rules: {
+                // business_name: {
+                //     required: true,
+                // },
+                // name_customers_see:{
+                //     required: true,
+                // },
+                business_email:{
+                    // required:true,
+                    email: true
+                },
+                // business_phone:{
+                //     required:true
+                // }
+            }
+        });
+        $('#update_business_setting').validate({
+            rules: {
+                // business_name: {
+                //     required: true,
+                // },
+                // name_customers_see:{
+                //     required: true,
+                // },
+                // business_email:{
+                //     required:true,
+                // },
+                // business_phone:{
+                //     required:true
+                // },
+                // website:{
+                //     required: true,
+                // },
+                // city:{
+                //     required:true,
+                // },
+                // post_code:{
+                //     required:true
+                // }
+            }
+        });
     });
     $(document).on('submit','#change_passwords',function(e){
 		e.preventDefault();
@@ -269,6 +378,14 @@
 			if(valid.errorList.length == 0){
 			var data = $('#update_myaccount').serialize() ;
 			submitMyAccountForm(data);
+		}
+	});
+    $(document).on('submit','#update_business_settings',function(e){
+		e.preventDefault();
+		var valid= $("#update_business_settings").validate();
+			if(valid.errorList.length == 0){
+			var data = $('#update_business_settings').serialize() ;
+			submitBusinessSettingsForm(data);
 		}
 	});
     function submitPasswordForm(data){
@@ -328,4 +445,32 @@
 			},
 		});
 	}
+    function submitBusinessSettingsForm(data){
+		$.ajax({
+			headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+			url: "{{route('update-business-settings')}}",
+			type: "post",
+			data: data,
+			success: function(response) {
+				debugger;
+				// Show a Sweet Alert message after the form is submitted.
+				if (response.success) {
+					Swal.fire({
+						title: "Business Settings!",
+						text: "Your Business Settings updated successfully.",
+						type: "success",
+					}).then((result) => {
+                        window.location = "{{url('settings')}}"//'/player_detail?username=' + name;
+                    });
+				} else {
+					Swal.fire({
+						title: "Error!",
+						text: response.message,
+						type: "error",
+					});
+				}
+			},
+		});
+	}
 </script>
+@endsection
