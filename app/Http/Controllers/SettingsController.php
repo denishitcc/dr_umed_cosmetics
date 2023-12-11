@@ -173,4 +173,29 @@ class SettingsController extends Controller
             return response()->json($response);
         }  
     }
+    public function UpdateBrandImage(Request $request)
+    {
+        $file = $request->file('banner_image');
+        if($file != null)
+        {
+            $destinationPath = 'uploads';
+            $file->move($destinationPath,$file->getClientOriginalName());
+
+            $auth = auth();
+            $user = User::find($auth->user()->id);
+            $newUser = User::updateOrCreate(['id' => $auth->user()->id],[
+                'image' => $file->getClientOriginalName(),
+            ]);
+            return redirect('settings');
+        }
+        else
+        {
+            $auth = auth();
+            $user = User::find($auth->user()->id);
+            $newUser = User::updateOrCreate(['id' => $auth->user()->id],[
+                'image' => '',
+            ]);
+            return redirect('settings');   
+        }
+    }
 }

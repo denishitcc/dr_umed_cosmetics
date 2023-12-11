@@ -150,7 +150,37 @@
                         </div>
                         </div>
                         <div class="tab-pane fade" id="tab_3" role="tabpanel">
-                            3
+                        <div class="card-head">
+                                <h4 class="small-title mb-5">Brand banner image</h4>
+                                <h5 class="d-grey mb-0">Recommended dimension: 800px X 200px</h5>
+                            </div>
+                            <div class="card-body">
+                                <form id="update_brand_image" name="update_brand_image" class="form" enctype='multipart/form-data' action="{{route('update-brand-image')}}" method="post">
+                                    @csrf
+                                    <div class="row">
+                                        @if($users_data->image != '')
+                                        <div class="form-group">
+                                            <img src="uploads/{{$users_data->image}}" class="w-50" id="imgPreview">
+                                        </div>
+                                        @else
+                                        <div class="form-group">
+                                            <img src="uploads/no-image.jpg" class="w-50" id="imgPreview" style="height: 150px;">
+                                        </div>
+                                        @endif
+                                        <div class="col-lg-5">
+                                            <div class="form-group">
+                                                <input type="file" id="imgInput" name="banner_image" accept="image/png, image/gif, image/jpeg">
+                                                <button class="remove_image">Remove image</button>
+                                            </div>
+                                        </div>
+                                            <div class="card-body">
+                                            <div class="col-lg-12 text-lg-end mt-4">
+                                                <button type="button" class="btn btn-light me-2">Discard</button>
+                                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form> 
                         <div class="tab-pane fade" id="tab_4" role="tabpanel">
                             4
                         </div>
@@ -246,7 +276,23 @@ headers: {
                 $('.postcode_info').hide();
             }
         });
-        
+        $("#imgInput").change(function() {
+            if (this.files && this.files[0]) {
+
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    $('#imgPreview').attr('src', e.target.result);
+                }
+
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+        $('.remove_image').click(function(e){
+            debugger;
+            $('#imgPreview').attr('src', "{{URL::to('/uploads/no-image.jpg')}}");
+            e.preventDefault();
+        })
 		$("#change_passwords").validate({
             rules: {
                 current_password: {

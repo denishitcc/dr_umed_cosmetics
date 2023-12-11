@@ -44,7 +44,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/my-account', [SettingsController::class, 'changeMyAccountSave'])->name('my-account');
     Route::post('/update-business-settings', [SettingsController::class, 'UpdateBusinessSettings'])->name('update-business-settings');
     Route::post('/get-business-details', [SettingsController::class, 'GetBusinessDetails'])->name('get-business-details');
-    
+    Route::post('/update-brand-image', [SettingsController::class, 'UpdateBrandImage'])->name('update-brand-image');
     //locations
     Route::resource('locations', LocationsController::class);
 });
