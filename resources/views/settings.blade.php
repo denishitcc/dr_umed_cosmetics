@@ -57,7 +57,6 @@
                             
                         </div>
                         <div class="tab-pane fade" id="tab_2" role="tabpanel">
-
                             <div class="card-head">
                                 <h4 class="small-title mb-5">Business Settings</h4>
                                 <h5 class="d-grey mb-0">Business Details</h5>
@@ -146,11 +145,11 @@
                                         </form> 
                                         <!-- End -->
                                     </div>
+                                </div>
                             </div>
                         </div>
-                        </div>
                         <div class="tab-pane fade" id="tab_3" role="tabpanel">
-                        <div class="card-head">
+                            <div class="card-head">
                                 <h4 class="small-title mb-5">Brand banner image</h4>
                                 <h5 class="d-grey mb-0">Recommended dimension: 800px X 200px</h5>
                             </div>
@@ -180,7 +179,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                </form> 
+                                </form>
+                            </div> 
+                        </div>
                         <div class="tab-pane fade" id="tab_4" role="tabpanel">
                             4
                         </div>
