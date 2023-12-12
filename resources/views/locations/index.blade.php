@@ -82,7 +82,7 @@
          
             $('#example').DataTable(
             {
-              "dom": '<"dt-buttons"><"clear">Bflirtp',
+              "dom": 'Blfrtip',
               "paging": true,
               "pageLength": 5,
               "autoWidth": true,
