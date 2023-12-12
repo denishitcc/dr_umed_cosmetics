@@ -1,175 +1,78 @@
 @extends('layouts/sidebar')
 @section('content')
-    <!-- Page content-->
-    <main>
-            <div class="card">
-                <div class="card-head">
-                    <a href="{{ route('locations.create') }}" class="btn btn-primary btn-md me-2">New Location</a>
-                    <a href="#" class="btn btn-primary btn-md">Import Location CSV</a>
-                </div>
-                <div class="card-head">
-                    <h4 class="small-title mb-0">All Locations</h4>
-                </div>
-                <div class="card-body">
-                        <table id="example" class="table all-db-table align-middle" cellspacing="0" width="100%">
-                            <thead>
-                            <tr>
-                                <th>Location Name</th>
-                                <th>Description</th>
-                                <th>Deadline</th>
-                                <th>Status</th>
-                                <th>Amount</th>
-                                <th>Action</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td><a href="#" class="blue-bold"> Dock, Sydney, NSW</a></td>
-                                <td>Alphabet puzzle</td>
-                                <td>2016/01/15</td>
-                                <td>Done</td>
-                                <td>1000</td>
-                                <td>
-                                <div class="action-box">
-                                    <button type="button" class="btn btn-sm black-btn round-6">
-                                    <i class="ico-location1"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-sm black-btn round-6 dt-edit">
-                                    <i class="ico-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-sm black-btn round-6 dt-delete">
-                                    <i class="ico-trash"></i>
-                                    </button>
-                                </div>
-                                
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><a href="#" class="blue-bold">Five Dock, Sydney, NSW</a></td>
-                                <td>Layout for poster</td>
-                                <td>2016/01/31</td>
-                                <td>Planned</td>
-                                <td>1834</td>
-                                <td>
-                                <div class="action-box">
-                                    <button type="button" class="btn btn-sm black-btn round-6">
-                                    <i class="ico-location1"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-sm black-btn round-6 dt-edit">
-                                    <i class="ico-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-sm black-btn round-6 dt-delete">
-                                    <i class="ico-trash"></i>
-                                    </button>
-                                </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><a href="#" class="blue-bold">Five Dock, Sydney, NSW</a></td>
-                                <td>Image creation</td>
-                                <td>2016/01/23</td>
-                                <td>To Do</td>
-                                <td>1500</td>
-                                <td>
-                                <div class="action-box">
-                                    <button type="button" class="btn btn-sm black-btn round-6">
-                                    <i class="ico-location1"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-sm black-btn round-6 dt-edit">
-                                    <i class="ico-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-sm black-btn round-6 dt-delete">
-                                    <i class="ico-trash"></i>
-                                    </button>
-                                </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><a href="#" class="blue-bold">Five Dock, Sydney, NSW</a></td>
-                                <td>Create font</td>
-                                <td>2016/02/26</td>
-                                <td>Done</td>
-                                <td>1200</td>
-                                <td>
-                                <div class="action-box">
-                                    <button type="button" class="btn btn-sm black-btn round-6">
-                                    <i class="ico-location1"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-sm black-btn round-6 dt-edit">
-                                    <i class="ico-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-sm black-btn round-6 dt-delete">
-                                    <i class="ico-trash"></i>
-                                    </button>
-                                </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><a href="#" class="blue-bold">Five Dock, Sydney, NSW</a></td>
-                                <td>Sticker production</td>
-                                <td>2016/02/18</td>
-                                <td>Planned</td>
-                                <td>2100</td>
-                                <td>
-                                <div class="action-box">
-                                    <button type="button" class="btn btn-sm black-btn round-6">
-                                    <i class="ico-location1"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-sm black-btn round-6 dt-edit">
-                                    <i class="ico-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-sm black-btn round-6 dt-delete">
-                                    <i class="ico-trash"></i>
-                                    </button>
-                                </div>
-                                </td>
-                            </tr>
-                            
-                            </tbody>
-                        </table>
-                        
-                        <!-- Modal -->
-                        <div id="myModal" class="modal fade" role="dialog">
-                            <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                <h4 class="modal-title">Row information</h4>
-                                </div>
-                                <div class="modal-body">
-                                
-                                </div>
-                                <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                </div>
-                            </div>
-                            </div>
-                        </div>
-                </div>
-                
-                
+<!-- Page content wrapper-->
+  <main>
+          <div class="card">
+              <div class="card-head">
+                <a href="{{ route('locations.create') }}" class="btn btn-primary btn-md me-2">New Location</a>
+                <a href="#" class="btn btn-primary btn-md">Import Location CSV</a>
+              </div>
+              <div class="card-head">
+                <h4 class="small-title mb-0">All Locations</h4>
             </div>
-    </main>
-
-    @stop
+              <div class="card-body">
+                      <table id="example" class="table all-db-table align-middle" cellspacing="0" width="100%">
+                        <thead>
+                          <tr>
+                            <th>Location Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Location</th>
+                            <th>Latitudes</th>
+                            <th>Longitudes</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          @if(count($locations)>0)
+                          @foreach($locations as $loc)
+                          <tr>
+                            <td><a href="#" class="blue-bold">{{$loc->location_name}}</a></td>
+                            <td>{{$loc->email}}</td>
+                            <td>{{$loc->phone}}</td>
+                            <td>{{$loc->street_address.' '.$loc->suburb.' '.$loc->city.' '.$loc->state.' '.$loc->postcode}}</td>
+                            <td>{{$loc->latitude}}</td>
+                            <td>{{$loc->longitude}}</td>
+                            <td>
+                              <div class="action-box"><button type="button" class="btn btn-sm black-btn round-6 far fa-edit">
+                                  <i class="ico-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm black-btn round-6 dt-delete">
+                                  <i class="ico-trash"></i>
+                                </button>
+                              </div>
+                              
+                            </td>
+                          </tr>
+                          @endforeach
+                          @endif
+                        </tbody>
+                      </table>
+                      
+                      <!-- Modal -->
+                      <div id="myModal" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                              <h4 class="modal-title">Row information</h4>
+                            </div>
+                            <div class="modal-body">
+                              
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+              </div>
+              
+              
+          </div>
+  </main>
+@stop
     @section('script')
-    <!-- Bootstrap core JS-->
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Core theme JS-->
-    <script src="js/scripts.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js" type="text/javascript"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js" type="text/javascript"></script>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" type="text/javascript"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js" type="text/javascript"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js" type="text/javascript"></script>
-
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js" type="text/javascript"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js" type="text/javascript"></script>
-    
-
     <script>
         $(document).ready(function() {
           //Only needed for the filename of export files.
@@ -177,21 +80,20 @@
           document.title='Simple DataTable';
           // DataTable initialisation
          
-          $('#example').DataTable(
+            $('#example').DataTable(
             {
-              //"dom": '<"dt-buttons"><"clear">Bflirtp',
-              "paging": false,
+              "dom": '<"dt-buttons"><"clear">Bflirtp',
+              "paging": true,
+              "pageLength": 5,
               "autoWidth": true,
               "columnDefs": [
                 { "orderable": false, "targets": 5 }
               ],
               "buttons": [
                 'colvis',
-                'copyHtml5',
                 'csvHtml5',
                 'excelHtml5',
                 'pdfHtml5',
-                'print'
               ]
             }
           );
@@ -255,3 +157,7 @@
           });
         });
     </script>
+</body>
+
+</html>
+@endsection

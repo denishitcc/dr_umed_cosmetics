@@ -3,14 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use App\Models\Locations;
 class LocationsController extends Controller
 {
     public function index()
     {
-        // $locations = Locations::all();
-        // return view('locations.index', compact('locations'));
-        return view('locations.index');
+        $locations = Locations::all();
+        return view('locations.index', compact('locations'));
     }
 
     public function create()
