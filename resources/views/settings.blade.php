@@ -159,7 +159,7 @@
                                     <div class="row">
                                         @if($users_data->image != '')
                                         <div class="form-group">
-                                            <img src="uploads/{{$users_data->image}}" class="w-50" id="imgPreview">
+                                            <img src="uploads/{{$users_data->image}}" class="w-50" id="imgPreview" style="height: 150px;">
                                         </div>
                                         @else
                                         <div class="form-group">
