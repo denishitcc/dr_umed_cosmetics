@@ -1,6 +1,7 @@
 @extends('layouts/sidebar')
 @section('content')
 <!-- Page content wrapper-->
+<meta name="csrf-token" content="{{ csrf_token() }}" />
   <main>
           <div class="card">
               <div class="card-head">
@@ -39,7 +40,7 @@
                               <div class="action-box"><button type="button" class="btn btn-sm black-btn round-6 far dt-edit">
                                   <i class="ico-edit"></i>
                                 </button>
-                                <button type="button" class="btn btn-sm black-btn round-6 dt-delete">
+                                <button type="button" class="btn btn-sm black-btn round-6 dt-delete" ids="{{$loc->id}}">
                                   <i class="ico-trash"></i>
                                 </button>
                               </div>
@@ -76,6 +77,11 @@
 @stop
     @section('script')
     <script>
+      $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+        });
         $(document).ready(function() {
             document.title='Locations';
             var table = $('#example').DataTable({
@@ -142,6 +148,32 @@
         $this = $(this);
         var dtRow = $this.parents('tr');
         if(confirm("Are you sure to delete this row?")){
+          $.ajax({
+            headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            url: "locations/"+$(this).attr('ids'),
+            type: 'DELETE',
+            data: {
+                "id": $(this).attr('ids'),
+            },
+            success: function(response) {
+              // Show a Sweet Alert message after the form is submitted.
+              if (response.success) {
+                Swal.fire({
+                  title: "Locations!",
+                  text: "Your Locations deleted successfully.",
+                  type: "success",
+                }).then((result) => {
+                              window.location = "{{url('locations')}}"//'/player_detail?username=' + name;
+                          });
+              } else {
+                Swal.fire({
+                  title: "Error!",
+                  text: response.message,
+                  type: "error",
+                });
+              }
+            },
+          });
           var table = $('#example').DataTable();
           table.row(dtRow[0].rowIndex-1).remove().draw( false );
         }

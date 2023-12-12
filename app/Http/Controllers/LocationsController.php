@@ -36,9 +36,18 @@ class LocationsController extends Controller
     // {
     //     // Validation and task update logic
     // }
-    // public function destroy(Task $task)
-    // {
-    //     $task->delete();
-    //     return redirect()->route('tasks.index');
-    // }
+    public function destroy(Request $request)
+    {
+        Locations::find($request->id)->delete();
+        
+        $response = [
+            'success' => true,
+            'message' => 'Location deleted successfully!',
+            'type' => 'success',
+            'data_id' => $request->id
+        ];
+    
+
+        return response()->json($response);
+    }
 }
