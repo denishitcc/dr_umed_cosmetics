@@ -98,13 +98,36 @@
                   return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
               }
             }],
-            "buttons": [
-              'colvis',
-              'csvHtml5',
-              'excelHtml5',
-              'pdfHtml5',
-            ],
-            'order': [[1, 'asc']]
+            buttons: [
+              {
+                  extend: 'excelHtml5',
+                  text: '<i class="fa fa-file-excel-o"></i> Excel',
+                  titleAttr: 'Export to Excel',
+                  title: 'Locations',
+                  exportOptions: {
+                      columns: [1,2,3,4,5,6] 
+                  }
+              },
+              {
+                  extend: 'csvHtml5',
+                  text: '<i class="fa fa-file-text-o"></i> CSV',
+                  titleAttr: 'CSV',
+                  title: 'Locations',
+                  exportOptions: {
+                      columns: [1,2,3,4,5,6] 
+                  }
+              },
+              {
+                  extend: 'pdfHtml5',
+                  text: '<i class="fa fa-file-pdf-o"></i> PDF',
+                  titleAttr: 'PDF',
+                  title: 'Locations',
+                  exportOptions: {
+                      columns: [1,2,3,4,5,6] 
+                  },
+              },
+          ],
+          'order': [[1, 'asc']]
     });
 
     // Handle click on "Select all" control
