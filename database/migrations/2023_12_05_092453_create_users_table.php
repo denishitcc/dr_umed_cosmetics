@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('phone',20)->nullable();
             $table->string('role_type',50)->nullable();
+            // $table->enum('role_type', array('superadmin','admin'))->default('superadmin');
             $table->string('image')->nullable();
             $table->string('banner_image')->nullable();
             $table->timestamp('email_verified_at')->nullable();
