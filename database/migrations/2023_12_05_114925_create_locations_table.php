@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('postcode',10)->nullable();
             $table->decimal('latitude', 10, 8)->nullable(); // Example precision and scale, adjust as needed
             $table->decimal('longitude', 11, 8)->nullable(); // Example precision and scale, adjust as needed
+            $table->softDeletes();
             $table->timestamps();
         });
     }

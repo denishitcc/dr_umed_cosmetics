@@ -17,6 +17,7 @@ return new class extends Migration
             $table->text('description')->nullable(); // Changed to 'text' type for potentially longer descriptions
             $table->string('by_whom', 50)->nullable();
             $table->string('status', 50)->nullable(); // Marked as nullable, consider using enumerations
+            $table->softDeletes();
             $table->timestamps();
         });
     }

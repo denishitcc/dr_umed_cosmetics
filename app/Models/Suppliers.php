@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Locations extends Model
+class Suppliers extends Model
 {
     use HasFactory;
     use SoftDeletes;
@@ -14,15 +14,20 @@ class Locations extends Model
 
     protected $fillable = [
         'id',
-        'location_name',
-        'phone',
+        'business_name',
+        'contact_first_name',
+        'contact_last_name',
+        'home_phone',
+        'work_phone',
+        'fax_numbers',
+        'mobile_phone',
         'email',
+        'web_address',
         'street_address',
         'suburb',
         'city',
         'state',
-        'postcode',
-        'latitude',
-        'longitude'
+        'post_code',
+        'country'
     ];
 }

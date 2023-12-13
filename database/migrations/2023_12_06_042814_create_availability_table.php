@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('min', 50)->nullable();
             $table->string('max', 50)->nullable();
             $table->decimal('price', 10, 2)->nullable(); // Example decimal type, adjust as needed
+            $table->softDeletes();
             $table->timestamps();
         });
     }

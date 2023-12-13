@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('start_time', 100)->nullable();
             $table->string('end_time', 100)->nullable();
             $table->string('day_status', 50)->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

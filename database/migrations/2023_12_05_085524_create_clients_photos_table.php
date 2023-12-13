@@ -20,6 +20,7 @@ return new class extends Migration
                   ->onDelete('cascade')
                   ->onUpdate('cascade');
             $table->string('client_photos', 255)->nullable(); // Adjust the maximum length as needed
+            $table->softDeletes();
             $table->timestamps();
         });
     }

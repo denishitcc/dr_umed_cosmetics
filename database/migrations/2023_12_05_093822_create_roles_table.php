@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('user_name',100)->nullable();
             $table->string('location',50)->nullable();
             $table->string('report_type',50)->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

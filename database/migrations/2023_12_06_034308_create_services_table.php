@@ -52,6 +52,7 @@ return new class extends Migration
             $table->boolean('greenacre')->default(true);
             $table->boolean('surfers_paradise')->default(true);
             $table->string('staff_price')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

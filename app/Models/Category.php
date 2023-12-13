@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Locations extends Model
+class Category extends Model
 {
     use HasFactory;
     use SoftDeletes;
@@ -14,15 +14,9 @@ class Locations extends Model
 
     protected $fillable = [
         'id',
-        'location_name',
-        'phone',
-        'email',
-        'street_address',
-        'suburb',
-        'city',
-        'state',
-        'postcode',
-        'latitude',
-        'longitude'
+        'category_name',
+        'parent_category',
+        'show_business_summary',
+        'trigger_when_sold'
     ];
 }

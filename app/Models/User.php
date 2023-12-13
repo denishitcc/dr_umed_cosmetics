@@ -9,11 +9,14 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 // use Laravel\Jetstream\HasProfilePhoto;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
     use TwoFactorAuthenticatable;
+    use SoftDeletes;
+    protected $dates = ['deleted_at'];
     // use HasProfilePhoto;
 
 

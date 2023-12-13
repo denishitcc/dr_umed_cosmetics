@@ -37,6 +37,7 @@ return new class extends Migration
             $table->string('order_lot', 50)->nullable();
             $table->string('min', 50)->nullable();
             $table->string('max', 50)->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

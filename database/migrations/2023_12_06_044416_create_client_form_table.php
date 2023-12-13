@@ -31,6 +31,7 @@ return new class extends Migration
             $table->string('hair_removal_method', 100)->nullable();
             $table->string('sign')->nullable();
             $table->date('date');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('surgical')->nullable();
             $table->string('body')->nullable();
             $table->text('comments')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

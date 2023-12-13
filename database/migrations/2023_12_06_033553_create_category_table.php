@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('parent_category', 100)->nullable();
             $table->boolean('show_business_summary')->default(true);
             $table->boolean('trigger_when_sold')->default(false);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

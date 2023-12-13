@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('sms_template_type', 100)->nullable();
             $table->string('sms_template_description', 255)->nullable(); // Marked as nullable
+            $table->softDeletes();
             $table->timestamps();
         });
     }

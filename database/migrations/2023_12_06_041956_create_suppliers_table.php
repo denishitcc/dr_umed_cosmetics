@@ -28,6 +28,7 @@ return new class extends Migration
             $table->string('state', 50)->nullable();
             $table->string('post_code', 50)->nullable();
             $table->string('country', 50)->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
