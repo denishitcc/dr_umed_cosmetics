@@ -233,7 +233,7 @@
                     </div>
             </div>
             <div class="modal-footer">
-            <button type="button" class="btn btn-light">Discard</button>
+            <button type="button" class="btn btn-light custom-close">Discard</button>
             <button type="submit" class="btn btn-primary change_pass">Save</button>
             </div>
             </form>
@@ -313,6 +313,9 @@ headers: {
             $('#imgPreview').attr('src', "{{URL::to('/images/banner_image/no-image.jpg')}}");
             e.preventDefault();
         })
+        $(".custom-close").on('click', function() {
+            $('#change_pass').modal('hide');
+        });
 		$("#change_passwords").validate({
             rules: {
                 current_password: {
