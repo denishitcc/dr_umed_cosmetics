@@ -118,6 +118,8 @@ class SettingsController extends Controller
                 'business_email' => $request->business_email,
                 'business_phone' => $request->business_phone,
                 'website' => $request->website,
+                'street_address' => $request->street_address,
+                'suburb' => $request->suburb,
                 'city' => $request->city,
                 'post_code' => $request->post_code,
             ]);
@@ -132,6 +134,8 @@ class SettingsController extends Controller
                 'business_email' => $request->business_email,
                 'business_phone' => $request->business_phone,
                 'website' => $request->website,
+                'street_address' => $request->street_address,
+                'suburb' => $request->suburb,
                 'city' => $request->city,
                 'post_code' => $request->post_code,
             ]);
@@ -169,7 +173,7 @@ class SettingsController extends Controller
         }      
         else
         {
-            $response=array('business_name'=>$user->business_name,'name_customers_see'=>$user->name_customers_see,'business_email'=>$user->business_email,'business_phone'=>$user->business_phone,'website'=>$user->website,'city'=>$user->city,'post_code'=>$user->post_code);
+            $response=array('business_name'=>$user->business_name,'name_customers_see'=>$user->name_customers_see,'business_email'=>$user->business_email,'business_phone'=>$user->business_phone,'website'=>$user->website,'street_address'=>$user->street_address,'suburb'=>$user->suburb,'city'=>$user->city,'post_code'=>$user->post_code);
             return response()->json($response);
         }  
     }

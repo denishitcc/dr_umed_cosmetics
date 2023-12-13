@@ -25,6 +25,8 @@ return new class extends Migration
             $table->string('business_email', 100)->nullable();
             $table->string('business_phone', 20)->nullable();
             $table->string('website', 50)->nullable();
+            $table->string('street_Address', 100)->nullable();
+            $table->string('suburb', 100)->nullable();
             $table->string('city', 20)->nullable();
             $table->string('post_code', 20)->nullable();
             $table->timestamps();

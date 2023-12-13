@@ -34,11 +34,11 @@
                                 <div class="col-lg-4">
                                     <div class="form-group">
                                         <label for="fname" class="form-label">First Name</label>
-                                        <input type="text" class="form-control" id="first_name" name="first_name" value="{{$user->first_name}}" maxlength="50">
+                                        <input type="text" class="form-control" id="first_name" placeholder="First Name" name="first_name" value="{{$user->first_name}}" maxlength="50">
                                         </div>
                                         <div class="form-group">
                                         <label for="lname" class="form-label">Last Name</label>
-                                        <input type="text" class="form-control" id="last_name" name="last_name" value="{{$user->last_name}}" maxlength="50">
+                                        <input type="text" class="form-control" id="last_name" placeholder="Last Name" name="last_name" value="{{$user->last_name}}" maxlength="50">
                                         </div>
 
                                         <div class="pt-4">
@@ -90,13 +90,13 @@
                                             <div class="col-lg-4">
                                                 <div class="form-group">
                                                     <label class="form-label">Business Name </label>
-                                                    <input type="text" class="form-control" placeholder="Chatswood (Sydney) + Byron (NSW)" name="business_name" id="business_name" value="{{ $users_data->business_name ?? '' }}" maxlength="50">
+                                                    <input type="text" class="form-control" placeholder="Business Name" name="business_name" id="business_name" value="{{ $users_data->business_name ?? '' }}" maxlength="50">
                                                     </div>
                                             </div>
                                             <div class="col-lg-4">
                                                 <div class="form-group">
                                                     <label class="form-label">Name Customers See</label>
-                                                    <input type="text" class="form-control" placeholder="Dr Umed Cosmetic and Injectables" name="name_customers_see" id="name_customers_see" value="{{$users_data->name_customers_see ?? ''}}" maxlength="50">
+                                                    <input type="text" class="form-control" placeholder="Name Customers See" name="name_customers_see" id="name_customers_see" value="{{$users_data->name_customers_see ?? ''}}" maxlength="50">
                                                     </div>
                                             </div>
                                         </div>
@@ -105,34 +105,45 @@
                                                 
                                                     <div class="form-group">
                                                     <label class="form-label">Business Email</label>
-                                                    <input type="text" class="form-control" placeholder="info@drumedcosmetics.caom.au" name="business_email" id="business_email" value="{{$users_data->business_email ?? ''}}" maxlength="100">
+                                                    <input type="text" class="form-control" placeholder="Business Email" name="business_email" id="business_email" value="{{$users_data->business_email ?? ''}}" maxlength="100">
                                                     </div>
                                             </div>
                                             <div class="col-lg-4">
                                                     <div class="form-group">
                                                     <label class="form-label">Business Phone</label>
-                                                    <input type="text" class="form-control" placeholder="0407194519" name="business_phone" id="business_phone" value="{{$users_data->business_phone ?? ''}}" maxlength="20">
+                                                    <input type="text" class="form-control" placeholder="Business Phone" name="business_phone" id="business_phone" value="{{$users_data->business_phone ?? ''}}" maxlength="20">
                                                     </div>
                                             </div>
                                             <div class="col-lg-4 website_info">
                                                 <div class="form-group">
                                                     <label class="form-label">Website</label>
-                                                    <input type="text" class="form-control" placeholder="-" name="website" id="website" maxlength="30" value="{{$users_data->website ?? ''}}">
+                                                    <input type="text" class="form-control" placeholder="Website" name="website" id="website" maxlength="30" value="{{$users_data->website ?? ''}}">
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="row">
-                                            
+                                            <div class="col-lg-4 street_address_info">
+                                                    <div class="form-group">
+                                                    <label class="form-label">Street Address</label>
+                                                    <input type="text" class="form-control" placeholder="Street Address" name="street_address" id="street_address" maxlength="30" value="{{$users_data->street_address ?? ''}}">
+                                                    </div>
+                                            </div>
+                                            <div class="col-lg-4 suburb_info">
+                                                    <div class="form-group">
+                                                    <label class="form-label">Suburb</label>
+                                                    <input type="text" class="form-control" placeholder="Suburb" name="suburb" id="suburb" maxlength="30" value="{{$users_data->suburb ?? ''}}">
+                                                    </div>
+                                            </div>
                                             <div class="col-lg-4 city_info">
                                                     <div class="form-group">
                                                     <label class="form-label">City</label>
-                                                    <input type="text" class="form-control" placeholder="-" name="city" id="city" maxlength="30" value="{{$users_data->city ?? ''}}">
+                                                    <input type="text" class="form-control" placeholder="City" name="city" id="city" maxlength="30" value="{{$users_data->city ?? ''}}">
                                                     </div>
                                             </div>
                                             <div class="col-lg-4 postcode_info">
                                                 <div class="form-group">
                                                     <label class="form-label">Postcode</label>
-                                                    <input type="text" class="form-control" placeholder="-" name="post_code" id="post_code" maxlength="10" value="{{$users_data->post_code ?? ''}}">
+                                                    <input type="text" class="form-control" placeholder="Postcode" name="post_code" id="post_code" maxlength="10" value="{{$users_data->post_code ?? ''}}">
                                                 </div>
                                             </div>
                                             <div class="card-body">
@@ -157,9 +168,9 @@
                                 <form id="update_brand_image" name="update_brand_image" class="form" enctype='multipart/form-data' action="{{route('update-brand-image')}}" method="post">
                                     @csrf
                                     <div class="row">
-                                        @if($users_data->banner_image != '')
+                                        @if(isset($user->banner_image))
                                         <div class="form-group">
-                                            <img src="images/banner_image/{{$users_data->banner_image}}" class="w-50" id="imgPreview" style="height: 150px;">
+                                            <img src="images/banner_image/{{$user->banner_image}}" class="w-50" id="imgPreview" style="height: 150px;">
                                         </div>
                                         @else
                                         <div class="form-group">
@@ -210,15 +221,15 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label for="c-pass" class="form-label">Current Password</label>
-                    <input type="text" class="form-control" id="current_password" name="current_password">
+                    <input type="text" class="form-control" id="current_password" placeholder="Current Password" name="current_password">
                     </div>
                     <div class="form-group">
                     <label for="n-pass" class="form-label">New password</label>
-                    <input type="text" class="form-control" id="new_password" name="new_password">
+                    <input type="text" class="form-control" id="new_password" placeholder="New Password"  name="new_password">
                     </div>
                     <div class="form-group">
                     <label for="cn-pass" class="form-label">Confirm New Password</label>
-                    <input type="text" class="form-control" id="new_password_confirmation" name="new_password_confirmation">
+                    <input type="text" class="form-control" id="new_password_confirmation" placeholder="Confirm New Password" name="new_password_confirmation">
                     </div>
             </div>
             <div class="modal-footer">
@@ -242,6 +253,8 @@ headers: {
 });
     $(document).ready(function() {
         $('.website_info').hide();
+        $('.street_address_info').hide();
+        $('.suburb_info').hide();
         $('.city_info').hide();
         $('.postcode_info').hide();
         $("#business_details_for").change(function() {
@@ -260,6 +273,8 @@ headers: {
                     $('#business_email').val(html.business_email);
                     $('#business_phone').val(html.business_phone);
                     $('#website').val(html.website);
+                    $('#street_address').val(html.street_address);
+                    $('#suburb').val(html.suburb);
                     $('#city').val(html.city);
                     $('#post_code').val(html.post_code);
                 }
@@ -267,12 +282,16 @@ headers: {
             if($('option:selected', this).text() != 'Dr Umed Enterprise')
             {
                 $('.website_info').show();
+                $('.street_address_info').show();
+                $('.suburb_info').show();
                 $('.city_info').show();
                 $('.postcode_info').show();
             }
             else
             {
                 $('.website_info').hide();
+                $('.street_address_info').hide();
+                $('.suburb_info').hide();
                 $('.city_info').hide();
                 $('.postcode_info').hide();
             }

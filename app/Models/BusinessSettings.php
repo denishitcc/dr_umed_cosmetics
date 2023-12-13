@@ -18,6 +18,8 @@ class BusinessSettings extends Model
         'business_email',
         'business_phone',
         'website',
+        'street_address',
+        'suburb',
         'city',
         'post_code'
     ];
