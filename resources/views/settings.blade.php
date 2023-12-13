@@ -157,13 +157,13 @@
                                 <form id="update_brand_image" name="update_brand_image" class="form" enctype='multipart/form-data' action="{{route('update-brand-image')}}" method="post">
                                     @csrf
                                     <div class="row">
-                                        @if($users_data->image != '')
+                                        @if($users_data->banner_image != '')
                                         <div class="form-group">
-                                            <img src="uploads/{{$users_data->image}}" class="w-50" id="imgPreview" style="height: 150px;">
+                                            <img src="images/banner_image/{{$users_data->banner_image}}" class="w-50" id="imgPreview" style="height: 150px;">
                                         </div>
                                         @else
                                         <div class="form-group">
-                                            <img src="uploads/no-image.jpg" class="w-50" id="imgPreview" style="height: 150px;">
+                                            <img src="images/banner_image/no-image.jpg" class="w-50" id="imgPreview" style="height: 150px;">
                                         </div>
                                         @endif
                                         <div class="col-lg-5">
@@ -291,7 +291,7 @@ headers: {
         });
         $('.remove_image').click(function(e){
             debugger;
-            $('#imgPreview').attr('src', "{{URL::to('/uploads/no-image.jpg')}}");
+            $('#imgPreview').attr('src', "{{URL::to('/images/banner_image/no-image.jpg')}}");
             e.preventDefault();
         })
 		$("#change_passwords").validate({

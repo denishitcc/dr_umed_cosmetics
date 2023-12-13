@@ -178,13 +178,13 @@ class SettingsController extends Controller
         $file = $request->file('banner_image');
         if($file != null)
         {
-            $destinationPath = 'uploads';
+            $destinationPath = 'images/banner_image';
             $file->move($destinationPath,$file->getClientOriginalName());
 
             $auth = auth();
             $user = User::find($auth->user()->id);
             $newUser = User::updateOrCreate(['id' => $auth->user()->id],[
-                'image' => $file->getClientOriginalName(),
+                'banner_image' => $file->getClientOriginalName(),
             ]);
             return redirect('settings');
         }
@@ -193,7 +193,7 @@ class SettingsController extends Controller
             $auth = auth();
             $user = User::find($auth->user()->id);
             $newUser = User::updateOrCreate(['id' => $auth->user()->id],[
-                'image' => '',
+                'banner_image' => '',
             ]);
             return redirect('settings');   
         }

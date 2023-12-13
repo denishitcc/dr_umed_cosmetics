@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('phone',20)->nullable();
             $table->string('role_type',50)->nullable();
             $table->string('image')->nullable();
+            $table->string('banner_image')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('status')->default('active'); // New field 'status'
