@@ -15,11 +15,12 @@ class SettingsController extends Controller
         $auth = auth();
         $user = User::find($auth->user()->id);
         $locations = Locations::get();
+        $locs = Locations::first();
         $users_data = User::join('business_settings', 'business_settings.user_id', '=', 'users.id')
                     ->where('users.id',$auth->user()->id)
                     ->where('business_settings.business_details_for',1)
               		->first();
-        return view('settings',compact('user','locations','users_data'));
+        return view('settings',compact('user','locations','users_data','locs'));
     }
     public function changePasswordSave(Request $request)
     {
@@ -168,7 +169,8 @@ class SettingsController extends Controller
                 ->first();
         if($user== null)
         {
-            $response=[];
+            $locs = Locations::find($request->business_details_for);
+            $response=array('business_name'=>$locs->location_name,'name_customers_see'=>'','business_email'=>$locs->email,'business_phone'=>$locs->phone,'website'=>'','street_address'=>$locs->street_address,'suburb'=>$locs->suburb,'city'=>$locs->city,'post_code'=>$locs->postcode);
             return response()->json($response);
         }      
         else

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>Settings</title>
+    <title>@yield('title')</title>
     <link rel="icon" href="https://www.drumedcosmetics.com.au/wp-content/uploads/2023/08/favicon.jpg" sizes="32x32" />
     <!-- <link href="css/styles.css" rel="stylesheet" /> -->
     <link href="{{ asset('css/styles.css') }}" rel="stylesheet"/>
@@ -39,7 +39,7 @@
                     <li><a href="#"><i class="ico-promotion"></i>Promotions </a></li>
                     <li><a href="#"><i class="ico-forms"></i>Forms </a></li>
                     <li><a href="#"><i class="ico-templates"></i>Templates </a></li>
-                    <li class="{{ (request()->is('locations')) ? 'active' : '' }} || {{ (request()->is('locations/create')) ? 'active' : '' }}"><a href="{{ route('locations.index') }}"><i class="ico-locations"></i>Locations </a></li>
+                    <li class="{{ (request()->is('locations')) ? 'active' : '' }} || {{ (request()->is('locations/*')) ? 'active' : '' }}"><a href="{{ route('locations.index') }}"><i class="ico-locations"></i>Locations </a></li>
                     <li class="{{ (request()->is('settings')) ? 'active' : '' }}"><a href="{{ route('settings') }}"><i class="ico-settings"></i>Settings </a></li>
 
                 </ul>

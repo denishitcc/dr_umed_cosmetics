@@ -37,7 +37,7 @@
                             <td>{{$loc->latitude}}</td>
                             <td>{{$loc->longitude}}</td>
                             <td>
-                              <div class="action-box"><button type="button" class="btn btn-sm black-btn round-6 far dt-edit">
+                              <div class="action-box"><button type="button" class="btn btn-sm black-btn round-6 far dt-edit" ids="{{$loc->id}}">
                                   <i class="ico-edit"></i>
                                 </button>
                                 <button type="button" class="btn btn-sm black-btn round-6 dt-delete" ids="{{$loc->id}}">
@@ -127,7 +127,7 @@
                   },
               },
           ],
-          'order': [[1, 'asc']]
+          'order': [[1, 'desc']]
     });
 
     // Handle click on "Select all" control
@@ -152,17 +152,10 @@
         }
     });
     //Edit row buttons
-    $('.dt-edit').each(function () {debugger;
-      $(this).on('click', function(evt){
-        $this = $(this);
-        var dtRow = $this.parents('tr');
-        $('div.modal-body').innerHTML='';
-        $('div.modal-body').append('Row index: '+dtRow[0].rowIndex+'<br/>');
-        $('div.modal-body').append('Number of columns: '+dtRow[0].cells.length+'<br/>');
-        for(var i=0; i < dtRow[0].cells.length; i++){
-          $('div.modal-body').append('Cell (column, row) '+dtRow[0].cells[i]._DT_CellIndex.column+', '+dtRow[0].cells[i]._DT_CellIndex.row+' => innerHTML : '+dtRow[0].cells[i].innerHTML+'<br/>');
-        }
-        $('#myModal').modal('show');
+    $('.dt-edit').each(function () {
+      $(this).on('click', function(evt){debugger;
+        var ids=$(this).attr('ids');
+        window.location = 'locations/'+ids;
       });
     });
     //Delete buttons

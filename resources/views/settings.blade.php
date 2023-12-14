@@ -90,7 +90,7 @@
                                             <div class="col-lg-4">
                                                 <div class="form-group">
                                                     <label class="form-label">Business Name </label>
-                                                    <input type="text" class="form-control" placeholder="Business Name" name="business_name" id="business_name" value="{{ $users_data->business_name ?? '' }}" maxlength="50">
+                                                    <input type="text" class="form-control" placeholder="Business Name" name="business_name" id="business_name" value="{{ $users_data?$users_data->business_name :$locs->location_name }}" maxlength="50">
                                                     </div>
                                             </div>
                                             <div class="col-lg-4">
@@ -105,13 +105,13 @@
                                                 
                                                     <div class="form-group">
                                                     <label class="form-label">Business Email</label>
-                                                    <input type="text" class="form-control" placeholder="Business Email" name="business_email" id="business_email" value="{{$users_data->business_email ?? ''}}" maxlength="100">
+                                                    <input type="text" class="form-control" placeholder="Business Email" name="business_email" id="business_email" value="{{ $users_data?$users_data->business_email :$locs->email }}" maxlength="100">
                                                     </div>
                                             </div>
                                             <div class="col-lg-4">
                                                     <div class="form-group">
                                                     <label class="form-label">Business Phone</label>
-                                                    <input type="text" class="form-control" placeholder="Business Phone" name="business_phone" id="business_phone" value="{{$users_data->business_phone ?? ''}}" maxlength="20">
+                                                    <input type="text" class="form-control" placeholder="Business Phone" name="business_phone" id="business_phone" value="{{ $users_data?$users_data->business_phone :$locs->phone }}" maxlength="20">
                                                     </div>
                                             </div>
                                             <div class="col-lg-4 website_info">
@@ -125,25 +125,25 @@
                                             <div class="col-lg-4 street_address_info">
                                                     <div class="form-group">
                                                     <label class="form-label">Street Address</label>
-                                                    <input type="text" class="form-control" placeholder="Street Address" name="street_address" id="street_address" maxlength="30" value="{{$users_data->street_address ?? ''}}">
+                                                    <input type="text" class="form-control" placeholder="Street Address" name="street_address" id="street_address" maxlength="30" value="{{ $users_data?$users_data->street_address :$locs->street_address }}">
                                                     </div>
                                             </div>
                                             <div class="col-lg-4 suburb_info">
                                                     <div class="form-group">
                                                     <label class="form-label">Suburb</label>
-                                                    <input type="text" class="form-control" placeholder="Suburb" name="suburb" id="suburb" maxlength="30" value="{{$users_data->suburb ?? ''}}">
+                                                    <input type="text" class="form-control" placeholder="Suburb" name="suburb" id="suburb" maxlength="30" value="{{ $users_data?$users_data->suburb :$locs->suburb }}">
                                                     </div>
                                             </div>
                                             <div class="col-lg-4 city_info">
                                                     <div class="form-group">
                                                     <label class="form-label">City</label>
-                                                    <input type="text" class="form-control" placeholder="City" name="city" id="city" maxlength="30" value="{{$users_data->city ?? ''}}">
+                                                    <input type="text" class="form-control" placeholder="City" name="city" id="city" maxlength="30" value="{{ $users_data?$users_data->city :$locs->city }}">
                                                     </div>
                                             </div>
                                             <div class="col-lg-4 postcode_info">
                                                 <div class="form-group">
                                                     <label class="form-label">Postcode</label>
-                                                    <input type="text" class="form-control" placeholder="Postcode" name="post_code" id="post_code" maxlength="10" value="{{$users_data->post_code ?? ''}}">
+                                                    <input type="text" class="form-control" placeholder="Postcode" name="post_code" id="post_code" maxlength="10" value="{{ $users_data?$users_data->post_code :$locs->postcode }}">
                                                 </div>
                                             </div>
                                             <div class="card-body">

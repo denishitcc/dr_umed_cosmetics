@@ -5,17 +5,18 @@
         <div class="card">
             
             <div class="card-head">
-                <h4 class="small-title mb-5">Add Location</h4>
+                <h4 class="small-title mb-5">Edit Location</h4>
                 <h5 class="d-grey mb-0">Details</h5>
             </div>
-            <form id="create_location" name="create_location" class="form">
+            <form id="edit_location" name="edit_location" class="form">
             @csrf
+            <input type="hidden" name="id" id="id" value="{{$locations->id}}">
             <div class="card-body">
                 <div class="row">
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label class="form-label">Location Name </label>
-                            <input type="text" class="form-control" id="location_name" name="location_name">
+                            <input type="text" class="form-control" id="location_name" name="location_name" value="{{$locations->location_name}}">
                             </div>
                     </div>
                 </div>
@@ -23,13 +24,13 @@
                     <div class="col-lg-4">
                         <div class="form-group mb-0">
                             <label class="form-label">Phone </label>
-                            <input type="text" class="form-control" id="phone" name="phone">
+                            <input type="text" class="form-control" id="phone" name="phone" value="{{$locations->phone}}">
                             </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group mb-0">
                             <label class="form-label">Email  Address</label>
-                            <input type="text" class="form-control" id="email_address" name="email_address">
+                            <input type="text" class="form-control" id="email_address" name="email_address" value="{{$locations->email}}">
                             </div>
                     </div>
                 </div>
@@ -911,7 +912,7 @@
         console.log(place.geometry.location.lng())
     }
     $(document).ready(function() {
-		$("#create_location").validate({
+		$("#edit_location").validate({
             rules: {
                 location_name: {
                     required: true,
@@ -926,19 +927,20 @@
             }
         });
     });
-    $(document).on('submit','#create_location',function(e){debugger;
+    $(document).on('submit','#edit_location',function(e){debugger;
 		e.preventDefault();
-		var valid= $("#create_location").validate();
+        var id=$('#id').val();
+		var valid= $("#edit_location").validate();
 			if(valid.errorList.length == 0){
-			var data = $('#create_location').serialize() ;
-			submitCreateLocationForm(data);
+			var data = $('#edit_location').serialize() ;
+			submitEditLocationForm(data,id);
 		}
 	});
-    function submitCreateLocationForm(data){
+    function submitEditLocationForm(data,id){
 		$.ajax({
 			headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-			url: "{{route('locations.store')}}",
-			type: "post",
+			url: id,
+			type: "PUT",
 			data: data,
 			success: function(response) {
 				debugger;
@@ -947,7 +949,7 @@
 					
 					Swal.fire({
 						title: "Location!",
-						text: "Your Location created successfully.",
+						text: "Your Location updated successfully.",
 						type: "success",
 					}).then((result) => {
                         window.location = "{{url('locations')}}"//'/player_detail?username=' + name;
