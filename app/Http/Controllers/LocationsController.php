@@ -31,7 +31,6 @@ class LocationsController extends Controller
             'phone' => $request->phone,
             'email'=> $request->email_address
         ]);
-        dd($request->get('days'));
         foreach ($request->get('days') as $key => $value) 
         {
             if(isset($value) && $value != "")
@@ -68,11 +67,9 @@ class LocationsController extends Controller
     {
         
         $locations = Locations::find($id);
-        // dd($locations);
         $working_hours_location = Locations::join('business_working_hours', 'business_working_hours.location_id', '=', 'locations.id')
         ->where('business_working_hours.location_id',$id)
         ->get();
-        // dd($locations);
         return view('locations.edit', compact('locations','working_hours_location'));
     }
     // public function edit(Request $request)
