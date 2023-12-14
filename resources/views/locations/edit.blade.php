@@ -91,789 +91,125 @@
                 <div class="map">
                     <img src="{{ asset('img/demo-map.jpg') }}" alt="">
                 </div>
-
+    
                 <h5 class="small-title mb-4 mt-3">Opening Hours</h5>
                     <div class="row">
                         <div class="col-lg-8">
                             <div class="table-responsive">
                                 <table class="table table-relax align-middle table-hover">
-                                    <tr>
-                                        <td>
-                                            <label class="cst-checks"><input type="checkbox" value=""><span class="checkmark"></span></label>
-                                        </td>
-                                        <td>Open</td>
-                                        <td>Sunday</td>
-                                        <td>
-                                        
-                                        <select class="form-select form-control">
-                                            <option value="0">12am</option>
-                                            <option value="30">12:30am</option>
-                                            <option value="60">1am</option>
-                                            <option value="90">1:30am</option>
-                                            <option value="120">2am</option>
-                                            <option value="150">2:30am</option>
-                                            <option value="180">3am</option>
-                                            <option value="210">3:30am</option>
-                                            <option value="240">4am</option>
-                                            <option value="270">4:30am</option>
-                                            <option value="300">5am</option>
-                                            <option value="330">5:30am</option>
-                                            <option value="360">6am</option>
-                                            <option value="390">6:30am</option>
-                                            <option value="420">7am</option>
-                                            <option value="450">7:30am</option>
-                                            <option selected="selected" value="480">8am</option>
-                                            <option value="510">8:30am</option>
-                                            <option value="540">9am</option>
-                                            <option value="570">9:30am</option>
-                                            <option value="600">10am</option>
-                                            <option value="630">10:30am</option>
-                                            <option value="660">11am</option>
-                                            <option value="690">11:30am</option>
-                                            <option value="720">12pm</option>
-                                            <option value="750">12:30pm</option>
-                                            <option value="780">1pm</option>
-                                            <option value="810">1:30pm</option>
-                                            <option value="840">2pm</option>
-                                            <option value="870">2:30pm</option>
-                                            <option value="900">3pm</option>
-                                            <option value="930">3:30pm</option>
-                                            <option value="960">4pm</option>
-                                            <option value="990">4:30pm</option>
-                                            <option value="1020">5pm</option>
-                                            <option value="1050">5:30pm</option>
-                                            <option value="1080">6pm</option>
-                                            <option value="1110">6:30pm</option>
-                                            <option value="1140">7pm</option>
-                                            <option value="1170">7:30pm</option>
-                                            <option value="1200">8pm</option>
-                                            <option value="1230">8:30pm</option>
-                                            <option value="1260">9pm</option>
-                                            <option value="1290">9:30pm</option>
-                                            <option value="1320">10pm</option>
-                                            <option value="1350">10:30pm</option>
-                                            <option value="1380">11pm</option>
-                                            <option value="1410">11:30pm</option>
+                                @foreach($working_hours_location as $works)
+                                <tr class="rows_data">
+                                    <td>
+                                        <label class="cst-checks"><input type="checkbox" name="days[{{$works->day}}][check_status]" value="{{$works->day}}" {{$works->day==$works->day && $works->day_status=='Open' ? 'checked' : ''}} class="checkbox"><span class="checkmark"></span></label>
+                                    </td>
+                                    <td>Open</td>
+                                    <td>{{$works->day}}</td>
+                                    <td class="from_dates">
+                                        <input type="hidden" name="days[{{$works->day}}][check_days]" value="{{$works->day}}">
+                                        <select class="form-select form-control" id="start_time" name="days[{{$works->day}}][start_time]">
+                                            <option value="12am" {{$works->start_time=='12am'?'selected':''}}>12am</option>
+                                            <option value="30am" {{$works->start_time=='12:30am'?'selected':''}}>12:30am</option>
+                                            <option value="1am" {{$works->start_time=='1am'?'selected':''}}>1am</option>
+                                            <option value="30am" {{$works->start_time=='1:30am'?'selected':''}}>1:30am</option>
+                                            <option value="2am" {{$works->start_time=='2am'?'selected':''}}>2am</option>
+                                            <option value="2:30am" {{$works->start_time=='2:30am'?'selected':''}}>2:30am</option>
+                                            <option value="3am" {{$works->start_time=='3am'?'selected':''}}>3am</option>
+                                            <option value="3:30am" {{$works->start_time=='3:30am'?'selected':''}}>3:30am</option>
+                                            <option value="4am" {{$works->start_time=='4am'?'selected':''}}>4am</option>
+                                            <option value="4:30am" {{$works->start_time=='4:30am'?'selected':''}}>4:30am</option>
+                                            <option value="5am" {{$works->start_time=='5am'?'selected':''}}>5am</option>
+                                            <option value="5:30am" {{$works->start_time=='5:30am'?'selected':''}}>5:30am</option>
+                                            <option value="6am" {{$works->start_time=='6am'?'selected':''}}>6am</option>
+                                            <option value="6:30am" {{$works->start_time=='6:30am'?'selected':''}}>6:30am</option>
+                                            <option value="7am" {{$works->start_time=='7am'?'selected':''}}>7am</option>
+                                            <option value="7:30am" {{$works->start_time=='7:30am'?'selected':''}}>7:30am</option>
+                                            <option value="8am" {{$works->start_time=='8am'?'selected':''}}>8am</option>
+                                            <option value="8:30am" {{$works->start_time=='8:30am'?'selected':''}}>8:30am</option>
+                                            <option value="9am" {{$works->start_time=='9am'?'selected':''}}>9am</option>
+                                            <option value="9:30am" {{$works->start_time=='9:30am'?'selected':''}}>9:30am</option>
+                                            <option value="10am" {{$works->start_time=='10am'?'selected':''}}>10am</option>
+                                            <option value="10:30am" {{$works->start_time=='10:30am'?'selected':''}}>10:30am</option>
+                                            <option value="11am" {{$works->start_time=='11am'?'selected':''}}>11am</option>
+                                            <option value="11:30am" {{$works->start_time=='11:30am'?'selected':''}}>11:30am</option>
+                                            <option value="12pm" {{$works->start_time=='12pm'?'selected':''}}>12pm</option>
+                                            <option value="12:30pm" {{$works->start_time=='12:30pm'?'selected':''}}>12:30pm</option>
+                                            <option value="1pm" {{$works->start_time=='1pm'?'selected':''}}>1pm</option>
+                                            <option value="1:30pm" {{$works->start_time=='1:30pm'?'selected':''}}>1:30pm</option>
+                                            <option value="2pm" {{$works->start_time=='2pm'?'selected':''}}>2pm</option>
+                                            <option value="2:30pm" {{$works->start_time=='2:30pm'?'selected':''}}>2:30pm</option>
+                                            <option value="3pm" {{$works->start_time=='3pm'?'selected':''}}>3pm</option>
+                                            <option value="3:30pm" {{$works->start_time=='3:30pm'?'selected':''}}>3:30pm</option>
+                                            <option value="4pm" {{$works->start_time=='4pm'?'selected':''}}>4pm</option>
+                                            <option value="4:30pm" {{$works->start_time=='4:30pm'?'selected':''}}>4:30pm</option>
+                                            <option value="5pm" {{$works->start_time=='5pm'?'selected':''}}>5pm</option>
+                                            <option value="5:30pm" {{$works->start_time=='5:30pm'?'selected':''}}>5:30pm</option>
+                                            <option value="6pm" {{$works->start_time=='6pm'?'selected':''}}>6pm</option>
+                                            <option value="6:30pm" {{$works->start_time=='6:30pm'?'selected':''}}>6:30pm</option>
+                                            <option value="7pm" {{$works->start_time=='7pm'?'selected':''}}>7pm</option>
+                                            <option value="7:30pm" {{$works->start_time=='7:30pm'?'selected':''}}>7:30pm</option>
+                                            <option value="8pm" {{$works->start_time=='8pm'?'selected':''}}>8pm</option>
+                                            <option value="8:30pm" {{$works->start_time=='8:30pm'?'selected':''}}>8:30pm</option>
+                                            <option value="9pm" {{$works->start_time=='9pm'?'selected':''}}>9pm</option>
+                                            <option value="9:30pm" {{$works->start_time=='9:30pm'?'selected':''}}>9:30pm</option>
+                                            <option value="10pm" {{$works->start_time=='10pm'?'selected':''}}>10pm</option>
+                                            <option value="10:30pm" {{$works->start_time=='10:30pm'?'selected':''}}>10:30pm</option>
+                                            <option value="11pm" {{$works->start_time=='11pm'?'selected':''}}>11pm</option>
+                                            <option value="11:30pm" {{$works->start_time=='11:30pm'?'selected':''}}>11:30pm</option>
                                         </select>
-                                        </td>
-                                        <td class="text-center">To</td>
-                                        <td>
-                                        <select class="form-select form-control">
-                                            <option value="60">1am</option>
-                                            <option value="90">1:30am</option>
-                                            <option value="120">2am</option>
-                                            <option value="150">2:30am</option>
-                                            <option value="180">3am</option>
-                                            <option value="210">3:30am</option>
-                                            <option value="240">4am</option>
-                                            <option value="270">4:30am</option>
-                                            <option value="300">5am</option>
-                                            <option value="330">5:30am</option>
-                                            <option value="360">6am</option>
-                                            <option value="390">6:30am</option>
-                                            <option value="420">7am</option>
-                                            <option value="450">7:30am</option>
-                                            <option value="480">8am</option>
-                                            <option value="510">8:30am</option>
-                                            <option value="540">9am</option>
-                                            <option value="570">9:30am</option>
-                                            <option value="600">10am</option>
-                                            <option value="630">10:30am</option>
-                                            <option value="660">11am</option>
-                                            <option value="690">11:30am</option>
-                                            <option value="720">12pm</option>
-                                            <option value="750">12:30pm</option>
-                                            <option value="780">1pm</option>
-                                            <option value="810">1:30pm</option>
-                                            <option value="840">2pm</option>
-                                            <option value="870">2:30pm</option>
-                                            <option value="900">3pm</option>
-                                            <option value="930">3:30pm</option>
-                                            <option value="960">4pm</option>
-                                            <option value="990">4:30pm</option>
-                                            <option value="1020">5pm</option>
-                                            <option value="1050">5:30pm</option>
-                                            <option selected="selected" value="1080">6pm</option>
-                                            <option value="1110">6:30pm</option>
-                                            <option value="1140">7pm</option>
-                                            <option value="1170">7:30pm</option>
-                                            <option value="1200">8pm</option>
-                                            <option value="1230">8:30pm</option>
-                                            <option value="1260">9pm</option>
-                                            <option value="1290">9:30pm</option>
-                                            <option value="1320">10pm</option>
-                                            <option value="1350">10:30pm</option>
-                                            <option value="1380">11pm</option>
-                                            <option value="1410">11:30pm</option>
-                                    </select>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <label class="cst-checks"><input type="checkbox" value=""><span class="checkmark"></span></label>
-                                        </td>
-                                        <td>Open</td>
-                                        <td>Monday</td>
-                                        <td>
-                                        
-                                        <select class="form-select form-control">
-                                            <option value="0">12am</option>
-                                            <option value="30">12:30am</option>
-                                            <option value="60">1am</option>
-                                            <option value="90">1:30am</option>
-                                            <option value="120">2am</option>
-                                            <option value="150">2:30am</option>
-                                            <option value="180">3am</option>
-                                            <option value="210">3:30am</option>
-                                            <option value="240">4am</option>
-                                            <option value="270">4:30am</option>
-                                            <option value="300">5am</option>
-                                            <option value="330">5:30am</option>
-                                            <option value="360">6am</option>
-                                            <option value="390">6:30am</option>
-                                            <option value="420">7am</option>
-                                            <option value="450">7:30am</option>
-                                            <option selected="selected" value="480">8am</option>
-                                            <option value="510">8:30am</option>
-                                            <option value="540">9am</option>
-                                            <option value="570">9:30am</option>
-                                            <option value="600">10am</option>
-                                            <option value="630">10:30am</option>
-                                            <option value="660">11am</option>
-                                            <option value="690">11:30am</option>
-                                            <option value="720">12pm</option>
-                                            <option value="750">12:30pm</option>
-                                            <option value="780">1pm</option>
-                                            <option value="810">1:30pm</option>
-                                            <option value="840">2pm</option>
-                                            <option value="870">2:30pm</option>
-                                            <option value="900">3pm</option>
-                                            <option value="930">3:30pm</option>
-                                            <option value="960">4pm</option>
-                                            <option value="990">4:30pm</option>
-                                            <option value="1020">5pm</option>
-                                            <option value="1050">5:30pm</option>
-                                            <option value="1080">6pm</option>
-                                            <option value="1110">6:30pm</option>
-                                            <option value="1140">7pm</option>
-                                            <option value="1170">7:30pm</option>
-                                            <option value="1200">8pm</option>
-                                            <option value="1230">8:30pm</option>
-                                            <option value="1260">9pm</option>
-                                            <option value="1290">9:30pm</option>
-                                            <option value="1320">10pm</option>
-                                            <option value="1350">10:30pm</option>
-                                            <option value="1380">11pm</option>
-                                            <option value="1410">11:30pm</option>
+                                    </td>
+                                    <td class="text-center to_text">To</td>
+                                    <td class="to_dates">
+                                        <select class="form-select form-control" name="days[{{$works->day}}][to_time]">
+                                        <option value="1am" {{$works->end_time=='1am'?'selected':''}}>1am</option>
+                                            <option value="30am" {{$works->end_time=='1:30am'?'selected':''}}>1:30am</option>
+                                            <option value="2am" {{$works->end_time=='2am'?'selected':''}}>2am</option>
+                                            <option value="2:30am" {{$works->end_time=='2:30am'?'selected':''}}>2:30am</option>
+                                            <option value="3am" {{$works->end_time=='3am'?'selected':''}}>3am</option>
+                                            <option value="3:30am" {{$works->end_time=='3:30am'?'selected':''}}>3:30am</option>
+                                            <option value="4am" {{$works->end_time=='4am'?'selected':''}}>4am</option>
+                                            <option value="4:30am" {{$works->end_time=='4:30am'?'selected':''}}>4:30am</option>
+                                            <option value="5am" {{$works->end_time=='5am'?'selected':''}}>5am</option>
+                                            <option value="5:30am" {{$works->end_time=='5:30am'?'selected':''}}>5:30am</option>
+                                            <option value="6am" {{$works->end_time=='6am'?'selected':''}}>6am</option>
+                                            <option value="6:30am" {{$works->end_time=='6:30am'?'selected':''}}>6:30am</option>
+                                            <option value="7am" {{$works->end_time=='7am'?'selected':''}}>7am</option>
+                                            <option value="7:30am" {{$works->end_time=='7:30am'?'selected':''}}>7:30am</option>
+                                            <option value="8am" {{$works->end_time=='8am'?'selected':''}}>8am</option>
+                                            <option value="8:30am" {{$works->end_time=='8:30am'?'selected':''}}>8:30am</option>
+                                            <option value="9am" {{$works->end_time=='9am'?'selected':''}}>9am</option>
+                                            <option value="9:30am" {{$works->end_time=='9:30am'?'selected':''}}>9:30am</option>
+                                            <option value="10am" {{$works->end_time=='10am'?'selected':''}}>10am</option>
+                                            <option value="10:30am" {{$works->end_time=='10:30am'?'selected':''}}>10:30am</option>
+                                            <option value="11am" {{$works->end_time=='11am'?'selected':''}}>11am</option>
+                                            <option value="11:30am" {{$works->end_time=='11:30am'?'selected':''}}>11:30am</option>
+                                            <option value="12pm" {{$works->end_time=='12pm'?'selected':''}}>12pm</option>
+                                            <option value="12:30pm" {{$works->end_time=='12:30pm'?'selected':''}}>12:30pm</option>
+                                            <option value="1pm" {{$works->end_time=='1pm'?'selected':''}}>1pm</option>
+                                            <option value="1:30pm" {{$works->end_time=='1:30pm'?'selected':''}}>1:30pm</option>
+                                            <option value="2pm" {{$works->end_time=='2pm'?'selected':''}}>2pm</option>
+                                            <option value="2:30pm" {{$works->end_time=='2:30pm'?'selected':''}}>2:30pm</option>
+                                            <option value="3pm" {{$works->end_time=='3pm'?'selected':''}}>3pm</option>
+                                            <option value="3:30pm" {{$works->end_time=='3:30pm'?'selected':''}}>3:30pm</option>
+                                            <option value="4pm" {{$works->end_time=='4pm'?'selected':''}}>4pm</option>
+                                            <option value="4:30pm" {{$works->end_time=='4:30pm'?'selected':''}}>4:30pm</option>
+                                            <option value="5pm" {{$works->end_time=='5pm'?'selected':''}}>5pm</option>
+                                            <option value="5:30pm" {{$works->end_time=='5:30pm'?'selected':''}}>5:30pm</option>
+                                            <option value="6pm" {{$works->end_time=='6pm'?'selected':''}}>6pm</option>
+                                            <option value="6:30pm" {{$works->end_time=='6:30pm'?'selected':''}}>6:30pm</option>
+                                            <option value="7pm" {{$works->end_time=='7pm'?'selected':''}}>7pm</option>
+                                            <option value="7:30pm" {{$works->end_time=='7:30pm'?'selected':''}}>7:30pm</option>
+                                            <option value="8pm" {{$works->end_time=='8pm'?'selected':''}}>8pm</option>
+                                            <option value="8:30pm" {{$works->end_time=='8:30pm'?'selected':''}}>8:30pm</option>
+                                            <option value="9pm" {{$works->end_time=='9pm'?'selected':''}}>9pm</option>
+                                            <option value="9:30pm" {{$works->end_time=='9:30pm'?'selected':''}}>9:30pm</option>
+                                            <option value="10pm" {{$works->end_time=='10pm'?'selected':''}}>10pm</option>
+                                            <option value="10:30pm" {{$works->end_time=='10:30pm'?'selected':''}}>10:30pm</option>
+                                            <option value="11pm" {{$works->end_time=='11pm'?'selected':''}}>11pm</option>
+                                            <option value="11:30pm" {{$works->end_time=='11:30pm'?'selected':''}}>11:30pm</option>
                                         </select>
-                                        </td>
-                                        <td class="text-center">To</td>
-                                        <td>
-                                        <select class="form-select form-control">
-                                            <option value="60">1am</option>
-                                            <option value="90">1:30am</option>
-                                            <option value="120">2am</option>
-                                            <option value="150">2:30am</option>
-                                            <option value="180">3am</option>
-                                            <option value="210">3:30am</option>
-                                            <option value="240">4am</option>
-                                            <option value="270">4:30am</option>
-                                            <option value="300">5am</option>
-                                            <option value="330">5:30am</option>
-                                            <option value="360">6am</option>
-                                            <option value="390">6:30am</option>
-                                            <option value="420">7am</option>
-                                            <option value="450">7:30am</option>
-                                            <option value="480">8am</option>
-                                            <option value="510">8:30am</option>
-                                            <option value="540">9am</option>
-                                            <option value="570">9:30am</option>
-                                            <option value="600">10am</option>
-                                            <option value="630">10:30am</option>
-                                            <option value="660">11am</option>
-                                            <option value="690">11:30am</option>
-                                            <option value="720">12pm</option>
-                                            <option value="750">12:30pm</option>
-                                            <option value="780">1pm</option>
-                                            <option value="810">1:30pm</option>
-                                            <option value="840">2pm</option>
-                                            <option value="870">2:30pm</option>
-                                            <option value="900">3pm</option>
-                                            <option value="930">3:30pm</option>
-                                            <option value="960">4pm</option>
-                                            <option value="990">4:30pm</option>
-                                            <option value="1020">5pm</option>
-                                            <option value="1050">5:30pm</option>
-                                            <option selected="selected" value="1080">6pm</option>
-                                            <option value="1110">6:30pm</option>
-                                            <option value="1140">7pm</option>
-                                            <option value="1170">7:30pm</option>
-                                            <option value="1200">8pm</option>
-                                            <option value="1230">8:30pm</option>
-                                            <option value="1260">9pm</option>
-                                            <option value="1290">9:30pm</option>
-                                            <option value="1320">10pm</option>
-                                            <option value="1350">10:30pm</option>
-                                            <option value="1380">11pm</option>
-                                            <option value="1410">11:30pm</option>
-                                    </select>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <label class="cst-checks"><input type="checkbox" value=""><span class="checkmark"></span></label>
-                                        </td>
-                                        <td>Open</td>
-                                        <td>Tuesday</td>
-                                        <td>
-                                        
-                                        <select class="form-select form-control">
-                                            <option value="0">12am</option>
-                                            <option value="30">12:30am</option>
-                                            <option value="60">1am</option>
-                                            <option value="90">1:30am</option>
-                                            <option value="120">2am</option>
-                                            <option value="150">2:30am</option>
-                                            <option value="180">3am</option>
-                                            <option value="210">3:30am</option>
-                                            <option value="240">4am</option>
-                                            <option value="270">4:30am</option>
-                                            <option value="300">5am</option>
-                                            <option value="330">5:30am</option>
-                                            <option value="360">6am</option>
-                                            <option value="390">6:30am</option>
-                                            <option value="420">7am</option>
-                                            <option value="450">7:30am</option>
-                                            <option selected="selected" value="480">8am</option>
-                                            <option value="510">8:30am</option>
-                                            <option value="540">9am</option>
-                                            <option value="570">9:30am</option>
-                                            <option value="600">10am</option>
-                                            <option value="630">10:30am</option>
-                                            <option value="660">11am</option>
-                                            <option value="690">11:30am</option>
-                                            <option value="720">12pm</option>
-                                            <option value="750">12:30pm</option>
-                                            <option value="780">1pm</option>
-                                            <option value="810">1:30pm</option>
-                                            <option value="840">2pm</option>
-                                            <option value="870">2:30pm</option>
-                                            <option value="900">3pm</option>
-                                            <option value="930">3:30pm</option>
-                                            <option value="960">4pm</option>
-                                            <option value="990">4:30pm</option>
-                                            <option value="1020">5pm</option>
-                                            <option value="1050">5:30pm</option>
-                                            <option value="1080">6pm</option>
-                                            <option value="1110">6:30pm</option>
-                                            <option value="1140">7pm</option>
-                                            <option value="1170">7:30pm</option>
-                                            <option value="1200">8pm</option>
-                                            <option value="1230">8:30pm</option>
-                                            <option value="1260">9pm</option>
-                                            <option value="1290">9:30pm</option>
-                                            <option value="1320">10pm</option>
-                                            <option value="1350">10:30pm</option>
-                                            <option value="1380">11pm</option>
-                                            <option value="1410">11:30pm</option>
-                                        </select>
-                                        </td>
-                                        <td class="text-center">To</td>
-                                        <td>
-                                        <select class="form-select form-control">
-                                            <option value="60">1am</option>
-                                            <option value="90">1:30am</option>
-                                            <option value="120">2am</option>
-                                            <option value="150">2:30am</option>
-                                            <option value="180">3am</option>
-                                            <option value="210">3:30am</option>
-                                            <option value="240">4am</option>
-                                            <option value="270">4:30am</option>
-                                            <option value="300">5am</option>
-                                            <option value="330">5:30am</option>
-                                            <option value="360">6am</option>
-                                            <option value="390">6:30am</option>
-                                            <option value="420">7am</option>
-                                            <option value="450">7:30am</option>
-                                            <option value="480">8am</option>
-                                            <option value="510">8:30am</option>
-                                            <option value="540">9am</option>
-                                            <option value="570">9:30am</option>
-                                            <option value="600">10am</option>
-                                            <option value="630">10:30am</option>
-                                            <option value="660">11am</option>
-                                            <option value="690">11:30am</option>
-                                            <option value="720">12pm</option>
-                                            <option value="750">12:30pm</option>
-                                            <option value="780">1pm</option>
-                                            <option value="810">1:30pm</option>
-                                            <option value="840">2pm</option>
-                                            <option value="870">2:30pm</option>
-                                            <option value="900">3pm</option>
-                                            <option value="930">3:30pm</option>
-                                            <option value="960">4pm</option>
-                                            <option value="990">4:30pm</option>
-                                            <option value="1020">5pm</option>
-                                            <option value="1050">5:30pm</option>
-                                            <option selected="selected" value="1080">6pm</option>
-                                            <option value="1110">6:30pm</option>
-                                            <option value="1140">7pm</option>
-                                            <option value="1170">7:30pm</option>
-                                            <option value="1200">8pm</option>
-                                            <option value="1230">8:30pm</option>
-                                            <option value="1260">9pm</option>
-                                            <option value="1290">9:30pm</option>
-                                            <option value="1320">10pm</option>
-                                            <option value="1350">10:30pm</option>
-                                            <option value="1380">11pm</option>
-                                            <option value="1410">11:30pm</option>
-                                    </select>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <label class="cst-checks"><input type="checkbox" value=""><span class="checkmark"></span></label>
-                                        </td>
-                                        <td>Open</td>
-                                        <td>Wednesday</td>
-                                        <td>
-                                        
-                                        <select class="form-select form-control">
-                                            <option value="0">12am</option>
-                                            <option value="30">12:30am</option>
-                                            <option value="60">1am</option>
-                                            <option value="90">1:30am</option>
-                                            <option value="120">2am</option>
-                                            <option value="150">2:30am</option>
-                                            <option value="180">3am</option>
-                                            <option value="210">3:30am</option>
-                                            <option value="240">4am</option>
-                                            <option value="270">4:30am</option>
-                                            <option value="300">5am</option>
-                                            <option value="330">5:30am</option>
-                                            <option value="360">6am</option>
-                                            <option value="390">6:30am</option>
-                                            <option value="420">7am</option>
-                                            <option value="450">7:30am</option>
-                                            <option selected="selected" value="480">8am</option>
-                                            <option value="510">8:30am</option>
-                                            <option value="540">9am</option>
-                                            <option value="570">9:30am</option>
-                                            <option value="600">10am</option>
-                                            <option value="630">10:30am</option>
-                                            <option value="660">11am</option>
-                                            <option value="690">11:30am</option>
-                                            <option value="720">12pm</option>
-                                            <option value="750">12:30pm</option>
-                                            <option value="780">1pm</option>
-                                            <option value="810">1:30pm</option>
-                                            <option value="840">2pm</option>
-                                            <option value="870">2:30pm</option>
-                                            <option value="900">3pm</option>
-                                            <option value="930">3:30pm</option>
-                                            <option value="960">4pm</option>
-                                            <option value="990">4:30pm</option>
-                                            <option value="1020">5pm</option>
-                                            <option value="1050">5:30pm</option>
-                                            <option value="1080">6pm</option>
-                                            <option value="1110">6:30pm</option>
-                                            <option value="1140">7pm</option>
-                                            <option value="1170">7:30pm</option>
-                                            <option value="1200">8pm</option>
-                                            <option value="1230">8:30pm</option>
-                                            <option value="1260">9pm</option>
-                                            <option value="1290">9:30pm</option>
-                                            <option value="1320">10pm</option>
-                                            <option value="1350">10:30pm</option>
-                                            <option value="1380">11pm</option>
-                                            <option value="1410">11:30pm</option>
-                                        </select>
-                                        </td>
-                                        <td class="text-center">To</td>
-                                        <td>
-                                        <select class="form-select form-control">
-                                            <option value="60">1am</option>
-                                            <option value="90">1:30am</option>
-                                            <option value="120">2am</option>
-                                            <option value="150">2:30am</option>
-                                            <option value="180">3am</option>
-                                            <option value="210">3:30am</option>
-                                            <option value="240">4am</option>
-                                            <option value="270">4:30am</option>
-                                            <option value="300">5am</option>
-                                            <option value="330">5:30am</option>
-                                            <option value="360">6am</option>
-                                            <option value="390">6:30am</option>
-                                            <option value="420">7am</option>
-                                            <option value="450">7:30am</option>
-                                            <option value="480">8am</option>
-                                            <option value="510">8:30am</option>
-                                            <option value="540">9am</option>
-                                            <option value="570">9:30am</option>
-                                            <option value="600">10am</option>
-                                            <option value="630">10:30am</option>
-                                            <option value="660">11am</option>
-                                            <option value="690">11:30am</option>
-                                            <option value="720">12pm</option>
-                                            <option value="750">12:30pm</option>
-                                            <option value="780">1pm</option>
-                                            <option value="810">1:30pm</option>
-                                            <option value="840">2pm</option>
-                                            <option value="870">2:30pm</option>
-                                            <option value="900">3pm</option>
-                                            <option value="930">3:30pm</option>
-                                            <option value="960">4pm</option>
-                                            <option value="990">4:30pm</option>
-                                            <option value="1020">5pm</option>
-                                            <option value="1050">5:30pm</option>
-                                            <option selected="selected" value="1080">6pm</option>
-                                            <option value="1110">6:30pm</option>
-                                            <option value="1140">7pm</option>
-                                            <option value="1170">7:30pm</option>
-                                            <option value="1200">8pm</option>
-                                            <option value="1230">8:30pm</option>
-                                            <option value="1260">9pm</option>
-                                            <option value="1290">9:30pm</option>
-                                            <option value="1320">10pm</option>
-                                            <option value="1350">10:30pm</option>
-                                            <option value="1380">11pm</option>
-                                            <option value="1410">11:30pm</option>
-                                    </select>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <label class="cst-checks"><input type="checkbox" value=""><span class="checkmark"></span></label>
-                                        </td>
-                                        <td>Open</td>
-                                        <td>Thursday</td>
-                                        <td>
-                                        
-                                        <select class="form-select form-control">
-                                            <option value="0">12am</option>
-                                            <option value="30">12:30am</option>
-                                            <option value="60">1am</option>
-                                            <option value="90">1:30am</option>
-                                            <option value="120">2am</option>
-                                            <option value="150">2:30am</option>
-                                            <option value="180">3am</option>
-                                            <option value="210">3:30am</option>
-                                            <option value="240">4am</option>
-                                            <option value="270">4:30am</option>
-                                            <option value="300">5am</option>
-                                            <option value="330">5:30am</option>
-                                            <option value="360">6am</option>
-                                            <option value="390">6:30am</option>
-                                            <option value="420">7am</option>
-                                            <option value="450">7:30am</option>
-                                            <option selected="selected" value="480">8am</option>
-                                            <option value="510">8:30am</option>
-                                            <option value="540">9am</option>
-                                            <option value="570">9:30am</option>
-                                            <option value="600">10am</option>
-                                            <option value="630">10:30am</option>
-                                            <option value="660">11am</option>
-                                            <option value="690">11:30am</option>
-                                            <option value="720">12pm</option>
-                                            <option value="750">12:30pm</option>
-                                            <option value="780">1pm</option>
-                                            <option value="810">1:30pm</option>
-                                            <option value="840">2pm</option>
-                                            <option value="870">2:30pm</option>
-                                            <option value="900">3pm</option>
-                                            <option value="930">3:30pm</option>
-                                            <option value="960">4pm</option>
-                                            <option value="990">4:30pm</option>
-                                            <option value="1020">5pm</option>
-                                            <option value="1050">5:30pm</option>
-                                            <option value="1080">6pm</option>
-                                            <option value="1110">6:30pm</option>
-                                            <option value="1140">7pm</option>
-                                            <option value="1170">7:30pm</option>
-                                            <option value="1200">8pm</option>
-                                            <option value="1230">8:30pm</option>
-                                            <option value="1260">9pm</option>
-                                            <option value="1290">9:30pm</option>
-                                            <option value="1320">10pm</option>
-                                            <option value="1350">10:30pm</option>
-                                            <option value="1380">11pm</option>
-                                            <option value="1410">11:30pm</option>
-                                        </select>
-                                        </td>
-                                        <td class="text-center">To</td>
-                                        <td>
-                                        <select class="form-select form-control">
-                                            <option value="60">1am</option>
-                                            <option value="90">1:30am</option>
-                                            <option value="120">2am</option>
-                                            <option value="150">2:30am</option>
-                                            <option value="180">3am</option>
-                                            <option value="210">3:30am</option>
-                                            <option value="240">4am</option>
-                                            <option value="270">4:30am</option>
-                                            <option value="300">5am</option>
-                                            <option value="330">5:30am</option>
-                                            <option value="360">6am</option>
-                                            <option value="390">6:30am</option>
-                                            <option value="420">7am</option>
-                                            <option value="450">7:30am</option>
-                                            <option value="480">8am</option>
-                                            <option value="510">8:30am</option>
-                                            <option value="540">9am</option>
-                                            <option value="570">9:30am</option>
-                                            <option value="600">10am</option>
-                                            <option value="630">10:30am</option>
-                                            <option value="660">11am</option>
-                                            <option value="690">11:30am</option>
-                                            <option value="720">12pm</option>
-                                            <option value="750">12:30pm</option>
-                                            <option value="780">1pm</option>
-                                            <option value="810">1:30pm</option>
-                                            <option value="840">2pm</option>
-                                            <option value="870">2:30pm</option>
-                                            <option value="900">3pm</option>
-                                            <option value="930">3:30pm</option>
-                                            <option value="960">4pm</option>
-                                            <option value="990">4:30pm</option>
-                                            <option value="1020">5pm</option>
-                                            <option value="1050">5:30pm</option>
-                                            <option selected="selected" value="1080">6pm</option>
-                                            <option value="1110">6:30pm</option>
-                                            <option value="1140">7pm</option>
-                                            <option value="1170">7:30pm</option>
-                                            <option value="1200">8pm</option>
-                                            <option value="1230">8:30pm</option>
-                                            <option value="1260">9pm</option>
-                                            <option value="1290">9:30pm</option>
-                                            <option value="1320">10pm</option>
-                                            <option value="1350">10:30pm</option>
-                                            <option value="1380">11pm</option>
-                                            <option value="1410">11:30pm</option>
-                                    </select>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <label class="cst-checks"><input type="checkbox" value=""><span class="checkmark"></span></label>
-                                        </td>
-                                        <td>Open</td>
-                                        <td>Friday</td>
-                                        <td>
-                                        
-                                        <select class="form-select form-control">
-                                            <option value="0">12am</option>
-                                            <option value="30">12:30am</option>
-                                            <option value="60">1am</option>
-                                            <option value="90">1:30am</option>
-                                            <option value="120">2am</option>
-                                            <option value="150">2:30am</option>
-                                            <option value="180">3am</option>
-                                            <option value="210">3:30am</option>
-                                            <option value="240">4am</option>
-                                            <option value="270">4:30am</option>
-                                            <option value="300">5am</option>
-                                            <option value="330">5:30am</option>
-                                            <option value="360">6am</option>
-                                            <option value="390">6:30am</option>
-                                            <option value="420">7am</option>
-                                            <option value="450">7:30am</option>
-                                            <option selected="selected" value="480">8am</option>
-                                            <option value="510">8:30am</option>
-                                            <option value="540">9am</option>
-                                            <option value="570">9:30am</option>
-                                            <option value="600">10am</option>
-                                            <option value="630">10:30am</option>
-                                            <option value="660">11am</option>
-                                            <option value="690">11:30am</option>
-                                            <option value="720">12pm</option>
-                                            <option value="750">12:30pm</option>
-                                            <option value="780">1pm</option>
-                                            <option value="810">1:30pm</option>
-                                            <option value="840">2pm</option>
-                                            <option value="870">2:30pm</option>
-                                            <option value="900">3pm</option>
-                                            <option value="930">3:30pm</option>
-                                            <option value="960">4pm</option>
-                                            <option value="990">4:30pm</option>
-                                            <option value="1020">5pm</option>
-                                            <option value="1050">5:30pm</option>
-                                            <option value="1080">6pm</option>
-                                            <option value="1110">6:30pm</option>
-                                            <option value="1140">7pm</option>
-                                            <option value="1170">7:30pm</option>
-                                            <option value="1200">8pm</option>
-                                            <option value="1230">8:30pm</option>
-                                            <option value="1260">9pm</option>
-                                            <option value="1290">9:30pm</option>
-                                            <option value="1320">10pm</option>
-                                            <option value="1350">10:30pm</option>
-                                            <option value="1380">11pm</option>
-                                            <option value="1410">11:30pm</option>
-                                        </select>
-                                        </td>
-                                        <td class="text-center">To</td>
-                                        <td>
-                                        <select class="form-select form-control">
-                                            <option value="60">1am</option>
-                                            <option value="90">1:30am</option>
-                                            <option value="120">2am</option>
-                                            <option value="150">2:30am</option>
-                                            <option value="180">3am</option>
-                                            <option value="210">3:30am</option>
-                                            <option value="240">4am</option>
-                                            <option value="270">4:30am</option>
-                                            <option value="300">5am</option>
-                                            <option value="330">5:30am</option>
-                                            <option value="360">6am</option>
-                                            <option value="390">6:30am</option>
-                                            <option value="420">7am</option>
-                                            <option value="450">7:30am</option>
-                                            <option value="480">8am</option>
-                                            <option value="510">8:30am</option>
-                                            <option value="540">9am</option>
-                                            <option value="570">9:30am</option>
-                                            <option value="600">10am</option>
-                                            <option value="630">10:30am</option>
-                                            <option value="660">11am</option>
-                                            <option value="690">11:30am</option>
-                                            <option value="720">12pm</option>
-                                            <option value="750">12:30pm</option>
-                                            <option value="780">1pm</option>
-                                            <option value="810">1:30pm</option>
-                                            <option value="840">2pm</option>
-                                            <option value="870">2:30pm</option>
-                                            <option value="900">3pm</option>
-                                            <option value="930">3:30pm</option>
-                                            <option value="960">4pm</option>
-                                            <option value="990">4:30pm</option>
-                                            <option value="1020">5pm</option>
-                                            <option value="1050">5:30pm</option>
-                                            <option selected="selected" value="1080">6pm</option>
-                                            <option value="1110">6:30pm</option>
-                                            <option value="1140">7pm</option>
-                                            <option value="1170">7:30pm</option>
-                                            <option value="1200">8pm</option>
-                                            <option value="1230">8:30pm</option>
-                                            <option value="1260">9pm</option>
-                                            <option value="1290">9:30pm</option>
-                                            <option value="1320">10pm</option>
-                                            <option value="1350">10:30pm</option>
-                                            <option value="1380">11pm</option>
-                                            <option value="1410">11:30pm</option>
-                                    </select>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <label class="cst-checks"><input type="checkbox" value=""><span class="checkmark"></span></label>
-                                        </td>
-                                        <td>Open</td>
-                                        <td>Saturday</td>
-                                        <td>
-                                        
-                                        <select class="form-select form-control">
-                                            <option value="0">12am</option>
-                                            <option value="30">12:30am</option>
-                                            <option value="60">1am</option>
-                                            <option value="90">1:30am</option>
-                                            <option value="120">2am</option>
-                                            <option value="150">2:30am</option>
-                                            <option value="180">3am</option>
-                                            <option value="210">3:30am</option>
-                                            <option value="240">4am</option>
-                                            <option value="270">4:30am</option>
-                                            <option value="300">5am</option>
-                                            <option value="330">5:30am</option>
-                                            <option value="360">6am</option>
-                                            <option value="390">6:30am</option>
-                                            <option value="420">7am</option>
-                                            <option value="450">7:30am</option>
-                                            <option selected="selected" value="480">8am</option>
-                                            <option value="510">8:30am</option>
-                                            <option value="540">9am</option>
-                                            <option value="570">9:30am</option>
-                                            <option value="600">10am</option>
-                                            <option value="630">10:30am</option>
-                                            <option value="660">11am</option>
-                                            <option value="690">11:30am</option>
-                                            <option value="720">12pm</option>
-                                            <option value="750">12:30pm</option>
-                                            <option value="780">1pm</option>
-                                            <option value="810">1:30pm</option>
-                                            <option value="840">2pm</option>
-                                            <option value="870">2:30pm</option>
-                                            <option value="900">3pm</option>
-                                            <option value="930">3:30pm</option>
-                                            <option value="960">4pm</option>
-                                            <option value="990">4:30pm</option>
-                                            <option value="1020">5pm</option>
-                                            <option value="1050">5:30pm</option>
-                                            <option value="1080">6pm</option>
-                                            <option value="1110">6:30pm</option>
-                                            <option value="1140">7pm</option>
-                                            <option value="1170">7:30pm</option>
-                                            <option value="1200">8pm</option>
-                                            <option value="1230">8:30pm</option>
-                                            <option value="1260">9pm</option>
-                                            <option value="1290">9:30pm</option>
-                                            <option value="1320">10pm</option>
-                                            <option value="1350">10:30pm</option>
-                                            <option value="1380">11pm</option>
-                                            <option value="1410">11:30pm</option>
-                                        </select>
-                                        </td>
-                                        <td class="text-center">To</td>
-                                        <td>
-                                        <select class="form-select form-control">
-                                            <option value="60">1am</option>
-                                            <option value="90">1:30am</option>
-                                            <option value="120">2am</option>
-                                            <option value="150">2:30am</option>
-                                            <option value="180">3am</option>
-                                            <option value="210">3:30am</option>
-                                            <option value="240">4am</option>
-                                            <option value="270">4:30am</option>
-                                            <option value="300">5am</option>
-                                            <option value="330">5:30am</option>
-                                            <option value="360">6am</option>
-                                            <option value="390">6:30am</option>
-                                            <option value="420">7am</option>
-                                            <option value="450">7:30am</option>
-                                            <option value="480">8am</option>
-                                            <option value="510">8:30am</option>
-                                            <option value="540">9am</option>
-                                            <option value="570">9:30am</option>
-                                            <option value="600">10am</option>
-                                            <option value="630">10:30am</option>
-                                            <option value="660">11am</option>
-                                            <option value="690">11:30am</option>
-                                            <option value="720">12pm</option>
-                                            <option value="750">12:30pm</option>
-                                            <option value="780">1pm</option>
-                                            <option value="810">1:30pm</option>
-                                            <option value="840">2pm</option>
-                                            <option value="870">2:30pm</option>
-                                            <option value="900">3pm</option>
-                                            <option value="930">3:30pm</option>
-                                            <option value="960">4pm</option>
-                                            <option value="990">4:30pm</option>
-                                            <option value="1020">5pm</option>
-                                            <option value="1050">5:30pm</option>
-                                            <option selected="selected" value="1080">6pm</option>
-                                            <option value="1110">6:30pm</option>
-                                            <option value="1140">7pm</option>
-                                            <option value="1170">7:30pm</option>
-                                            <option value="1200">8pm</option>
-                                            <option value="1230">8:30pm</option>
-                                            <option value="1260">9pm</option>
-                                            <option value="1290">9:30pm</option>
-                                            <option value="1320">10pm</option>
-                                            <option value="1350">10:30pm</option>
-                                            <option value="1380">11pm</option>
-                                            <option value="1410">11:30pm</option>
-                                    </select>
-                                        </td>
-                                    </tr>
+                                    </td>
+                                </tr>
+                                @endforeach
                                 </table>
                             </div>
                             
@@ -912,6 +248,18 @@
         console.log(place.geometry.location.lng())
     }
     $(document).ready(function() {
+        $('.rows_data').each(function(){
+            debugger;
+            if($(this).find(".checkbox").prop('checked') == true){
+                // alert('checked');
+            }
+            else
+            {
+                $(this).find(".from_dates").hide();
+                $(this).find(".to_text").hide();
+                $(this).find(".to_dates").hide();
+            }
+        })
 		$("#edit_location").validate({
             rules: {
                 location_name: {
@@ -925,6 +273,22 @@
                     email: true
                 },
             }
+        });
+        $('.checkbox').click(function() {
+            debugger;
+            if(this.checked) {
+                $(this).parent().parent().parent().find('.from_dates').show();
+                $(this).parent().parent().parent().find('.to_text').show();
+                $(this).parent().parent().parent().find('.to_dates').show();
+            }
+            else
+            {
+                debugger;
+                $(this).parent().parent().parent().find('.from_dates').hide();
+                $(this).parent().parent().parent().find('.to_text').hide();
+                $(this).parent().parent().parent().find('.to_dates').hide();
+            }
+            $('#textbox1').val(this.checked);        
         });
     });
     $(document).on('submit','#edit_location',function(e){debugger;

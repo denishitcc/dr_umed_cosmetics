@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Locations;
+use App\Models\BusinessWorkingHours;
+
 class LocationsController extends Controller
 {
     public function index()
@@ -29,7 +31,23 @@ class LocationsController extends Controller
             'phone' => $request->phone,
             'email'=> $request->email_address
         ]);
-
+        dd($request->get('days'));
+        foreach ($request->get('days') as $key => $value) 
+        {
+            if(isset($value) && $value != "")
+            {
+                if(isset($value['check_days']))
+                {
+                    $working_hours = BusinessWorkingHours::create([
+                        'location_id' => $newLocation->id,
+                        'day' => $value['check_days'],
+                        'start_time'=> $value['start_time'],
+                        'end_time'=> $value['to_time'],
+                        'day_status'=> isset($value['check_status'])?'Open':'Close'
+                    ]);
+                }
+            }
+        }
         if($newLocation){
             $response = [
                 'success' => true,
@@ -48,8 +66,14 @@ class LocationsController extends Controller
     }
     public function show(Request $request,$id)
     {
+        
         $locations = Locations::find($id);
-        return view('locations.edit', compact('locations'));
+        // dd($locations);
+        $working_hours_location = Locations::join('business_working_hours', 'business_working_hours.location_id', '=', 'locations.id')
+        ->where('business_working_hours.location_id',$id)
+        ->get();
+        // dd($locations);
+        return view('locations.edit', compact('locations','working_hours_location'));
     }
     // public function edit(Request $request)
     // {
@@ -68,6 +92,25 @@ class LocationsController extends Controller
             'phone' => $request->phone,
             'email'=> $request->email_address
         ]);
+
+        BusinessWorkingHours::where('location_id', $request->id)->delete();
+        foreach ($request->get('days') as $key => $value) 
+        {
+            if(isset($value) && $value != "")
+            {
+                
+                if(isset($value['check_days']))
+                {
+                    $working_hours = BusinessWorkingHours::create([
+                        'location_id' => $request->id,
+                        'day' => $value['check_days'],
+                        'start_time'=> $value['start_time'],
+                        'end_time'=> $value['to_time'],
+                        'day_status'=> isset($value['check_status'])?'Open':'Close'
+                    ]);
+                }
+            }
+        }
 
         if($locations){
             $response = [

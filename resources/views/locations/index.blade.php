@@ -51,24 +51,6 @@
                           @endif
                         </tbody>
                       </table>
-                      
-                      <!-- Modal -->
-                      <div id="myModal" class="modal fade" role="dialog">
-                        <div class="modal-dialog">
-                          <div class="modal-content">
-                            <div class="modal-header">
-                              <button type="button" class="close" data-dismiss="modal">&times;</button>
-                              <h4 class="modal-title">Row information</h4>
-                            </div>
-                            <div class="modal-body">
-                              
-                            </div>
-                            <div class="modal-footer">
-                              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
               </div>
               
               
@@ -131,7 +113,7 @@
     });
 
     // Handle click on "Select all" control
-    $('#example-select-all').on('click', function(){
+    $('#example-select-all').on('click', function(){debugger;
         // Get all rows with search applied
         var rows = table.rows({ 'search': 'applied' }).nodes();
         // Check/uncheck checkboxes for all rows in the table
@@ -151,16 +133,16 @@
           }
         }
     });
-    //Edit row buttons
-    $('.dt-edit').each(function () {
-      $(this).on('click', function(evt){debugger;
-        var ids=$(this).attr('ids');
-        window.location = 'locations/'+ids;
-      });
+
+  });
+  $(document).on('click', '.dt-edit', function(e) {
+      e.preventDefault();
+      debugger;
+      var ids = $(this).attr('ids');
+      window.location = 'locations/' + ids;
     });
-    //Delete buttons
-    $('.dt-delete').each(function () {
-      $(this).on('click', function(evt){
+    $(document).on('click', '.dt-delete', function(e) {
+      e.preventDefault();
         $this = $(this);
         var dtRow = $this.parents('tr');
         if(confirm("Are you sure to delete this row?")){
@@ -193,13 +175,7 @@
           var table = $('#example').DataTable();
           table.row(dtRow[0].rowIndex-1).remove().draw( false );
         }
-      });
     });
-    $('#myModal').on('hidden.bs.modal', function (evt) {
-      $('.modal .modal-body').empty();
-    });
-
-  });
     </script>
 </body>
 
