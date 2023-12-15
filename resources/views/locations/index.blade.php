@@ -30,7 +30,7 @@
                           @foreach($locations as $loc)
                           <tr>
                             <td></td>
-                            <td><a href="#" class="blue-bold">{{$loc->location_name}}</a></td>
+                            <td><a href="{{URL::to('locations')}}/{{$loc->id}}" class="blue-bold">{{$loc->location_name}}</a></td>
                             <td>{{$loc->email}}</td>
                             <td>{{$loc->phone}}</td>
                             <td>{{$loc->street_address.' '.$loc->suburb.' '.$loc->city.' '.$loc->state.' '.$loc->postcode}}</td>
