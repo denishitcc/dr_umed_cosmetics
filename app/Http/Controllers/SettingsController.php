@@ -170,7 +170,15 @@ class SettingsController extends Controller
         if($user== null)
         {
             $locs = Locations::find($request->business_details_for);
-            $response=array('business_name'=>$locs->location_name,'name_customers_see'=>'','business_email'=>$locs->email,'business_phone'=>$locs->phone,'website'=>'','street_address'=>$locs->street_address,'suburb'=>$locs->suburb,'city'=>$locs->city,'post_code'=>$locs->postcode);
+            if($locs->location_name=='Dr Umed Enterprise')
+            {
+                $loc_name = 'Dr Umed Cosmetic and Injectables';
+            }
+            else
+            {
+                $loc_name = 'Dr Umed Cosmetics, '.$locs->location_name;
+            }
+            $response=array('business_name'=>$locs->location_name,'name_customers_see'=>$loc_name,'business_email'=>$locs->email,'business_phone'=>$locs->phone,'website'=>'','street_address'=>$locs->street_address,'suburb'=>$locs->suburb,'city'=>$locs->city,'post_code'=>$locs->postcode);
             return response()->json($response);
         }      
         else

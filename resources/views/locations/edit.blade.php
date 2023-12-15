@@ -216,7 +216,7 @@
                         </div>
                     </div>
                 <div class="col-lg-12 text-lg-end mt-4">
-                    <button type="button" class="btn btn-light me-2">Discard</button>
+                    <button type="button" class="btn btn-light me-2" onclick="window.location='{{ url("locations") }}'">Discard</button>
                     <button type="submit" class="btn btn-primary">Save Changes</button>
                 </div>
             </div>

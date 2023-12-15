@@ -96,7 +96,7 @@
                                             <div class="col-lg-4">
                                                 <div class="form-group">
                                                     <label class="form-label">Name Customers See</label>
-                                                    <input type="text" class="form-control" placeholder="Name Customers See" name="name_customers_see" id="name_customers_see" value="{{$users_data->name_customers_see ?? ''}}" maxlength="50">
+                                                    <input type="text" class="form-control" placeholder="Name Customers See" name="name_customers_see" id="name_customers_see" value="{{ $users_data?$users_data->name_customers_see :($locs->location_name=='Dr Umed Enterprise' ? 'Dr Umed Cosmetic and Injectables' : '') }}" maxlength="50">
                                                     </div>
                                             </div>
                                         </div>
