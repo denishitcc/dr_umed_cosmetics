@@ -12,6 +12,37 @@
                 <h4 class="small-title mb-0">All Locations</h4>
             </div>
               <div class="card-body">
+              <div class="row">
+                          <div class="col-md-7">
+                            <!-- <div class="dataTables_length" id="DataTables_Table_0_length">
+                              <label>
+                                <select name="DataTables_Table_0_length" aria-controls="DataTables_Table_0" class="form-control input-sm">
+                                  <option value="10">10</option>
+                                  <option value="25">25</option>
+                                  <option value="50">50</option>
+                                  <option value="100">100</option>
+                                  <option value="-1">All</option>
+                                </select>
+                              </label>
+                            </div>
+  
+                            <div class="dt-buttons btn-group">
+                              <button class="btn btn-default buttons-collection btn-default-dt-options" tabindex="0" aria-controls="DataTables_Table_0" type="button" aria-haspopup="true" aria-expanded="false"><span>Export</span></button>
+                            </div> -->
+                          </div>
+                          <div class="col-md-5">
+                            <div id="DataTables_Table_0_filter" class="dataTables_filter">
+                              <label>
+                                <div class="input-group">
+                                  <span class="input-group-addon">
+                                    <span class="ico-mini-search"></span>
+                                  </span>
+                                  <input type="search" id="myInputTextField" class="form-control input-sm" placeholder="Search..." aria-controls="DataTables_Table_0">
+                                </div>
+                              </label>
+                            </div>
+                          </div>
+                        </div>
                       <table id="example" class="table all-db-table align-middle display select" cellspacing="0" width="100%">
                         <thead>
                           <tr>
@@ -67,9 +98,11 @@
         $(document).ready(function() {
             document.title='Locations';
             var table = $('#example').DataTable({
-            "dom": 'Blfrtip',
+            "dom": 'Blrtip',
             "paging": true,
-            "pageLength": 5,
+            // "bFilter": false,
+            "pageLength": 10,
+            // "lengthMenu" : "Display _MENU_ records",
             "autoWidth": true,
             'columnDefs': [{
               'targets': 0,
@@ -82,45 +115,60 @@
             }],
             buttons: [
               {
-                  extend: 'excelHtml5',
-                  text: '<i class="fa fa-file-excel-o"></i> Excel',
-                  titleAttr: 'Export to Excel',
-                  title: 'Locations',
-                  exportOptions: {
-                      columns: [1,2,3,4,5,6] 
-                  }
+                  extend: 'collection',
+                  text: 'Export',
+                  buttons: [
+                    { text: "Excel",exportOptions: { columns: [1,2,3,4,5,6] } ,extend: 'excelHtml5'},
+                    { text: "CSV" ,exportOptions: { columns: [1,2,3,4,5,6] } ,extend: 'csvHtml5'},
+                    { text: "PDF" ,exportOptions: { columns: [1,2,3,4,5,6] } ,extend: 'pdfHtml5'},
+                    { text: "PRINT" ,exportOptions: { columns: [1,2,3,4,5,6] } ,extend: 'print'},
+                ],
+                dropup: true
+                  // extend: 'excelHtml5',
+                  // text: '<i class="fa fa-file-excel-o"></i> Excel',
+                  // titleAttr: 'Export to Excel',
+                  // title: 'Locations',
+                  // exportOptions: {
+                  //     columns: [1,2,3,4,5,6] 
+                  // }
               },
-              {
-                  extend: 'csvHtml5',
-                  text: '<i class="fa fa-file-text-o"></i> CSV',
-                  titleAttr: 'CSV',
-                  title: 'Locations',
-                  exportOptions: {
-                      columns: [1,2,3,4,5,6] 
-                  }
-              },
-              {
-                  extend: 'pdfHtml5',
-                  text: '<i class="fa fa-file-pdf-o"></i> PDF',
-                  titleAttr: 'PDF',
-                  title: 'Locations',
-                  exportOptions: {
-                      columns: [1,2,3,4,5,6] 
-                  },
-              },
-              {
-                  extend: 'print',
-                  text: '<i class="fa fa-file-print-o"></i> PRINT',
-                  titleAttr: 'PRINT',
-                  title: 'Locations',
-                  exportOptions: {
-                      columns: [1,2,3,4,5,6] 
-                  },
-              },
+              // {
+              //     extend: 'collection',
+              //     // extend: 'csvHtml5',
+              //     text: '<i class="fa fa-file-text-o"></i> CSV',
+              //     titleAttr: 'CSV',
+              //     title: 'Locations',
+              //     exportOptions: {
+              //         columns: [1,2,3,4,5,6] 
+              //     }
+              // },
+              // {
+              //     extend: 'collection',
+              //     // extend: 'pdfHtml5',
+              //     text: '<i class="fa fa-file-pdf-o"></i> PDF',
+              //     titleAttr: 'PDF',
+              //     title: 'Locations',
+              //     exportOptions: {
+              //         columns: [1,2,3,4,5,6] 
+              //     },
+              // },
+              // {
+              //     extend: 'collection',
+              //     // extend: 'print',
+              //     text: '<i class="fa fa-file-print-o"></i> PRINT',
+              //     titleAttr: 'PRINT',
+              //     title: 'Locations',
+              //     exportOptions: {
+              //         columns: [1,2,3,4,5,6] 
+              //     },
+              // },
           ],
           'order': [[1, 'desc']]
     });
-
+    $('#myInputTextField').keyup(function(){
+        table.search($(this).val()).draw() ;
+    })
+    // $('div.dataTables_length select').addClass('form-control input-sm');
     // Handle click on "Select all" control
     $('#example-select-all').on('click', function(){debugger;
         // Get all rows with search applied

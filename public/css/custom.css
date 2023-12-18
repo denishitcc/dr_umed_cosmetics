@@ -225,6 +225,26 @@ main{box-shadow: inset 0 0.46875rem 2.1875rem rgba(4,9,20,0.05), inset 0 0.9375r
 .blue-bold{ font-weight: 500; color: var(--blue); text-decoration: none;}
 .action-box{ display: flex; gap: 8px;}
 
+div.dataTables_wrapper div.dataTables_length select { width: auto; color: #4e75ad; display: inline-block;}
+.form-inline .form-control { display: inline-block; width: auto; vertical-align: middle;}
+.dataTables_length select { padding-top: 5px; height: inherit;}
+
+.dataTables_length select{ border: 1px solid #bfcbd9;  color: #4E75AD; font-size: 14px; line-height: 1; height: 32px; border-radius: 3px;}
+.dataTables_length { float: left; margin-right: 5px;}
+.btn-group>.btn:first-child:not(:last-child):not(.dropdown-toggle) { border-top-right-radius: 0; border-bottom-right-radius: 0;}
+.dt-buttons.btn-group .btn { color: #4e75ad; border-radius: 3px; font-size: 11.5px; padding-bottom: 6px; padding-top: 7px; text-transform: uppercase;}
+
+.btn.btn-default-dt-options { color: #333; background-color: #fff; border: 1px solid #bfcbd9;}
+.btn-group-vertical>.btn, .btn-group>.btn { position: relative; float: left; }
+
+div.dataTables_filter { text-align: right;}
+
+.form-inline .input-group .form-control, .form-inline .input-group .input-group-addon, .form-inline .input-group .input-group-btn { width: auto;}
+.input-group-addon {border: 1px solid #bfcbd9; background-color: #fbfdff; color: #A1B4CC; padding: 3px 8px; font-size: 21px; line-height: 1; text-align: center;  border-radius: 4px; }
+.input-group .form-control { position: relative; z-index: 2; float: left; width: 100px; margin-bottom: 0; -webkit-transition: width .3s ease; transition: width .3s ease; height: 31px; font-size: 14px;  border: 1px solid #bfcbd9; color: #A1B4CC;}
+.dataTables_filter input:focus { width: 160px; }
+
+
 
 /* custom upload */
 
@@ -232,6 +252,10 @@ main{box-shadow: inset 0 0.46875rem 2.1875rem rgba(4,9,20,0.05), inset 0 0.9375r
 .gl-upload [type=file]{ opacity: .1; display: none;}
 .gl-upload .up-icon{ opacity: .3; margin-bottom: 15px;}
 .gl-upload .txt-up{ display: block; color: #B4B4B4; font-weight: 500;}
+
+
+.error{ color: red !important;}
+
 
 
 
