@@ -100,7 +100,7 @@
                                 @foreach($working_hours_location as $works)
                                 <tr class="rows_data">
                                     <td>
-                                        <label class="cst-checks"><input type="checkbox" name="days[{{$works->day}}][check_status]" value="{{$works->day}}" {{$works->day==$works->day && $works->day_status=='Open' ? 'checked' : ''}} class="checkbox"><span class="checkmark"></span></label>
+                                        <label class="cst-check"><input type="checkbox" name="days[{{$works->day}}][check_status]" value="{{$works->day}}" {{$works->day==$works->day && $works->day_status=='Open' ? 'checked' : ''}} class="checkbox"><span class="checkmark"></span></label>
                                     </td>
                                     <td>Open</td>
                                     <td>{{$works->day}}</td>

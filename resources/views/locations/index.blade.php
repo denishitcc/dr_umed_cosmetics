@@ -108,6 +108,15 @@
                       columns: [1,2,3,4,5,6] 
                   },
               },
+              {
+                  extend: 'print',
+                  text: '<i class="fa fa-file-print-o"></i> PRINT',
+                  titleAttr: 'PRINT',
+                  title: 'Locations',
+                  exportOptions: {
+                      columns: [1,2,3,4,5,6] 
+                  },
+              },
           ],
           'order': [[1, 'desc']]
     });

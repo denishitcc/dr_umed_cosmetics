@@ -98,7 +98,7 @@
                                 <table class="table table-relax align-middle table-hover">
                                     <tr>
                                         <td>
-                                            <label class="cst-checks"><input type="checkbox" class="checkbox" value="Sunday" name="days[sunday][check_status]" checked><span class="checkmark"></span></label>
+                                            <label class="cst-check"><input type="checkbox" class="checkbox" value="Sunday" name="days[sunday][check_status]" checked><span class="checkmark"></span></label>
                                             <!-- <input name="days[0][days_val]" type="hidden" value="sunday"> -->
                                         </td>
                                         <td>Open</td>
@@ -210,7 +210,7 @@
                                     </tr>
                                     <tr>
                                         <td>
-                                            <label class="cst-checks"><input type="checkbox" class="checkbox" value="Monday" name="days[monday][check_status]" checked><span class="checkmark"></span></label>
+                                            <label class="cst-check"><input type="checkbox" class="checkbox" value="Monday" name="days[monday][check_status]" checked><span class="checkmark"></span></label>
                                             <!-- <input name="days[0][days_val]" type="hidden" value="Monday"> -->
                                         </td>
                                         <td>Open</td>
@@ -322,7 +322,7 @@
                                     </tr>
                                     <tr>
                                         <td>
-                                            <label class="cst-checks"><input type="checkbox" class="checkbox" value="Tuesday" name="days[tuesday][check_status]" checked><span class="checkmark"></span></label>
+                                            <label class="cst-check"><input type="checkbox" class="checkbox" value="Tuesday" name="days[tuesday][check_status]" checked><span class="checkmark"></span></label>
                                             <!-- <input name="days[0][days_val]" type="hidden" value="Tuesday"> -->
                                         </td>
                                         <td>Open</td>
@@ -434,7 +434,7 @@
                                     </tr>
                                     <tr>
                                         <td>
-                                            <label class="cst-checks"><input type="checkbox" class="checkbox" value="Wednesday" name="days[wednesday][check_status]" checked><span class="checkmark"></span></label>
+                                            <label class="cst-check"><input type="checkbox" class="checkbox" value="Wednesday" name="days[wednesday][check_status]" checked><span class="checkmark"></span></label>
                                             <!-- <input name="days[0][days_val]" type="hidden" value="Wednesday"> -->
                                         </td>
                                         <td>Open</td>
@@ -546,7 +546,7 @@
                                     </tr>
                                     <tr>
                                         <td>
-                                            <label class="cst-checks"><input type="checkbox" class="checkbox" value="Thursday" name="days[thursday][check_status]" checked><span class="checkmark"></span></label>
+                                            <label class="cst-check"><input type="checkbox" class="checkbox" value="Thursday" name="days[thursday][check_status]" checked><span class="checkmark"></span></label>
                                             <!-- <input name="days[0][days_val]" type="hidden" value="Thursday"> -->
                                         </td>
                                         <td>Open</td>
@@ -658,7 +658,7 @@
                                     </tr>
                                     <tr>
                                         <td>
-                                            <label class="cst-checks"><input type="checkbox" class="checkbox" value="Friday" name="days[friday][check_status]" checked><span class="checkmark"></span></label>
+                                            <label class="cst-check"><input type="checkbox" class="checkbox" value="Friday" name="days[friday][check_status]" checked><span class="checkmark"></span></label>
                                             <!-- <input name="days[0][days_val]" type="hidden" value="Friday"> -->
                                         </td>
                                         <td>Open</td>
@@ -770,7 +770,7 @@
                                     </tr>
                                     <tr>
                                         <td>
-                                            <label class="cst-checks"><input type="checkbox" class="checkbox" value="Saturday" name="days[saturday][check_status]" checked><span class="checkmark"></span></label>
+                                            <label class="cst-check"><input type="checkbox" class="checkbox" value="Saturday" name="days[saturday][check_status]" checked><span class="checkmark"></span></label>
                                             <!-- <input name="days[0][days_val]" type="hidden" value="Saturday"> -->
                                         </td>
                                         <td>Open</td>
