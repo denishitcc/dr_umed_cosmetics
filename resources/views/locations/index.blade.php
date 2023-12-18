@@ -37,14 +37,14 @@
                             <td>{{$loc->latitude}}</td>
                             <td>{{$loc->longitude}}</td>
                             <td>
-                              <div class="action-box"><button type="button" class="btn btn-sm black-btn round-6 far dt-edit" ids="{{$loc->id}}">
-                                  <i class="ico-edit"></i>
-                                </button>
-                                <button type="button" class="btn btn-sm black-btn round-6 dt-delete" ids="{{$loc->id}}">
-                                  <i class="ico-trash"></i>
-                                </button>
-                              </div>
-                              
+                                <div class="action-box">
+                                  <button type="button" class="btn btn-sm black-btn round-6 dt-edit" ids="{{$loc->id}}">
+                                    <i class="ico-edit"></i>
+                                  </button>
+                                  <button type="button" class="btn btn-sm black-btn round-6 dt-delete" ids="{{$loc->id}}">
+                                    <i class="ico-trash"></i>
+                                  </button>
+                                </div>
                             </td>
                           </tr>
                           @endforeach

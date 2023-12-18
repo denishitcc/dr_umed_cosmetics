@@ -33,12 +33,34 @@
                     <li><a href="#"><i class="ico-enquiries"></i>Enquiries </a></li>
                     <li><a href="#"><i class="ico-finance"></i>Finance </a></li>
                     <li><a href="#"><i class="ico-reports"></i>Reports </a></li>
-                    <li><a href="#"><i class="ico-staff"></i>Staff </a></li>
-                    <li><a href="#"><i class="ico-services"></i>Services </a></li>
+                    <li class="dropdown"><a href="#"><i class="ico-staff"></i>Staff </a>
+                        <ul>
+                            <li><a href="#">Roles</a></li>
+                            <li><a href="#">Users</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown"><a href="#"><i class="ico-services"></i>Services </a>
+                        <ul>
+                            <li><a href="#">Categories</a></li>
+                            <li><a href="#">Treatments</a></li>
+                            <li><a href="#"> After Care</a></li>
+                            <li><a href="#">Recurring</a></li>
+                        </ul>
+                    </li>
                     <li><a href="#"><i class="ico-products"></i>Products </a></li>
-                    <li><a href="#"><i class="ico-promotion"></i>Promotions </a></li>
+                    <li class="dropdown"><a href="#"><i class="ico-promotion"></i>Promotions </a>
+                        <ul>
+                            <li><a href="#">Gift Cards</a></li>
+                            <li><a href="#">Discount Coupons</a></li>
+                        </ul>
+                    </li>
                     <li><a href="#"><i class="ico-forms"></i>Forms </a></li>
-                    <li><a href="#"><i class="ico-templates"></i>Templates </a></li>
+                    <li class="dropdown"><a href="#"><i class="ico-templates"></i>Templates </a>
+                        <ul>
+                            <li><a href="#">Email Templates</a></li>
+                            <li><a href="#">SMS Templates</a></li>
+                        </ul>
+                    </li>
                     <li class="{{ (request()->is('locations')) ? 'active' : '' }} || {{ (request()->is('locations/*')) ? 'active' : '' }}"><a href="{{ route('locations.index') }}"><i class="ico-locations"></i>Locations </a></li>
                     <li class="{{ (request()->is('settings')) ? 'active' : '' }}"><a href="{{ route('settings') }}"><i class="ico-settings"></i>Settings </a></li>
 
@@ -50,7 +72,7 @@
             <!-- Top navigation-->
             <nav class="navbar navbar-expand-lg bg-white app-nav">
                 <div class="container-fluid">
-                    <button class="sidetoggle" id="sidebarToggle"><img src="{{ asset('img/toggle-arrow-left.svg') }}" alt=""></button>
+                    <button class="sidetoggle" id="sidebarToggle"><img src="img/toggle-arrow-left.svg" alt=""></button>
                     <div class="navbar-inner">
                         <div class="app-nav-left">
                             <select class="form-select">
@@ -71,13 +93,21 @@
                             </select>
                         </div>
                         <div class="app-navbar">
-                            <ul>
-                                <li><a href="#"><i class="ico-search"></i></a></li>
-                                <li><a href="#"><i class="ico-equalizer"></i></a></li>
-                                <li><a href="#"><i class="ico-notification"></i></a></li>
-                                <li><a href="#"><i class="ico-settings"></i></a></li>
-                                <li class="profile">Hi, <span>Umed</span> <img src="{{ asset('img/profile.png') }}" alt=""></li>
+                            <ul class="items"> 
+                                <li><a href="#" class="tap"><i class="ico-search"></i></a></li>
+                                <li><a href="#" class="tap"><i class="ico-equalizer"></i></a></li>
+                                <li><a href="#" class="tap"><i class="ico-notification"></i></a></li>
+                                <li><a href="#" class="tap"><i class="ico-settings"></i></a></li>
+                                <li class="profile" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">Hi, <span>Umed</span> <img src="img/profile.png" alt="">
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                        <li><a href="#"> Manage Account</a></li>
+                                        <li><a href="#">Logout</a></li>
+                                      </ul>
+                                </li>
+
                             </ul>
+                            
+                              
                         </div>
                     </div>
                 </div>
@@ -114,6 +144,16 @@
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js" type="text/javascript"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js" type="text/javascript"></script>
     @yield('script')
+    <script>
+        $(document).ready(function(){
+            
+        $(".list-group ul li.dropdown").click(function(){
+            debugger;
+            $('.dropdown').removeClass('show');
+            $(this).toggleClass("show");
+        });
+    });
+    </script>
 </body>
 
 </html>

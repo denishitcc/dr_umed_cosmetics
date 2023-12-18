@@ -10841,7 +10841,7 @@ textarea.form-control-lg {
 }
 
 #sidebar-wrapper .list-group {
-  width: 15rem;
+  /* width: 16rem; */
 }
 
 #page-content-wrapper {
@@ -10861,6 +10861,6 @@ body.sb-sidenav-toggled #wrapper #sidebar-wrapper {
     width: 100%;
   }
   body.sb-sidenav-toggled #wrapper #sidebar-wrapper {
-    margin-left: -15rem;
+    margin-left: -16rem;
   }
 }
