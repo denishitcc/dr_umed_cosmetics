@@ -18,7 +18,7 @@ class SettingsController extends Controller
         $locs = Locations::first();
         $users_data = User::join('business_settings', 'business_settings.user_id', '=', 'users.id')
                     ->where('users.id',$auth->user()->id)
-                    ->where('business_settings.business_details_for',1)
+                    ->where('business_settings.business_details_for','Dr Umed Enterprise')
               		->first();
         return view('settings',compact('user','locations','users_data','locs'));
     }
@@ -118,7 +118,6 @@ class SettingsController extends Controller
                 'name_customers_see' => $request->name_customers_see,
                 'business_email' => $request->business_email,
                 'business_phone' => $request->business_phone,
-                'website' => $request->website,
                 'street_address' => $request->street_address,
                 'suburb' => $request->suburb,
                 'city' => $request->city,
@@ -134,7 +133,6 @@ class SettingsController extends Controller
                 'name_customers_see' => $request->name_customers_see,
                 'business_email' => $request->business_email,
                 'business_phone' => $request->business_phone,
-                'website' => $request->website,
                 'street_address' => $request->street_address,
                 'suburb' => $request->suburb,
                 'city' => $request->city,
@@ -167,23 +165,28 @@ class SettingsController extends Controller
         $user = BusinessSettings::where('user_id', $auth->user()->id)
                 ->where('business_details_for',$request->business_details_for)
                 ->first();
+                // dd($user);
         if($user== null)
         {
             $locs = Locations::find($request->business_details_for);
-            if($locs->location_name=='Dr Umed Enterprise')
+            if($request->business_details_for=='Dr Umed Enterprise')
             {
                 $loc_name = 'Dr Umed Cosmetic and Injectables';
+                $response = array('business_name'=>'Dr Umed Enterprise','name_customers_see'=>'Dr Umed Cosmetic and Injectables','business_email'=>'info@drumedcosmetics.com.au','business_phone'=>'0407194519','post_code'=>'','street_address'=>'','suburb'=>'','city'=>'');
+                // dd($loc_name);
             }
             else
             {
                 $loc_name = 'Dr Umed Cosmetics, '.$locs->location_name;
+                $response=array('business_name'=>$locs->location_name,'name_customers_see'=>$loc_name,'business_email'=>$locs->email,'business_phone'=>$locs->phone,'street_address'=>$locs->street_address,'suburb'=>$locs->suburb,'city'=>$locs->city,'post_code'=>$locs->postcode);
             }
-            $response=array('business_name'=>$locs->location_name,'name_customers_see'=>$loc_name,'business_email'=>$locs->email,'business_phone'=>$locs->phone,'website'=>'','street_address'=>$locs->street_address,'suburb'=>$locs->suburb,'city'=>$locs->city,'post_code'=>$locs->postcode);
+            // $response = array('business_name'=>'Dr Umed Enterprise','name_customers_see'=>'Dr Umed Cosmetic and Injectables','business_email'=>'info@drumedcosmetics.com.au','business_phone'=>'0407194519','post_code'=>'','street_address'=>'','suburb'=>'','city'=>'');
+            // $response=array('business_name'=>$locs->location_name,'name_customers_see'=>$loc_name,'business_email'=>$locs->email,'business_phone'=>$locs->phone,'street_address'=>$locs->street_address,'suburb'=>$locs->suburb,'city'=>$locs->city,'post_code'=>$locs->postcode);
             return response()->json($response);
         }      
         else
         {
-            $response=array('business_name'=>$user->business_name,'name_customers_see'=>$user->name_customers_see,'business_email'=>$user->business_email,'business_phone'=>$user->business_phone,'website'=>$user->website,'street_address'=>$user->street_address,'suburb'=>$user->suburb,'city'=>$user->city,'post_code'=>$user->post_code);
+            $response=array('business_name'=>$user->business_name,'name_customers_see'=>$user->name_customers_see,'business_email'=>$user->business_email,'business_phone'=>$user->business_phone,'street_address'=>$user->street_address,'suburb'=>$user->suburb,'city'=>$user->city,'post_code'=>$user->post_code);
             return response()->json($response);
         }  
     }

@@ -14,9 +14,9 @@
                         <li class="nav-item">
                             <a class="nav-link" data-bs-toggle="tab" href="#tab_3"><i class="ico-branding"></i> Branding</a>
                         </li>
-                        <li class="nav-item">
+                        <!-- <li class="nav-item">
                             <a class="nav-link" data-bs-toggle="tab" href="#tab_4"><i class="ico-staff-user"></i> Staff & Users</a>
-                        </li>
+                        </li> -->
                         <li class="nav-item">
                             <a class="nav-link" data-bs-toggle="tab" href="#tab_5"><i class="ico-appt-reminder"></i> Appt Reminders</a>
                         </li>
@@ -69,6 +69,7 @@
                                         <div class="form-group">
                                             <label class="form-label">Business Details For</label>
                                             <select class="form-select form-control business_details_for" id="business_details_for" name="business_details_for">
+                                                <option value="Dr Umed Enterprise">Dr Umed Enterprise</option>
                                                 @foreach($locations as $loc)
                                                 <option value="{{ $loc->id }}">{{ $loc->location_name }}</option>
                                                 @endforeach
@@ -90,13 +91,13 @@
                                             <div class="col-lg-4">
                                                 <div class="form-group">
                                                     <label class="form-label">Business Name </label>
-                                                    <input type="text" class="form-control" placeholder="Business Name" name="business_name" id="business_name" value="{{ $users_data?$users_data->business_name :$locs->location_name??'' }}" maxlength="50">
+                                                    <input type="text" class="form-control" placeholder="Business Name" name="business_name" id="business_name" value="{{ $users_data->business_name??'Dr Umed Enterprise' }}" maxlength="50">
                                                     </div>
                                             </div>
                                             <div class="col-lg-4">
                                                 <div class="form-group">
                                                     <label class="form-label">Name Customers See</label>
-                                                    <input type="text" class="form-control" placeholder="Name Customers See" name="name_customers_see" id="name_customers_see" value="{{ $users_data?$users_data->name_customers_see :($locs->location_name=='Dr Umed Enterprise' ? 'Dr Umed Cosmetic and Injectables' : '') }}" maxlength="50">
+                                                    <input type="text" class="form-control" placeholder="Name Customers See" name="name_customers_see" id="name_customers_see" value="{{ $users_data->name_customers_see??'Dr Umed Cosmetic and Injectables' }}" maxlength="100">
                                                     </div>
                                             </div>
                                         </div>
@@ -105,19 +106,19 @@
                                                 
                                                     <div class="form-group">
                                                     <label class="form-label">Business Email</label>
-                                                    <input type="text" class="form-control" placeholder="Business Email" name="business_email" id="business_email" value="{{ $users_data?$users_data->business_email :$locs->email ?? '' }}" maxlength="100">
+                                                    <input type="text" class="form-control" placeholder="Business Email" name="business_email" id="business_email" value="{{ $users_data->business_email??'info@drumedcosmetics.com.au' }}" maxlength="100">
                                                     </div>
                                             </div>
                                             <div class="col-lg-4">
                                                     <div class="form-group">
                                                     <label class="form-label">Business Phone</label>
-                                                    <input type="text" class="form-control" placeholder="Business Phone" name="business_phone" id="business_phone" value="{{ $users_data?$users_data->business_phone :$locs->phone ?? '' }}" maxlength="20">
+                                                    <input type="text" class="form-control" placeholder="Business Phone" name="business_phone" id="business_phone" value="{{ $users_data->business_phone??'0407194519' }}" maxlength="20">
                                                     </div>
                                             </div>
-                                            <div class="col-lg-4 website_info">
+                                            <div class="col-lg-4 postcode_info">
                                                 <div class="form-group">
-                                                    <label class="form-label">Website</label>
-                                                    <input type="text" class="form-control" placeholder="Website" name="website" id="website" maxlength="30" value="{{$users_data->website ?? ''}}">
+                                                    <label class="form-label">Postcode</label>
+                                                    <input type="text" class="form-control" placeholder="Postcode" name="post_code" id="post_code" maxlength="10" value="">
                                                 </div>
                                             </div>
                                         </div>
@@ -125,27 +126,22 @@
                                             <div class="col-lg-4 street_address_info">
                                                     <div class="form-group">
                                                     <label class="form-label">Street Address</label>
-                                                    <input type="text" class="form-control" placeholder="Street Address" name="street_address" id="street_address" maxlength="30" value="{{ $users_data?$users_data->street_address :$locs->street_address ?? '' }}">
+                                                    <input type="text" class="form-control" placeholder="Street Address" name="street_address" id="street_address" maxlength="30" value="">
                                                     </div>
                                             </div>
                                             <div class="col-lg-4 suburb_info">
                                                     <div class="form-group">
                                                     <label class="form-label">Suburb</label>
-                                                    <input type="text" class="form-control" placeholder="Suburb" name="suburb" id="suburb" maxlength="30" value="{{ $users_data?$users_data->suburb :$locs->suburb ?? ''}}">
+                                                    <input type="text" class="form-control" placeholder="Suburb" name="suburb" id="suburb" maxlength="30" value="">
                                                     </div>
                                             </div>
                                             <div class="col-lg-4 city_info">
                                                     <div class="form-group">
                                                     <label class="form-label">City</label>
-                                                    <input type="text" class="form-control" placeholder="City" name="city" id="city" maxlength="30" value="{{ $users_data?$users_data->city :$locs->city ?? ''}}">
+                                                    <input type="text" class="form-control" placeholder="City" name="city" id="city" maxlength="30" value="">
                                                     </div>
                                             </div>
-                                            <div class="col-lg-4 postcode_info">
-                                                <div class="form-group">
-                                                    <label class="form-label">Postcode</label>
-                                                    <input type="text" class="form-control" placeholder="Postcode" name="post_code" id="post_code" maxlength="10" value="{{ $users_data?$users_data->post_code :$locs->postcode ?? ''}}">
-                                                </div>
-                                            </div>
+                                            
                                             <div class="card-body">
                                                 <div class="col-lg-12 text-lg-end mt-4">
                                                     <button type="button" class="btn btn-light me-2">Discard</button>
@@ -161,11 +157,40 @@
                         </div>
                         <div class="tab-pane fade" id="tab_3" role="tabpanel">
                             <div class="card-head">
-                                <h4 class="small-title mb-5">Brand banner image</h4>
-                                <h5 class="d-grey mb-0">Recommended dimension: 800px X 200px</h5>
-                            </div>
-                            <div class="card-body">
+                                <h4 class="small-title mb-3">Brand banner image <small>(optional)</small></h4>
+                                <h5 class="d-grey mb-4">Recommended dimensions: 800px x 200px</h5>
                                 <form id="update_brand_image" name="update_brand_image" class="form" enctype='multipart/form-data' action="{{route('update-brand-image')}}" method="post">
+                                @csrf
+                                @if($user->banner_image!='')
+                                <div class="form-group"><img src="images/banner_image/{{$user->banner_image}}" alt="" id="imgPreview"></div>
+                                @else
+                                <div class="form-group"><img src="images/banner_image/no-image.jpg" alt="" id="imgPreview"></div>
+                                @endif
+                                
+                                <div class="row">
+                                    <div class="col-lg-7">
+                                        <label class="gl-upload">
+                                            <div class="icon-box">
+                                                <img src="img/upload-icon.png" alt="" class="up-icon">
+                                                <span class="txt-up">Upload File</span>
+                                                <input class="form-control" type="file" id="imgInput" name="banner_image" accept="image/png, image/gif, image/jpeg">
+                                            </div>
+                                        </label>
+                                        
+                                        
+                                        <button class="simple-link remove_image p-0 btn mt-2">Remove Banner</button> 
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 text-lg-end mt-4">
+                                        <button type="button" class="btn btn-light me-2">Discard</button>
+                                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                                    </div>
+                                    
+                                </div>
+                                </form>
+                            </div>
+                            <!-- <div class="card-body"> -->
+                                <!-- <form id="update_brand_image" name="update_brand_image" class="form" enctype='multipart/form-data' action="{{route('update-brand-image')}}" method="post">
                                     @csrf
                                     <div class="row">
                                         @if(isset($user->banner_image))
@@ -190,8 +215,8 @@
                                             </div>
                                         </div>
                                     </div>
-                                </form>
-                            </div> 
+                                </form> -->
+                            <!-- </div>  -->
                         </div>
                         <div class="tab-pane fade" id="tab_4" role="tabpanel">
                             4

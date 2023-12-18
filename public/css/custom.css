@@ -168,6 +168,7 @@ main{box-shadow: inset 0 0.46875rem 2.1875rem rgba(4,9,20,0.05), inset 0 0.9375r
 .brand-tabs .nav-link.active, .brand-tabs .nav-item.show .nav-link{ color: var(--blue);}
 
 .small-title{ color: #323A45;}
+.small-title small{ color: #666;}
 .d-grey{ color: var(--d-grey);}
 
 .simple-link{color: #3699FF; font-weight: 500; line-height: normal; text-decoration-line: underline;}
@@ -223,6 +224,15 @@ main{box-shadow: inset 0 0.46875rem 2.1875rem rgba(4,9,20,0.05), inset 0 0.9375r
 .all-db-table tbody tr td{border-color:#EBF5FF;}
 .blue-bold{ font-weight: 500; color: var(--blue); text-decoration: none;}
 .action-box{ display: flex; gap: 8px;}
+
+
+/* custom upload */
+
+.gl-upload{border-radius: 10px; border: 1px solid #D1D1D1; background: #EEF1F5; display: flex; text-align: center; height: 150px; align-items: center; justify-content: center;}
+.gl-upload [type=file]{ opacity: .1; display: none;}
+.gl-upload .up-icon{ opacity: .3; margin-bottom: 15px;}
+.gl-upload .txt-up{ display: block; color: #B4B4B4; font-weight: 500;}
+
 
 
 /* .open>.dropdown-menu {
