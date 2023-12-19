@@ -46,7 +46,7 @@
                       <table id="example" class="table all-db-table align-middle display select" cellspacing="0" width="100%">
                         <thead>
                           <tr>
-                            <th><input type="checkbox" name="select_all" value="1" id="example-select-all"></th>
+                            <th><input type="checkbox" name="select_all" class="select_all" value="1" id="example-select-all"></th>
                             <th>Location Name</th>
                             <th>Email</th>
                             <th>Phone</th>
@@ -163,7 +163,11 @@
               //     },
               // },
           ],
-          'order': [[1, 'desc']]
+          select: {
+            style : "multi",
+          },
+          'order': [[1, 'desc']],
+          "sPaginationType": "listbox"
     });
     $('#myInputTextField').keyup(function(){
         table.search($(this).val()).draw() ;
@@ -190,6 +194,13 @@
           }
         }
     });
+    $(".select_all").on( "click", function(e) {debugger;
+    if ($(this).is( ":checked" )) {
+        table.rows(  ).select();        
+    } else {
+        table.rows(  ).deselect(); 
+    }
+});
 
   });
   $(document).on('click', '.dt-edit', function(e) {

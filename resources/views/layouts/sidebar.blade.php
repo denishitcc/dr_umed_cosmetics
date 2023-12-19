@@ -103,7 +103,11 @@
                                 <li class="profile" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">Hi, <span>Umed</span> <img src="img/profile.png" alt="">
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                         <li><a href="#"> Manage Account</a></li>
-                                        <li><a href="#">Logout</a></li>
+                                        <li> <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a></li>
+                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
+                                                {{ csrf_field() }}
+                                            </form>
+                                        </li>
                                       </ul>
                                 </li>
 
@@ -146,6 +150,8 @@
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js" type="text/javascript"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js" type="text/javascript"></script>
     <!-- <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.colVis.min.js"></script> -->
+    <script src="https://cdn.datatables.net/select/1.7.0/js/dataTables.select.min.js" type="text/javascript"></script>
+    <script src="https://cdn.datatables.net/plug-ins/1.10.19/pagination/select.js" type="text/javascript"></script>
     @yield('script')
     <script>
         $(document).ready(function(){
