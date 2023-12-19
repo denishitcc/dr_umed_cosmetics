@@ -38,7 +38,7 @@
                     <li class="dropdown"><a href="#"><i class="ico-staff"></i>Staff </a>
                         <ul>
                             <li><a href="#">Roles</a></li>
-                            <li><a href="#">Users</a></li>
+                            <li class="{{ (request()->is('users')) ? 'active' : '' }}"><a href="{{ route('users.index') }}">Users</a></li>
                         </ul>
                     </li>
                     <li class="dropdown"><a href="#"><i class="ico-services"></i>Services </a>

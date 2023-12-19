@@ -46,7 +46,10 @@
                       <table id="example" class="table all-db-table align-middle display select" cellspacing="0" width="100%">
                         <thead>
                           <tr>
-                            <th><input type="checkbox" name="select_all" class="select_all" value="1" id="example-select-all"></th>
+                            <th>
+                              <!-- <input type="checkbox" name="select_all" class="select_all" value="1" id="example-select-all"> -->
+                              <label class="cst-check"><input type="checkbox" name="select_all" class="select_all" value="1" id="example-select-all"><span class="checkmark"></span></label>
+                            </th>
                             <th>Location Name</th>
                             <th>Email</th>
                             <th>Phone</th>
@@ -82,6 +85,9 @@
                           @endif
                         </tbody>
                       </table>
+                      <!-- <div class="input-group">
+                        <select name="pagelist" id="pagelist" class="form-control"></select>
+                      </div> -->
               </div>
               
               
@@ -98,76 +104,116 @@
         $(document).ready(function() {
             document.title='Locations';
             var table = $('#example').DataTable({
-            "dom": 'Blrtip',
-            "paging": true,
-            // "bFilter": false,
-            "pageLength": 10,
-            // "lengthMenu" : "Display _MENU_ records",
-            "autoWidth": true,
-            'columnDefs': [{
-              'targets': 0,
-              'searchable': false,
-              'orderable': false,
-              'className': 'dt-body-center',
-              'render': function (data, type, full, meta){
-                  return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
-              }
-            }],
-            buttons: [
-              {
-                  extend: 'collection',
-                  text: 'Export',
-                  buttons: [
-                    { text: "Excel",exportOptions: { columns: [1,2,3,4,5,6] } ,extend: 'excelHtml5'},
-                    { text: "CSV" ,exportOptions: { columns: [1,2,3,4,5,6] } ,extend: 'csvHtml5'},
-                    { text: "PDF" ,exportOptions: { columns: [1,2,3,4,5,6] } ,extend: 'pdfHtml5'},
-                    { text: "PRINT" ,exportOptions: { columns: [1,2,3,4,5,6] } ,extend: 'print'},
-                ],
-                dropup: true
-                  // extend: 'excelHtml5',
-                  // text: '<i class="fa fa-file-excel-o"></i> Excel',
-                  // titleAttr: 'Export to Excel',
-                  // title: 'Locations',
-                  // exportOptions: {
-                  //     columns: [1,2,3,4,5,6] 
-                  // }
+                "dom": 'Blrtip',
+                "paging": true,
+                // "bFilter": false,
+                "pageLength": 5,
+                // "lengthMenu" : "Display _MENU_ records",
+                "autoWidth": true,
+                'columnDefs': [{
+                  'targets': 0,
+                  'searchable': false,
+                  'orderable': false,
+                  'className': 'dt-body-center',
+                  'render': function (data, type, full, meta){
+                      return '<label class="cst-check"><input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '"><span class="checkmark"></span></label>';
+                  }
+                }],
+                buttons: [
+                  {
+                      extend: 'collection',
+                      text: 'Export',
+                      buttons: [
+                        { text: "Excel",exportOptions: { columns: [1,2,3,4,5,6] } ,extend: 'excelHtml5'},
+                        { text: "CSV" ,exportOptions: { columns: [1,2,3,4,5,6] } ,extend: 'csvHtml5'},
+                        { text: "PDF" ,exportOptions: { columns: [1,2,3,4,5,6] } ,extend: 'pdfHtml5'},
+                        { text: "PRINT" ,exportOptions: { columns: [1,2,3,4,5,6] } ,extend: 'print'},
+                    ],
+                    dropup: true
+                      // extend: 'excelHtml5',
+                      // text: '<i class="fa fa-file-excel-o"></i> Excel',
+                      // titleAttr: 'Export to Excel',
+                      // title: 'Locations',
+                      // exportOptions: {
+                      //     columns: [1,2,3,4,5,6] 
+                      // }
+                  },
+                  // {
+                  //     extend: 'collection',
+                  //     // extend: 'csvHtml5',
+                  //     text: '<i class="fa fa-file-text-o"></i> CSV',
+                  //     titleAttr: 'CSV',
+                  //     title: 'Locations',
+                  //     exportOptions: {
+                  //         columns: [1,2,3,4,5,6] 
+                  //     }
+                  // },
+                  // {
+                  //     extend: 'collection',
+                  //     // extend: 'pdfHtml5',
+                  //     text: '<i class="fa fa-file-pdf-o"></i> PDF',
+                  //     titleAttr: 'PDF',
+                  //     title: 'Locations',
+                  //     exportOptions: {
+                  //         columns: [1,2,3,4,5,6] 
+                  //     },
+                  // },
+                  // {
+                  //     extend: 'collection',
+                  //     // extend: 'print',
+                  //     text: '<i class="fa fa-file-print-o"></i> PRINT',
+                  //     titleAttr: 'PRINT',
+                  //     title: 'Locations',
+                  //     exportOptions: {
+                  //         columns: [1,2,3,4,5,6] 
+                  //     },
+                  // },
+              ],
+                select: {
+                style : "multi",
               },
-              // {
-              //     extend: 'collection',
-              //     // extend: 'csvHtml5',
-              //     text: '<i class="fa fa-file-text-o"></i> CSV',
-              //     titleAttr: 'CSV',
-              //     title: 'Locations',
-              //     exportOptions: {
-              //         columns: [1,2,3,4,5,6] 
-              //     }
-              // },
-              // {
-              //     extend: 'collection',
-              //     // extend: 'pdfHtml5',
-              //     text: '<i class="fa fa-file-pdf-o"></i> PDF',
-              //     titleAttr: 'PDF',
-              //     title: 'Locations',
-              //     exportOptions: {
-              //         columns: [1,2,3,4,5,6] 
-              //     },
-              // },
-              // {
-              //     extend: 'collection',
-              //     // extend: 'print',
-              //     text: '<i class="fa fa-file-print-o"></i> PRINT',
-              //     titleAttr: 'PRINT',
-              //     title: 'Locations',
-              //     exportOptions: {
-              //         columns: [1,2,3,4,5,6] 
-              //     },
-              // },
-          ],
-          select: {
-            style : "multi",
-          },
-          'order': [[1, 'desc']],
-          "sPaginationType": "listbox"
+                'order': [[1, 'desc']],
+                initComplete: function () {
+                    var btns = $('.dt-buttons');
+                    btns.addClass('btn-group');
+                    btns.find('button').removeAttr('class');
+                    btns.find('button').addClass('btn btn-default buttons-collection btn-default-dt-options');
+                },
+        //   "sPaginationType": "listbox"
+        "drawCallback": function( settings ) {
+              var api = this.api();
+  
+              // Output the data for the visible rows to the browser's console
+              console.log( api.rows( {page:'current'} ).data() );
+
+              var page_info = api.rows( {page:'current'} ).data().page.info();
+              debugger;
+              $('#totalpages').text(page_info.pages);
+              var html = '';
+
+              var start = 0;
+
+              var length = page_info.length;
+
+              for(var count = 1; count <= page_info.pages; count++)
+              {
+                var page_number = count - 1;
+
+                html += '<option value="'+page_number+'" data-start="'+start+'" data-length="'+length+'">'+count+'</option>';
+
+                start = start + page_info.length;
+              }
+
+              $('#pagelist').html(html);
+
+              $('#pagelist').val(page_info.page);
+            }
+            });
+
+    $('#pagelist').change(function(){
+      var page_no = $('#pagelist').find(":selected").text();
+      var table = $('#example').dataTable();
+      table.fnPageChange(page_no - 1,true);
     });
     $('#myInputTextField').keyup(function(){
         table.search($(this).val()).draw() ;

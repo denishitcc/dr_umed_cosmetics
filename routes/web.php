@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\LocationsController;
+use App\Http\Controllers\UsersController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -47,4 +48,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/update-brand-image', [SettingsController::class, 'UpdateBrandImage'])->name('update-brand-image');
     //locations
     Route::resource('locations', LocationsController::class);
+
+    //users
+    Route::resource('users', UsersController::class);
+    Route::post('users/checkEmail', [UsersController::class, 'checkEmail']);
 });
