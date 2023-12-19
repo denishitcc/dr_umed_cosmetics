@@ -157,8 +157,10 @@
         $(document).ready(function(){
             
         $(".list-group ul li.dropdown").click(function(){
-            debugger;
-            $('.dropdown').removeClass('show');
+            if(!$(this).hasClass('show'))
+            {
+                $('.dropdown').removeClass('show');
+            }
             $(this).toggleClass("show");
         });
     });
