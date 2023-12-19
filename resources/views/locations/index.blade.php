@@ -6,7 +6,7 @@
           <div class="card">
               <div class="card-head">
                 <a href="{{ route('locations.create') }}" class="btn btn-primary btn-md me-2">New Location</a>
-                <a href="#" class="btn btn-primary btn-md">Import Location CSV</a>
+                <!-- <a href="#" class="btn btn-primary btn-md">Import Location CSV</a> -->
               </div>
               <div class="card-head">
                 <h4 class="small-title mb-0">All Locations</h4>
