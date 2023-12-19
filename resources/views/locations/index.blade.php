@@ -85,9 +85,9 @@
                           @endif
                         </tbody>
                       </table>
-                      <!-- <div class="input-group">
+                      <div class="input-group">
                         <select name="pagelist" id="pagelist" class="form-control"></select>
-                      </div> -->
+                      </div>
               </div>
               
               
