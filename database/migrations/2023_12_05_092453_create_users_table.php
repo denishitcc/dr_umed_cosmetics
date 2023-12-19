@@ -28,6 +28,7 @@ return new class extends Migration
             $table->rememberToken();
             $table->string('google_id')->nullable();
             $table->string('facebook_id')->nullable();
+            $table->string('access_level',50)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

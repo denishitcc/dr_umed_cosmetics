@@ -33,7 +33,8 @@ class User extends Authenticatable
         'google_id',
         'facebook_id',
         'image',
-        'banner_image'
+        'banner_image',
+        'access_level'
     ];
 
     /**
