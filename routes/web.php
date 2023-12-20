@@ -52,4 +52,6 @@ Route::middleware(['auth'])->group(function () {
     //users
     Route::resource('users', UsersController::class);
     Route::post('users/checkEmail', [UsersController::class, 'checkEmail']);
+    Route::post('users/update_info', [UsersController::class, 'update_info'])->name('update_info');
+    Route::post('users/updateStatus', [UsersController::class, 'updateStatus']);
 });

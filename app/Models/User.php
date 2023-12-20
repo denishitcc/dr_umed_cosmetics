@@ -38,7 +38,8 @@ class User extends Authenticatable
         'facebook_id',
         'image',
         'banner_image',
-        'access_level'
+        'access_level',
+        'last_login'
     ];
 
     /**

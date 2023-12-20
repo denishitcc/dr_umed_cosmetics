@@ -1,38 +1,40 @@
 @extends('layouts/sidebar')
 @section('content')
 <meta name="csrf-token" content="{{ csrf_token() }}" />
-<main>
-    <div class="card">
-        
-        <div class="card-head">
-            <h4 class="small-title mb-5">Add User</h4>
-            <h5 class="d-grey mb-0">Details | Photos</h5>
-        </div>
-        <!-- <form class="form"  action="{{ route('users.store') }}" method="post" enctype="multipart/form-data">
-        @csrf -->
-        <form id="create_user" name="create_user" class="form" enctype="multipart/form-data">
-        @csrf
-        <div class="card-body">
+    <!-- Page content-->
+    <main>
+        <div class="card">
+            
+            <div class="card-head">
+                <h4 class="small-title mb-5">Add User</h4>
+                <h5 class="d-grey mb-0">Details | Photos</h5>
+            </div>
+            <form id="edit_users" name="edit_users" class="form" enctype="multipart/form-data">
+            @csrf
+            <input type="hidden" name="id" id="id" value="{{$users->id}}">
+            <div class="card-body">
             <div class="row">
                 <div class="col-lg-4">
                     <div class="form-group">
                         <label class="form-label">First Name</label>
                         
-                        <input type="text" class="form-control" name="first_name" id="first_name" maxlength="50">
+                        <input type="text" class="form-control" name="first_name" id="first_name" maxlength="50" value="{{$users->first_name}}">
                         </div>
                 </div>
                 <div class="col-lg-4">
                     <div class="form-group">
                         <label class="form-label">Last Name </label>
-                        <input type="text" class="form-control" name="last_name" id="last_name"maxlength="50">
+                        <input type="text" class="form-control" name="last_name" id="last_name"maxlength="50" value="{{$users->last_name}}">
                         </div>
                 </div>
                 <div class="col-lg-3">
                     <label class="form-label">Gender</label>
                     <div class="toggle mb-1">
-                        <input type="radio" name="gender" value="Male" id="male" checked="checked" />
+                        <input type="radio"  id="gender" name="gender" value="Male"  {{ ($users->gender=="Male")? "checked" : "" }} >
+                        <!-- <input type="radio" name="gender" value="Male" id="male" checked="checked" /> -->
                         <label for="male">Male <i class="ico-tick"></i></label>
-                        <input type="radio" name="gender" value="Female" id="female" />
+                        <input type="radio"  id="gender" name="gender" value="Female"  {{ ($users->gender=="Female")? "checked" : "" }} >
+                        <!-- <input type="radio" name="gender" value="Female" id="female" /> -->
                         <label for="female">Female <i class="ico-tick"></i></label>
                     </div>
                 </div>
@@ -41,13 +43,13 @@
                 <div class="col-lg-4">
                     <div class="form-group">
                         <label class="form-label">Email Address</label>
-                        <input type="email" class="form-control" id="email" name="email" maxlength="100" onblur="duplicateEmail(this)">
+                        <input type="email" class="form-control" id="email" name="email" maxlength="100" value="{{$users->email}}" onblur="duplicateEmail(this)" readonly>
                         </div>
                 </div>
                 <div class="col-lg-4">
                     <div class="form-group">
                         <label class="form-label">Phone</label>
-                        <input type="text" class="form-control" name="phone" id="phone" maxlength="15">
+                        <input type="text" class="form-control" name="phone" id="phone" maxlength="15" value="{{$users->phone}}">
                         </div>
                 </div>
             </div>
@@ -55,12 +57,13 @@
                 <div class="col-lg-4">
                     <div class="form-group">
                         <label class="form-label">Role Type</label>
+                        
                         <select class="form-select form-control" name="role_type" id="role_type">
-                            <option>Cosmetic Nurses</option>
-                            <option>Dip Skin Cancer</option>
-                            <option>Operational Manager</option>
-                            <option>Paramedical Aesthetician</option>
-                            <option>Nurse</option>
+                            <option value="Cosmetic Nurses" {{ ($users->role_type == "Cosmetic Nurses")? "selected" : "" }} >Cosmetic Nurses</option>
+                            <option value="Dip Skin Cancer" {{ ($users->role_type == "Dip Skin Cancer")? "selected" : "" }} >Dip Skin Cancer</option>
+                            <option value="Operational Manager" {{ ($users->role_type == "Operational Manager")? "selected" : "" }} >Operational Manager</option>
+                            <option value="Paramedical Aesthetician" {{ ($users->role_type == "Paramedical Aesthetician")? "selected" : "" }} >Paramedical Aesthetician</option>
+                            <option value="Nurse" {{ ($users->role_type == "Nurse")? "selected" : "" }} >Nurse</option>
                         </select>
                     </div>
                 </div>
@@ -68,13 +71,13 @@
                     <div class="form-group">
                         <label class="form-label">Access Level</label>
                         <select class="form-select form-control" name="access_level" id="access_level">
-                            <option>Targets</option>
-                            <option>Limited</option>
-                            <option>Standard</option>
-                            <option>Standard+</option>
-                            <option>Advance</option>
-                            <option>Advance+</option>
-                            <option>Accounts</option>
+                            <option value="Targets" {{ ($users->access_level == "Targets")? "selected" : "" }} >Targets</option>
+                            <option value="Limited" {{ ($users->access_level == "Limited")? "selected" : "" }} >Limited</option>
+                            <option value="Standard" {{ ($users->access_level == "Standard")? "selected" : "" }} >Standard</option>
+                            <option value="Standard+" {{ ($users->access_level == "Standard+")? "selected" : "" }} >Standard+</option>
+                            <option value="Advance" {{ ($users->access_level == "Advance")? "selected" : "" }} >Advance</option>
+                            <option value="Advance+" {{ ($users->access_level == "Advance+")? "selected" : "" }} >Advance+</option>
+                            <option value="Accounts" {{ ($users->access_level == "Accounts")? "selected" : "" }} >Accounts</option>
                         </select>
                     </div>
                 </div>
@@ -92,7 +95,11 @@
                     <div class="mt-2 d-grey font-13"><em>Photos you add here will be visible to this client in Online Booking.</em></div>
                 </div>
                 <div class="col-lg-2 text-center">
+                    @if($users->image != '')
+                    <figure class="profile-img"><img src="{{asset('images/user_image/').'/'.$users->image}}" alt="" id="imgPreview"></figure>
+                    @else
                     <figure class="profile-img"><img src="../images/banner_image/no-image.jpg" alt="" id="imgPreview"></figure>
+                    @endif
                     <button type="button" class="btn btn-sm black-btn round-6 dt-delete remove_image">
                         <i class="ico-trash"></i>
                         </button>
@@ -105,15 +112,17 @@
                 <button type="submit" class="btn btn-primary">Save Changes</button>
             </div>
         </div>
-        </form>
-        
-    </div>
+            </div>
+            </form>
+        </div>
 </main>
-@stop
+@endsection
 @section('script')
 <script>
+
+
     $(document).ready(function() {
-		$("#create_user").validate({
+		$("#edit_users").validate({
             rules: {
                 first_name: {
                     required: true,
@@ -136,7 +145,6 @@
                 }
             }
         });
-
         $("#imgInput").change(function() {
             if (this.files && this.files[0]) {
 
@@ -149,50 +157,31 @@
                 reader.readAsDataURL(this.files[0]);
             }
         });
-
         $('.remove_image').click(function(e){
             debugger;
             $('#imgPreview').attr('src', "{{URL::to('/images/banner_image/no-image.jpg')}}");
             e.preventDefault();
         })
     });
-    $(document).on('submit','#create_user',function(e){debugger;
+    $(document).on('submit','#edit_users',function(e){debugger;
 		e.preventDefault();
-		var valid= $("#create_user").validate();
+        var id=$('#id').val();
+		var valid= $("#edit_users").validate();
 			if(valid.errorList.length == 0){
-			var data = $('#create_user').serialize() ;
-			submitCreateUserForm(data);
+            var data = new FormData(this);
+            submitEditUserForm(data,id);
 		}
 	});
-    function submitCreateUserForm(data){
-        debugger;
-        var formData = new FormData();
-        var image = $('#imgInput').prop('files')[0];   
-        var first_name=$('#first_name').val();
-        var last_name=$('#last_name').val();
-        var email=$('#email').val();
-        var phone=$('#phone').val();
-        var role_type=$('#role_type').val();
-        var access_level=$('#access_level').val();
-        var gender = $('input[name="gender"]:checked').val();
-        
-        formData.append('image', image);
-        formData.append('first_name', first_name);
-        formData.append('last_name', last_name);
-        formData.append('email', email);
-        formData.append('phone', phone);
-        formData.append('role_type', role_type);
-        formData.append('access_level', access_level);
-        formData.append('gender', gender);
+    function submitEditUserForm(data,id){
+        var url = "/users/update_info";
 		$.ajax({
 			headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-			url: "{{route('users.store')}}",
-			type: "post",
-            // contentType: 'multipart/form-data',
-            cache: false,
-            contentType: false,
+			// url: id,
+            url: url,
+			type: "POST",
             processData: false,
-			data: formData,
+            contentType: false,
+            data: data,
 			success: function(response) {
 				debugger;
 				// Show a Sweet Alert message after the form is submitted.
@@ -200,7 +189,7 @@
 					
 					Swal.fire({
 						title: "User!",
-						text: "Your User created successfully.",
+						text: "Your User updated successfully.",
 						type: "success",
 					}).then((result) => {
                         window.location = "{{url('users')}}"//'/player_detail?username=' + name;
@@ -217,32 +206,5 @@
 			},
 		});
 	}
-    function duplicateEmail(element){
-        var email = $(element).val();
-        var url = "/users/checkEmail";
-        $.ajax({
-            type: "POST",
-            headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            url: url,
-            data: {// change data to this object
-              _token : $('meta[name="csrf-token"]').attr('content'), 
-              email:email
-            },
-            dataType: "json",
-            success: function(res) {
-                if(res.exists){
-                  $('#email').after('<p style="color:red";>Email already exist');
-                    // alert('true');
-                }else{
-                    // alert('false');
-                }
-            },
-            error: function (jqXHR, exception) {
-
-           }
-       });
-   }
-</script> 
+</script>
 @endsection

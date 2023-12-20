@@ -29,6 +29,7 @@ return new class extends Migration
             $table->string('google_id')->nullable();
             $table->string('facebook_id')->nullable();
             $table->string('access_level',50)->nullable();
+            $table->string('last_login')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

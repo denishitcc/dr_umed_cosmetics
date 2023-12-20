@@ -16,6 +16,7 @@ use Mail;
 use Illuminate\Support\Str;
 use DB; 
 use Laravel\Socialite\Facades\Socialite;
+use DateTime;
 
 class AuthController extends Controller
 {
@@ -54,7 +55,9 @@ class AuthController extends Controller
         ]);
    
         $credentials = $request->only('email', 'password');
-        if (Auth::attempt($credentials)) {
+        // if (Auth::attempt($credentials)) {
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'status' => 'active'])) {
+            $newUser = User::where('email',$request->email)->update(['last_login'=>new DateTime]);
             return redirect()->intended('dashboard')
                         ->withSuccess('You have Successfully loggedin');
         }

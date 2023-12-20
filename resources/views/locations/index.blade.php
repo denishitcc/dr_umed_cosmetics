@@ -30,7 +30,7 @@
                               <button class="btn btn-default buttons-collection btn-default-dt-options" tabindex="0" aria-controls="DataTables_Table_0" type="button" aria-haspopup="true" aria-expanded="false"><span>Export</span></button>
                             </div> -->
                           </div>
-                          <div class="col-md-5">
+                          <!-- <div class="col-md-5">
                             <div id="DataTables_Table_0_filter" class="dataTables_filter">
                               <label>
                                 <div class="input-group">
@@ -42,13 +42,13 @@
                               </label>
                             </div>
                           </div>
-                        </div>
+                        </div> -->
                       <table id="example" class="table all-db-table align-middle display select" cellspacing="0" width="100%">
                         <thead>
                           <tr>
                             <th>
                               <!-- <input type="checkbox" name="select_all" class="select_all" value="1" id="example-select-all"> -->
-                              <label class="cst-check"><input type="checkbox" name="select_all" class="select_all" value="1" id="example-select-all"><span class="checkmark"></span></label>
+                              <label class="cst-check blue"><input type="checkbox" name="select_all" class="select_all" value="1" id="example-select-all"><span class="checkmark"></span></label>
                             </th>
                             <th>Location Name</th>
                             <th>Email</th>
@@ -85,9 +85,9 @@
                           @endif
                         </tbody>
                       </table>
-                      <div class="input-group">
-                        <select name="pagelist" id="pagelist" class="form-control"></select>
-                      </div>
+                      <!--<div class="input-group">-->
+                      <!--  <select name="pagelist" id="pagelist" class=""></select>-->
+                      <!--</div>-->
               </div>
               
               
@@ -104,7 +104,11 @@
         $(document).ready(function() {
             document.title='Locations';
             var table = $('#example').DataTable({
-                "dom": 'Blrtip',
+                "dom": 'Blrftip',
+                "language": {
+                        "search": '<i class="fa fa-search"></i>',
+                        "searchPlaceholder": "search...",
+                },
                 "paging": true,
                 // "bFilter": false,
                 "pageLength": 5,
@@ -116,7 +120,7 @@
                   'orderable': false,
                   'className': 'dt-body-center',
                   'render': function (data, type, full, meta){
-                      return '<label class="cst-check"><input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '"><span class="checkmark"></span></label>';
+                      return '<label class="cst-check blue"><input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '"><span class="checkmark"></span></label>';
                   }
                 }],
                 buttons: [
@@ -174,41 +178,87 @@
               },
                 'order': [[1, 'desc']],
                 initComplete: function () {
-                    var btns = $('.dt-buttons');
+                    var btns = $('.dt-buttons'),
+                        dtFilter = $('.dataTables_filter'),
+                        dtInfo  = $('.dataTables_info'),
+                        api     = this.api(),
+                        page_info = api.rows( {page:'current'} ).data().page.info(),
+                        length = page_info.length,
+                        start = 0;
+                        
+
+                    var pageInfoHtml = `
+                        <div class="dt-page-jump">
+                            <select name="pagelist" id="pagelist" class="">
+                    `;
+                    
+                    for(var count = 1; count <= page_info.pages; count++)
+                    {
+                        var page_number = count - 1;
+        
+                        pageInfoHtml += `<option value="${page_number}" data-start="${start}" data-length="${length}">${count}</option>`;
+        
+                        start = start + page_info.length;
+                    }
+                    
+                    pageInfoHtml += `</select></div>`;
+                        
+                    dtFilter.find('label').remove();
+                    
+                    dtFilter.html(
+                    `
+                    <label>
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <span class="ico-mini-search"></span>
+                            </span>
+                            <input type="search" class="form-control input-sm dt-search" placeholder="Search..." aria-controls="example">
+                        </div>
+                    </label>
+                    `);
+                    
+                    $(pageInfoHtml).insertAfter(dtInfo);
+
                     btns.addClass('btn-group');
                     btns.find('button').removeAttr('class');
                     btns.find('button').addClass('btn btn-default buttons-collection btn-default-dt-options');
                 },
         //   "sPaginationType": "listbox"
-        "drawCallback": function( settings ) {
-              var api = this.api();
-  
-              // Output the data for the visible rows to the browser's console
-              console.log( api.rows( {page:'current'} ).data() );
-
-              var page_info = api.rows( {page:'current'} ).data().page.info();
-              debugger;
-              $('#totalpages').text(page_info.pages);
-              var html = '';
-
-              var start = 0;
-
-              var length = page_info.length;
-
-              for(var count = 1; count <= page_info.pages; count++)
-              {
-                var page_number = count - 1;
-
-                html += '<option value="'+page_number+'" data-start="'+start+'" data-length="'+length+'">'+count+'</option>';
-
-                start = start + page_info.length;
-              }
-
-              $('#pagelist').html(html);
-
-              $('#pagelist').val(page_info.page);
-            }
+                "drawCallback": function( settings ) {
+                      var   api     = this.api(),
+                            dtInfo  = $('.dataTables_info');
+          
+                      // Output the data for the visible rows to the browser's console
+                    //   console.log( api.rows( {page:'current'} ).data() );
+        
+                      var page_info = api.rows( {page:'current'} ).data().page.info();
+                    //   debugger;
+                      $('#totalpages').text(page_info.pages);
+                    //   var html = '';
+        
+                    //   var start = 0;
+        
+                    //   var length = page_info.length;
+        
+                    //   for(var count = 1; count <= page_info.pages; count++)
+                    //   {
+                    //     var page_number = count - 1;
+        
+                    //     html += '<option value="'+page_number+'" data-start="'+start+'" data-length="'+length+'">'+count+'</option>';
+        
+                    //     start = start + page_info.length;
+                    //   }
+        
+                    //   $('#pagelist').html(html);
+        
+                    //   $('#pagelist').val(page_info.page);
+                }
             });
+    $('.dt-search').on('keyup', function()
+    {
+        table.search($(this).val()).draw() ;
+    });
+    
 
     $('#pagelist').change(function(){
       var page_no = $('#pagelist').find(":selected").text();
