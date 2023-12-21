@@ -1,7 +1,7 @@
 @extends('layouts/sidebar')
 @section('content')
 <meta name="csrf-token" content="{{ csrf_token() }}">
-<script src="https://code.jquery.com/jquery-3.5.1.js"></script>  
+<!-- <script src="https://code.jquery.com/jquery-3.5.1.js"></script>   -->
 <main>
     <div class="card">
         <div class="card-head">
@@ -33,10 +33,15 @@
     </div>
 </main>
      
-</body>
-     
-<script type="text/javascript">
- $(document).ready(function() {
+@stop
+@section('script')
+<script>
+$.ajaxSetup({
+headers: {
+    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+}
+});
+$(document).ready(function() {
     document.title='Users';
     var table = $('.data-table').DataTable({
         processing: true,
@@ -161,47 +166,47 @@
         table.fnPageChange(page_no - 1,true);
     });
 });
-    $(document).on('click', '.dt-edit', function(e) {
-      e.preventDefault();
-      debugger;
-      var ids = $(this).attr('ids');
-      window.location = 'users-roles/' + ids;
-    });
-    $(document).on('click', '.dt-delete', function(e) {
-      e.preventDefault();
-        $this = $(this);
-        var dtRow = $this.parents('tr');
-        if(confirm("Are you sure to delete this row?")){
-          $.ajax({
-            headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-            url: "users-roles/"+$(this).attr('ids'),
-            type: 'DELETE',
-            data: {
-                "id": $(this).attr('ids'),
-            },
-            success: function(response) {
-              // Show a Sweet Alert message after the form is submitted.
-              if (response.success) {
-                Swal.fire({
-                  title: "User Role!",
-                  text: "Your User Role deleted successfully.",
-                  type: "success",
-                }).then((result) => {
-                              window.location = "{{url('users-roles')}}"//'/player_detail?username=' + name;
-                          });
-              } else {
-                Swal.fire({
-                  title: "Error!",
-                  text: response.message,
-                  type: "error",
-                });
-              }
-            },
-          });
-          var table = $('#example').DataTable();
-          table.row(dtRow[0].rowIndex-1).remove().draw( false );
-        }
-    });
+$(document).on('click', '.dt-edit', function(e) {
+    e.preventDefault();
+    debugger;
+    var ids = $(this).attr('ids');
+    window.location = 'users-roles/' + ids;
+});
+$(document).on('click', '.dt-delete', function(e) {
+    e.preventDefault();
+    $this = $(this);
+    var dtRow = $this.parents('tr');
+    if(confirm("Are you sure to delete this row?")){
+        $.ajax({
+        headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        url: "users-roles/"+$(this).attr('ids'),
+        type: 'DELETE',
+        data: {
+            "id": $(this).attr('ids'),
+        },
+        success: function(response) {
+            // Show a Sweet Alert message after the form is submitted.
+            if (response.success) {
+            Swal.fire({
+                title: "User Role!",
+                text: "Your User Role deleted successfully.",
+                type: "success",
+            }).then((result) => {
+                            window.location = "{{url('users-roles')}}"//'/player_detail?username=' + name;
+                        });
+            } else {
+            Swal.fire({
+                title: "Error!",
+                text: response.message,
+                type: "error",
+            });
+            }
+        },
+        });
+        var table = $('#example').DataTable();
+        table.row(dtRow[0].rowIndex-1).remove().draw( false );
+    }
+});
 </script>
 </html>
 @endsection

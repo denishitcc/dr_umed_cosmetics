@@ -1,7 +1,7 @@
 @extends('layouts/sidebar')
 @section('content')
 <meta name="csrf-token" content="{{ csrf_token() }}">
-<script src="https://code.jquery.com/jquery-3.5.1.js"></script>  
+<!-- <script src="https://code.jquery.com/jquery-3.5.1.js"></script>   -->
 <main>
     <div class="card">
         <div class="card-head">
@@ -38,11 +38,15 @@
         
     </div>
 </main>
-     
-</body>
-     
-<script type="text/javascript">
- $(document).ready(function() {
+@stop
+@section('script')
+<script>
+$.ajaxSetup({
+headers: {
+    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+}
+});
+$(document).ready(function() {
     document.title='Locations';
     var table = $('.data-table').DataTable({
         processing: true,
@@ -200,7 +204,7 @@
         // table.ajax.reload();
     });
 });
-  $(document).on('click', '.dt-edit', function(e) {
+$(document).on('click', '.dt-edit', function(e) {
       e.preventDefault();
       var ids = $(this).attr('ids');
       window.location = 'locations/' + ids;
