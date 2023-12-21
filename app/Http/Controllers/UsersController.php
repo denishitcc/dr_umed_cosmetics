@@ -2,28 +2,98 @@
 
 namespace App\Http\Controllers;
 use App\Models\User;
+use App\Models\UserRoles;
 use Illuminate\Http\Request;
 use Hash;
 use Mail; 
 use Illuminate\Support\Str;
+use DataTables;
 
 class UsersController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users=User::where('role_type','!=','admin')->get();
+        // $users=User::where('role_type','!=','admin')->get();
 
-        foreach($users as $user)
-        {
-            $lastuserId = $user->id;
-            $lastIncreament = substr($lastuserId, -3);
-            $newUserId = str_pad($lastIncreament + 1, 3, 0, STR_PAD_LEFT);
-            $user->autoId = $newUserId;
+        // foreach($users as $user)
+        // {
+        //     $lastuserId = $user->id;
+        //     $lastIncreament = substr($lastuserId, -3);
+        //     $newUserId = str_pad($lastIncreament + 1, 3, 0, STR_PAD_LEFT);
+        //     $user->autoId = $newUserId;
+        // }
+
+        // return view('users.index', compact('users'));
+        $users = User::all();
+        if ($request->ajax()) {
+            // if($request->search != '')
+            // {
+            //     $data = Locations::where('location_name','LIKE','%'.$request->search.'%')
+            //             ->orWhere('phone','LIKE','%'.$request->search.'%')
+            //             ->orWhere('email','LIKE','%'.$request->search.'%')
+            //             ->orWhere('street_address','LIKE','%'.$request->search.'%')
+            //             ->orWhere('suburb','LIKE','%'.$request->search.'%')
+            //             ->orWhere('city','LIKE','%'.$request->search.'%')
+            //             ->orWhere('state','LIKE','%'.$request->search.'%')
+            //             ->orWhere('postcode','LIKE','%'.$request->search.'%')
+            //             ->orWhere('latitude','LIKE','%'.$request->search.'%')
+            //             ->orWhere('longitude','LIKE','%'.$request->search.'%')
+            //     ->get();
+            // }
+            // else if($request->pagination != '')
+            // {
+            //     $data = Locations::paginate(10, ['*'], 'page', $request->pagination);
+            //     // dd($data);
+            // }
+            // else
+            // {
+                $data = User::select('*')->where('role_type','!=','admin');
+                // foreach($data as $user)
+                // {
+                //     $lastuserId = $user->id;
+                //     $lastIncreament = substr($lastuserId, -3);
+                //     $newUserId = str_pad($lastIncreament + 1, 3, 0, STR_PAD_LEFT);
+                //     $user->autoId = $newUserId;
+                // }
+            // }
+            
+            // dd($data);
+            return Datatables::of($data)
+
+                    ->addIndexColumn()
+
+                    ->addColumn('action', function($row){
+                            $btn = '<div class="action-box"><button type="button" class="btn btn-sm black-btn round-6 dt-edit" ids='.$row->id.'><i class="ico-edit"></i></button><button type="button" class="btn btn-sm black-btn round-6 dt-delete" ids='.$row->id.'><i class="ico-trash"></i></button></div>';
+                            return $btn;
+                    })
+                    ->addColumn('image', function ($row) { 
+                        return $row->image;
+                    })
+                    ->addColumn('autoId', function ($row) { 
+                        $lastuserId = $row->id;
+                        $lastIncreament = substr($lastuserId, -3);
+                        $newUserId = str_pad($lastIncreament + 1, 3, 0, STR_PAD_LEFT);
+                        $row->autoId = $newUserId;
+                        return $row->autoId;
+                    })
+                    ->addColumn('username', function ($row) { 
+                        return $row->first_name.' '.$row->last_name;
+                    })
+                    ->addColumn('status_bar', function($row){
+                        if($row->status == 'active')
+                        {
+                            $row->status_bar = 'checked';
+                        }
+                        return $row->status_bar;
+                    })
+                    ->rawColumns(['action'])
+
+                    ->make(true);
+
         }
-
         return view('users.index', compact('users'));
     }
 
@@ -32,7 +102,8 @@ class UsersController extends Controller
      */
     public function create()
     {
-        return view('users.create');
+        $userRole = UserRoles::get();
+        return view('users.create',compact('userRole'));
     }
 
     /**
@@ -51,7 +122,7 @@ class UsersController extends Controller
         $file = $request->file('image');
         if($file != null)
         {
-            $destinationPath = 'images/user_image';
+            $destinationPath = public_path('images/user_image');
             $file->move($destinationPath,$file->getClientOriginalName());
             $img = $file->getClientOriginalName();
         }
@@ -71,10 +142,10 @@ class UsersController extends Controller
             'image'=>$img
         ]);
         if($newUser){
-            Mail::send('email.registration', ['email'=>$request->email,'username' => $request->first_name.' '.$request->last_name,'password'=>$password], function($message) use($request){
-                $message->to($request->email);
-                $message->subject('User Registration');
-            });
+            // Mail::send('email.registration', ['email'=>$request->email,'username' => $request->first_name.' '.$request->last_name,'password'=>$password], function($message) use($request){
+            //     $message->to($request->email);
+            //     $message->subject('User Registration');
+            // });
 
             $response = [
                 'success' => true,
@@ -98,7 +169,8 @@ class UsersController extends Controller
     public function show(string $id)
     {
         $users = User::find($id);
-        return view('users.edit', compact('users'));
+        $userRole = UserRoles::get();
+        return view('users.edit', compact('users','userRole'));
     }
 
     /**
@@ -127,7 +199,7 @@ class UsersController extends Controller
         // dd($file);
         if($file != null)
         {
-            $destinationPath = 'images/user_image';
+            $destinationPath = public_path('images/user_image');
             $file->move($destinationPath,$file->getClientOriginalName());
             $img = $file->getClientOriginalName();
         }

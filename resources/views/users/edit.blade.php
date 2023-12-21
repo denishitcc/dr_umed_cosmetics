@@ -6,7 +6,7 @@
         <div class="card">
             
             <div class="card-head">
-                <h4 class="small-title mb-5">Add User</h4>
+                <h4 class="small-title mb-5">Edit User</h4>
                 <h5 class="d-grey mb-0">Details | Photos</h5>
             </div>
             <form id="edit_users" name="edit_users" class="form" enctype="multipart/form-data">
@@ -59,11 +59,10 @@
                         <label class="form-label">Role Type</label>
                         
                         <select class="form-select form-control" name="role_type" id="role_type">
-                            <option value="Cosmetic Nurses" {{ ($users->role_type == "Cosmetic Nurses")? "selected" : "" }} >Cosmetic Nurses</option>
-                            <option value="Dip Skin Cancer" {{ ($users->role_type == "Dip Skin Cancer")? "selected" : "" }} >Dip Skin Cancer</option>
-                            <option value="Operational Manager" {{ ($users->role_type == "Operational Manager")? "selected" : "" }} >Operational Manager</option>
-                            <option value="Paramedical Aesthetician" {{ ($users->role_type == "Paramedical Aesthetician")? "selected" : "" }} >Paramedical Aesthetician</option>
-                            <option value="Nurse" {{ ($users->role_type == "Nurse")? "selected" : "" }} >Nurse</option>
+                            <option value> -- select an option -- </option>
+                            @foreach ($userRole as $role)
+                                <option value="{{ $role->role_name }}" {{ ( $role->role_name == $users->role_type) ? 'selected' : '' }}> {{ $role->role_name }} </option>
+                            @endforeach
                         </select>
                     </div>
                 </div>
@@ -71,6 +70,7 @@
                     <div class="form-group">
                         <label class="form-label">Access Level</label>
                         <select class="form-select form-control" name="access_level" id="access_level">
+                            <option value> -- select an option -- </option>
                             <option value="Targets" {{ ($users->access_level == "Targets")? "selected" : "" }} >Targets</option>
                             <option value="Limited" {{ ($users->access_level == "Limited")? "selected" : "" }} >Limited</option>
                             <option value="Standard" {{ ($users->access_level == "Standard")? "selected" : "" }} >Standard</option>
@@ -78,6 +78,7 @@
                             <option value="Advance" {{ ($users->access_level == "Advance")? "selected" : "" }} >Advance</option>
                             <option value="Advance+" {{ ($users->access_level == "Advance+")? "selected" : "" }} >Advance+</option>
                             <option value="Accounts" {{ ($users->access_level == "Accounts")? "selected" : "" }} >Accounts</option>
+                            <option value="Admin" {{ ($users->access_level == "Admin")? "selected" : "" }} >Admin</option>
                         </select>
                     </div>
                 </div>
@@ -142,6 +143,12 @@
                 },
                 image:{
                     required:true,
+                },
+                role_type:{
+                    required:true
+                },
+                access_level:{
+                    required:true
                 }
             }
         });
@@ -173,7 +180,7 @@
 		}
 	});
     function submitEditUserForm(data,id){
-        var url = "/users/update_info";
+        var url = "../users/update_info";
 		$.ajax({
 			headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
 			// url: id,

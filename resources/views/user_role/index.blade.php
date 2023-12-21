@@ -17,11 +17,11 @@
 <main>
     <div class="card">
         <div class="card-head">
-            <a href="{{ route('locations.create') }}" class="btn btn-primary btn-md me-2">New Location</a>
+            <a href="{{ route('users-roles.create') }}" class="btn btn-primary btn-md me-2">New User Role</a>
         <!-- <a href="#" class="btn btn-primary btn-md">Import Location CSV</a> -->
         </div>
         <div class="card-head">
-        <h4 class="small-title mb-0">All Locations</h4>
+        <h4 class="small-title mb-0">All User Role</h4>
     </div>
         <div class="card-body">
         <div class="row">
@@ -30,15 +30,9 @@
                 <table class="table data-table all-db-table align-middle display">
                 <thead>
                     <tr>
-                    <!-- <th> -->
-                        <!-- <label class="cst-check blue"><input type="checkbox" name="select_all" class="select_all" value="1" id="example-select-all"><span class="checkmark"></span></label> -->
-                    <!-- </th> -->
-                    <th>Location Name</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Location</th>
-                    <th>Latitudes</th>
-                    <th>Longitudes</th>
+                    <!-- <th>
+                    </th> -->
+                    <th>Role Name</th>
                     <th>Action</th>
                     </tr>
                 </thead>
@@ -55,65 +49,39 @@
      
 <script type="text/javascript">
  $(document).ready(function() {
-    document.title='Locations';
+    document.title='Users';
     var table = $('.data-table').DataTable({
         processing: true,
         // serverSide: true,
         ajax: {
-            url: "{{ route('locations.index') }}",
+            url: "{{ route('users-roles.index') }}",
             type: 'post',
             headers: {
                 'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
             },
-            data: function(data)
-            {
-                debugger;
-                // var checkboxes = $.map($('input[name="id"]:checked'), function(c){return c.value; });
-                // data.category       = jQuery('.drink_cat.active').data('category_id'),
-                // data.search_main    = context.selectors.search.val(),
-                // data.enable         = $('#enable').get(0).classList.contains('enable_clicked') ? checkboxes : [],
-                // data.disable        = $('#disable').get(0).classList.contains('disable_clicked') ? checkboxes : []
-                
-                // data.search = $(document).find('.dt-search').val();//for server side
-                // data.pagination =$('#pagelist :selected').text();
-            },
         },
         columns: [
-            {data: 'location_name', name: 'location_name',
-                "render": function(data, type, row, meta){
-                    data = '<a href="locations/' + row.id + '">' + data + '</a>';
-                    return data;
-                }
-            },
-            {data: 'email', name: 'email'},
-            {data: 'phone', name: 'phone'},
-            {data: 'street_addresses', name: 'street_addresses'},
-            {data: 'latitude', name: 'latitude'},
-            {data: 'longitude', name: 'longitude'},
+            // {data: '', name: ''},
+            {data: 'role_name', name: 'role_name'},
             {data: 'action', name: 'action', orderable: false, searchable: false},
         ],
         "dom": 'Blrftip',
         "paging": true,
         "pageLength": 10,
         "autoWidth": true,
-        // 'columnDefs': [{
-            // 'targets': 0,
-            // 'searchable': false,
-            // 'orderable': false,
-            // 'className': 'dt-body-center',
-            // 'render': function (data, type, full, meta){
-            //     return '';
-        //     }
-        // }],
+        'columnDefs': [{
+            // "targets": [0],
+            'orderable': false,
+        }],
         buttons: [
             {
                 extend: 'collection',
                 text: 'Export',
                 buttons: [
-                { text: "Excel",exportOptions: { columns: [0,1,2,3,4,5] } ,extend: 'excelHtml5'},
-                { text: "CSV" ,exportOptions: { columns: [0,1,2,3,4,5] } ,extend: 'csvHtml5'},
-                { text: "PDF" ,exportOptions: { columns: [0,1,2,3,4,5] } ,extend: 'pdfHtml5'},
-                { text: "PRINT" ,exportOptions: { columns: [0,1,2,3,4,5] } ,extend: 'print'},
+                { text: "Excel",exportOptions: { columns: [0] } ,extend: 'excelHtml5'},
+                { text: "CSV" ,exportOptions: { columns: [0] } ,extend: 'csvHtml5'},
+                { text: "PDF" ,exportOptions: { columns: [0] } ,extend: 'pdfHtml5'},
+                { text: "PRINT" ,exportOptions: { columns: [0] } ,extend: 'print'},
             ],
             dropup: true
             },
@@ -121,15 +89,15 @@
         select: {
             style : "multi",
         },
-        'order': [[1, 'desc']],
+        // 'order': [[0, 'desc']],
         initComplete: function () {
             var btns = $('.dt-buttons'),
-            dtFilter = $('.dataTables_filter'),
-            dtInfo  = $('.dataTables_info'),
-            api     = this.api(),
-            page_info = api.rows( {page:'current'} ).data().page.info(),
-            length = page_info.length,
-            start = 0;
+                dtFilter = $('.dataTables_filter'),
+                dtInfo  = $('.dataTables_info'),
+                api     = this.api(),
+                page_info = api.rows( {page:'current'} ).data().page.info(),
+                length = page_info.length,
+                start = 0;
                 
 
             var pageInfoHtml = `
@@ -169,39 +137,33 @@
             btns.find('button').addClass('btn btn-default buttons-collection btn-default-dt-options');
         },
         "drawCallback": function( settings ) {
-                var   api     = this.api(),
-                dtInfo  = $('.dataTables_info');
+            var   api     = this.api(),
+            dtInfo  = $('.dataTables_info');
+            var page_info = api.rows( {page:'current'} ).data().page.info();
+            $('#totalpages').text(page_info.pages);
+            var html = '';
 
-                // Output the data for the visible rows to the browser's console
-            //   console.log( api.rows( {page:'current'} ).data() );
+            var start = 0;
 
-                var page_info = api.rows( {page:'current'} ).data().page.info();
-            //   debugger;
-                $('#totalpages').text(page_info.pages);
-              var html = '';
+            var length = page_info.length;
 
-              var start = 0;
+            for(var count = 1; count <= page_info.pages; count++)
+            {
+            var page_number = count - 1;
 
-              var length = page_info.length;
+            html += '<option value="'+page_number+'" data-start="'+start+'" data-length="'+length+'">'+count+'</option>';
 
-              for(var count = 1; count <= page_info.pages; count++)
-              {
-                var page_number = count - 1;
+            start = start + page_info.length;
+            }
 
-                html += '<option value="'+page_number+'" data-start="'+start+'" data-length="'+length+'">'+count+'</option>';
+            $('#pagelist').html(html);
 
-                start = start + page_info.length;
-              }
-
-              $('#pagelist').html(html);
-
-              $('#pagelist').val(page_info.page);
+            $('#pagelist').val(page_info.page);
         }
     });
 
     $(document).on('keyup', '.dt-search', function()
     {
-        // table.ajax.reload();//for server side
         table.search($(this).val()).draw() ;
     });
     $(document).on('change', '#pagelist', function()
@@ -209,13 +171,13 @@
         var page_no = $('#pagelist').find(":selected").text();
         var table = $('.data-table').dataTable();
         table.fnPageChange(page_no - 1,true);
-        // table.ajax.reload();
     });
 });
-  $(document).on('click', '.dt-edit', function(e) {
+    $(document).on('click', '.dt-edit', function(e) {
       e.preventDefault();
+      debugger;
       var ids = $(this).attr('ids');
-      window.location = 'locations/' + ids;
+      window.location = 'users-roles/' + ids;
     });
     $(document).on('click', '.dt-delete', function(e) {
       e.preventDefault();
@@ -224,7 +186,7 @@
         if(confirm("Are you sure to delete this row?")){
           $.ajax({
             headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-            url: "locations/"+$(this).attr('ids'),
+            url: "users-roles/"+$(this).attr('ids'),
             type: 'DELETE',
             data: {
                 "id": $(this).attr('ids'),
@@ -233,11 +195,11 @@
               // Show a Sweet Alert message after the form is submitted.
               if (response.success) {
                 Swal.fire({
-                  title: "Locations!",
-                  text: "Your Locations deleted successfully.",
+                  title: "User Role!",
+                  text: "Your User Role deleted successfully.",
                   type: "success",
                 }).then((result) => {
-                              window.location = "{{url('locations')}}"//'/player_detail?username=' + name;
+                              window.location = "{{url('users-roles')}}"//'/player_detail?username=' + name;
                           });
               } else {
                 Swal.fire({

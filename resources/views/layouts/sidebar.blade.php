@@ -39,7 +39,7 @@
                     <li><a href="#"><i class="ico-enquiries"></i>Enquiries </a></li>
                     <li><a href="#"><i class="ico-finance"></i>Finance </a></li>
                     <li><a href="#"><i class="ico-reports"></i>Reports </a></li>
-                    <li class="dropdown"><a href="#"><i class="ico-staff"></i>Staff </a>
+                    <li class="dropdown {{ (request()->is('users')) ? 'show' : '' }}"><a href="#"><i class="ico-staff"></i>Staff </a>
                         <ul>
                             <li><a href="#">Roles</a></li>
                             <li class="{{ (request()->is('users')) ? 'active' : '' }}"><a href="{{ route('users.index') }}">Users</a></li>
@@ -68,8 +68,13 @@
                         </ul>
                     </li>
                     <li class="{{ (request()->is('locations')) ? 'active' : '' }} || {{ (request()->is('locations/*')) ? 'active' : '' }}"><a href="{{ route('locations.index') }}"><i class="ico-locations"></i>Locations </a></li>
-                    <li class="{{ (request()->is('settings')) ? 'active' : '' }}"><a href="{{ route('settings') }}"><i class="ico-settings"></i>Settings </a></li>
-
+                    <li class="dropdown {{ (request()->is('settings')) ? 'show' : '' }} || {{ (request()->is('users-roles')) ? 'show' : '' }}"><a href="#"><i class="ico-templates"></i>Settings </a>
+                        <ul>
+                            <li class="{{ (request()->is('settings')) ? 'active' : '' }}"><a href="{{ route('settings') }}">User Settings</a></li>
+                            <li class="{{ (request()->is('users-roles')) ? 'active' : '' }}"><a href="{{ route('users-roles.index') }}">User Role</a></li>
+                            <li><a href="#">Access Level</a></li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>

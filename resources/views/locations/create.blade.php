@@ -8,7 +8,7 @@
                 <h4 class="small-title mb-5">Add Location</h4>
                 <h5 class="d-grey mb-0">Details</h5>
             </div>
-            <form id="create_location" name="create_location" class="form">
+            <form id="create_location" name="create_location" class="form" method="post">
             @csrf
             <div class="card-body">
                 <div class="row">
@@ -42,7 +42,7 @@
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label class="form-label">Street Address</label>
-                            <input type="text" class="form-control" id="placeInput" name="street_address">
+                            <input type="text" class="form-control" id="street_address" name="street_address">
                             </div>
                     </div>
                     <div class="col-lg-4">
@@ -76,13 +76,13 @@
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label class="form-label">Latitudes</label>
-                            <input type="text" class="form-control" id="latitudes" name="latitudes">
+                            <input type="text" class="form-control" id="latitude" name="latitude">
                             </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label class="form-label">Longitudes</label>
-                            <input type="text" class="form-control" id="longitudes" name="longitudes">
+                            <input type="text" class="form-control" id="longitude" name="longitude">
                             </div>
                     </div>
                 </div>
@@ -895,28 +895,28 @@
 </main>
 @endsection
 @section('script')
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBR652zv0sbcR8AkNDA7PbQ3y33_yrzW0Q&libraries=places&callback=initAutocomplete" async></script>
+<!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBR652zv0sbcR8AkNDA7PbQ3y33_yrzW0Q&libraries=places&callback=initAutocomplete" async></script> -->
 <script>
 
-    let autocomplete;
+    // let autocomplete;
 
-    /* ------------------------- Initialize Autocomplete ------------------------ */
-    function initAutocomplete() {
-        const input = document.getElementById("placeInput");
-        const options = {
-            componentRestrictions: { country: "IN" }
-        }
-        autocomplete = new google.maps.places.Autocomplete(input, options);
-        autocomplete.addListener("place_changed", onPlaceChange)
-    }
+    // /* ------------------------- Initialize Autocomplete ------------------------ */
+    // function initAutocomplete() {
+    //     const input = document.getElementById("placeInput");
+    //     const options = {
+    //         componentRestrictions: { country: "IN" }
+    //     }
+    //     autocomplete = new google.maps.places.Autocomplete(input, options);
+    //     autocomplete.addListener("place_changed", onPlaceChange)
+    // }
 
     /* --------------------------- Handle Place Change -------------------------- */
-    function onPlaceChange() {
-        const place = autocomplete.getPlace();
-        console.log(place.formatted_address)
-        console.log(place.geometry.location.lat())
-        console.log(place.geometry.location.lng())
-    }
+    // function onPlaceChange() {
+    //     const place = autocomplete.getPlace();
+    //     console.log(place.formatted_address)
+    //     console.log(place.geometry.location.lat())
+    //     console.log(place.geometry.location.lng())
+    // }
     $(document).ready(function() {
 		$("#create_location").validate({
             rules: {
@@ -960,7 +960,7 @@
     function submitCreateLocationForm(data){
 		$.ajax({
 			headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-			url: "{{route('locations.store')}}",
+			url: "../locations/store",
 			type: "post",
 			data: data,
 			success: function(response) {

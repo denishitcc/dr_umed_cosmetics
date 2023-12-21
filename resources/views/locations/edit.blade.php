@@ -43,19 +43,19 @@
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label class="form-label">Street Address</label>
-                            <input type="text" class="form-control" id="placeInput" name="street_address">
+                            <input type="text" class="form-control" id="street_address" name="street_address" value="{{$locations->street_address}}">
                             </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label class="form-label">Suburb</label>
-                            <input type="text" class="form-control" id="suburb" name="suburb">
+                            <input type="text" class="form-control" id="suburb" name="suburb" value="{{$locations->suburb}}">
                             </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label class="form-label">City</label>
-                            <input type="text" class="form-control" id="city" name="city">
+                            <input type="text" class="form-control" id="city" name="city" value="{{$locations->city}}">
                             </div>
                     </div>
                 </div>
@@ -63,13 +63,13 @@
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label class="form-label">State/Region</label>
-                            <input type="text" class="form-control" id="state" name="state">
+                            <input type="text" class="form-control" id="state" name="state" value="{{$locations->state}}">
                             </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label class="form-label">Post Code</label>
-                            <input type="text" class="form-control" id="postcode" name="postcode">
+                            <input type="text" class="form-control" id="postcode" name="postcode" value="{{$locations->postcode}}">
                             </div>
                     </div>
                 </div>
@@ -77,13 +77,13 @@
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label class="form-label">Latitudes</label>
-                            <input type="text" class="form-control" id="latitudes" name="latitudes">
+                            <input type="text" class="form-control" id="latitude" name="latitude" value="{{$locations->latitude}}">
                             </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label class="form-label">Longitudes</label>
-                            <input type="text" class="form-control" id="longitudes" name="longitudes">
+                            <input type="text" class="form-control" id="longitude" name="longitude" value="{{$locations->longitude}}">
                             </div>
                     </div>
                 </div>

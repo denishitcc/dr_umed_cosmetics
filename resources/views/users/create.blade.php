@@ -56,11 +56,10 @@
                     <div class="form-group">
                         <label class="form-label">Role Type</label>
                         <select class="form-select form-control" name="role_type" id="role_type">
-                            <option>Cosmetic Nurses</option>
-                            <option>Dip Skin Cancer</option>
-                            <option>Operational Manager</option>
-                            <option>Paramedical Aesthetician</option>
-                            <option>Nurse</option>
+                            <option selected value> -- select an option -- </option>
+                            @foreach($userRole as $role)
+                            <option>{{$role->role_name}}</option>
+                            @endforeach
                         </select>
                     </div>
                 </div>
@@ -68,6 +67,7 @@
                     <div class="form-group">
                         <label class="form-label">Access Level</label>
                         <select class="form-select form-control" name="access_level" id="access_level">
+                            <option selected value> -- select an option -- </option>
                             <option>Targets</option>
                             <option>Limited</option>
                             <option>Standard</option>
@@ -75,6 +75,7 @@
                             <option>Advance</option>
                             <option>Advance+</option>
                             <option>Accounts</option>
+                            <option>Admin</option>
                         </select>
                     </div>
                 </div>
@@ -133,6 +134,12 @@
                 },
                 image:{
                     required:true,
+                },
+                role_type:{
+                    required:true
+                },
+                access_level:{
+                    required:true
                 }
             }
         });
@@ -186,7 +193,8 @@
         formData.append('gender', gender);
 		$.ajax({
 			headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-			url: "{{route('users.store')}}",
+			// url: "{{route('users.store')}}",
+            url: "../users/store",
 			type: "post",
             // contentType: 'multipart/form-data',
             cache: false,
@@ -219,7 +227,7 @@
 	}
     function duplicateEmail(element){
         var email = $(element).val();
-        var url = "/users/checkEmail";
+        var url = "../users/checkEmail";
         $.ajax({
             type: "POST",
             headers: {

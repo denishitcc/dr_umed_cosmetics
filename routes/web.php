@@ -5,6 +5,8 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\LocationsController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\LocationController;
+use App\Http\Controllers\UserRoleController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -47,11 +49,28 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/get-business-details', [SettingsController::class, 'GetBusinessDetails'])->name('get-business-details');
     Route::post('/update-brand-image', [SettingsController::class, 'UpdateBrandImage'])->name('update-brand-image');
     //locations
-    Route::resource('locations', LocationsController::class);
+    Route::resource('locations', LocationsController::class)->except([
+        'index'
+    ]);
+    
+    Route::match(['get', 'post'], 'locations',[LocationsController::class, 'index'])->name('locations.index');
+    Route::post('locations/store', [LocationsController::class, 'store'])->name('locations.store');
 
     //users
-    Route::resource('users', UsersController::class);
+    Route::resource('users', UsersController::class)->except([
+        'index'
+    ]);
+    Route::match(['get', 'post'], 'users',[UsersController::class, 'index'])->name('users.index');
+    Route::post('users/store', [UsersController::class, 'store'])->name('users.store');
+
     Route::post('users/checkEmail', [UsersController::class, 'checkEmail']);
     Route::post('users/update_info', [UsersController::class, 'update_info'])->name('update_info');
     Route::post('users/updateStatus', [UsersController::class, 'updateStatus']);
+    
+    //User Role
+    Route::resource('users-roles', UserRoleController::class)->except([
+        'index'
+    ]);
+    Route::match(['get', 'post'], 'users-roles',[UserRoleController::class, 'index'])->name('users-roles.index');
+    Route::post('users-roles/store', [UserRoleController::class, 'store'])->name('users-roles.store');
 });

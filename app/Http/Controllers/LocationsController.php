@@ -5,12 +5,55 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Locations;
 use App\Models\BusinessWorkingHours;
+use DataTables;
 
 class LocationsController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $locations = Locations::all();
+        if ($request->ajax()) {
+            // if($request->search != '')
+            // {
+            //     $data = Locations::where('location_name','LIKE','%'.$request->search.'%')
+            //             ->orWhere('phone','LIKE','%'.$request->search.'%')
+            //             ->orWhere('email','LIKE','%'.$request->search.'%')
+            //             ->orWhere('street_address','LIKE','%'.$request->search.'%')
+            //             ->orWhere('suburb','LIKE','%'.$request->search.'%')
+            //             ->orWhere('city','LIKE','%'.$request->search.'%')
+            //             ->orWhere('state','LIKE','%'.$request->search.'%')
+            //             ->orWhere('postcode','LIKE','%'.$request->search.'%')
+            //             ->orWhere('latitude','LIKE','%'.$request->search.'%')
+            //             ->orWhere('longitude','LIKE','%'.$request->search.'%')
+            //     ->get();
+            // }
+            // else if($request->pagination != '')
+            // {
+            //     $data = Locations::paginate(10, ['*'], 'page', $request->pagination);
+            //     // dd($data);
+            // }
+            // else
+            // {
+                $data = Locations::select('*');
+            // }
+            
+            // dd($data);
+            return Datatables::of($data)
+
+                    ->addIndexColumn()
+
+                    ->addColumn('action', function($row){
+                            $btn = '<div class="action-box"><button type="button" class="btn btn-sm black-btn round-6 dt-edit" ids='.$row->id.'><i class="ico-edit"></i></button><button type="button" class="btn btn-sm black-btn round-6 dt-delete" ids='.$row->id.'><i class="ico-trash"></i></button></div>';
+                            return $btn;
+                    })
+                    ->addColumn('street_addresses', function ($row) { 
+                        return $row->street_address.' '.$row->suburb.' '.$row->suburb.' '.$row->city.' '.$row->state.' '.$row->postcode;
+                    })
+                    ->rawColumns(['action'])
+
+                    ->make(true);
+
+        }
         return view('locations.index', compact('locations'));
     }
 
@@ -20,6 +63,7 @@ class LocationsController extends Controller
     }
     public function store(Request $request)
     {
+        // dd($request->all());
         $request->validate([
             'location_name' => 'required|string',
             'phone' => 'required|string',
@@ -29,7 +73,14 @@ class LocationsController extends Controller
         $newLocation = Locations::create([
             'location_name' => $request->location_name,
             'phone' => $request->phone,
-            'email'=> $request->email_address
+            'email'=> $request->email_address,
+            'street_address' => $request->street_address,
+            'suburb' => $request->suburb,
+            'city'=> $request->city,
+            'state' => $request->state,
+            'postcode' => $request->postcode,
+            'latitude'=> $request->latitude,
+            'longitude'=> $request->longitude,
         ]);
         foreach ($request->get('days') as $key => $value) 
         {
@@ -87,7 +138,14 @@ class LocationsController extends Controller
         $locations = Locations::updateOrCreate(['id' => $request->id],[
             'location_name' => $request->location_name,
             'phone' => $request->phone,
-            'email'=> $request->email_address
+            'email'=> $request->email_address,
+            'street_address' => $request->street_address,
+            'suburb' => $request->suburb,
+            'city'=> $request->city,
+            'state' => $request->state,
+            'postcode' => $request->postcode,
+            'latitude'=> $request->latitude,
+            'longitude'=> $request->longitude,
         ]);
 
         BusinessWorkingHours::where('location_id', $request->id)->delete();
