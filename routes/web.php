@@ -49,28 +49,18 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/get-business-details', [SettingsController::class, 'GetBusinessDetails'])->name('get-business-details');
     Route::post('/update-brand-image', [SettingsController::class, 'UpdateBrandImage'])->name('update-brand-image');
     //locations
-    Route::resource('locations', LocationsController::class)->except([
-        'index'
-    ]);
-    
-    Route::match(['get', 'post'], 'locations',[LocationsController::class, 'index'])->name('locations.index');
-    Route::post('locations/store', [LocationsController::class, 'store'])->name('locations.store');
+    Route::resource('locations', LocationsController::class);
+    Route::post('locations/table',[LocationsController::class, 'index'])->name('locations.table');
 
     //users
-    Route::resource('users', UsersController::class)->except([
-        'index'
-    ]);
-    Route::match(['get', 'post'], 'users',[UsersController::class, 'index'])->name('users.index');
-    Route::post('users/store', [UsersController::class, 'store'])->name('users.store');
-
+    Route::resource('users', UsersController::class);
+    Route::post('users/table',[UsersController::class, 'index'])->name('users.table');
     Route::post('users/checkEmail', [UsersController::class, 'checkEmail']);
     Route::post('users/update_info', [UsersController::class, 'update_info'])->name('update_info');
     Route::post('users/updateStatus', [UsersController::class, 'updateStatus']);
     
     //User Role
-    Route::resource('users-roles', UserRoleController::class)->except([
-        'index'
-    ]);
-    Route::match(['get', 'post'], 'users-roles',[UserRoleController::class, 'index'])->name('users-roles.index');
+    Route::resource('users-roles', UserRoleController::class);
+    Route::post('users-roles/table',[UserRoleController::class, 'index'])->name('users-roles.table');
     Route::post('users-roles/store', [UserRoleController::class, 'store'])->name('users-roles.store');
 });

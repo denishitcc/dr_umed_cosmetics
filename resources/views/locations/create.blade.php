@@ -960,7 +960,7 @@
     function submitCreateLocationForm(data){
 		$.ajax({
 			headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-			url: "../locations/store",
+			url: "{{route('locations.store')}}",
 			type: "post",
 			data: data,
 			success: function(response) {

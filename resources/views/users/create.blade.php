@@ -193,9 +193,8 @@
         formData.append('gender', gender);
 		$.ajax({
 			headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-			// url: "{{route('users.store')}}",
-            url: "../users/store",
-			type: "post",
+			url: "{{route('users.store')}}",
+            type: "post",
             // contentType: 'multipart/form-data',
             cache: false,
             contentType: false,

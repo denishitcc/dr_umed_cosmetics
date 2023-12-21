@@ -52,8 +52,8 @@
         debugger;
 		$.ajax({
 			headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-			// url: "{{route('users.store')}}",
-            url: "../users-roles/store",
+			url: "{{route('users-roles.store')}}",
+            // url: "../users-roles/store",
 			type: "post",
             // contentType: 'multipart/form-data',
             // cache: false,

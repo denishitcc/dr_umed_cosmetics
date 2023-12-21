@@ -50,7 +50,7 @@
             processing: true,
             // serverSide: true,
             ajax: {
-                url: "{{ route('users.index') }}",
+                url: "{{ route('users.table') }}",
                 type: 'post',
                 headers: {
                     'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
@@ -89,7 +89,7 @@
                     "searchPlaceholder": "search...",
             },
             "paging": true,
-            "pageLength": 5,
+            "pageLength": 10,
             "autoWidth": true,
             buttons: [
                 {
