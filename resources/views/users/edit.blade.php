@@ -30,11 +30,15 @@
                 <div class="col-lg-3">
                     <label class="form-label">Gender</label>
                     <div class="toggle mb-1">
-                        <input type="radio"  id="gender" name="gender" value="Male"  {{ ($users->gender=="Male")? "checked" : "" }} >
+                        <!-- <input type="radio"  id="gender" name="gender" value="Male"  {{ ($users->gender=="Male")? "checked" : "" }} > -->
                         <!-- <input type="radio" name="gender" value="Male" id="male" checked="checked" /> -->
-                        <label for="male">Male <i class="ico-tick"></i></label>
-                        <input type="radio"  id="gender" name="gender" value="Female"  {{ ($users->gender=="Female")? "checked" : "" }} >
+                        <!-- <label for="male">Male <i class="ico-tick"></i></label> -->
+                        <!-- <input type="radio"  id="gender" name="gender" value="Female"  {{ ($users->gender=="Female")? "checked" : "" }} > -->
                         <!-- <input type="radio" name="gender" value="Female" id="female" /> -->
+                        <!-- <label for="female">Female <i class="ico-tick"></i></label> -->
+                        <input type="radio" name="gender" value="Male" {{ ($users->gender=="Male")? "checked" : "" }}  id="male" checked="checked" />
+                        <label for="male">Male <i class="ico-tick"></i></label>
+                        <input type="radio" name="gender" value="Female" {{ ($users->gender=="Female")? "checked" : "" }}  id="female" />
                         <label for="female">Female <i class="ico-tick"></i></label>
                     </div>
                 </div>
