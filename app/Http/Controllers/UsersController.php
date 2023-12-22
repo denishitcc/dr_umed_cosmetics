@@ -142,10 +142,10 @@ class UsersController extends Controller
             'image'=>$img
         ]);
         if($newUser){
-            // Mail::send('email.registration', ['email'=>$request->email,'username' => $request->first_name.' '.$request->last_name,'password'=>$password], function($message) use($request){
-            //     $message->to($request->email);
-            //     $message->subject('User Registration');
-            // });
+            Mail::send('email.registration', ['email'=>$request->email,'username' => $request->first_name.' '.$request->last_name,'password'=>$password], function($message) use($request){
+                $message->to($request->email);
+                $message->subject('User Registration');
+            });
 
             $response = [
                 'success' => true,

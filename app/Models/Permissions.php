@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Permissoins extends Model
+class Permissions extends Model
 {
     use HasFactory;
     use SoftDeletes;
@@ -14,6 +14,7 @@ class Permissoins extends Model
 
     protected $fillable = [
         'id',
+        'name',
         'appointments_and_clients',
         'targets',
         'limited',

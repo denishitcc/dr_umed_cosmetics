@@ -77,10 +77,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group mb-5 other_contact">
-                                </div>
-                               
-                                <div class="form-group mb-5 other_contacts">
+                                
+                                <div class="other_contacts">
                                     
                                     
                                     <div class="form-group mb-0">
@@ -142,11 +140,10 @@
                                                     </div>
                                             </div>
                                             
-                                            <div class="card-body">
-                                                <div class="col-lg-12 text-lg-end mt-4">
-                                                    <button type="button" class="btn btn-light me-2">Discard</button>
-                                                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                                                </div>
+                                            
+                                            <div class="col-lg-12 text-lg-end mt-4">
+                                                <button type="button" class="btn btn-light me-2">Discard</button>
+                                                <button type="submit" class="btn btn-primary">Save Changes</button>
                                             </div>
                                         </div>
                                         </form> 
@@ -189,44 +186,17 @@
                                 </div>
                                 </form>
                             </div>
-                            <!-- <div class="card-body"> -->
-                                <!-- <form id="update_brand_image" name="update_brand_image" class="form" enctype='multipart/form-data' action="{{route('update-brand-image')}}" method="post">
-                                    @csrf
-                                    <div class="row">
-                                        @if(isset($user->banner_image))
-                                        <div class="form-group">
-                                            <img src="images/banner_image/{{$user->banner_image}}" class="w-50" id="imgPreview" style="height: 150px;">
-                                        </div>
-                                        @else
-                                        <div class="form-group">
-                                            <img src="images/banner_image/no-image.jpg" class="w-50" id="imgPreview" style="height: 150px;">
-                                        </div>
-                                        @endif
-                                        <div class="col-lg-5">
-                                            <div class="form-group">
-                                                <input type="file" id="imgInput" name="banner_image" accept="image/png, image/gif, image/jpeg">
-                                                <button class="remove_image">Remove image</button>
-                                            </div>
-                                        </div>
-                                            <div class="card-body">
-                                            <div class="col-lg-12 text-lg-end mt-4">
-                                                <button type="button" class="btn btn-light me-2">Discard</button>
-                                                <button type="submit" class="btn btn-primary">Save Changes</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form> -->
-                            <!-- </div>  -->
+                            <div class="tab-pane fade" id="tab_4" role="tabpanel">
+                                4
+                            </div>
+                            <div class="tab-pane fade" id="tab_5" role="tabpanel">
+                                5
+                            </div>
+                            <div class="tab-pane fade" id="tab_6" role="tabpanel">
+                                6
+                            </div>
                         </div>
-                        <div class="tab-pane fade" id="tab_4" role="tabpanel">
-                            4
-                        </div>
-                        <div class="tab-pane fade" id="tab_5" role="tabpanel">
-                            5
-                        </div>
-                        <div class="tab-pane fade" id="tab_6" role="tabpanel">
-                            6
-                        </div>
+                        
                     </div>
                     
                 </div>

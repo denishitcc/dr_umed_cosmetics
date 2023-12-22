@@ -7,6 +7,7 @@ use App\Http\Controllers\LocationsController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\UserRoleController;
+use App\Http\Controllers\AccessLevelController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -63,4 +64,8 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('users-roles', UserRoleController::class);
     Route::post('users-roles/table',[UserRoleController::class, 'index'])->name('users-roles.table');
     Route::post('users-roles/store', [UserRoleController::class, 'store'])->name('users-roles.store');
+
+    //Access Level
+    Route::get('/access-level', [AccessLevelController::class, 'access_level'])->name('access-level');
+    Route::post('/update-access-level', [AccessLevelController::class, 'update_access_level'])->name('update-access-level');
 });

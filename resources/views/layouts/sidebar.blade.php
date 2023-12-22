@@ -68,11 +68,11 @@
                         </ul>
                     </li>
                     <li class="{{ (request()->is('locations')) ? 'active' : '' }} || {{ (request()->is('locations/*')) ? 'active' : '' }}"><a href="{{ route('locations.index') }}"><i class="ico-locations"></i>Locations </a></li>
-                    <li class="dropdown {{ (request()->is('settings')) ? 'show' : '' }} || {{ (request()->is('users-roles')) ? 'show' : '' }}"><a href="#"><i class="ico-templates"></i>Settings </a>
+                    <li class="dropdown {{ (request()->is('settings')) ? 'show' : '' }} || {{ (request()->is('users-roles')) ? 'show' : '' }} || {{ (request()->is('access-level')) ? 'show' : '' }}"><a href="#"><i class="ico-templates"></i>Settings </a>
                         <ul>
                             <li class="{{ (request()->is('settings')) ? 'active' : '' }}"><a href="{{ route('settings') }}">User Settings</a></li>
                             <li class="{{ (request()->is('users-roles')) ? 'active' : '' }}"><a href="{{ route('users-roles.index') }}">User Role</a></li>
-                            <li><a href="#">Access Level</a></li>
+                            <li class="{{ (request()->is('access-level')) ? 'active' : '' }}"><a href="{{ route('access-level') }}">Access Level</a></li>
                         </ul>
                     </li>
                 </ul>

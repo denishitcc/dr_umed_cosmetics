@@ -6,12 +6,17 @@
   <main>
           <div class="card">
               <div class="card-head">
-                <a href="{{ route('users.create') }}" class="btn btn-primary btn-md me-2">Add User</a>
-                <!-- <a href="#" class="btn btn-primary btn-md">Import Location CSV</a> -->
-              </div>
-              <div class="card-head">
-                <h4 class="small-title mb-0">User Management</h4>
+              <div class="toolbar mb-0">
+                <div class="tool-left">
+                    <h4 class="small-title mb-0">User Management</h4>
+                </div>
+                <div class="tool-right">
+                    <a href="{{ route('users.create') }}" class="btn btn-primary btn-md">Add User</a>
+                </div>
             </div>
+                
+              </div>
+              
               <div class="card-body">
               <div class="row">
                           <div class="col-md-7">
@@ -62,11 +67,11 @@ $(document).ready(function() {
               debugger;
               if(data == '')
               {
-                return "<img src=\"images/banner_image/no-image.jpg\" height=\"50\"/>";
+                return "<figure class='photo'><img src=\"images/banner_image/no-image.jpg\"></figure>";
               }
               else
               {
-                return "<img src=\"images/user_image/" + data + "\" height=\"50\"/>";
+                return "<figure class='photo'><img src=\"images/user_image/" + data + "\"></figure>";
               }
             }
         },
@@ -77,7 +82,7 @@ $(document).ready(function() {
         {data: 'role_type', name: 'role_type'},
         { data: 'status_bar', name: 'status_bar',
             render: function( data, type, full, meta ) {debugger;
-                return "<div class='form-check form-switch'><input class='form-check-input flexSwitchCheckDefault' id='flexSwitchCheckDefault' type='checkbox' ids='"+full.id+"' value='"+data +"' "+data +"></div>"
+                return "<div class='form-check form-switch green'><input class='form-check-input flexSwitchCheckDefault' id='flexSwitchCheckDefault' type='checkbox' ids='"+full.id+"' value='"+data +"' "+data +"></div>"
             }
         },
         {data: 'last_login', name: 'last_login'},

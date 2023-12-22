@@ -33,11 +33,11 @@ return [
     'google' => [
             'client_id' => env('GOOGLE_CLIENT_ID'),
             'client_secret' => env('GOOGLE_CLIENT_SECRET'),
-            'redirect' => 'http://127.0.0.1:8000/authorized/google/callback',
+            'redirect' => env('GOOGLE_REDIRECT'),
     ],
     'facebook' => [
         'client_id' => env('FACEBOOK_CLIENT_ID'),
         'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
-        'redirect' => 'http://127.0.0.1:8000/auth/facebook/callback',
+        'redirect' => env('FACEBOOK_REDIRECT'),
     ],
 ];

@@ -73,7 +73,7 @@ $(document).ready(function() {
         columns: [
             {data: 'location_name', name: 'location_name',
                 "render": function(data, type, row, meta){
-                    data = '<a href="locations/' + row.id + '">' + data + '</a>';
+                    data = '<a class="blue-bold" href="locations/' + row.id + '">' + data + '</a>';
                     return data;
                 }
             },

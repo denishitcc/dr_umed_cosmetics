@@ -5,12 +5,17 @@
 <main>
     <div class="card">
         <div class="card-head">
-            <a href="{{ route('users-roles.create') }}" class="btn btn-primary btn-md me-2">New User Role</a>
-        <!-- <a href="#" class="btn btn-primary btn-md">Import Location CSV</a> -->
+        <div class="toolbar mb-0">
+                <div class="tool-left">
+                    <h4 class="small-title mb-0">All User Role</h4>
+                </div>
+                <div class="tool-right">
+                    <a href="{{ route('users-roles.create') }}" class="btn btn-primary btn-md">New User Role</a>
+                </div>
+            </div>
+            
         </div>
-        <div class="card-head">
-        <h4 class="small-title mb-0">All User Role</h4>
-    </div>
+        
         <div class="card-body">
         <div class="row">
                 <div class="col-md-7">

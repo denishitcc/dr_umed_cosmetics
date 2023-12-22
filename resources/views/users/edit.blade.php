@@ -87,7 +87,7 @@
                 <div class="col-lg-7">
                     <label class="gl-upload">
                         <div class="icon-box">
-                            <img src="img/upload-icon.png" alt="" class="up-icon">
+                            <img src="../img/upload-icon.png" alt="" class="up-icon">
                             <span class="txt-up">Upload File</span>
                             <!-- <input class="form-control" type="file" id="imgInput" name="image" accept="image/png, image/gif, image/jpeg"> -->
                             <input type="file" class="form-control" name="image" id="imgInput" accept="image/png, image/gif, image/jpeg">

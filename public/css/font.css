@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'ico';
-  src:  url('../fonts/ico.eot?7fv3t');
-  src:  url('../fonts/ico.eot?7fv3t#iefix') format('embedded-opentype'),
-    url('../fonts/ico.ttf?7fv3t') format('truetype'),
-    url('../fonts/ico.woff?7fv3t') format('woff'),
-    url('../fonts/ico.svg?7fv3t#ico') format('svg');
+  src:  url('../fonts/ico.eot?hvfieb');
+  src:  url('../fonts/ico.eot?hvfieb#iefix') format('embedded-opentype'),
+    url('../fonts/ico.ttf?hvfieb') format('truetype'),
+    url('../fonts/ico.woff?hvfieb') format('woff'),
+    url('../fonts/ico.svg?hvfieb#ico') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -25,6 +25,146 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.ico-eye:before {
+  content: "\e94c";
+}
+.ico-photo:before {
+  content: "\e93f";
+}
+.ico-add:before {
+  content: "\e921";
+}
+.ico-card-receive:before {
+  content: "\e922";
+}
+.ico-cards:before {
+  content: "\e923";
+}
+.ico-card-tick:before {
+  content: "\e924";
+}
+.ico-cart:before {
+  content: "\e925";
+}
+.ico-clipboard-text:before {
+  content: "\e926";
+}
+.ico-clock:before {
+  content: "\e927";
+}
+.ico-copy:before {
+  content: "\e928";
+}
+.ico-danger:before {
+  content: "\e929";
+}
+.ico-directbox-notify:before {
+  content: "\e92a";
+}
+.ico-dollar:before {
+  content: "\e92b";
+}
+.ico-dollar-square:before {
+  content: "\e92c";
+}
+.ico-download:before {
+  content: "\e92d";
+}
+.ico-draft:before {
+  content: "\e92e";
+}
+.ico-edit-thin:before {
+  content: "\e92f";
+}
+.ico-file-text:before {
+  content: "\e930";
+}
+.ico-filter:before {
+  content: "\e931";
+}
+.ico-folder:before {
+  content: "\e932";
+}
+.ico-graph:before {
+  content: "\e933";
+}
+.ico-import:before {
+  content: "\e934";
+}
+.ico-info .path1:before {
+  content: "\e935";
+  color: rgb(0, 0, 0);
+}
+.ico-info .path2:before {
+  content: "\e936";
+  margin-left: -1em;
+  color: rgb(255, 255, 255);
+}
+.ico-info .path3:before {
+  content: "\e937";
+  margin-left: -1em;
+  color: rgb(255, 255, 255);
+}
+.ico-info-italic:before {
+  content: "\e938";
+}
+.ico-left-arrow:before {
+  content: "\e939";
+}
+.ico-minus-circle:before {
+  content: "\e93a";
+}
+.ico-nav-dots:before {
+  content: "\e93b";
+}
+.ico-noun-arrow:before {
+  content: "\e93c";
+}
+.ico-pdf:before {
+  content: "\e93d";
+}
+.ico-percentage:before {
+  content: "\e93e";
+}
+.ico-plus-circle:before {
+  content: "\e940";
+}
+.ico-png:before {
+  content: "\e941";
+}
+.ico-print:before {
+  content: "\e942";
+}
+.ico-print3:before {
+  content: "\e943";
+}
+.ico-print-line:before {
+  content: "\e944";
+}
+.ico-right-arrow:before {
+  content: "\e945";
+}
+.ico-task:before {
+  content: "\e946";
+}
+.ico-ticket-discount:before {
+  content: "\e947";
+}
+.ico-truck:before {
+  content: "\e948";
+}
+.ico-user2:before {
+  content: "\e949";
+}
+.ico-vouocher:before {
+  content: "\e94a";
+}
+.ico-word:before {
+  content: "\e94b";
+}
+.ico-help:before {
+  content: "\e920";
+}
 .ico-drop-arrow:before {
   content: "\e91b";
 }

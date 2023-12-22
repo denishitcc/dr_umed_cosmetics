@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('permissions', function (Blueprint $table) {
             $table->id();
+            $table->string('name, 100')->nullable();
             $table->string('appointments_and_clients, 100')->nullable();
             $table->boolean('targets')->default(false);
             $table->boolean('limited')->default(false);

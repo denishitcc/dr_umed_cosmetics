@@ -104,7 +104,117 @@
                                     </td>
                                     <td>Open</td>
                                     <td>{{$works->day}}</td>
-                                    <td class="from_dates">
+                                    <td>
+                                        <div class="show-timing">
+                                            <div class="show-inner">
+                                                <div class="datble-drop">
+                                                <input type="hidden" name="days[{{$works->day}}][check_days]" value="{{$works->day}}">
+                                                    <select class="form-select form-control" id="start_time" name="days[{{$works->day}}][start_time]">
+                                                        <option value="12am" {{$works->start_time=='12am'?'selected':''}}>12am</option>
+                                                        <option value="30am" {{$works->start_time=='12:30am'?'selected':''}}>12:30am</option>
+                                                        <option value="1am" {{$works->start_time=='1am'?'selected':''}}>1am</option>
+                                                        <option value="30am" {{$works->start_time=='1:30am'?'selected':''}}>1:30am</option>
+                                                        <option value="2am" {{$works->start_time=='2am'?'selected':''}}>2am</option>
+                                                        <option value="2:30am" {{$works->start_time=='2:30am'?'selected':''}}>2:30am</option>
+                                                        <option value="3am" {{$works->start_time=='3am'?'selected':''}}>3am</option>
+                                                        <option value="3:30am" {{$works->start_time=='3:30am'?'selected':''}}>3:30am</option>
+                                                        <option value="4am" {{$works->start_time=='4am'?'selected':''}}>4am</option>
+                                                        <option value="4:30am" {{$works->start_time=='4:30am'?'selected':''}}>4:30am</option>
+                                                        <option value="5am" {{$works->start_time=='5am'?'selected':''}}>5am</option>
+                                                        <option value="5:30am" {{$works->start_time=='5:30am'?'selected':''}}>5:30am</option>
+                                                        <option value="6am" {{$works->start_time=='6am'?'selected':''}}>6am</option>
+                                                        <option value="6:30am" {{$works->start_time=='6:30am'?'selected':''}}>6:30am</option>
+                                                        <option value="7am" {{$works->start_time=='7am'?'selected':''}}>7am</option>
+                                                        <option value="7:30am" {{$works->start_time=='7:30am'?'selected':''}}>7:30am</option>
+                                                        <option value="8am" {{$works->start_time=='8am'?'selected':''}}>8am</option>
+                                                        <option value="8:30am" {{$works->start_time=='8:30am'?'selected':''}}>8:30am</option>
+                                                        <option value="9am" {{$works->start_time=='9am'?'selected':''}}>9am</option>
+                                                        <option value="9:30am" {{$works->start_time=='9:30am'?'selected':''}}>9:30am</option>
+                                                        <option value="10am" {{$works->start_time=='10am'?'selected':''}}>10am</option>
+                                                        <option value="10:30am" {{$works->start_time=='10:30am'?'selected':''}}>10:30am</option>
+                                                        <option value="11am" {{$works->start_time=='11am'?'selected':''}}>11am</option>
+                                                        <option value="11:30am" {{$works->start_time=='11:30am'?'selected':''}}>11:30am</option>
+                                                        <option value="12pm" {{$works->start_time=='12pm'?'selected':''}}>12pm</option>
+                                                        <option value="12:30pm" {{$works->start_time=='12:30pm'?'selected':''}}>12:30pm</option>
+                                                        <option value="1pm" {{$works->start_time=='1pm'?'selected':''}}>1pm</option>
+                                                        <option value="1:30pm" {{$works->start_time=='1:30pm'?'selected':''}}>1:30pm</option>
+                                                        <option value="2pm" {{$works->start_time=='2pm'?'selected':''}}>2pm</option>
+                                                        <option value="2:30pm" {{$works->start_time=='2:30pm'?'selected':''}}>2:30pm</option>
+                                                        <option value="3pm" {{$works->start_time=='3pm'?'selected':''}}>3pm</option>
+                                                        <option value="3:30pm" {{$works->start_time=='3:30pm'?'selected':''}}>3:30pm</option>
+                                                        <option value="4pm" {{$works->start_time=='4pm'?'selected':''}}>4pm</option>
+                                                        <option value="4:30pm" {{$works->start_time=='4:30pm'?'selected':''}}>4:30pm</option>
+                                                        <option value="5pm" {{$works->start_time=='5pm'?'selected':''}}>5pm</option>
+                                                        <option value="5:30pm" {{$works->start_time=='5:30pm'?'selected':''}}>5:30pm</option>
+                                                        <option value="6pm" {{$works->start_time=='6pm'?'selected':''}}>6pm</option>
+                                                        <option value="6:30pm" {{$works->start_time=='6:30pm'?'selected':''}}>6:30pm</option>
+                                                        <option value="7pm" {{$works->start_time=='7pm'?'selected':''}}>7pm</option>
+                                                        <option value="7:30pm" {{$works->start_time=='7:30pm'?'selected':''}}>7:30pm</option>
+                                                        <option value="8pm" {{$works->start_time=='8pm'?'selected':''}}>8pm</option>
+                                                        <option value="8:30pm" {{$works->start_time=='8:30pm'?'selected':''}}>8:30pm</option>
+                                                        <option value="9pm" {{$works->start_time=='9pm'?'selected':''}}>9pm</option>
+                                                        <option value="9:30pm" {{$works->start_time=='9:30pm'?'selected':''}}>9:30pm</option>
+                                                        <option value="10pm" {{$works->start_time=='10pm'?'selected':''}}>10pm</option>
+                                                        <option value="10:30pm" {{$works->start_time=='10:30pm'?'selected':''}}>10:30pm</option>
+                                                        <option value="11pm" {{$works->start_time=='11pm'?'selected':''}}>11pm</option>
+                                                        <option value="11:30pm" {{$works->start_time=='11:30pm'?'selected':''}}>11:30pm</option>
+                                                    </select>
+                                                </div>
+                                                <div class="txt-to">To</div>
+                                                <div class="datble-drop">
+                                                    <select class="form-select form-control" name="days[{{$works->day}}][to_time]">
+                                                    <option value="1am" {{$works->end_time=='1am'?'selected':''}}>1am</option>
+                                                        <option value="30am" {{$works->end_time=='1:30am'?'selected':''}}>1:30am</option>
+                                                        <option value="2am" {{$works->end_time=='2am'?'selected':''}}>2am</option>
+                                                        <option value="2:30am" {{$works->end_time=='2:30am'?'selected':''}}>2:30am</option>
+                                                        <option value="3am" {{$works->end_time=='3am'?'selected':''}}>3am</option>
+                                                        <option value="3:30am" {{$works->end_time=='3:30am'?'selected':''}}>3:30am</option>
+                                                        <option value="4am" {{$works->end_time=='4am'?'selected':''}}>4am</option>
+                                                        <option value="4:30am" {{$works->end_time=='4:30am'?'selected':''}}>4:30am</option>
+                                                        <option value="5am" {{$works->end_time=='5am'?'selected':''}}>5am</option>
+                                                        <option value="5:30am" {{$works->end_time=='5:30am'?'selected':''}}>5:30am</option>
+                                                        <option value="6am" {{$works->end_time=='6am'?'selected':''}}>6am</option>
+                                                        <option value="6:30am" {{$works->end_time=='6:30am'?'selected':''}}>6:30am</option>
+                                                        <option value="7am" {{$works->end_time=='7am'?'selected':''}}>7am</option>
+                                                        <option value="7:30am" {{$works->end_time=='7:30am'?'selected':''}}>7:30am</option>
+                                                        <option value="8am" {{$works->end_time=='8am'?'selected':''}}>8am</option>
+                                                        <option value="8:30am" {{$works->end_time=='8:30am'?'selected':''}}>8:30am</option>
+                                                        <option value="9am" {{$works->end_time=='9am'?'selected':''}}>9am</option>
+                                                        <option value="9:30am" {{$works->end_time=='9:30am'?'selected':''}}>9:30am</option>
+                                                        <option value="10am" {{$works->end_time=='10am'?'selected':''}}>10am</option>
+                                                        <option value="10:30am" {{$works->end_time=='10:30am'?'selected':''}}>10:30am</option>
+                                                        <option value="11am" {{$works->end_time=='11am'?'selected':''}}>11am</option>
+                                                        <option value="11:30am" {{$works->end_time=='11:30am'?'selected':''}}>11:30am</option>
+                                                        <option value="12pm" {{$works->end_time=='12pm'?'selected':''}}>12pm</option>
+                                                        <option value="12:30pm" {{$works->end_time=='12:30pm'?'selected':''}}>12:30pm</option>
+                                                        <option value="1pm" {{$works->end_time=='1pm'?'selected':''}}>1pm</option>
+                                                        <option value="1:30pm" {{$works->end_time=='1:30pm'?'selected':''}}>1:30pm</option>
+                                                        <option value="2pm" {{$works->end_time=='2pm'?'selected':''}}>2pm</option>
+                                                        <option value="2:30pm" {{$works->end_time=='2:30pm'?'selected':''}}>2:30pm</option>
+                                                        <option value="3pm" {{$works->end_time=='3pm'?'selected':''}}>3pm</option>
+                                                        <option value="3:30pm" {{$works->end_time=='3:30pm'?'selected':''}}>3:30pm</option>
+                                                        <option value="4pm" {{$works->end_time=='4pm'?'selected':''}}>4pm</option>
+                                                        <option value="4:30pm" {{$works->end_time=='4:30pm'?'selected':''}}>4:30pm</option>
+                                                        <option value="5pm" {{$works->end_time=='5pm'?'selected':''}}>5pm</option>
+                                                        <option value="5:30pm" {{$works->end_time=='5:30pm'?'selected':''}}>5:30pm</option>
+                                                        <option value="6pm" {{$works->end_time=='6pm'?'selected':''}}>6pm</option>
+                                                        <option value="6:30pm" {{$works->end_time=='6:30pm'?'selected':''}}>6:30pm</option>
+                                                        <option value="7pm" {{$works->end_time=='7pm'?'selected':''}}>7pm</option>
+                                                        <option value="7:30pm" {{$works->end_time=='7:30pm'?'selected':''}}>7:30pm</option>
+                                                        <option value="8pm" {{$works->end_time=='8pm'?'selected':''}}>8pm</option>
+                                                        <option value="8:30pm" {{$works->end_time=='8:30pm'?'selected':''}}>8:30pm</option>
+                                                        <option value="9pm" {{$works->end_time=='9pm'?'selected':''}}>9pm</option>
+                                                        <option value="9:30pm" {{$works->end_time=='9:30pm'?'selected':''}}>9:30pm</option>
+                                                        <option value="10pm" {{$works->end_time=='10pm'?'selected':''}}>10pm</option>
+                                                        <option value="10:30pm" {{$works->end_time=='10:30pm'?'selected':''}}>10:30pm</option>
+                                                        <option value="11pm" {{$works->end_time=='11pm'?'selected':''}}>11pm</option>
+                                                        <option value="11:30pm" {{$works->end_time=='11:30pm'?'selected':''}}>11:30pm</option>
+                                                    </select>
+                                                </div>
+                                            </div> 
+                                        </div>
+                                    </td>
+                                    <!-- <td class="from_dates">
                                         <input type="hidden" name="days[{{$works->day}}][check_days]" value="{{$works->day}}">
                                         <select class="form-select form-control" id="start_time" name="days[{{$works->day}}][start_time]">
                                             <option value="12am" {{$works->start_time=='12am'?'selected':''}}>12am</option>
@@ -207,7 +317,7 @@
                                             <option value="11pm" {{$works->end_time=='11pm'?'selected':''}}>11pm</option>
                                             <option value="11:30pm" {{$works->end_time=='11:30pm'?'selected':''}}>11:30pm</option>
                                         </select>
-                                    </td>
+                                    </td> -->
                                 </tr>
                                 @endforeach
                                 </table>
@@ -277,16 +387,18 @@
         $('.checkbox').click(function() {
             debugger;
             if(this.checked) {
-                $(this).parent().parent().parent().find('.from_dates').show();
-                $(this).parent().parent().parent().find('.to_text').show();
-                $(this).parent().parent().parent().find('.to_dates').show();
+                $(this).parent().parent().parent().find('.show-timing').show();
+                // $(this).parent().parent().parent().find('.from_dates').show();
+                // $(this).parent().parent().parent().find('.to_text').show();
+                // $(this).parent().parent().parent().find('.to_dates').show();
             }
             else
             {
                 debugger;
-                $(this).parent().parent().parent().find('.from_dates').hide();
-                $(this).parent().parent().parent().find('.to_text').hide();
-                $(this).parent().parent().parent().find('.to_dates').hide();
+                $(this).parent().parent().parent().find('.show-timing').hide();
+                // $(this).parent().parent().parent().find('.from_dates').hide();
+                // $(this).parent().parent().parent().find('.to_text').hide();
+                // $(this).parent().parent().parent().find('.to_dates').hide();
             }
             $('#textbox1').val(this.checked);        
         });
