@@ -15,13 +15,14 @@ class Permissions extends Model
     protected $fillable = [
         'id',
         'name',
-        'appointments_and_clients',
+        'sub_name',
         'targets',
         'limited',
         'standard',
-        'standard+',
+        'standardplus',
         'advance',
-        'advance+',
-        'accounts'
+        'advanceplus',
+        'admin',
+        'account'
     ];
 }

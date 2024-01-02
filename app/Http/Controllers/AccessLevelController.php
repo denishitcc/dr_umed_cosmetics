@@ -8,33 +8,91 @@ use App\Models\Permissions;
 class AccessLevelController extends Controller
 {
     public function access_level(){
-        $access = Permissions::where('name','Appointments & Clients')->get();
-        // dd($access);
-        return view('access_level',compact('access'));
+        $appointment_client = Permissions::where('name','Appointments & Clients')->get();
+        $sales = Permissions::where('name','Sales')->get();
+        $reporting = Permissions::where('name','Reporting')->get();
+        $staffs = Permissions::where('name','Staff')->get();
+        $marketing = Permissions::where('name','Marketing')->get();
+        $administration = Permissions::where('name','Administration')->get();
+        // dd($sales);
+        return view('access_level',compact('appointment_client','sales','reporting','staffs','marketing','administration'));
     }
-    public function update_access_level(Request $request)
+    public function update_appointment_client(Request $request)
     {
-        $targets = [];
-        foreach ($request->targets as $tar) {
-            $targets[] = isset($tar) ? 1 : 0;
+        // dd($request->all());
+        $cnt=0;
+        foreach($request->name as $i => $app)
+        {
+            $newUser = Permissions::where('name','Appointments & Clients')
+            ->where('sub_name',$app)->first()
+            ->update(['targets'=>$request->targets[$cnt],'limited'=>$request->limited[$cnt],'standard'=>$request->standard[$cnt],'standardplus'=>$request->standardplus[$cnt],'advance'=>$request->advance[$cnt],'advanceplus'=>$request->advanceplus[$cnt],'admin'=>$request->admin[$cnt],'account'=>$request->account[$cnt]]);
+            $cnt++;
         }
-        dd($targets);
-
-        // The rest of your code...
-        // $limited = isset($request->limited) ? 1 : 0;
-        // dd($limited);
-        $limited[] = isset($request->limited) ? 1 : 0;
-        $standard = isset($request->standard) ? 1 : 0;
-        $standardplus = isset($request->standardplus) ? 1 : 0;
-        $advance = isset($request->advance) ? 1 : 0;
-        $advanceplus = isset($request->advanceplus) ? 1 : 0;
-        $admin = isset($request->admin) ? 1 : 0;
-        $accounts = isset($request->accounts) ? 1 : 0;
-        dd($targets);
-        $newUser = Permissions::where('name','Appointments & Clients')
-            ->where('appointments_and_clients','View the Appointment Book')
-            ->update(['targets'=>$targets,'limited'=>$limited,'standard'=>$standard,'standardplus'=>$standardplus,'advance'=>$advance,'advanceplus'=>$advanceplus,'admin'=>$admin,'account'=>$accounts]);
-        
+        return redirect('access-level');   
+    }
+    public function update_sales(Request $request)
+    {
+        // dd($request->all());
+        $cnt=0;
+        foreach($request->name as $i => $app)
+        {
+            $newUser = Permissions::where('name','Sales')
+            ->where('sub_name',$app)->first()
+            ->update(['targets'=>$request->targets[$cnt],'limited'=>$request->limited[$cnt],'standard'=>$request->standard[$cnt],'standardplus'=>$request->standardplus[$cnt],'advance'=>$request->advance[$cnt],'advanceplus'=>$request->advanceplus[$cnt],'admin'=>$request->admin[$cnt],'account'=>$request->account[$cnt]]);
+            $cnt++;
+        }
+        return redirect('access-level');   
+    }
+    public function update_reporting(Request $request)
+    {
+        // dd($request->all());
+        $cnt=0;
+        foreach($request->name as $i => $app)
+        {
+            $newUser = Permissions::where('name','Reporting')
+            ->where('sub_name',$app)->first()
+            ->update(['targets'=>$request->targets[$cnt],'limited'=>$request->limited[$cnt],'standard'=>$request->standard[$cnt],'standardplus'=>$request->standardplus[$cnt],'advance'=>$request->advance[$cnt],'advanceplus'=>$request->advanceplus[$cnt],'admin'=>$request->admin[$cnt],'account'=>$request->account[$cnt]]);
+            $cnt++;
+        }
+        return redirect('access-level');   
+    }
+    public function update_staff(Request $request)
+    {
+        // dd($request->all());
+        $cnt=0;
+        foreach($request->name as $i => $app)
+        {
+            $newUser = Permissions::where('name','Staff')
+            ->where('sub_name',$app)->first()
+            ->update(['targets'=>$request->targets[$cnt],'limited'=>$request->limited[$cnt],'standard'=>$request->standard[$cnt],'standardplus'=>$request->standardplus[$cnt],'advance'=>$request->advance[$cnt],'advanceplus'=>$request->advanceplus[$cnt],'admin'=>$request->admin[$cnt],'account'=>$request->account[$cnt]]);
+            $cnt++;
+        }
+        return redirect('access-level');   
+    }
+    public function update_marketing(Request $request)
+    {
+        // dd($request->all());
+        $cnt=0;
+        foreach($request->name as $i => $app)
+        {
+            $newUser = Permissions::where('name','Marketing')
+            ->where('sub_name',$app)->first()
+            ->update(['targets'=>$request->targets[$cnt],'limited'=>$request->limited[$cnt],'standard'=>$request->standard[$cnt],'standardplus'=>$request->standardplus[$cnt],'advance'=>$request->advance[$cnt],'advanceplus'=>$request->advanceplus[$cnt],'admin'=>$request->admin[$cnt],'account'=>$request->account[$cnt]]);
+            $cnt++;
+        }
+        return redirect('access-level');   
+    }
+    public function update_administration(Request $request)
+    {
+        // dd($request->all());
+        $cnt=0;
+        foreach($request->name as $i => $app)
+        {
+            $newUser = Permissions::where('name','Administration')
+            ->where('sub_name',$app)->first()
+            ->update(['targets'=>$request->targets[$cnt],'limited'=>$request->limited[$cnt],'standard'=>$request->standard[$cnt],'standardplus'=>$request->standardplus[$cnt],'advance'=>$request->advance[$cnt],'advanceplus'=>$request->advanceplus[$cnt],'admin'=>$request->admin[$cnt],'account'=>$request->account[$cnt]]);
+            $cnt++;
+        }
         return redirect('access-level');   
     }
 }

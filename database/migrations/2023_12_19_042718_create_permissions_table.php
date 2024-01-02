@@ -14,14 +14,15 @@ return new class extends Migration
         Schema::create('permissions', function (Blueprint $table) {
             $table->id();
             $table->string('name, 100')->nullable();
-            $table->string('appointments_and_clients, 100')->nullable();
+            $table->string('sub_name, 100')->nullable();
             $table->boolean('targets')->default(false);
             $table->boolean('limited')->default(false);
             $table->boolean('standard')->default(false);
-            $table->boolean('standard+')->default(false);
+            $table->boolean('standardplus')->default(false);
             $table->boolean('advance')->default(false);
-            $table->boolean('advance+')->default(false);
-            $table->boolean('accounts')->default(false);
+            $table->boolean('advanceplus')->default(false);
+            $table->boolean('admin')->default(false);
+            $table->boolean('account')->default(false);
             $table->softDeletes();
             $table->timestamps();
         });

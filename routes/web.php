@@ -67,5 +67,10 @@ Route::middleware(['auth'])->group(function () {
 
     //Access Level
     Route::get('/access-level', [AccessLevelController::class, 'access_level'])->name('access-level');
-    Route::post('/update-access-level', [AccessLevelController::class, 'update_access_level'])->name('update-access-level');
+    Route::post('/update-appointment-clients', [AccessLevelController::class, 'update_appointment_client'])->name('update-appointment-clients');
+    Route::post('/update-sales', [AccessLevelController::class, 'update_sales'])->name('update-sales');
+    Route::post('/update-reporting', [AccessLevelController::class, 'update_reporting'])->name('update-reporting');
+    Route::post('/update-staff', [AccessLevelController::class, 'update_staff'])->name('update-staff');
+    Route::post('/update-marketing', [AccessLevelController::class, 'update_marketing'])->name('update-marketing');
+    Route::post('/update-administration', [AccessLevelController::class, 'update_administration'])->name('update-administration');
 });

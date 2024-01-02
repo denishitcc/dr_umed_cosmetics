@@ -109,7 +109,13 @@
                                 <li><a href="#" class="tap"><i class="ico-equalizer"></i></a></li>
                                 <li><a href="#" class="tap"><i class="ico-notification"></i></a></li>
                                 <li><a href="#" class="tap"><i class="ico-settings"></i></a></li>
-                                <li class="profile" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">Hi, <span>Umed</span> <img src="img/profile.png" alt="">
+                                <li class="profile" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">Hi, <span>{{Auth::user()->first_name.' '.Auth::user()->last_name}}</span> 
+                                @if(Auth::user()->image=='')
+                                <img src="images/banner_image/no-image.jpg" alt="" style="width: 35px">
+                                @else
+                                <img src="images/user_image/{{Auth::user()->image}}" alt="" style="width: 35px">
+                                @endif
+                                
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                         <li><a href="#"> Manage Account</a></li>
                                         <li> <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a></li>

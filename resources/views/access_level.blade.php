@@ -31,7 +31,7 @@
             </ul>
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="tab_1" role="tabpanel">
-                    <form method="post" name="access" action="update-access-level">
+                    <form method="post" name="access" action="update-appointment-clients">
                     @csrf
                     <div class="card-body">
                         <div class="table-responsive">
@@ -48,18 +48,26 @@
                                     <th class="text-center">Admin</th>
                                     <th class="text-center">Accounts</th>
                                 </tr>
-                                @foreach($access as $acc)
+                                @foreach($appointment_client as $app)
                                 <tr>
-                                    <td class="text-left"> {{$acc->appointments_and_clients}}</td>
-                                    
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="targets[]" value="1" {{  ($acc->targets == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="limited[]" value="1" {{  ($acc->limited == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="standard[]" value="1" {{  ($acc->standard == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="standardplus[]" value="1" {{  ($acc->standardplus == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="advance[]" value="1" {{  ($acc->advance == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="advanceplus[]" value="1" {{  ($acc->advanceplus == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="admin[]" value="1" {{  ($acc->admin == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="accounts[]" value="1" {{  ($acc->account == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <td class="text-left"> {{$app->sub_name}}</td>
+                                    <input type="hidden" name="name[]" value="{{$app->sub_name}}">
+                                    <input type="hidden" name="targets[]" value="{{  ($app->targets == 1) ? 1 : 0}}" id="targets_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="targets[]" class="targets" value="1" {{  ($app->targets == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="limited[]" value="{{  ($app->limited == 1) ? 1 : 0}}" id="limited_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="limited[]" class="limited" value="1" {{  ($app->limited == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="standard[]" value="{{  ($app->standard == 1) ? 1 : 0}}" id="standard_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="standard[]" class="standard" value="1" {{  ($app->standard == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="standardplus[]" value="{{  ($app->standardplus == 1) ? 1 : 0}}" id="standardplus_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="standardplus[]" class="standardplus" value="1" {{  ($app->standardplus == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="advance[]" value="{{  ($app->advance == 1) ? 1 : 0}}" id="advance_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="advance[]" class="advance" value="1" {{  ($app->advance == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="advanceplus[]" value="{{  ($app->advanceplus == 1) ? 1 : 0}}" id="advanceplus_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="advanceplus[]" class="advanceplus" value="1" {{  ($app->advanceplus == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="admin[]" value="{{  ($app->admin == 1) ? 1 : 0}}" id="admin_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="admin[]" class="admin" value="1" {{  ($app->admin == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="account[]" value="{{  ($app->account == 1) ? 1 : 0}}" id="account_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="account[]" class="account" value="1" {{  ($app->account == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
                                 </tr>
                                 @endforeach
                                 </tbody>
@@ -72,6 +80,8 @@
                     </form>
                 </div>
                 <div class="tab-pane fade" id="tab_2" role="tabpanel">
+                    <form method="post" action="update-sales">
+                    @csrf
                     <div class="card-body">
                         <div class="table-responsive">
                             <table class="table all-db-table align-middle">
@@ -87,117 +97,40 @@
                                     <th class="text-center">Admin</th>
                                     <th class="text-center">Accounts</th>
                                 </tr>
+                                @foreach($sales as $sale)
                                 <tr>
-                                    <td class="text-left"> Prepare sales</td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value="" disabled checked><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-left"> Complete sales	</td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value="" disabled checked><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-left">Edit prices	</td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value="" disabled checked><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-left">Apply manual discounts</td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value="" disabled checked><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-left">View completed invoices</td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value="" disabled checked><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-left">Edit completed invoice (basic) <i class="ico-help"  data-toggle="tooltip" data-placement="top" title="Users can edit line item quantities, who did the work, comments, credit sale to, add items, add new payments, create backdated invoices."></i>
-                                            
-                                        </td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value="" disabled checked><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-left">Edit completed invoice (advanced) <i class="ico-help"  data-toggle="tooltip" data-placement="top" title="Users can add/edit/remove discounts or surcharges, edit payment dates, edit/remove payments, edit/remove line items."></i></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value="" checked><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value="" disabled checked><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-left">Delete completed invoice (same-day only)</td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value="" checked><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value="" disabled checked><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-left">Delete completed invoice	</td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value="" disabled checked><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    </tr>
-                                    
+                                    <td class="text-left"> {{$sale->sub_name}}</td>
+                                    <input type="hidden" name="name[]" value="{{$sale->sub_name}}">
+                                    <input type="hidden" name="targets[]" value="{{  ($sale->targets == 1) ? 1 : 0}}" id="targets_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="targets[]" class="targets" value="1" {{  ($sale->targets == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="limited[]" value="{{  ($sale->limited == 1) ? 1 : 0}}" id="limited_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="limited[]" class="limited" value="1" {{  ($sale->limited == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="standard[]" value="{{  ($sale->standard == 1) ? 1 : 0}}" id="standard_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="standard[]" class="standard" value="1" {{  ($sale->standard == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="standardplus[]" value="{{  ($sale->standardplus == 1) ? 1 : 0}}" id="standardplus_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="standardplus[]" class="standardplus" value="1" {{  ($sale->standardplus == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="advance[]" value="{{  ($sale->advance == 1) ? 1 : 0}}" id="advance_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="advance[]" class="advance" value="1" {{  ($sale->advance == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="advanceplus[]" value="{{  ($sale->advanceplus == 1) ? 1 : 0}}" id="advanceplus_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="advanceplus[]" class="advanceplus" value="1" {{  ($sale->advanceplus == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="admin[]" value="{{  ($sale->admin == 1) ? 1 : 0}}" id="admin_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="admin[]" class="admin" value="1" {{  ($sale->admin == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="account[]" value="{{  ($sale->account == 1) ? 1 : 0}}" id="account_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="account[]" class="account" value="1" {{  ($sale->account == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                </tr>
+                                @endforeach
                                 </tbody>
                             </table>
                         </div>
-                        <div class="col-lg-12 text-lg-end mt-4">
-                            <button type="submit" class="btn btn-primary">Save Changes</button>
-                        </div>
-                        </div>
+                    <div class="col-lg-12 text-lg-end mt-4">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                    </div>
+                    </form>
                 </div>
                 <div class="tab-pane fade" id="tab_3" role="tabpanel">
+                <form method="post" action="update-reporting">
+                    @csrf
                     <div class="card-body">
                         <div class="table-responsive">
                             <table class="table all-db-table align-middle">
@@ -213,81 +146,40 @@
                                     <th class="text-center">Admin</th>
                                     <th class="text-center">Accounts</th>
                                 </tr>
+                                @foreach($reporting as $report)
                                 <tr>
-                                    <td class="text-left"> View own Targets	</td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value="" disabled checked><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-left">View own Scoreboard</td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value="" disabled checked><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-left">View business Scoreboard</td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value="" disabled checked><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-left">View Benchmark</td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value="" disabled checked><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-left">Run all reports	</td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value="" disabled checked><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-left">View and set Targets	</td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value="" disabled checked><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    </tr>
+                                    <td class="text-left"> {{$report->sub_name}}</td>
+                                    <input type="hidden" name="name[]" value="{{$report->sub_name}}">
+                                    <input type="hidden" name="targets[]" value="{{  ($report->targets == 1) ? 1 : 0}}" id="targets_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="targets[]" class="targets" value="1" {{  ($report->targets == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="limited[]" value="{{  ($report->limited == 1) ? 1 : 0}}" id="limited_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="limited[]" class="limited" value="1" {{  ($report->limited == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="standard[]" value="{{  ($report->standard == 1) ? 1 : 0}}" id="standard_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="standard[]" class="standard" value="1" {{  ($report->standard == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="standardplus[]" value="{{  ($report->standardplus == 1) ? 1 : 0}}" id="standardplus_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="standardplus[]" class="standardplus" value="1" {{  ($report->standardplus == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="advance[]" value="{{  ($report->advance == 1) ? 1 : 0}}" id="advance_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="advance[]" class="advance" value="1" {{  ($report->advance == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="advanceplus[]" value="{{  ($report->advanceplus == 1) ? 1 : 0}}" id="advanceplus_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="advanceplus[]" class="advanceplus" value="1" {{  ($report->advanceplus == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="admin[]" value="{{  ($report->admin == 1) ? 1 : 0}}" id="admin_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="admin[]" class="admin" value="1" {{  ($report->admin == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="account[]" value="{{  ($report->account == 1) ? 1 : 0}}" id="account_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="account[]" class="account" value="1" {{  ($report->account == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                </tr>
+                                @endforeach
                                 </tbody>
                             </table>
                         </div>
-                        <div class="col-lg-12 text-lg-end mt-4">
-                            <button type="submit" class="btn btn-primary">Save Changes</button>
-                        </div>
-                        </div>
+                    <div class="col-lg-12 text-lg-end mt-4">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                    </div>
+                </form>
                 </div>
                 <div class="tab-pane fade" id="tab_4" role="tabpanel">
+                <form method="post" action="update-staff">
+                    @csrf
                     <div class="card-body">
                         <div class="table-responsive">
                             <table class="table all-db-table align-middle">
@@ -303,78 +195,28 @@
                                     <th class="text-center">Admin</th>
                                     <th class="text-center">Accounts</th>
                                 </tr>
+                                @foreach($staffs as $staff)
                                 <tr>
-                                    <td class="text-left"> View own timetable	
-                                    </td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value="" disabled checked><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-left">Add and edit staff timetables	
-                                        </td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value="" disabled checked><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-left">Add and edit timetable overrides	
-                                        </td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value="" disabled checked><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-left">View own Time Sheets	
-                                        </td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value="" disabled checked><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-left">Approve Time Sheets	
-                                        </td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value="" disabled checked><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-left">Add and edit Kitomba 1 users	
-                                        </td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value="" disabled checked><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    </tr>
+                                    <td class="text-left"> {{$staff->sub_name}}</td>
+                                    <input type="hidden" name="name[]" value="{{$staff->sub_name}}">
+                                    <input type="hidden" name="targets[]" value="{{  ($staff->targets == 1) ? 1 : 0}}" id="targets_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="targets[]" class="targets" value="1" {{  ($staff->targets == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="limited[]" value="{{  ($staff->limited == 1) ? 1 : 0}}" id="limited_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="limited[]" class="limited" value="1" {{  ($staff->limited == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="standard[]" value="{{  ($staff->standard == 1) ? 1 : 0}}" id="standard_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="standard[]" class="standard" value="1" {{  ($staff->standard == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="standardplus[]" value="{{  ($staff->standardplus == 1) ? 1 : 0}}" id="standardplus_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="standardplus[]" class="standardplus" value="1" {{  ($staff->standardplus == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="advance[]" value="{{  ($staff->advance == 1) ? 1 : 0}}" id="advance_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="advance[]" class="advance" value="1" {{  ($staff->advance == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="advanceplus[]" value="{{  ($staff->advanceplus == 1) ? 1 : 0}}" id="advanceplus_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="advanceplus[]" class="advanceplus" value="1" {{  ($staff->advanceplus == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="admin[]" value="{{  ($staff->admin == 1) ? 1 : 0}}" id="admin_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="admin[]" class="admin" value="1" {{  ($staff->admin == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="account[]" value="{{  ($staff->account == 1) ? 1 : 0}}" id="account_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="account[]" class="account" value="1" {{  ($staff->account == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                </tr>
+                                @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -382,8 +224,11 @@
                             <button type="submit" class="btn btn-primary">Save Changes</button>
                         </div>
                         </div>
+                    </form>
                 </div>
                 <div class="tab-pane fade" id="tab_5" role="tabpanel">
+                <form method="post" action="update-marketing">
+                    @csrf
                     <div class="card-body">
                         <div class="table-responsive">
                             <table class="table all-db-table align-middle">
@@ -399,45 +244,28 @@
                                     <th class="text-center">Admin</th>
                                     <th class="text-center">Accounts</th>
                                 </tr>
+                                @foreach($marketing as $market)
                                 <tr>
-                                    <td class="text-left">Create Mailchimp campaigns	
-
-                                    </td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value="" disabled checked><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-left">Create Kmail campaigns	
-
-                                        </td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value="" disabled checked><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-left">Create Text campaigns	
-
-                                        </td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value="" disabled checked><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    </tr>
+                                    <td class="text-left"> {{$market->sub_name}}</td>
+                                    <input type="hidden" name="name[]" value="{{$market->sub_name}}">
+                                    <input type="hidden" name="targets[]" value="{{  ($market->targets == 1) ? 1 : 0}}" id="targets_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="targets[]" class="targets" value="1" {{  ($market->targets == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="limited[]" value="{{  ($market->limited == 1) ? 1 : 0}}" id="limited_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="limited[]" class="limited" value="1" {{  ($market->limited == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="standard[]" value="{{  ($market->standard == 1) ? 1 : 0}}" id="standard_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="standard[]" class="standard" value="1" {{  ($market->standard == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="standardplus[]" value="{{  ($market->standardplus == 1) ? 1 : 0}}" id="standardplus_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="standardplus[]" class="standardplus" value="1" {{  ($market->standardplus == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="advance[]" value="{{  ($market->advance == 1) ? 1 : 0}}" id="advance_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="advance[]" class="advance" value="1" {{  ($market->advance == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="advanceplus[]" value="{{  ($market->advanceplus == 1) ? 1 : 0}}" id="advanceplus_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="advanceplus[]" class="advanceplus" value="1" {{  ($market->advanceplus == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="admin[]" value="{{  ($market->admin == 1) ? 1 : 0}}" id="admin_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="admin[]" class="admin" value="1" {{  ($market->admin == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="account[]" value="{{  ($market->account == 1) ? 1 : 0}}" id="account_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="account[]" class="account" value="1" {{  ($market->account == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                </tr>
+                                @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -445,8 +273,11 @@
                             <button type="submit" class="btn btn-primary">Save Changes</button>
                         </div>
                         </div>
+                    </form>
                 </div>
                 <div class="tab-pane fade" id="tab_6" role="tabpanel">
+                <form method="post" action="update-administration">
+                    @csrf
                     <div class="card-body">
                         <div class="table-responsive">
                             <table class="table all-db-table align-middle">
@@ -462,134 +293,28 @@
                                     <th class="text-center">Admin</th>
                                     <th class="text-center">Accounts</th>
                                 </tr>
+                                @foreach($administration as $administrate)
                                 <tr>
-                                    <td class="text-left">Manage Products and Services	
-                                    </td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value="" disabled checked><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-left">Set up Time Clock	
-                                        </td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value="" disabled checked><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-left">Create and manage Forms	
-                                        </td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value="" disabled checked><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-left">Add and manage Reasons	
-
-                                        </td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value="" disabled checked><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-left">Edit and cancel Vouchers	
-
-                                        </td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value="" disabled checked><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-left">Search Vouchers	
-
-                                        </td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value="" disabled checked><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-left">Edit business settings	
-
-                                        </td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value="" disabled checked><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-left">Manage business leave	
-
-                                        </td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value="" disabled checked><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-left">Create Voucher batches	
-
-                                        </td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value="" disabled checked><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-left">Manage rooms and equipment	
-
-                                        </td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value="" disabled checked><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                        <td class="text-center"><label class="cst-check blue"><input type="checkbox" value=""><span class="checkmark"></span></label></td>
-                                    </tr>
-                                    
+                                    <td class="text-left"> {{$administrate->sub_name}}</td>
+                                    <input type="hidden" name="name[]" value="{{$administrate->sub_name}}">
+                                    <input type="hidden" name="targets[]" value="{{  ($administrate->targets == 1) ? 1 : 0}}" id="targets_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="targets[]" class="targets" value="1" {{  ($administrate->targets == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="limited[]" value="{{  ($administrate->limited == 1) ? 1 : 0}}" id="limited_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="limited[]" class="limited" value="1" {{  ($administrate->limited == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="standard[]" value="{{  ($administrate->standard == 1) ? 1 : 0}}" id="standard_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="standard[]" class="standard" value="1" {{  ($administrate->standard == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="standardplus[]" value="{{  ($administrate->standardplus == 1) ? 1 : 0}}" id="standardplus_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="standardplus[]" class="standardplus" value="1" {{  ($administrate->standardplus == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="advance[]" value="{{  ($administrate->advance == 1) ? 1 : 0}}" id="advance_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="advance[]" class="advance" value="1" {{  ($administrate->advance == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="advanceplus[]" value="{{  ($administrate->advanceplus == 1) ? 1 : 0}}" id="advanceplus_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="advanceplus[]" class="advanceplus" value="1" {{  ($administrate->advanceplus == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="admin[]" value="{{  ($administrate->admin == 1) ? 1 : 0}}" id="admin_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="admin[]" class="admin" value="1" {{  ($administrate->admin == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                    <input type="hidden" name="account[]" value="{{  ($administrate->account == 1) ? 1 : 0}}" id="account_content">
+                                    <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="account[]" class="account" value="1" {{  ($administrate->account == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
+                                </tr>
+                                @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -597,6 +322,7 @@
                             <button type="submit" class="btn btn-primary">Save Changes</button>
                         </div>
                         </div>
+                    </form>
                 </div>
             </div>
             
@@ -607,6 +333,134 @@
 <script>
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
+    //Targets
+    $.each( $('.targets'), function( key, value ) {debugger;
+        console.log( value.text );
+        if($(this).parent().parent().parent().find('#targets_content').val() == '1')
+        {
+            $(this).parent().parent().parent().find('#targets_content').remove();
+        }
+    });
+    $('.targets').on('change', function () {debugger;
+        if ($(this).is(':checked')) {
+            $(this).parent().parent().parent().find('#targets_content').remove();
+        }
+        else{
+            $(this).parent().parent().parent().append('<input type="hidden" name="targets[]" value="0" id="targets_content">');
+        }
+    });
+    //Limited
+    $.each( $('.limited'), function( key, value ) {debugger;
+        console.log( value.text );
+        if($(this).parent().parent().parent().find('#limited_content').val() == '1')
+        {
+            $(this).parent().parent().parent().find('#limited_content').remove();
+        }
+    });
+    $('.limited').on('change', function () {debugger;
+        if ($(this).is(':checked')) {
+            $(this).parent().parent().parent().find('#limited_content').remove();
+        }
+        else{
+            $(this).parent().parent().parent().append('<input type="hidden" name="limited[]" value="0" id="limited_content">');
+        }
+    });
+    //Standard
+    $.each( $('.standard'), function( key, value ) {debugger;
+        console.log( value.text );
+        if($(this).parent().parent().parent().find('#standard_content').val() == '1')
+        {
+            $(this).parent().parent().parent().find('#standard_content').remove();
+        }
+    });
+    $('.standard').on('change', function () {debugger;
+        if ($(this).is(':checked')) {
+            $(this).parent().parent().parent().find('#standard_content').remove();
+        }
+        else{
+            $(this).parent().parent().parent().append('<input type="hidden" name="standard[]" value="0" id="standard_content">');
+        }
+    });
+    //Standard +
+    $.each( $('.standardplus'), function( key, value ) {debugger;
+        console.log( value.text );
+        if($(this).parent().parent().parent().find('#standardplus_content').val() == '1')
+        {
+            $(this).parent().parent().parent().find('#standardplus_content').remove();
+        }
+    });
+    $('.standardplus').on('change', function () {debugger;
+        if ($(this).is(':checked')) {
+            $(this).parent().parent().parent().find('#standardplus_content').remove();
+        }
+        else{
+            $(this).parent().parent().parent().append('<input type="hidden" name="standardplus[]" value="0" id="standardplus_content">');
+        }
+    });
+    //Advanced
+    $.each( $('.advance'), function( key, value ) {debugger;
+        console.log( value.text );
+        if($(this).parent().parent().parent().find('#advance_content').val() == '1')
+        {
+            $(this).parent().parent().parent().find('#advance_content').remove();
+        }
+    });
+    $('.advance').on('change', function () {debugger;
+        if ($(this).is(':checked')) {
+            $(this).parent().parent().parent().find('#advance_content').remove();
+        }
+        else{
+            $(this).parent().parent().parent().append('<input type="hidden" name="advance[]" value="0" id="advance_content">');
+        }
+    });
+    //Advanced +
+    $.each( $('.advanceplus'), function( key, value ) {debugger;
+        console.log( value.text );
+        if($(this).parent().parent().parent().find('#advanceplus_content').val() == '1')
+        {
+            $(this).parent().parent().parent().find('#advanceplus_content').remove();
+        }
+    });
+    $('.advanceplus').on('change', function () {debugger;
+        if ($(this).is(':checked')) {
+            $(this).parent().parent().parent().find('#advanceplus_content').remove();
+        }
+        else{
+            $(this).parent().parent().parent().append('<input type="hidden" name="advanceplus[]" value="0" id="advanceplus_content">');
+        }
+    });
+    //Admin
+    $.each( $('.admin'), function( key, value ) {debugger;
+        console.log( value.text );
+        if($(this).parent().parent().parent().find('#admin_content').val() == '1')
+        {
+            $(this).parent().parent().parent().find('#admin_content').remove();
+        }
+    });
+    $('.admin').on('change', function () {debugger;
+        if ($(this).is(':checked')) {
+            $(this).parent().parent().parent().find('#admin_content').remove();
+        }
+        else{
+            $(this).parent().parent().parent().append('<input type="hidden" name="admin[]" value="0" id="admin_content">');
+        }
+    });
+    //Accounts
+    $.each( $('.account'), function( key, value ) {debugger;
+        console.log( value.text );
+        if($(this).parent().parent().parent().find('#account_content').val() == '1')
+        {
+            $(this).parent().parent().parent().find('#account_content').remove();
+        }
+    });
+    $('.account').on('change', function () {debugger;
+        if ($(this).is(':checked')) {
+            $(this).parent().parent().parent().find('#account_content').remove();
+        }
+        else{
+            $(this).parent().parent().parent().append('<input type="hidden" name="account[]" value="0" id="account_content">');
+        }
+    });
 });
 </script>
 @endsection
