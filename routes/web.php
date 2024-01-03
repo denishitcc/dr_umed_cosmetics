@@ -63,7 +63,6 @@ Route::middleware(['auth'])->group(function () {
     //User Role
     Route::resource('users-roles', UserRoleController::class);
     Route::post('users-roles/table',[UserRoleController::class, 'index'])->name('users-roles.table');
-    Route::post('users-roles/store', [UserRoleController::class, 'store'])->name('users-roles.store');
 
     //Access Level
     Route::get('/access-level', [AccessLevelController::class, 'access_level'])->name('access-level');
