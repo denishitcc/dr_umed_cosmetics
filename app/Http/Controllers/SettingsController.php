@@ -193,6 +193,7 @@ class SettingsController extends Controller
     public function UpdateBrandImage(Request $request)
     {
         $file = $request->file('banner_image');
+        // dd($file);
         if($file != null)
         {
             $destinationPath = public_path('images/banner_image');
@@ -209,9 +210,18 @@ class SettingsController extends Controller
         {
             $auth = auth();
             $user = User::find($auth->user()->id);
-            $newUser = User::updateOrCreate(['id' => $auth->user()->id],[
-                'banner_image' => $user->banner_image,
-            ]);
+            if($request->imgremove == '1')
+            {
+                $newUser = User::updateOrCreate(['id' => $auth->user()->id],[
+                    'banner_image' => 'no-image.jpg',
+                ]);
+            }
+            else
+            {
+                $newUser = User::updateOrCreate(['id' => $auth->user()->id],[
+                    'banner_image' => $user->banner_image,
+                ]);
+            }
             return redirect('settings');   
         }
     }

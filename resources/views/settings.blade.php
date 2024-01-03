@@ -158,10 +158,11 @@
                                 <h5 class="d-grey mb-4">Recommended dimensions: 800px x 200px</h5>
                                 <form id="update_brand_image" name="update_brand_image" class="form" enctype='multipart/form-data' action="{{route('update-brand-image')}}" method="post">
                                 @csrf
+                                <input type="hidden" name="imgremove" id="imgremove" value="">
                                 @if($user->banner_image!='')
-                                <div class="form-group"><img src="images/banner_image/{{$user->banner_image}}" alt="" id="imgPreview"></div>
+                                <div class="form-group"><img src="{{URL::to('/images/banner_image/'.$user->banner_image)}}" alt="" id="imgPreview"></div>
                                 @else
-                                <div class="form-group"><img src="images/banner_image/no-image.jpg" alt="" id="imgPreview"></div>
+                                <div class="form-group"><img src="{{URL::to('/images/banner_image/no-image.jpg')}}" alt="" id="imgPreview"></div>
                                 @endif
                                 
                                 <div class="row">
@@ -306,6 +307,7 @@ headers: {
         $('.remove_image').click(function(e){
             debugger;
             $('#imgPreview').attr('src', "{{URL::to('/images/banner_image/no-image.jpg')}}");
+            $('#imgremove').val('1');
             e.preventDefault();
         })
         $(".custom-close").on('click', function() {
