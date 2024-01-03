@@ -75,6 +75,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/update-administration', [AccessLevelController::class, 'update_administration'])->name('update-administration');
 
     //Email Templates
-    Route::resource('/email-templates', EmailTemplatesController::class);
+    Route::resource('/email-templates', EmailTemplatesController::class); 
     Route::post('email-templates/table',[EmailTemplatesController::class, 'index'])->name('email-templates.table');
 });

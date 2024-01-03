@@ -48,6 +48,7 @@ class EmailTemplatesController extends Controller
     {
         $newUser = EmailTemplates::create([
             'email_template_type' => $request->email_template_type,
+            'subject' => $request->subject,
             'email_template_description' => $request->email_template_description
         ]);
         $response = [
@@ -63,7 +64,8 @@ class EmailTemplatesController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $email_templates = EmailTemplates::where('id',$id)->first();
+        return view('email_templates.edit', compact('email_templates'));
     }
 
     /**
@@ -79,14 +81,35 @@ class EmailTemplatesController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $email_temp = EmailTemplates::updateOrCreate(['id' => $request->id],[
+            'email_template_type' => $request->email_template_type,
+            'subject' => $request->subject,
+            'email_template_description' => $request->email_template_description
+        ]);
+
+        $response = [
+            'success' => true,
+            'message' => 'Email Template Updated successfully!',
+            'type' => 'success',
+        ];
+        return response()->json($response);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
-        //
+        EmailTemplates::find($request->id)->delete();
+        
+        $response = [
+            'success' => true,
+            'message' => 'Email Template deleted successfully!',
+            'type' => 'success',
+            'data_id' => $request->id
+        ];
+    
+
+        return response()->json($response);
     }
 }

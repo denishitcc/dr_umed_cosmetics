@@ -18,6 +18,12 @@
                             <input type="text" class="form-control" id="email_template_type" name="email_template_type">
                         </div>
                     </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-label">Subject </label>
+                            <input type="text" class="form-control" id="subject" name="subject">
+                        </div>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-4">
@@ -55,6 +61,9 @@
             rules: {
                 email_template_type: {
                     required: true,
+                },
+                subject:{
+                    required:true,
                 },
                 email_template_description:{
                     required: function() 

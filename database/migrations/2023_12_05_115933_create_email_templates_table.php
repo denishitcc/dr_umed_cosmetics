@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('email_templates', function (Blueprint $table) {
             $table->id();
             $table->string('email_template_type', 100)->nullable();
+            $table->string('subject', 100)->nullable();
             $table->string('email_template_description', 255)->nullable(); // Marked as nullable
             $table->softDeletes();
             $table->timestamps();

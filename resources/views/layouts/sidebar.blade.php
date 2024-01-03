@@ -61,7 +61,7 @@
                         </ul>
                     </li>
                     <li><a href="#"><i class="ico-forms"></i>Forms </a></li>
-                    <li class="dropdown {{ (request()->is('email-templates')) ? 'active' : '' }}"><a href="#"><i class="ico-templates"></i>Templates </a>
+                    <li class="dropdown {{ (request()->is('email-templates')) ? 'show' : '' }}"><a href="#"><i class="ico-templates"></i>Templates </a>
                         <ul>
                             <li class="{{ (request()->is('email-templates')) ? 'active' : '' }}"><a href="{{ route('email-templates.index') }}">Email Templates</a></li>
                             <li><a href="#">SMS Templates</a></li>

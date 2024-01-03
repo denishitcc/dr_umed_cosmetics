@@ -2,7 +2,7 @@
 @section('content')
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <!-- <script src="https://code.jquery.com/jquery-3.5.1.js"></script>   -->
-<main>
+<!-- <main> -->
     <div class="card">
         <div class="card-head">
         <div class="toolbar mb-0">
@@ -37,7 +37,7 @@
         
         
     </div>
-</main>
+<!-- </main> -->
      
 @stop
 @section('script')
@@ -62,7 +62,7 @@ $(document).ready(function() {
         columns: [
             // {data: '', name: ''},
             {data: 'email_template_type', name: 'email_template_type'},
-            {data: 'email_template_description', name: 'email_template_description'},
+            {data: 'subject', name: 'subject'},
             {data: 'action', name: 'action', orderable: false, searchable: false},
         ],
         "dom": 'Blrftip',
@@ -78,10 +78,10 @@ $(document).ready(function() {
                 extend: 'collection',
                 text: 'Export',
                 buttons: [
-                { text: "Excel",exportOptions: { columns: [0] } ,extend: 'excelHtml5'},
-                { text: "CSV" ,exportOptions: { columns: [0] } ,extend: 'csvHtml5'},
-                { text: "PDF" ,exportOptions: { columns: [0] } ,extend: 'pdfHtml5'},
-                { text: "PRINT" ,exportOptions: { columns: [0] } ,extend: 'print'},
+                { text: "Excel",exportOptions: { columns: [0,1] } ,extend: 'excelHtml5'},
+                { text: "CSV" ,exportOptions: { columns: [0,1] } ,extend: 'csvHtml5'},
+                { text: "PDF" ,exportOptions: { columns: [0,1] } ,extend: 'pdfHtml5'},
+                { text: "PRINT" ,exportOptions: { columns: [0,1] } ,extend: 'print'},
             ],
             dropup: true
             },
@@ -177,7 +177,7 @@ $(document).on('click', '.dt-edit', function(e) {
     e.preventDefault();
     debugger;
     var ids = $(this).attr('ids');
-    window.location = 'users-roles/' + ids;
+    window.location = 'email-templates/' + ids;
 });
 $(document).on('click', '.dt-delete', function(e) {
     e.preventDefault();
@@ -186,7 +186,7 @@ $(document).on('click', '.dt-delete', function(e) {
     if(confirm("Are you sure to delete this row?")){
         $.ajax({
         headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-        url: "users-roles/"+$(this).attr('ids'),
+        url: "email-templates/"+$(this).attr('ids'),
         type: 'DELETE',
         data: {
             "id": $(this).attr('ids'),
@@ -195,11 +195,11 @@ $(document).on('click', '.dt-delete', function(e) {
             // Show a Sweet Alert message after the form is submitted.
             if (response.success) {
             Swal.fire({
-                title: "User Role!",
-                text: "Your User Role deleted successfully.",
+                title: "Email Template!",
+                text: "Your Email Template deleted successfully.",
                 type: "success",
             }).then((result) => {
-                            window.location = "{{url('users-roles')}}"//'/player_detail?username=' + name;
+                            window.location = "{{url('email-templates')}}"//'/player_detail?username=' + name;
                         });
             } else {
             Swal.fire({

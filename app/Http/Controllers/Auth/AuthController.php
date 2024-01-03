@@ -17,6 +17,7 @@ use Illuminate\Support\Str;
 use DB; 
 use Laravel\Socialite\Facades\Socialite;
 use DateTime;
+use App\Models\EmailTemplates;
 
 class AuthController extends Controller
 {
@@ -144,10 +145,23 @@ class AuthController extends Controller
               'token' => $token, 
               'created_at' => Carbon::now()
             ]);
-  
-          Mail::send('email.forgetPassword', ['token' => $token], function($message) use($request){
+
+            $_data = ([
+                'first_name' => 'denish',
+                'last_name' => 'christian',
+                'url' => "<a class='abtn' href='{{ route('reset.password.get', $token) }}'>Reset</a>&nbsp;&nbsp;&nbsp;",
+            ]);
+
+            $emailtemplate = EmailTemplates::where('email_template_type', 'Forgot Password')->first();
+            // dd($emailtemplate->_data);
+            $data = ([
+                'emailbody' => json_encode($_data),//$emailtemplate->parse($_data),
+                'subject' => $emailtemplate->subject,
+            ]);
+            // dd($data);
+            Mail::send('email.forgetPassword', ['token' => $token,'data' => $data], function($message) use($request){
               $message->to($request->email);
-              $message->subject('Reset Password');
+            //   $message->subject($data['subject']);//Reset Password
           });
   
           return back()->with('message', 'We have e-mailed your password reset link!');
