@@ -3,7 +3,7 @@
 <!-- Page content wrapper-->
 <meta name="csrf-token" content="{{ csrf_token() }}" />
 <!-- <script src="https://code.jquery.com/jquery-3.5.1.js"></script>   -->
-  <main>
+  <!-- <main> -->
           <div class="card">
               <div class="card-head">
               <div class="toolbar mb-0">
@@ -40,7 +40,7 @@
                       </table>
               </div>
           </div>
-  </main>
+  <!-- </main> -->
 @stop
 @section('script')
 <script>

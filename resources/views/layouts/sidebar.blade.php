@@ -61,9 +61,9 @@
                         </ul>
                     </li>
                     <li><a href="#"><i class="ico-forms"></i>Forms </a></li>
-                    <li class="dropdown"><a href="#"><i class="ico-templates"></i>Templates </a>
+                    <li class="dropdown {{ (request()->is('email-templates')) ? 'active' : '' }}"><a href="#"><i class="ico-templates"></i>Templates </a>
                         <ul>
-                            <li><a href="#">Email Templates</a></li>
+                            <li class="{{ (request()->is('email-templates')) ? 'active' : '' }}"><a href="{{ route('email-templates.index') }}">Email Templates</a></li>
                             <li><a href="#">SMS Templates</a></li>
                         </ul>
                     </li>
@@ -82,6 +82,7 @@
         <div id="page-content-wrapper">
             <!-- Top navigation-->
             <nav class="navbar navbar-expand-lg bg-white app-nav">
+                
                 <div class="container-fluid">
                     <button class="sidetoggle" id="sidebarToggle"><img src="img/toggle-arrow-left.svg" alt=""></button>
                     <div class="navbar-inner">
@@ -111,9 +112,9 @@
                                 <li><a href="#" class="tap"><i class="ico-settings"></i></a></li>
                                 <li class="profile" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">Hi, <span>{{Auth::user()->first_name.' '.Auth::user()->last_name}}</span> 
                                 @if(Auth::user()->image=='')
-                                <img src="{{URL::to('/images/banner_image/no-image.jpg')}}" alt="" style="width: 35px">
+                                <figure><img src="{{URL::to('/images/banner_image/no-image.jpg')}}" alt=""></figure>
                                 @else
-                                <img src="{{URL::to('/images/user_image/'.Auth::user()->image)}}" alt="" style="width: 35px">
+                                <figure><img src="{{URL::to('/images/user_image/'.Auth::user()->image)}}" alt=""></figure>
                                 @endif
                                 
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
@@ -133,6 +134,8 @@
                     </div>
                 </div>
             </nav>
+            <main>
+                
             <!-- Page content-->
             
 
@@ -145,6 +148,7 @@
              
 
              @yield('content')
+             </main>
         </div>
     </div>
     
@@ -167,6 +171,7 @@
     <!-- <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.colVis.min.js"></script> -->
     <script src="https://cdn.datatables.net/select/1.7.0/js/dataTables.select.min.js" type="text/javascript"></script>
     <script src="https://cdn.datatables.net/plug-ins/1.10.19/pagination/select.js" type="text/javascript"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/23.0.0/classic/ckeditor.js"></script>
     @yield('script')
     <script>
         $(document).ready(function(){

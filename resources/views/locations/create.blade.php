@@ -1,7 +1,7 @@
 @extends('layouts/sidebar')
 @section('content')
     <!-- Page content-->
-    <main>
+    <!-- <main> -->
         <div class="card">
             
             <div class="card-head">
@@ -1609,7 +1609,7 @@
             </div>
             </form>
         </div>
-</main>
+<!-- </main> -->
 @endsection
 @section('script')
 <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBR652zv0sbcR8AkNDA7PbQ3y33_yrzW0Q&libraries=places&callback=initAutocomplete" async></script> -->

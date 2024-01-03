@@ -2,7 +2,7 @@
 @section('content')
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <!-- <script src="https://code.jquery.com/jquery-3.5.1.js"></script>   -->
-<main>
+<!-- <main> -->
     <div class="card">
         <div class="card-head">
             <a href="{{ route('locations.create') }}" class="btn btn-primary btn-md me-2">New Location</a>
@@ -37,7 +37,7 @@
         
         
     </div>
-</main>
+<!-- </main> -->
 @stop
 @section('script')
 <script>

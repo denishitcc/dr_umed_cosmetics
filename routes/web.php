@@ -8,6 +8,7 @@ use App\Http\Controllers\UsersController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\UserRoleController;
 use App\Http\Controllers\AccessLevelController;
+use App\Http\Controllers\EmailTemplatesController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -72,4 +73,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/update-staff', [AccessLevelController::class, 'update_staff'])->name('update-staff');
     Route::post('/update-marketing', [AccessLevelController::class, 'update_marketing'])->name('update-marketing');
     Route::post('/update-administration', [AccessLevelController::class, 'update_administration'])->name('update-administration');
+
+    //Email Templates
+    Route::resource('/email-templates', EmailTemplatesController::class);
+    Route::post('email-templates/table',[EmailTemplatesController::class, 'index'])->name('email-templates.table');
 });

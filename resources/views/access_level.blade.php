@@ -1,6 +1,6 @@
 @extends('layouts/sidebar')
 @section('content')
-<main>
+<!-- <main> -->
         <div class="card">
             
             <div class="card-head">
@@ -327,7 +327,7 @@
             </div>
             
         </div>
-</main>
+<!-- </main> -->
 @stop
 @section('script')
 <script>

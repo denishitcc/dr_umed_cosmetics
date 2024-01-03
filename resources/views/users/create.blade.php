@@ -1,7 +1,7 @@
 @extends('layouts/sidebar')
 @section('content')
 <meta name="csrf-token" content="{{ csrf_token() }}" />
-<main>
+<!-- <main> -->
     <div class="card">
         
         <div class="card-head">
@@ -102,14 +102,14 @@
             </div>
 
             <div class="col-lg-12 text-lg-end mt-4">
-                <button type="button" class="btn btn-light me-2">Discard</button>
+                <button type="button" class="btn btn-light me-2" onclick="window.location='{{ url("users") }}'">Discard</button>
                 <button type="submit" class="btn btn-primary">Save Changes</button>
             </div>
         </div>
         </form>
         
     </div>
-</main>
+<!-- </main> -->
 @stop
 @section('script')
 <script>

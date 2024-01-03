@@ -2,7 +2,7 @@
 @section('content')
 <meta name="csrf-token" content="{{ csrf_token() }}" />
         <!-- Page content-->
-        <main>
+        <!-- <main> -->
                 <div class="card">
                     <ul class="nav brand-tabs">
                         <li class="nav-item">
@@ -201,7 +201,7 @@
                     </div>
                     
                 </div>
-        </main>
+        <!-- </main> -->
         <!-- All Modal  -->
             
     <!-- Modal -->

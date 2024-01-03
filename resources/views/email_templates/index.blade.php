@@ -2,15 +2,15 @@
 @section('content')
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <!-- <script src="https://code.jquery.com/jquery-3.5.1.js"></script>   -->
-<!-- <main> -->
+<main>
     <div class="card">
         <div class="card-head">
         <div class="toolbar mb-0">
                 <div class="tool-left">
-                    <h4 class="small-title mb-0">All User Role</h4>
+                    <h4 class="small-title mb-0">Email Templates</h4>
                 </div>
                 <div class="tool-right">
-                    <a href="{{ route('users-roles.create') }}" class="btn btn-primary btn-md">New User Role</a>
+                    <a href="{{ route('email-templates.create') }}" class="btn btn-primary btn-md">Add Email</a>
                 </div>
             </div>
             
@@ -25,7 +25,8 @@
                     <tr>
                     <!-- <th>
                     </th> -->
-                    <th>Role Name</th>
+                    <th>Email Template Type</th>
+                    <th>Subject</th>
                     <th>Action</th>
                     </tr>
                 </thead>
@@ -36,7 +37,7 @@
         
         
     </div>
-<!-- </main> -->
+</main>
      
 @stop
 @section('script')
@@ -52,7 +53,7 @@ $(document).ready(function() {
         processing: true,
         // serverSide: true,
         ajax: {
-            url: "{{ route('users-roles.table') }}",
+            url: "{{ route('email-templates.table') }}",
             type: 'post',
             headers: {
                 'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
@@ -60,7 +61,8 @@ $(document).ready(function() {
         },
         columns: [
             // {data: '', name: ''},
-            {data: 'role_name', name: 'role_name'},
+            {data: 'email_template_type', name: 'email_template_type'},
+            {data: 'email_template_description', name: 'email_template_description'},
             {data: 'action', name: 'action', orderable: false, searchable: false},
         ],
         "dom": 'Blrftip',
