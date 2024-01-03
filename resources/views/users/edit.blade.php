@@ -12,6 +12,7 @@
             <form id="edit_users" name="edit_users" class="form" enctype="multipart/form-data">
             @csrf
             <input type="hidden" name="id" id="id" value="{{$users->id}}">
+            <input type="hidden" name="imgremove" id="imgremove" value="">
             <div class="card-body">
             <div class="row">
                 <div class="col-lg-4">
@@ -171,6 +172,8 @@
         $('.remove_image').click(function(e){
             debugger;
             $('#imgPreview').attr('src', "{{URL::to('/images/banner_image/no-image.jpg')}}");
+            $('#imgremove').val('1');
+            $("#imgInput").val(null);
             e.preventDefault();
         })
     });

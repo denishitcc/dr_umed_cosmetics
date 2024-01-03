@@ -125,22 +125,50 @@ class UsersController extends Controller
             $destinationPath = public_path('images/user_image');
             $file->move($destinationPath,$file->getClientOriginalName());
             $img = $file->getClientOriginalName();
+            $newUser = User::create([
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'phone' => $request->phone,
+                'email'=> $request->email,
+                'password'=>Hash::make($password),
+                'gender'=>$request->gender,
+                'role_type'=>$request->role_type,
+                'access_level'=>$request->access_level,
+                'image'=>$img
+            ]);
         }
         else
         {
-            $img = '';
+            if($request->imgremove == '1')
+            {
+                $newUser = User::create([
+                    'first_name' => $request->first_name,
+                    'last_name' => $request->last_name,
+                    'phone' => $request->phone,
+                    'email'=> $request->email,
+                    'password'=>Hash::make($password),
+                    'gender'=>$request->gender,
+                    'role_type'=>$request->role_type,
+                    'access_level'=>$request->access_level,
+                    'image'=>''
+                ]);
+            }
+            else
+            {
+                $newUser = User::create([
+                    'first_name' => $request->first_name,
+                    'last_name' => $request->last_name,
+                    'phone' => $request->phone,
+                    'email'=> $request->email,
+                    'password'=>Hash::make($password),
+                    'gender'=>$request->gender,
+                    'role_type'=>$request->role_type,
+                    'access_level'=>$request->access_level,
+                    'image'=>''
+                ]);
+            }
         }
-        $newUser = User::create([
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'phone' => $request->phone,
-            'email'=> $request->email,
-            'password'=>Hash::make($password),
-            'gender'=>$request->gender,
-            'role_type'=>$request->role_type,
-            'access_level'=>$request->access_level,
-            'image'=>$img
-        ]);
+        
         if($newUser){
             Mail::send('email.registration', ['email'=>$request->email,'username' => $request->first_name.' '.$request->last_name,'password'=>$password], function($message) use($request){
                 $message->to($request->email);
@@ -196,28 +224,59 @@ class UsersController extends Controller
         $password = str_pad(mt_rand(1,99999999),8,'0',STR_PAD_LEFT);
 
         $file = $request->file('image');
-        // dd($file);
+        // dd($request->all());
         if($file != null)
         {
             $destinationPath = public_path('images/user_image');
             $file->move($destinationPath,$file->getClientOriginalName());
             $img = $file->getClientOriginalName();
+            $newUser = User::updateOrCreate(['id' => $request->id],[
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'phone' => $request->phone,
+                'email'=> $request->email,
+                'password'=>Hash::make($password),
+                'gender'=>$request->gender,
+                'role_type'=>$request->role_type,
+                'access_level'=>$request->access_level,
+                'image'=>$img
+            ]);
         }
         else
         {
-            $img = '';
+            // $img = '';
+            if($request->imgremove == '1')
+            {
+                $newUser = User::updateOrCreate(['id' => $request->id],[
+                    'first_name' => $request->first_name,
+                    'last_name' => $request->last_name,
+                    'phone' => $request->phone,
+                    'email'=> $request->email,
+                    'password'=>Hash::make($password),
+                    'gender'=>$request->gender,
+                    'role_type'=>$request->role_type,
+                    'access_level'=>$request->access_level,
+                    'image'=>''
+                ]);
+            }
+            else
+            {
+                $getImg =User::where('id',$request->id)->first();
+                // dd($getImg['image']);
+                $newUser = User::updateOrCreate(['id' => $request->id],[
+                    'first_name' => $request->first_name,
+                    'last_name' => $request->last_name,
+                    'phone' => $request->phone,
+                    'email'=> $request->email,
+                    'password'=>Hash::make($password),
+                    'gender'=>$request->gender,
+                    'role_type'=>$request->role_type,
+                    'access_level'=>$request->access_level,
+                    'image'=>$getImg['image']
+                ]);
+            }
         }
-        $newUser = User::updateOrCreate(['id' => $request->id],[
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'phone' => $request->phone,
-            'email'=> $request->email,
-            'password'=>Hash::make($password),
-            'gender'=>$request->gender,
-            'role_type'=>$request->role_type,
-            'access_level'=>$request->access_level,
-            'image'=>$img
-        ]);
+        
         if($newUser){
             $response = [
                 'success' => true,

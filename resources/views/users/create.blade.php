@@ -12,6 +12,7 @@
         @csrf -->
         <form id="create_user" name="create_user" class="form" enctype="multipart/form-data">
         @csrf
+        <input type="hidden" name="imgremove" id="imgremove" value="">
         <div class="card-body">
             <div class="row">
                 <div class="col-lg-4">
@@ -160,6 +161,9 @@
         $('.remove_image').click(function(e){
             debugger;
             $('#imgPreview').attr('src', "{{URL::to('/images/banner_image/no-image.jpg')}}");
+            $('#imgremove').val('1');
+            // $('#imgInput').attr('src', '#');
+            $("#imgInput").val(null);
             e.preventDefault();
         })
     });
@@ -182,7 +186,8 @@
         var role_type=$('#role_type').val();
         var access_level=$('#access_level').val();
         var gender = $('input[name="gender"]:checked').val();
-        
+        var imgremove = $('#imgremove').val();
+
         formData.append('image', image);
         formData.append('first_name', first_name);
         formData.append('last_name', last_name);
@@ -191,6 +196,7 @@
         formData.append('role_type', role_type);
         formData.append('access_level', access_level);
         formData.append('gender', gender);
+        formData.append('imgremove',imgremove);
 		$.ajax({
 			headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
 			url: "{{route('users.store')}}",
