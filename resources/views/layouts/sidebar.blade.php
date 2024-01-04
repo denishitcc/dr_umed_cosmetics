@@ -84,7 +84,7 @@
             <nav class="navbar navbar-expand-lg bg-white app-nav">
                 
                 <div class="container-fluid">
-                    <button class="sidetoggle" id="sidebarToggle"><img src="img/toggle-arrow-left.svg" alt=""></button>
+                    <button class="sidetoggle" id="sidebarToggle"><img src="{{ asset('img/toggle-arrow-left.svg') }}" alt=""></button>
                     <div class="navbar-inner">
                         <div class="app-nav-left">
                             <select class="form-select">
