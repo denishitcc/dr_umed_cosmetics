@@ -171,32 +171,38 @@
 		e.preventDefault();
 		var valid= $("#create_user").validate();
 			if(valid.errorList.length == 0){
-			var data = $('#create_user').serialize() ;
+			// var data = $('#create_user').serialize() ;
+
+            var data = new FormData(this);
+            // let image = $('#imgInput')[0].files.length;
+            // let files = $('#imgInput')[0];
+            // data.append('files', files.files);
+
 			submitCreateUserForm(data);
 		}
 	});
     function submitCreateUserForm(data){
         debugger;
-        var formData = new FormData();
-        var image = $('#imgInput').prop('files')[0];   
-        var first_name=$('#first_name').val();
-        var last_name=$('#last_name').val();
-        var email=$('#email').val();
-        var phone=$('#phone').val();
-        var role_type=$('#role_type').val();
-        var access_level=$('#access_level').val();
-        var gender = $('input[name="gender"]:checked').val();
-        var imgremove = $('#imgremove').val();
+        // var formData = new FormData();
+        // var image = $('#imgInput').prop('files')[0];   
+        // var first_name=$('#first_name').val();
+        // var last_name=$('#last_name').val();
+        // var email=$('#email').val();
+        // var phone=$('#phone').val();
+        // var role_type=$('#role_type').val();
+        // var access_level=$('#access_level').val();
+        // var gender = $('input[name="gender"]:checked').val();
+        // var imgremove = $('#imgremove').val();
 
-        formData.append('image', image);
-        formData.append('first_name', first_name);
-        formData.append('last_name', last_name);
-        formData.append('email', email);
-        formData.append('phone', phone);
-        formData.append('role_type', role_type);
-        formData.append('access_level', access_level);
-        formData.append('gender', gender);
-        formData.append('imgremove',imgremove);
+        // formData.append('image', image);
+        // formData.append('first_name', first_name);
+        // formData.append('last_name', last_name);
+        // formData.append('email', email);
+        // formData.append('phone', phone);
+        // formData.append('role_type', role_type);
+        // formData.append('access_level', access_level);
+        // formData.append('gender', gender);
+        // formData.append('imgremove',imgremove);
 		$.ajax({
 			headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
 			url: "{{route('users.store')}}",
@@ -205,7 +211,7 @@
             cache: false,
             contentType: false,
             processData: false,
-			data: formData,
+			data: data,
 			success: function(response) {
 				debugger;
 				// Show a Sweet Alert message after the form is submitted.
