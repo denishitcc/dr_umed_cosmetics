@@ -170,11 +170,14 @@ class UsersController extends Controller
         }
         
         if($newUser){
-            Mail::send('email.registration', ['email'=>$request->email,'username' => $request->first_name.' '.$request->last_name,'password'=>$password], function($message) use($request){
-                $message->to($request->email);
-                $message->subject('User Registration');
+            $data = array('email'=>$request->email,'username'=>$request->first_name.' '.$request->last_name,'password'=>$password);
+            $to_email = $request->email;
+            Mail::send('email.registration', $data, function($message) use ($to_email) {
+                $message->to($to_email)
+                ->subject('User Registration');
+                $message->from('support@itcc.net.au','User Registration');
             });
-
+            
             $response = [
                 'success' => true,
                 'message' => 'User Created successfully!',
