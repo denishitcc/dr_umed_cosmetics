@@ -9,6 +9,7 @@ use App\Http\Controllers\LocationController;
 use App\Http\Controllers\UserRoleController;
 use App\Http\Controllers\AccessLevelController;
 use App\Http\Controllers\EmailTemplatesController;
+use App\Http\Controllers\ClientsController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -77,4 +78,9 @@ Route::middleware(['auth'])->group(function () {
     //Email Templates
     Route::resource('/email-templates', EmailTemplatesController::class); 
     Route::post('email-templates/table',[EmailTemplatesController::class, 'index'])->name('email-templates.table');
+
+    //Clients
+    Route::resource('/clients', ClientsController::class); 
+    Route::post('clients/table',[ClientsController::class, 'index'])->name('clients.table');
+    Route::post('clients/checkClientEmail', [ClientsController::class, 'checkClientEmail']);
 });

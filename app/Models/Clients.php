@@ -27,6 +27,7 @@ class Clients extends Model
         'street_address',
         'suburb',
         'city',
-        'postcode'
+        'postcode',
+        'status'
     ];
 }

@@ -75,7 +75,7 @@ class UsersController extends Controller
                     ->addColumn('autoId', function ($row) { 
                         $lastuserId = $row->id;
                         $lastIncreament = substr($lastuserId, -3);
-                        $newUserId = str_pad($lastIncreament + 1, 3, 0, STR_PAD_LEFT);
+                        $newUserId = str_pad($lastIncreament, 3, 0, STR_PAD_LEFT);
                         $row->autoId = $newUserId;
                         return $row->autoId;
                     })

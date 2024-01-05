@@ -35,14 +35,14 @@
                 <ul>
                     <li class="{{ (request()->is('dashboard')) ? 'active' : '' }}"><a href="{{ route('dashboard') }}"><i class="ico-dashboard"></i>Dashboard</a></li>
                     <li><a href="#"><i class="ico-calendar"></i>Calendar</a></li>
-                    <li><a href="#"><i class="ico-client"></i>Clients</a></li>
+                    <li class="{{ (request()->is('clients')) ? 'active' : '' }} || {{ (request()->is('clients/*')) ? 'active' : '' }}"><a href="{{ route('clients.index') }}"><i class="ico-client"></i>Clients</a></li>
                     <li><a href="#"><i class="ico-enquiries"></i>Enquiries </a></li>
                     <li><a href="#"><i class="ico-finance"></i>Finance </a></li>
                     <li><a href="#"><i class="ico-reports"></i>Reports </a></li>
-                    <li class="dropdown {{ (request()->is('users')) ? 'show' : '' }}"><a href="#"><i class="ico-staff"></i>Staff </a>
+                    <li class="dropdown {{ (request()->is('users')) ? 'show' : '' }} || {{ (request()->is('users/*')) ? 'show' : '' }}"><a href="#"><i class="ico-staff"></i>Staff </a>
                         <ul>
                             <li><a href="#">Roles</a></li>
-                            <li class="{{ (request()->is('users')) ? 'active' : '' }}"><a href="{{ route('users.index') }}">Users</a></li>
+                            <li class="{{ (request()->is('users')) ? 'active' : '' }} || {{ (request()->is('users/*')) ? 'active' : '' }}"><a href="{{ route('users.index') }}">Users</a></li>
                         </ul>
                     </li>
                     <li class="dropdown"><a href="#"><i class="ico-services"></i>Services </a>
@@ -61,17 +61,17 @@
                         </ul>
                     </li>
                     <li><a href="#"><i class="ico-forms"></i>Forms </a></li>
-                    <li class="dropdown {{ (request()->is('email-templates')) ? 'show' : '' }}"><a href="#"><i class="ico-templates"></i>Templates </a>
+                    <li class="dropdown {{ (request()->is('email-templates')) ? 'show' : '' }} || {{ (request()->is('email-templates/*')) ? 'show' : '' }}"><a href="#"><i class="ico-templates"></i>Templates </a>
                         <ul>
-                            <li class="{{ (request()->is('email-templates')) ? 'active' : '' }}"><a href="{{ route('email-templates.index') }}">Email Templates</a></li>
+                            <li class="{{ (request()->is('email-templates')) ? 'active' : '' }} || {{ (request()->is('email-templates/*')) ? 'active' : '' }}"><a href="{{ route('email-templates.index') }}">Email Templates</a></li>
                             <li><a href="#">SMS Templates</a></li>
                         </ul>
                     </li>
                     <li class="{{ (request()->is('locations')) ? 'active' : '' }} || {{ (request()->is('locations/*')) ? 'active' : '' }}"><a href="{{ route('locations.index') }}"><i class="ico-locations"></i>Locations </a></li>
-                    <li class="dropdown {{ (request()->is('settings')) ? 'show' : '' }} || {{ (request()->is('users-roles')) ? 'show' : '' }} || {{ (request()->is('access-level')) ? 'show' : '' }}"><a href="#"><i class="ico-templates"></i>Settings </a>
+                    <li class="dropdown {{ (request()->is('settings')) ? 'show' : '' }} || {{ (request()->is('users-roles')) ? 'show' : '' }} || {{ (request()->is('users-roles/*')) ? 'show' : '' }} || {{ (request()->is('users-roles')) ? 'show' : '' }} || {{ (request()->is('access-level')) ? 'show' : '' }}"><a href="#"><i class="ico-templates"></i>Settings </a>
                         <ul>
                             <li class="{{ (request()->is('settings')) ? 'active' : '' }}"><a href="{{ route('settings') }}">User Settings</a></li>
-                            <li class="{{ (request()->is('users-roles')) ? 'active' : '' }}"><a href="{{ route('users-roles.index') }}">User Role</a></li>
+                            <li class="{{ (request()->is('users-roles')) ? 'active' : '' }} || {{ (request()->is('users-roles/*')) ? 'active' : '' }}"><a href="{{ route('users-roles.index') }}">User Role</a></li>
                             <li class="{{ (request()->is('access-level')) ? 'active' : '' }}"><a href="{{ route('access-level') }}">Access Level</a></li>
                         </ul>
                     </li>
