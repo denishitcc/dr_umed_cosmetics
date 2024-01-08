@@ -14,22 +14,22 @@ class EmailTemplatesController extends Controller
     public function index(Request $request)
     {
         $email_templates = EmailTemplates::all();
-        if ($request->ajax()) {
-            $data = EmailTemplates::select('*');
-            return Datatables::of($data)
+        // if ($request->ajax()) {
+        //     $data = EmailTemplates::select('*');
+        //     return Datatables::of($data)
 
-                ->addIndexColumn()
+        //         ->addIndexColumn()
 
-                ->addColumn('action', function($row){
-                        $btn = '<div class="action-box"><button type="button" class="btn btn-sm black-btn round-6 dt-edit" ids='.$row->id.'><i class="ico-edit"></i></button><button type="button" class="btn btn-sm black-btn round-6 dt-delete" ids='.$row->id.'><i class="ico-trash"></i></button></div>';
-                        return $btn;
-                })
+        //         ->addColumn('action', function($row){
+        //                 $btn = '<div class="action-box"><button type="button" class="btn btn-sm black-btn round-6 dt-edit" ids='.$row->id.'><i class="ico-edit"></i></button><button type="button" class="btn btn-sm black-btn round-6 dt-delete" ids='.$row->id.'><i class="ico-trash"></i></button></div>';
+        //                 return $btn;
+        //         })
 
-                ->rawColumns(['action'])
+        //         ->rawColumns(['action'])
 
-                ->make(true);
+        //         ->make(true);
 
-        }
+        // }
         return view('email_templates.index', compact('email_templates'));
     }
 
@@ -46,17 +46,17 @@ class EmailTemplatesController extends Controller
      */
     public function store(Request $request)
     {
-        $newUser = EmailTemplates::create([
-            'email_template_type' => $request->email_template_type,
-            'subject' => $request->subject,
-            'email_template_description' => $request->email_template_description
-        ]);
-        $response = [
-            'success' => true,
-            'message' => 'Email Template Created successfully!',
-            'type' => 'success',
-        ];
-        return response()->json($response);
+        // $newUser = EmailTemplates::create([
+        //     'email_template_type' => $request->email_template_type,
+        //     'subject' => $request->subject,
+        //     'email_template_description' => $request->email_template_description
+        // ]);
+        // $response = [
+        //     'success' => true,
+        //     'message' => 'Email Template Created successfully!',
+        //     'type' => 'success',
+        // ];
+        // return response()->json($response);
     }
 
     /**
@@ -82,8 +82,8 @@ class EmailTemplatesController extends Controller
     public function update(Request $request, string $id)
     {
         $email_temp = EmailTemplates::updateOrCreate(['id' => $request->id],[
-            'email_template_type' => $request->email_template_type,
-            'subject' => $request->subject,
+            // 'email_template_type' => $request->email_template_type,
+            // 'subject' => $request->subject,
             'email_template_description' => $request->email_template_description
         ]);
 

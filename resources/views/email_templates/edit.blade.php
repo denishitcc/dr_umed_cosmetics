@@ -16,13 +16,13 @@
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label class="form-label">Email Template Type </label>
-                            <input type="text" class="form-control" id="email_template_type" name="email_template_type" value="{{$email_templates->email_template_type}}">
+                            <input type="text" class="form-control" id="email_template_type" name="email_template_type" value="{{$email_templates->email_template_type}}" disabled>
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label class="form-label">Subject </label>
-                            <input type="text" class="form-control" id="subject" name="subject" value="{{$email_templates->subject}}">
+                            <input type="text" class="form-control" id="subject" name="subject" value="{{$email_templates->subject}}" disabled>
                         </div>
                     </div>
                 </div>

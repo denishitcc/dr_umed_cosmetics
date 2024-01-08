@@ -71,6 +71,7 @@ class SettingsController extends Controller
     }
     public function changeMyAccountSave(Request $request)
     {
+        // dd($request->all());
         $request->validate([
             'first_name' => 'required|string',
             'last_name' => 'required|string',
@@ -79,6 +80,25 @@ class SettingsController extends Controller
         $user = User::find($auth->user()->id);
         $user->first_name = $request->first_name;
         $user->last_name = $request->last_name;
+        $file = $request->file('image');
+        if($request->imgremove=='1')
+        {
+            $img='';
+        }
+        else
+        {
+            if($file != null)
+            {
+                $destinationPath = public_path('images/user_image');
+                $file->move($destinationPath,$file->getClientOriginalName());
+                $img = $file->getClientOriginalName();
+            }
+            else
+            {
+                $img=$user->image;
+            }
+        }
+        $user->image = $img;
         $user->save();
         if($user){
             $response = [

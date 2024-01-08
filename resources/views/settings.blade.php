@@ -29,8 +29,9 @@
                         <div class="card-body">
                             <h4 class="small-title mb-5">My Account</h4>
                             <div class="row">
-                                <form id="update_myaccount" name="update_myaccount" class="form">
+                                <form id="update_myaccount" name="update_myaccount" class="form" enctype='multipart/form-data'>
                                 @csrf
+                                <input type="hidden" name="imgremove" id="imgremove" value="">
                                 <div class="col-lg-4">
                                     <div class="form-group">
                                         <label for="fname" class="form-label">First Name</label>
@@ -40,7 +41,31 @@
                                         <label for="lname" class="form-label">Last Name</label>
                                         <input type="text" class="form-control" id="last_name" placeholder="Last Name" name="last_name" value="{{$user->last_name}}" maxlength="50">
                                         </div>
-
+                                        <div class="form-group">
+                                            <label class="gl-upload">
+                                                <div class="icon-box">
+                                                    <img src="../img/upload-icon.png" alt="" class="up-icon">
+                                                    <span class="txt-up">Upload File</span>
+                                                    <!-- <input class="form-control" type="file" id="imgInput" name="image" accept="image/png, image/gif, image/jpeg"> -->
+                                                    <input type="file" class="form-control" name="image" id="imgInput" accept="image/png, image/gif, image/jpeg">
+                                                </div>
+                                            </label>
+                                            <div class="mt-2 d-grey font-13"><em>Photos you add here will be visible to this client in Online Booking.</em></div>
+                                        </div>
+                                        <div class="col-lg-2 text-center">
+                                        
+                                        @if($user->image!='')
+                                            <figure class="profile-img"><img src="{{URL::to('/images/user_image/'.$user->image)}}" alt="" id="imgPreview"></figure>
+                                            <button type="button" class="btn btn-sm black-btn round-6 dt-delete remove_image">
+                                            <i class="ico-trash"></i>
+                                            </button>
+                                        @else
+                                            <figure class="profile-img"><img src="{{URL::to('/images/banner_image/no-image.jpg')}}" alt="" id="imgPreview"></figure>
+                                            <button type="button" class="btn btn-sm black-btn round-6 dt-delete remove_image">
+                                            <i class="ico-trash"></i>
+                                            </button>
+                                        @endif
+                                        </div>
                                         <div class="pt-4">
                                         <p><a href="#" class="simple-link" data-bs-toggle="modal" data-bs-target="#change_pass"> Change Password</a></p>
                                         <!-- <p><a href="#" class="simple-link" data-bs-toggle="modal" data-bs-target="#change_pin"> Change PIN</a></p> -->
@@ -394,7 +419,8 @@ headers: {
 		e.preventDefault();
 		var valid= $("#update_myaccount").validate();
 			if(valid.errorList.length == 0){
-			var data = $('#update_myaccount').serialize() ;
+			// var data = $('#update_myaccount').serialize() ;
+            var data = new FormData(this);
 			submitMyAccountForm(data);
 		}
 	});
@@ -442,6 +468,9 @@ headers: {
 			url: "{{route('my-account')}}",
 			type: "post",
 			data: data,
+            contentType: false, // The content type used when sending data to the server. Default is: "application/x-www-form-urlencoded"
+            processData: false, // To send DOMDocument or non processed data file it is set to false (i.e. data should not be in the form of string)
+            cache: false,
 			success: function(response) {
 				debugger;
 				// Show a Sweet Alert message after the form is submitted.

@@ -1,7 +1,5 @@
-@extends('layouts/sidebar')
+<!--@extends('layouts/sidebar')
 @section('content')
-    <!-- Page content-->
-    
         <div class="card">
             
             <div class="card-head">
@@ -90,7 +88,6 @@
 			data: data,
 			success: function(response) {
 				debugger;
-				// Show a Sweet Alert message after the form is submitted.
 				if (response.success) {
 					
 					Swal.fire({
@@ -114,3 +111,4 @@
 	}
 </script>
 @endsection
+-->

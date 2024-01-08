@@ -35,7 +35,7 @@
                 <ul>
                     <li class="{{ (request()->is('dashboard')) ? 'active' : '' }}"><a href="{{ route('dashboard') }}"><i class="ico-dashboard"></i>Dashboard</a></li>
                     <li><a href="#"><i class="ico-calendar"></i>Calendar</a></li>
-                    <li class="{{ (request()->is('clients')) ? 'active' : '' }} || {{ (request()->is('clients/*')) ? 'active' : '' }}"><a href="{{ route('clients.index') }}"><i class="ico-client"></i>Clients</a></li>
+                    <li class=""><a href="#"><i class="ico-client"></i>Clients</a></li>
                     <li><a href="#"><i class="ico-enquiries"></i>Enquiries </a></li>
                     <li><a href="#"><i class="ico-finance"></i>Finance </a></li>
                     <li><a href="#"><i class="ico-reports"></i>Reports </a></li>
@@ -77,6 +77,34 @@
                     </li>
                 </ul>
             </div>
+            <div class="next-appointment mt-3">
+                            <h5 class="mb-3">Next 5 Appointments</h5>
+                            <a href="#" class="apnt-box">
+                                <h6 class="blue-bold">Narelle Nixon</h6>
+                                <span class="font-14 d-grey">VIP Skin Treatment</span><br>
+                                <time><i class="ico-clock me-1"></i> 11.00 AM</time>
+                            </a>
+                            <a href="#" class="apnt-box">
+                                <h6 class="blue-bold">Miya Mackenzie</h6>
+                                <span class="font-14 d-grey">Vital 2 Beauty Booster</span><br>
+                                <time><i class="ico-clock me-1"></i> 11.00 AM</time>
+                            </a>
+                            <a href="#" class="apnt-box">
+                                <h6 class="blue-bold">Donna Smillie</h6>
+                                <span class="font-14 d-grey">Lips & 3 Areas</span><br>
+                                <time><i class="ico-clock me-1"></i> 11.00 AM</time>
+                            </a>
+                            <a href="#" class="apnt-box">
+                                <h6 class="blue-bold">Katie Deeble</h6>
+                                <span class="font-14 d-grey">Cheek Filler</span><br>
+                                <time><i class="ico-clock me-1"></i> 11.00 AM</time>
+                            </a>
+                            <a href="#" class="apnt-box">
+                                <h6 class="blue-bold">Narelle Nixon</h6>
+                                <span class="font-14 d-grey">VIP Skin Treatment</span><br>
+                                <time><i class="ico-clock me-1"></i> 11.00 AM</time>
+                            </a>
+                        </div>
         </div>
         <!-- Page content wrapper-->
         <div id="page-content-wrapper">
@@ -87,7 +115,7 @@
                     <button class="sidetoggle" id="sidebarToggle"><img src="{{ asset('img/toggle-arrow-left.svg') }}" alt=""></button>
                     <div class="navbar-inner">
                         <div class="app-nav-left">
-                            <select class="form-select">
+                            <!-- <select class="form-select">
                                 <option>Doctors</option>
                                 <option value="1">Option 1</option>
                                 <option value="2">Option 2</option>
@@ -102,13 +130,13 @@
                                 <option value="3">Option 3</option>
                                 <option value="4">Option 4</option>
                                 <option value="5">Option 5</option>
-                            </select>
+                            </select> -->
                         </div>
                         <div class="app-navbar">
                             <ul class="items"> 
                                 <li><a href="#" class="tap"><i class="ico-search"></i></a></li>
                                 <li><a href="#" class="tap"><i class="ico-equalizer"></i></a></li>
-                                <li><a href="#" class="tap"><i class="ico-notification"></i></a></li>
+                                <li><a href="#" class="tap"><i class="ico-notification"></i><span class="badge badge-circle text-bg-blue notification">25</span></a></li>
                                 <li><a href="#" class="tap"><i class="ico-settings"></i></a></li>
                                 <li class="profile" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">Hi, <span>{{Auth::user()->first_name.' '.Auth::user()->last_name}}</span> 
                                 @if(Auth::user()->image=='')
@@ -118,7 +146,10 @@
                                 @endif
                                 
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                        <li><a href="#"> Manage Account</a></li>
+                                        <li><a href="{{ route('settings') }}" onclick="event.preventDefault(); document.getElementById('settings-form').submit();"> Manage Account</a>
+                                        <form id="settings-form" action="{{ route('settings') }}">
+                                        </form>
+                                    </li>
                                         <li> <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a></li>
                                             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
                                                 {{ csrf_field() }}
