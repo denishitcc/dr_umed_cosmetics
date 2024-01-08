@@ -8,6 +8,7 @@ use Hash;
 use Mail; 
 use Illuminate\Support\Str;
 use DataTables;
+use App\Models\EmailTemplates;
 
 class UsersController extends Controller
 {
@@ -170,13 +171,35 @@ class UsersController extends Controller
         }
         
         if($newUser){
-            $data = array('email'=>$request->email,'username'=>$request->first_name.' '.$request->last_name,'password'=>$password);
-            $to_email = $request->email;
-            Mail::send('email.registration', $data, function($message) use ($to_email) {
-                $message->to($to_email)
-                ->subject('User Registration');
-                $message->from('support@itcc.net.au','User Registration');
-            });
+
+            $emailtemplate = EmailTemplates::where('email_template_type', 'User Register')->first();
+            
+            $_data = array('email'=>$request->email,'username'=>$request->first_name.' '.$request->last_name,'password'=>$password,'subject' => $emailtemplate->subject);
+            
+            if($emailtemplate)
+            {
+                $templateContent = $emailtemplate->email_template_description;
+                // Replace placeholders in the template with actual values
+                $parsedContent = str_replace(
+                    ['{{username}}', '{{email}}', '{{url}}', '{{password}}'],
+                    [$_data['username'], $_data['email'] ?? '', $_data['url'] ?? '', $_data['password'] ?? ''],
+                    $templateContent
+                );
+                $data = ([
+                    'from_email'=>'support@itcc.net.au',
+                    'emailbody' => $parsedContent,
+                    'subject'=>$_data['subject']
+                ]);
+                $sub = $data['subject'];
+
+                $to_email = $request->email;
+                Mail::send('email.registration', $data, function($message) use ($to_email,$sub) {
+                    $message->to($to_email)
+                    ->subject($sub);
+                    $message->from('support@itcc.net.au',$sub);
+                });
+            }
+            
             
             $response = [
                 'success' => true,

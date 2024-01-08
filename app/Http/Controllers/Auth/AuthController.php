@@ -18,6 +18,7 @@ use DB;
 use Laravel\Socialite\Facades\Socialite;
 use DateTime;
 use App\Models\EmailTemplates;
+use URL;
 
 class AuthController extends Controller
 {
@@ -145,24 +146,40 @@ class AuthController extends Controller
               'token' => $token, 
               'created_at' => Carbon::now()
             ]);
-
-            $_data = ([
-                'first_name' => 'denish',
-                'last_name' => 'christian',
-                'url' => "<a class='abtn' href='{{ route('reset.password.get', $token) }}'>Reset</a>&nbsp;&nbsp;&nbsp;",
-            ]);
-
+            $url = URL::to("/");
+            $users=User::where('email',$request->email)->first();
             $emailtemplate = EmailTemplates::where('email_template_type', 'Forgot Password')->first();
-            // dd($emailtemplate->_data);
-            $data = ([
-                'emailbody' => json_encode($_data),//$emailtemplate->parse($_data),
+            $_data = [
+                'first_name' => $users->first_name,
+                'last_name' =>$users->last_name,
+                'url' => "<a class='abtn' href=".$url."/reset-password/".($token).">Reset</a>&nbsp;&nbsp;&nbsp;",
                 'subject' => $emailtemplate->subject,
-            ]);
-            // dd($data);
-            Mail::send('email.forgetPassword', ['token' => $token,'data' => $data], function($message) use($request){
-              $message->to($request->email);
-            //   $message->subject($data['subject']);//Reset Password
-          });
+            ];
+            
+            // Check if the template is found
+            if ($emailtemplate) {
+                $templateContent = $emailtemplate->email_template_description;
+                // Replace placeholders in the template with actual values
+                $parsedContent = str_replace(
+                    ['{{first_name}}', '{{last_name}}', '{{url}}', '{{subject}}'],
+                    [$_data['first_name'], $_data['last_name'] ?? '', $_data['url'] ?? '', $_data['subject'] ?? ''],
+                    $templateContent
+                );
+
+                $data = ([
+                    'from_email'=>'support@itcc.net.au',
+                    'emailbody' => $parsedContent,
+                    'subject'=>$_data['subject']
+                ]);
+                $sub = $data['subject'];
+                $to_email = $request->email;
+                Mail::send('email.forgetPassword', $data, function($message) use ($to_email,$sub) {
+                    $message->to($to_email)
+                    ->subject($sub);
+                    $message->from('support@itcc.net.au',$sub);
+                });
+            }
+            
   
           return back()->with('message', 'We have e-mailed your password reset link!');
       }
