@@ -172,7 +172,7 @@
                             <!-- <span class="txt-up">Choose a File or drag them here</span> -->
                             <!-- <span class="txt-up" style="opacity: .5;">.xls, Word, PNG, JPG or PDF (max. 5MB Upload)</span> -->
                             
-                            <input class="form-control" type="file" id="client_documents" name="client_documents[]" accept="image/png, image/gif, image/jpeg" multiple>
+                            <input class="form-control" type="file" id="client_documents" name="client_documents[]" accept="application/pdf, application/vnd.ms-excel,image/png, image/gif, image/jpeg"  multiple>
                         </div>
                     </label>
                     <div class="mt-2 d-grey font-13"><em>Documents you add here will be visible to this client in Online Booking.</em></div>
