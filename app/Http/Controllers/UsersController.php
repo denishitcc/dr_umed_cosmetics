@@ -30,6 +30,7 @@ class UsersController extends Controller
 
         // return view('users.index', compact('users'));
         $users = User::all();
+        $locations = Locations::all();
         if ($request->ajax()) {
             // if($request->search != '')
             // {
@@ -96,7 +97,7 @@ class UsersController extends Controller
                     ->make(true);
 
         }
-        return view('users.index', compact('users'));
+        return view('users.index', compact('users','locations'));
     }
 
     /**

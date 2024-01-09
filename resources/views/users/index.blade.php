@@ -20,6 +20,12 @@
               <div class="card-body">
               <div class="row">
                           <div class="col-md-7">
+                            <select id='location' class="form-select form-control" style="width: 200px">
+                                <option value="">Select Location</option>
+                                @foreach($locations as $location)
+                                <option value="{{$location->location_name}}">{{$location->location_name}}</option>
+                                @endforeach
+                            </select>
                           </div>
                         <table class="table data-table all-db-table align-middle display">
                         <thead>
@@ -30,6 +36,7 @@
                             <th>Email</th>
                             <th>Phone</th>
                             <th>Role Type</th>
+                            <th>Location</th>
                             <th>Status</th>
                             <th>Last Login</th>
                             <th>Action</th>
@@ -80,6 +87,7 @@ $(document).ready(function() {
         {data: 'email', name: 'email'},
         {data: 'phone', name: 'phone'},
         {data: 'role_type', name: 'role_type'},
+        {data: 'staff_member_location', name: 'staff_member_location'},
         { data: 'status_bar', name: 'status_bar',
             render: function( data, type, full, meta ) {debugger;
                 return "<div class='form-check form-switch green'><input class='form-check-input flexSwitchCheckDefault' id='flexSwitchCheckDefault' type='checkbox' ids='"+full.id+"' value='"+data +"' "+data +"></div>"
@@ -183,6 +191,9 @@ $(document).ready(function() {
 
         $('#pagelist').val(page_info.page);
     }
+});
+$(document).on('change', '#location', function(){
+    table.search($(this).val()).draw() ;
 });
 $(document).on('keyup', '.dt-search', function()
 {
