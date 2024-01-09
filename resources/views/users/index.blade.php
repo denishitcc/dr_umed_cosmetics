@@ -83,7 +83,12 @@ $(document).ready(function() {
             }
         },
         {data: 'autoId', name: 'autoId'},
-        {data: 'username', name: 'username'},
+        {data: 'username', name: 'username',
+            "render": function(data, type, row, meta){
+                data = '<a class="blue-bold" href="users/' + row.id + '">' + data + '</a>';
+                return data;
+            }
+        },
         {data: 'email', name: 'email'},
         {data: 'phone', name: 'phone'},
         {data: 'role_type', name: 'role_type'},
