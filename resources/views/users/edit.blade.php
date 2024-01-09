@@ -89,6 +89,28 @@
                 </div>
             </div>
             <div class="row">
+                <div class="col-lg-3">
+                    <label class="form-label">Is a staff member</label>
+                    <div class="toggle mb-0">
+                        <input type="radio" name="is_staff_memeber" value="1" {{ ($users->is_staff_memeber=="1")? "checked" : "" }}  id="yes" checked="checked" />
+                        <label for="yes">Yes <i class="ico-tick"></i></label>
+                        <input type="radio" name="is_staff_memeber" value="0" {{ ($users->is_staff_memeber=="0")? "checked" : "" }}  id="no" />
+                        <label for="no">No <i class="ico-tick"></i></label>
+                    </div>
+                </div>
+                <div class="col-lg-4 staff_hide">
+                    <div class="form-group">
+                        <label class="form-label">Staff member at</label>
+                        <select class="form-select form-control" name="staff_member_location" id="staff_member_location">
+                        <option selected value> -- select an option -- </option>
+                            @foreach($locations as $location)
+                            <option value="{{ $location->location_name }}" {{ ( $location->location_name == $users->staff_member_location) ? 'selected' : '' }}> {{ $location->location_name }} </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-lg-7">
                     <label class="gl-upload">
                         <div class="icon-box">
@@ -128,6 +150,21 @@
 
 
     $(document).ready(function() {
+        debugger;
+        var staffs = $("input[type=radio][name='is_staff_memeber']:checked").val();
+        if(staffs== 0) {
+            $('.staff_hide').hide();
+        }
+
+        $('input[type=radio][name=is_staff_memeber]').change(function() {
+            if (this.value == '1') {
+                $('.staff_hide').show();
+            }
+            else if (this.value == '0') {
+                $('#staff_member_location').val('');
+                $('.staff_hide').hide();
+            }
+        });
 		$("#edit_users").validate({
             rules: {
                 first_name: {
@@ -146,13 +183,16 @@
                 last_name:{
                     required: true,
                 },
-                image:{
-                    required:true,
-                },
+                // image:{
+                //     required:true,
+                // },
                 role_type:{
                     required:true
                 },
                 access_level:{
+                    required:true
+                },
+                staff_member_location:{
                     required:true
                 }
             }

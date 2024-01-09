@@ -39,6 +39,8 @@ class User extends Authenticatable
         'image',
         'banner_image',
         'access_level',
+        'is_staff_memeber',
+        'staff_member_location',
         'last_login'
     ];
 

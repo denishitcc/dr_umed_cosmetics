@@ -9,6 +9,7 @@ use Mail;
 use Illuminate\Support\Str;
 use DataTables;
 use App\Models\EmailTemplates;
+use App\Models\Locations;
 
 class UsersController extends Controller
 {
@@ -104,7 +105,8 @@ class UsersController extends Controller
     public function create()
     {
         $userRole = UserRoles::get();
-        return view('users.create',compact('userRole'));
+        $locations = Locations::all();
+        return view('users.create',compact('userRole','locations'));
     }
 
     /**
@@ -135,7 +137,9 @@ class UsersController extends Controller
                 'gender'=>$request->gender,
                 'role_type'=>$request->role_type,
                 'access_level'=>$request->access_level,
-                'image'=>$img
+                'image'=>$img,
+                'is_staff_memeber'=>$request->is_staff_memeber,
+                'staff_member_location'=>$request->staff_member_location
             ]);
         }
         else
@@ -151,7 +155,9 @@ class UsersController extends Controller
                     'gender'=>$request->gender,
                     'role_type'=>$request->role_type,
                     'access_level'=>$request->access_level,
-                    'image'=>''
+                    'image'=>'',
+                    'is_staff_memeber'=>$request->is_staff_memeber,
+                    'staff_member_location'=>$request->staff_member_location
                 ]);
             }
             else
@@ -165,7 +171,9 @@ class UsersController extends Controller
                     'gender'=>$request->gender,
                     'role_type'=>$request->role_type,
                     'access_level'=>$request->access_level,
-                    'image'=>''
+                    'image'=>'',
+                    'is_staff_memeber'=>$request->is_staff_memeber,
+                    'staff_member_location'=>$request->staff_member_location
                 ]);
             }
         }
@@ -224,7 +232,8 @@ class UsersController extends Controller
     {
         $users = User::find($id);
         $userRole = UserRoles::get();
-        return view('users.edit', compact('users','userRole'));
+        $locations = Locations::all();
+        return view('users.edit', compact('users','userRole','locations'));
     }
 
     /**
@@ -265,6 +274,8 @@ class UsersController extends Controller
                 'gender'=>$request->gender,
                 'role_type'=>$request->role_type,
                 'access_level'=>$request->access_level,
+                'is_staff_memeber'=>$request->is_staff_memeber,
+                'staff_member_location'=>$request->staff_member_location,
                 'image'=>$img
             ]);
         }
@@ -282,6 +293,8 @@ class UsersController extends Controller
                     'gender'=>$request->gender,
                     'role_type'=>$request->role_type,
                     'access_level'=>$request->access_level,
+                    'is_staff_memeber'=>$request->is_staff_memeber,
+                    'staff_member_location'=>$request->staff_member_location,
                     'image'=>''
                 ]);
             }
@@ -298,6 +311,8 @@ class UsersController extends Controller
                     'gender'=>$request->gender,
                     'role_type'=>$request->role_type,
                     'access_level'=>$request->access_level,
+                    'is_staff_memeber'=>$request->is_staff_memeber,
+                    'staff_member_location'=>$request->staff_member_location,
                     'image'=>$getImg['image']
                 ]);
             }
