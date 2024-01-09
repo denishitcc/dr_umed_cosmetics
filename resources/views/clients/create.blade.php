@@ -133,17 +133,18 @@
         </div>
 
         <div class="card-head">
-            <h5 class="bright-gray mb-0">Photos <span class="badge text-bg-blue badge-circle">10</span></h5>
+            <h5 class="bright-gray mb-0">Photos <span class="badge text-bg-blue badge-circle photos_cnt"></span></h5>
         </div>
         <div class="card-body">
-
+            <!-- <input type="file" class="filepond" name="filepond" id="client_photos" multiple/> -->
             <div class="row">
                 <div class="col-lg-7">
                     <label class="gl-upload">
                         <div class="icon-box">
                             <img src="{{ asset('img/upload-icon.png') }}" alt="" class="up-icon">
-                            <!-- <span class="txt-up">Choose a File or drag them here</span> -->
-                            <input class="form-control" type="file" class="client_photos" id="client_photos" name="client_photos[]" accept="image/png, image/gif, image/jpeg" multiple>
+                            <span class="txt-up">Choose a File or drag them here</span>
+                            <input type="file" class="filepond form-control" name="filepond" id="client_photos" accept="image/png, image/jpeg" multiple/>
+                            
                         </div>
                     </label>
                     <div class="mt-2 d-grey font-13"><em>Photos you add here will be visible to this client in Online Booking.</em></div>
@@ -159,7 +160,7 @@
             
         </div>
         <div class="card-head">
-            <h5 class="bright-gray mb-0">Documents <span class="badge text-bg-blue badge-circle">4</span></h5>
+            <h5 class="bright-gray mb-0">Documents <span class="badge text-bg-blue badge-circle docs_cnt"></span></h5>
         </div>
 
         <div class="card-body">
@@ -169,10 +170,9 @@
                     <label class="gl-upload">
                         <div class="icon-box">
                             <img src="{{ asset('img/upload-icon.png') }}" alt="" class="up-icon">
-                            <!-- <span class="txt-up">Choose a File or drag them here</span> -->
-                            <!-- <span class="txt-up" style="opacity: .5;">.xls, Word, PNG, JPG or PDF (max. 5MB Upload)</span> -->
-                            
-                            <input class="form-control" type="file" id="client_documents" name="client_documents[]" accept="application/pdf, application/vnd.ms-excel,image/png, image/gif, image/jpeg"  multiple>
+                            <span class="txt-up">Choose a File or drag them here</span>
+                            <span class="txt-up" style="opacity: .5;">.xls, Word, PNG, JPG or PDF</span>
+                            <input type="file" class="filepond form-control" name="filepond" id="client_documents" accept="application/pdf, applucation/vnd.ms-excel,application/msword,image/png, image/jpeg" multiple/>
                         </div>
                     </label>
                     <div class="mt-2 d-grey font-13"><em>Documents you add here will be visible to this client in Online Booking.</em></div>
@@ -203,6 +203,48 @@
 @endsection
 @section('script')
 <script>
+    /*
+    We want to preview images, so we need to register the Image Preview plugin
+    */
+    FilePond.registerPlugin(
+    
+        // encodes the file as base64 data
+        FilePondPluginFileEncode,
+        
+        // validates the size of the file
+        FilePondPluginFileValidateSize,
+        
+        // corrects mobile image orientation
+        FilePondPluginImageExifOrientation,
+        
+        // previews dropped images
+        FilePondPluginImagePreview
+    );
+
+    // Select the file input and use create() to turn it into a pond
+    // FilePond.create(
+    //     document.querySelector('input')
+    // );
+
+    // const inputElement = document.getElementById('client_photos');
+    //     FilePond.create(
+    //     document.querySelector('input')
+    // );
+    const inputElement = document.getElementById('client_photos');
+    // FilePond.create(inputElement, {
+    // // options here
+    // })
+
+    // const inputElement = document.getElementById('client_documents');
+    //     FilePond.create(
+    //     document.querySelector('input')
+    // );
+    const inputElement1 = document.getElementById('client_documents');
+    // FilePond.create(inputElement1, {
+    // // options here
+    // })
+    var file_cnt=0;
+    var doc_cnt=0;
     $(document).ready(function() {
 		$("#create_client").validate({
             rules: {
@@ -242,10 +284,11 @@
                 }
             },
         });
-
-        $("#client_photos").change(function() {
+        
+        $("#client_photos").change(function() {debugger;
             var inputElement = document.getElementById('client_photos');
             for (var i = 0; i < this.files.length; i++) {
+                $('.photos_cnt').text(file_cnt+1);
                 var reader = new FileReader();
                 var files = this.files[i].name;
                 var currFile = this.files[i];
@@ -258,12 +301,13 @@
                     };
                 })(currFile);
                 reader.readAsDataURL(this.files[i]);
-
+                file_cnt++;
             }
         });
         $("#client_documents").change(function() {
             var inputElement = document.getElementById('client_documents');
             for (var i = 0; i < this.files.length; i++) {
+                $('.docs_cnt').text(doc_cnt+1);
                 var reader = new FileReader();
                 var files = this.files[i].name;
                 var currFile = this.files[i];
@@ -276,6 +320,7 @@
                     };
                 })(currFile);
                 reader.readAsDataURL(this.files[i]);
+                doc_cnt++;
             }
         });
         
@@ -301,11 +346,15 @@
     $(document).on('click', '.remove_image', function (e) {debugger;
         e.preventDefault();
         $(this).remove();
+        file_cnt--;
+        $('.photos_cnt').text(file_cnt);
     });
     $(document).on('click', '.remove_doc', function (e) {debugger;
         e.preventDefault();
         $(this).next().remove();
         $(this).remove();
+        doc_cnt--;
+        $('.docs_cnt').text(doc_cnt);
     });
     function SubmitCreateClient(data){
 		$.ajax({

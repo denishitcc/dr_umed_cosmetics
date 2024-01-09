@@ -351,8 +351,8 @@ div.dataTables_filter { text-align: right; float: right;}
 
 /* custom upload */
 
-.gl-upload{border-radius: 10px; border: 1px solid #EFEFEF; background: #F9FAFC; display: flex; text-align: center; height: 150px; align-items: center; justify-content: center;}
-.gl-upload [type=file]{ opacity: .1; display: none;}
+.gl-upload{border-radius: 10px; border: 1px solid #EFEFEF; background: #F9FAFC; display: flex; text-align: center; height: 150px; align-items: center; justify-content: center; position: relative;}
+.gl-upload [type=file]{ opacity: 0; position: absolute; left: 0; top: 0; right: 0; bottom: 0;}
 .gl-upload .up-icon{ opacity: .3; margin-bottom: 15px;}
 .gl-upload .txt-up{ display: block; color: #B4B4B4; font-weight: 500;}
 

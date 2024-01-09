@@ -27,10 +27,10 @@
                     <th>Client Name</th>
                     <th>Email</th>
                     <th>Phone</th>
-                    <th>Appointment Details</th>
+                    <th>Next Appointments</th>
                     <th>Date and Time</th>
-                    <th>Status</th>
-                    <th>Address</th>
+                    <!-- <th>Status</th> -->
+                    <th>Location</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -65,13 +65,18 @@ $(document).ready(function() {
         columns: [
             // {data: '', name: ''},
             {data: 'autoId', name: 'autoId'},
-            {data: 'username', name: 'username'},
+            {data: 'username', name: 'username',
+                "render": function(data, type, row, meta){
+                    data = '<a class="blue-bold" href="clients/' + row.id + '">' + data + '</a>';
+                    return data;
+                }
+            },
             {data: 'email', name: 'email'},
             {data: 'mobile_number', name: 'mobile_number'},
-            {data: 'id', name: 'id'},
-            {data: 'date_and_time', name: 'date_and_time'},
-            {data: 'status', name: 'status'},
-            {data: 'addresses', name: 'addresses'},
+            {"defaultContent": ""},//{data: 'id', name: 'id',"defaultContent": ""},//next appointment details
+            {"defaultContent": ""},//{data: 'id', name: 'id'},//appointment date
+            // {data: 'status', name: 'status'},
+            {"defaultContent": ""},//{data: 'id', name: 'id'},//appointment location
             // {data: 'action', name: 'action', orderable: false, searchable: false},
         ],
         "dom": 'Blrftip',
