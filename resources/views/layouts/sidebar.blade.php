@@ -61,10 +61,10 @@
                         </ul>
                     </li>
                     <li><a href="#"><i class="ico-forms"></i>Forms </a></li>
-                    <li class="dropdown {{ (request()->is('email-templates')) ? 'show' : '' }} || {{ (request()->is('email-templates/*')) ? 'show' : '' }}"><a href="#"><i class="ico-templates"></i>Templates </a>
+                    <li class="dropdown {{ (request()->is('email-templates')) ? 'show' : '' }} || {{ (request()->is('sms-templates')) ? 'show' : '' }} || {{ (request()->is('email-templates/*')) ? 'show' : '' }} || {{ (request()->is('sms-templates/*')) ? 'show' : '' }}"><a href="#"><i class="ico-templates"></i>Templates </a>
                         <ul>
                             <li class="{{ (request()->is('email-templates')) ? 'active' : '' }} || {{ (request()->is('email-templates/*')) ? 'active' : '' }}"><a href="{{ route('email-templates.index') }}">Email Templates</a></li>
-                            <li><a href="#">SMS Templates</a></li>
+                            <li class="{{ (request()->is('sms-templates')) ? 'active' : '' }} || {{ (request()->is('sms-templates/*')) ? 'active' : '' }}"><a href="{{ route('sms-templates.index') }}">SMS Templates</a></li>
                         </ul>
                     </li>
                     <li class="{{ (request()->is('locations')) ? 'active' : '' }} || {{ (request()->is('locations/*')) ? 'active' : '' }}"><a href="{{ route('locations.index') }}"><i class="ico-locations"></i>Locations </a></li>

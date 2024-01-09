@@ -10,6 +10,7 @@ use App\Http\Controllers\UserRoleController;
 use App\Http\Controllers\AccessLevelController;
 use App\Http\Controllers\EmailTemplatesController;
 use App\Http\Controllers\ClientsController;
+use App\Http\Controllers\SMSTemplatesController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -83,4 +84,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/clients', ClientsController::class); 
     Route::post('clients/table',[ClientsController::class, 'index'])->name('clients.table');
     Route::post('clients/checkClientEmail', [ClientsController::class, 'checkClientEmail']);
+
+    //SMS Templates
+    Route::resource('/sms-templates', SMSTemplatesController::class);
 });
