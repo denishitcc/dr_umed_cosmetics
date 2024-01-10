@@ -132,7 +132,7 @@ class ClientsController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return view('clients.edit');
     }
 
     /**

@@ -24,11 +24,17 @@
                     <b class="d-grey">Total Clients</b>
                 </li>
                 <li>
-                    <div class="font-24 mb-1">0</div>
+                    @php
+                    $active_client = \App\Models\Clients::where(['status' => 'active'])->get();
+                    @endphp
+                    <div class="font-24 mb-1">{{count($active_client)}}</div>
                     <b class="text-succes-light">Active Clients </b>
                 </li>
                 <li>
-                    <div class="font-24 mb-1">0</div>
+                    @php
+                    $inactive = \App\Models\Clients::where(['status' => 'deactive'])->get();
+                    @endphp
+                    <div class="font-24 mb-1">{{count($inactive)}}</div>
                     <b class="text-danger">InActive Clients</b>
                 </li>
                 <li>
@@ -59,9 +65,9 @@
                     <th>Phone</th>
                     <th>Next Appointments</th>
                     <th>Date and Time</th>
-                    <!-- <th>Status</th> -->
+                    <th>Status</th> 
                     <th>Location</th>
-                    <th>status</th>
+                    <!--<th>status</th>-->
                     </tr>
                 </thead>
                 <tbody>
