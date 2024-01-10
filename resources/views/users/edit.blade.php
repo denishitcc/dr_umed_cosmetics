@@ -5,8 +5,8 @@
     <!-- <main> -->
         <div class="card">
             
-            <div class="card-head">
-                <h4 class="small-title mb-5">Edit User</h4>
+            <div class="card-head pt-3">
+                <h4 class="small-title mb-5">Edit Staff</h4>
                 <h5 class="d-grey mb-0">Details | Photos</h5>
             </div>
             <form id="edit_users" name="edit_users" class="form" enctype="multipart/form-data">
@@ -57,6 +57,15 @@
                         <input type="text" class="form-control" name="phone" id="phone" maxlength="15" value="{{$users->phone}}">
                         </div>
                 </div>
+                <div class="col-lg-3">
+                    <label class="form-label">Available in Online Booking</label>
+                    <div class="toggle mb-4">
+                        <input type="radio" name="available_in_online_booking" value="1" {{ ($users->available_in_online_booking=="1")? "checked" : "" }}  id="yes" checked="checked" />
+                        <label for="yes">Yes <i class="ico-tick"></i></label>
+                        <input type="radio" name="available_in_online_booking" value="0" {{ ($users->available_in_online_booking=="0")? "checked" : "" }}  id="no" />
+                        <label for="no">No <i class="ico-tick"></i></label>
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="col-lg-4">
@@ -91,7 +100,7 @@
             <div class="row">
                 <div class="col-lg-3">
                     <label class="form-label">Is a staff member</label>
-                    <div class="toggle mb-0">
+                    <div class="toggle mb-4">
                         <input type="radio" name="is_staff_memeber" value="1" {{ ($users->is_staff_memeber=="1")? "checked" : "" }}  id="yes" checked="checked" />
                         <label for="yes">Yes <i class="ico-tick"></i></label>
                         <input type="radio" name="is_staff_memeber" value="0" {{ ($users->is_staff_memeber=="0")? "checked" : "" }}  id="no" />
@@ -156,12 +165,12 @@
             $('.staff_hide').hide();
         }
 
-        $('input[type=radio][name=is_staff_memeber]').change(function() {
+        $('input[type=radio][name=is_staff_memeber]').change(function() {debugger;
             if (this.value == '1') {
                 $('.staff_hide').show();
             }
             else if (this.value == '0') {
-                $('#staff_member_location').val('');
+                // $('#staff_member_location').val('');
                 $('.staff_hide').hide();
             }
         });

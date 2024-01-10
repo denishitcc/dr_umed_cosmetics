@@ -4,9 +4,9 @@
     
         <div class="card">
             
-            <div class="card-head">
+            <div class="card-head  pt-3">
                 <h4 class="small-title mb-5">Edit Email Template</h4>
-                <h5 class="d-grey mb-0">Details</h5>
+                <h5 class="d-grey mb-0">{{$email_templates->email_template_type}}</h5>
             </div>
             <form id="update_email_templates" name="update_email_templates" class="form" method="post">
             @csrf
@@ -15,14 +15,8 @@
                 <div class="row">
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label class="form-label">Email Template Type </label>
-                            <input type="text" class="form-control" id="email_template_type" name="email_template_type" value="{{$email_templates->email_template_type}}" disabled>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="form-group">
                             <label class="form-label">Subject </label>
-                            <input type="text" class="form-control" id="subject" name="subject" value="{{$email_templates->subject}}" disabled>
+                            <input type="text" class="form-control" id="subject" name="subject" value="{{$email_templates->subject}}">
                         </div>
                     </div>
                 </div>

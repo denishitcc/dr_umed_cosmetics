@@ -4,7 +4,7 @@
     <!-- <main> -->
         <div class="card">
             
-            <div class="card-head">
+            <div class="card-head  pt-3">
                 <h4 class="small-title mb-5">Add Location</h4>
                 <h5 class="d-grey mb-0">Details</h5>
             </div>

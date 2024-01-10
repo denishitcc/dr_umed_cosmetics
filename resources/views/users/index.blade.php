@@ -5,28 +5,34 @@
 <!-- <script src="https://code.jquery.com/jquery-3.5.1.js"></script>   -->
   <!-- <main> -->
           <div class="card">
-              <div class="card-head">
+              <div class="card-head  pt-3">
               <div class="toolbar mb-0">
                 <div class="tool-left">
-                    <h4 class="small-title mb-0">User Management</h4>
+                    <h4 class="small-title mb-0">Staff Management</h4>
                 </div>
                 <div class="tool-right">
-                    <a href="{{ route('users.create') }}" class="btn btn-primary btn-md">Add User</a>
+                    <a href="{{ route('users.create') }}" class="btn btn-primary btn-md">Add Staff</a>
                 </div>
             </div>
                 
               </div>
-              
+              <div class="card-head py-3">
+                <div class="toolbar">
+                    <div class="tool-left">
+                        <div class="cst-drop-select"><select class="location" multiple="multiple" id="MultiSelect_DefaultValues"></select></div>
+                    </div>
+                </div>
+            </div>
               <div class="card-body">
               <div class="row">
-                          <div class="col-md-7">
+                          <!-- <div class="col-md-7 mb-4">
                             <select id='location' class="form-select form-control" style="width: 200px">
                                 <option value="">Select Location</option>
                                 @foreach($locations as $location)
                                 <option value="{{$location->location_name}}">{{$location->location_name}}</option>
                                 @endforeach
                             </select>
-                          </div>
+                          </div> -->
                         <table class="table data-table all-db-table align-middle display">
                         <thead>
                           <tr>
@@ -51,6 +57,38 @@
 @stop
 @section('script')
 <script>
+  $(function() {
+      debugger;
+      var loc_name = [];
+
+      $.ajax({
+          url: "get-all-locations",
+          cache: false,
+          type: "POST",
+          success: function(res) {
+              debugger;
+              for (var i = 0; i < res.length; ++i) {
+                  $("#results").append(res[i].location_name);
+                  loc_name.push(res[i].location_name); // Push the location_name to the array
+              }
+
+              // Move the map function inside the success callback
+              $.map(loc_name, function(x) {
+                  return $('.location').append("<option>" + x + "</option>");
+              });
+
+              // Initialize the multiselect after appending options
+              $('.location')
+              .multiselect({
+                  allSelectedText: 'Select Location',
+                  maxHeight: 200,
+                  includeSelectAllOption: true
+              })
+              .multiselect('selectAll', false)
+              .multiselect('updateButtonText');
+          }
+      });
+  });
 $.ajaxSetup({
 headers: {
     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -197,8 +235,15 @@ $(document).ready(function() {
         $('#pagelist').val(page_info.page);
     }
 });
-$(document).on('change', '#location', function(){
-    table.search($(this).val()).draw() ;
+$(document).on('change', '#MultiSelect_DefaultValues', function() {
+  var vals = $(this).find(':selected').map(function(index, element) {
+    return $.fn.dataTable.util.escapeRegex($(element).val());
+  }).toArray().join('|').replace("&", "\\&").replace(/\s/g, "\\s");
+  if(vals=="")
+  {
+    vals=null;
+  }
+  table.columns(6).search(vals, true).draw();
 });
 $(document).on('keyup', '.dt-search', function()
 {

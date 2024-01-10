@@ -27,6 +27,7 @@ class Enquiries extends Model
         'skin',
         'surgical',
         'body',
-        'comments'
+        'comments',
+        'enquiry_status'
     ];
 }

@@ -41,7 +41,8 @@ class User extends Authenticatable
         'access_level',
         'is_staff_memeber',
         'staff_member_location',
-        'last_login'
+        'last_login',
+        'available_in_online_booking'
     ];
 
     /**

@@ -31,6 +31,7 @@ return new class extends Migration
             $table->string('access_level',50)->nullable();
             $table->tinyInteger('is_staff_memeber')->default(1);
             $table->string('staff_member_location',100)->nullable();
+            $table->tinyInteger('available_in_online_booking')->default(1);
             $table->string('last_login')->nullable();
             $table->softDeletes();
             $table->timestamps();

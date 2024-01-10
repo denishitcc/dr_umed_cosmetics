@@ -57,28 +57,6 @@ class ClientsController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
-        // foreach($request->pics as $pics)
-        // {
-        //     // dd($pics);
-        //     $folderPath = public_path() . '/' . 'images/clients_photos/';
-        //     $image_parts = explode(";base64,", $pics);
-        //     // dd($image_parts);
-        //     $image_type_aux = explode("image/", $image_parts[0]);
-        //     $image_type = $image_type_aux[1];
-        //     $image_base64 = base64_decode($image_parts[1]);
-        //     $uniqid = uniqid();
-        //     $file = $folderPath . $uniqid . '.' . $image_type;
-        //     file_put_contents($file, $image_base64);
-        //     // dd($file);
-        // }
-        // dd('done');
-
-
-
-        // $fileNames = explode(',', $request->input('file_names'));
-        // dd($fileNames);
-        // dd(json_encode($request->uploaded_photos));
         $newUser = Clients::create([
             'firstname' => $request['firstname'],
             'lastname' => $request['lastname'],
@@ -93,19 +71,7 @@ class ClientsController extends Controller
             'city' => $request['city'],
             'postcode' => $request['postcode']
         ]);
-        // if(isset($request->client_photos))
-        // {
-        //     foreach($request->client_photos as $photos)
-        //     {
-        //         $destinationPath = public_path('images/clients_photos');
-        //         $photos->move($destinationPath,$photos->getClientOriginalName());
-        //         $img = $photos->getClientOriginalName();
-        //         $photo = ClientsPhotos::create([
-        //             'client_id' => $newUser->id,
-        //             'client_photos' => $img
-        //         ]);
-        //     }
-        // }
+        
         if(isset($request->pics))
         {
             foreach($request->pics as $pics)
@@ -130,7 +96,6 @@ class ClientsController extends Controller
         {
             foreach($request->docs as $docs)
             {
-                // dd($docs);
                 $folderPath = public_path() . '/' . 'images/clients_documents/';
                 $image_parts = explode(";base64,", $docs);
                 // dd($image_parts);
@@ -146,19 +111,7 @@ class ClientsController extends Controller
                 ]);
             }
         }
-        // if(isset($request->client_documents))
-        // {
-        //     foreach($request->client_documents as $documents)
-        //     {
-        //         $destinationPath = public_path('images/clients_documents');
-        //         $documents->move($destinationPath,$documents->getClientOriginalName());
-        //         $doc_img = $documents->getClientOriginalName();
-        //         $documents = ClientsDocuments::create([
-        //             'client_id' => $newUser->id,
-        //             'client_documents' => $doc_img
-        //         ]);
-        //     }
-        // }
+        
         $response = [
             'success' => true,
             'message' => 'Client Created successfully!',

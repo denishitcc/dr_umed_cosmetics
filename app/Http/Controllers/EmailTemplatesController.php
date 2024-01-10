@@ -83,7 +83,7 @@ class EmailTemplatesController extends Controller
     {
         $email_temp = EmailTemplates::updateOrCreate(['id' => $request->id],[
             // 'email_template_type' => $request->email_template_type,
-            // 'subject' => $request->subject,
+            'subject' => $request->subject,
             'email_template_description' => $request->email_template_description
         ]);
 

@@ -4,8 +4,8 @@
 <!-- <main> -->
     <div class="card">
         
-        <div class="card-head">
-            <h4 class="small-title mb-5">Add User</h4>
+        <div class="card-head pt-3">
+            <h4 class="small-title mb-5">Add Staff</h4>
             <h5 class="d-grey mb-0">Details | Photos</h5>
         </div>
         <!-- <form class="form"  action="{{ route('users.store') }}" method="post" enctype="multipart/form-data">
@@ -51,6 +51,15 @@
                         <input type="text" class="form-control" name="phone" id="phone" maxlength="15">
                         </div>
                 </div>
+                <div class="col-lg-3">
+                    <label class="form-label">Available in Online Booking</label>
+                    <div class="toggle mb-4">
+                        <input type="radio" name="available_in_online_booking" value="1" id="yes_available" checked="checked">
+                        <label for="yes_available">Yes <i class="ico-tick"></i></label>
+                        <input type="radio" name="available_in_online_booking" value="0" id="no_available">
+                        <label for="no_available">No <i class="ico-tick"></i></label>
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="col-lg-4">
@@ -84,7 +93,7 @@
             <div class="row">
                 <div class="col-lg-3">
                     <label class="form-label">Is a staff member</label>
-                    <div class="toggle mb-0">
+                    <div class="toggle mb-4">
                         <input type="radio" name="is_staff_memeber" value="1" id="yes" checked="checked">
                         <label for="yes">Yes <i class="ico-tick"></i></label>
                         <input type="radio" name="is_staff_memeber" value="0" id="no">

@@ -11,6 +11,7 @@ use App\Http\Controllers\AccessLevelController;
 use App\Http\Controllers\EmailTemplatesController;
 use App\Http\Controllers\ClientsController;
 use App\Http\Controllers\SMSTemplatesController;
+use App\Http\Controllers\EnquiriesController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -87,4 +88,11 @@ Route::middleware(['auth'])->group(function () {
 
     //SMS Templates
     Route::resource('/sms-templates', SMSTemplatesController::class);
+
+    //Enquiries
+    Route::resource('/enquiries', EnquiriesController::class); 
+    Route::post('enquiries/table',[EnquiriesController::class, 'index'])->name('enquiries.table');
+
+    //Get All Location
+    Route::post('/get-all-locations', [UsersController::class, 'get_all_locations'])->name('get-all-locations');
 });

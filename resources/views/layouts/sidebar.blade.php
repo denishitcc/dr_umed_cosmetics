@@ -36,15 +36,9 @@
                     <li class="{{ (request()->is('dashboard')) ? 'active' : '' }}"><a href="{{ route('dashboard') }}"><i class="ico-dashboard"></i>Dashboard</a></li>
                     <li><a href="#"><i class="ico-calendar"></i>Calendar</a></li>
                     <li class="{{ (request()->is('clients')) ? 'active' : '' }} || {{ (request()->is('clients/*')) ? 'active' : '' }}"><a href="{{ route('clients.index') }}"><i class="ico-client"></i>Clients</a></li>
-                    <li><a href="#"><i class="ico-enquiries"></i>Enquiries </a></li>
+                    <li class="{{ (request()->is('enquiries')) ? 'active' : '' }} || {{ (request()->is('enquiries/*')) ? 'active' : '' }}"><a href="{{ route('enquiries.index') }}"><i class="ico-enquiries"></i>Enquiries </a></li>
                     <li><a href="#"><i class="ico-finance"></i>Finance </a></li>
                     <li><a href="#"><i class="ico-reports"></i>Reports </a></li>
-                    <li class="dropdown {{ (request()->is('users')) ? 'show' : '' }} || {{ (request()->is('users/*')) ? 'show' : '' }}"><a href="#"><i class="ico-staff"></i>Staff </a>
-                        <ul>
-                            <li><a href="#">Roles</a></li>
-                            <li class="{{ (request()->is('users')) ? 'active' : '' }} || {{ (request()->is('users/*')) ? 'active' : '' }}"><a href="{{ route('users.index') }}">Users</a></li>
-                        </ul>
-                    </li>
                     <li class="dropdown"><a href="#"><i class="ico-services"></i>Services </a>
                         <ul>
                             <li><a href="#">Categories</a></li>
@@ -68,6 +62,8 @@
                         </ul>
                     </li>
                     <li class="{{ (request()->is('locations')) ? 'active' : '' }} || {{ (request()->is('locations/*')) ? 'active' : '' }}"><a href="{{ route('locations.index') }}"><i class="ico-locations"></i>Locations </a></li>
+                    <li class="{{ (request()->is('users')) ? 'active' : '' }} || {{ (request()->is('users/*')) ? 'active' : '' }}"><a href="{{ route('users.index') }}"><i class="ico-staff"></i>Staffs</a>
+                    </li>
                     <li class="dropdown {{ (request()->is('settings')) ? 'show' : '' }} || {{ (request()->is('users-roles')) ? 'show' : '' }} || {{ (request()->is('users-roles/*')) ? 'show' : '' }} || {{ (request()->is('users-roles')) ? 'show' : '' }} || {{ (request()->is('access-level')) ? 'show' : '' }}"><a href="#"><i class="ico-templates"></i>Settings </a>
                         <ul>
                             <li class="{{ (request()->is('settings')) ? 'active' : '' }}"><a href="{{ route('settings') }}">User Settings</a></li>
@@ -208,6 +204,8 @@
     <script src="https://unpkg.com/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.min.js"></script>
     <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.js"></script>
     <script src="https://unpkg.com/filepond/dist/filepond.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.min.js"></script>
     @yield('script')
     <script>
         $(document).ready(function(){

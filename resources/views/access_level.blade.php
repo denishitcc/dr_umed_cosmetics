@@ -3,7 +3,7 @@
 <!-- <main> -->
         <div class="card">
             
-            <div class="card-head">
+            <div class="card-head  pt-3">
                 <h4 class="small-title mb-3">Access levels</h4>
                 <p class="mb-0">Access levels can be customised to suit your business needs. To choose or change a staff person's access level, go to <a href="">Staff and Kitomba 1 users.</a>
 

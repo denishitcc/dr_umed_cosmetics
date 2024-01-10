@@ -1,25 +1,55 @@
 @extends('layouts/sidebar')
 @section('content')
 <meta name="csrf-token" content="{{ csrf_token() }}">
-<!-- <script src="https://code.jquery.com/jquery-3.5.1.js"></script>   -->
 <!-- <main> -->
     <div class="card">
         <div class="card-head">
         <div class="toolbar mb-0">
                 <div class="tool-left">
-                    <h4 class="small-title mb-0">Client's Summary</h4>
-                </div>
-                <div class="tool-right">
-                    <a href="{{ route('clients.create') }}" class="btn btn-primary btn-md">Add New Client</a>
+                    <a href="{{ route('clients.create') }}" class="btn btn-primary btn-md me-2">Add New Client</a>
+                    <a href="#" class="btn btn-primary btn-md">Import Client</a>
+                    <a href="#" class="btn btn-primary btn-md">Add New Waitlist Client</a>
+                    <a href="#" class="btn btn-primary btn-md">Add New Walk-in Sale</a>
+                    <a href="#" class="btn btn-primary btn-md">Make New Appointment</a>
                 </div>
             </div>
             
         </div>
-        
+        <div class="card-head pt-3">
+            <h4 class="small-title mb-3">Client's Summary</h4>
+            
+            <ul class="taskinfo-row">
+                <li>
+                    <div class="font-24 mb-1">{{count($clients)}}</div>
+                    <b class="d-grey">Total Clients</b>
+                </li>
+                <li>
+                    <div class="font-24 mb-1">0</div>
+                    <b class="text-succes-light">Active Clients </b>
+                </li>
+                <li>
+                    <div class="font-24 mb-1">0</div>
+                    <b class="text-danger">InActive Clients</b>
+                </li>
+                <li>
+                    <div class="font-24 mb-1">0</div>
+                    <b class="text-warning">Client's Appointment Today</b>
+                </li>
+            </ul>
+        </div>
+        <div class="card-head py-3">
+            <div class="toolbar">
+                <div class="tool-left">
+                    <div class="cst-drop-select"><select class="location" multiple="multiple"></select></div>
+                </div>
+                <label class="cst-check"><input type="checkbox" class="checkbox" value="Sunday" name="" checked=""><span class="checkmark"></span>Exclude Inactive Clients</label>
+                <div class="tool-right">
+                    <div class="cst-drop-select"><select class="filter_by" multiple="multiple"></select></div>
+                </div>
+            </div>
+        </div>
         <div class="card-body">
         <div class="row">
-                <div class="col-md-7">
-                </div>
                 <table class="table data-table all-db-table align-middle display">
                 <thead>
                     <tr>
@@ -45,6 +75,63 @@
 @stop
 @section('script')
 <script>
+    $(function() {
+
+        var loc_name = [];
+
+        $.ajax({
+            url: "get-all-locations",
+            cache: false,
+            type: "POST",
+            success: function(res) {
+                debugger;
+                for (var i = 0; i < res.length; ++i) {
+                    $("#results").append(res[i].location_name);
+                    loc_name.push(res[i].location_name); // Push the location_name to the array
+                }
+
+                // Move the map function inside the success callback
+                $.map(loc_name, function(x) {
+                    return $('.location').append("<option>" + x + "</option>");
+                });
+
+                // Initialize the multiselect after appending options
+                $('.location')
+                .multiselect({
+                    allSelectedText: 'Select Location',
+                    maxHeight: 200,
+                    includeSelectAllOption: true
+                })
+                .multiselect('selectAll', false)
+                .multiselect('updateButtonText');
+            }
+        });
+        // var loc_name = [];//['Follow Up Done', 'First Call Done', 'Client Contacted','No Response','Not Intrested'];
+        // $.map(loc_name, function (x) {
+        // return $('.location').append("<option>" + x + "</option>");
+        // });
+        // $('.location')
+        // .multiselect({
+        //     allSelectedText: 'Select Locations',
+        //     maxHeight: 200,
+        //     includeSelectAllOption: true
+        // })
+        // .multiselect('selectAll', false)
+        // .multiselect('updateButtonText');
+
+        var filter_by = ['All Days', 'Feature Appointments', 'Today','Tomorrow'];
+        $.map(filter_by, function (x) {
+        return $('.filter_by').append("<option>" + x + "</option>");
+        });
+        $('.filter_by')
+        .multiselect({
+            allSelectedText: 'Filter By',
+            maxHeight: 200,
+            includeSelectAllOption: true
+        })
+        .multiselect('selectAll', false)
+        .multiselect('updateButtonText');
+    });
 $.ajaxSetup({
 headers: {
     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

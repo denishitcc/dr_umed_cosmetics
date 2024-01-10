@@ -4,9 +4,9 @@
     
         <div class="card">
             
-            <div class="card-head">
+            <div class="card-head pt-3">
                 <h4 class="small-title mb-5">Edit SMS Template</h4>
-                <h5 class="d-grey mb-0">Details</h5>
+                <h5 class="d-grey mb-0">{{$sms_templates->sms_template_type}}</h5>
             </div>
             <form id="update_sms_templates" name="update_sms_templates" class="form" method="post">
             @csrf
@@ -14,17 +14,9 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-lg-4">
-                        <div class="form-group">
-                            <label class="form-label">SMS Template Type </label>
-                            <input type="text" class="form-control" id="sms_template_type" name="sms_template_type" value="{{$sms_templates->sms_template_type}}" disabled>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-4">
                         <div class="form-group mb-0">
                             <label class="form-label">SMS Template Description </label>
-                            <textarea class="form-control" id="sms_template_description" name="sms_template_description" rows="5">{!! $sms_templates->sms_template_description !!}</textarea>
+                            <textarea class="form-control" id="sms_template_description" name="sms_template_description" rows="5" cols="60">{{$sms_templates->sms_template_description}}</textarea>
                         </div>
                     </div>
                 </div>
@@ -40,15 +32,6 @@
 @endsection
 @section('script')
 <script>
-    ClassicEditor
-        .create(document.querySelector( '#sms_template_description' ) )
-        .then(editor => {
-            editor.editing.view.change( writer => {
-                writer.setStyle('min-height', '300px', editor.editing.view.document.getRoot());
-                writer.setStyle('min-width', '1100px', editor.editing.view.document.getRoot());
-            } );
-        window.editor = editor;
-        });
     $(document).ready(function() {
 		$("#update_sms_templates").validate({
             // ignore: [],

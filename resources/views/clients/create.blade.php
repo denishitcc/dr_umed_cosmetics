@@ -5,7 +5,7 @@
     
     <div class="card">
                         
-        <div class="card-head">
+        <div class="card-head  pt-3">
             <div class="toolbar mb-5">
                 <div class="tool-left"><h4 class="small-title mb-0">Add Clients</h4></div>
                 <div class="tool-right"><a href="#" class="btn btn-primary btn-md">Get client to fill the details</a></div></div>
