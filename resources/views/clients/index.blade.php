@@ -15,7 +15,7 @@
             </div>
             
         </div>
-        <div class="card-head pt-3">
+        <div class="card-head">
             <h4 class="small-title mb-3">Client's Summary</h4>
             
             <ul class="taskinfo-row">

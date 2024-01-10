@@ -5,7 +5,7 @@
     <!-- <main> -->
         <div class="card">
             
-            <div class="card-head pt-3">
+            <div class="card-head">
                 <h4 class="small-title mb-5">Edit Staff</h4>
                 <h5 class="d-grey mb-0">Details | Photos</h5>
             </div>
