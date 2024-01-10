@@ -135,7 +135,7 @@ $(document).ready(function() {
         },
         {data: 'email', name: 'email'},
         {data: 'phone_number', name: 'phone_number'},
-        {data: 'id', name: 'id'},
+        {"defaultContent": ""},
         {data: 'enquiry_date', name: 'enquiry_date'},
         {data: 'date_created', name: 'date_created'},
         {data: 'enquiry_source', name: 'enquiry_source'},
