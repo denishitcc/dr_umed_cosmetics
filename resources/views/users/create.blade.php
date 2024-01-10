@@ -93,7 +93,7 @@
             <div class="row">
                 <div class="col-lg-3">
                     <label class="form-label">Is a staff member</label>
-                    <div class="toggle mb-4">
+                    <div class="toggle form-group">
                         <input type="radio" name="is_staff_memeber" value="1" id="yes" checked="checked">
                         <label for="yes">Yes <i class="ico-tick"></i></label>
                         <input type="radio" name="is_staff_memeber" value="0" id="no">

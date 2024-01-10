@@ -38,6 +38,13 @@ class ClientsController extends Controller
                 ->addColumn('addresses', function ($row) {
                     return $row->street_address.', '.$row->suburb. ', '.$row->city.', '.$row->postcode;
                 })
+                ->addColumn('status_bar', function($row){
+                    if($row->status == 'active')
+                    {
+                        $row->status_bar = 'checked';
+                    }
+                    return $row->status_bar;
+                })
                 ->make(true);
 
         }
@@ -159,5 +166,35 @@ class ClientsController extends Controller
         }else{
             return response()->json(array("exists" => false));
         }
+    }
+    public function updateStatus(Request $request){
+        $chk = $request->input('chk');
+        if($chk == 'checked')
+        {
+            $status= 'deactive';
+        }
+        else
+        {
+            $status='active';
+        }
+        $id = $request->input('id');
+        $isExists = Clients::where('id',$id)->first();
+        if($isExists){
+            $newUser = Clients::where('id',$id)->update(['status'=>$status]);
+        }
+        if($newUser){
+            $response = [
+                'success' => true,
+                'message' => 'Client Status Updated successfully!',
+                'type' => 'success',
+            ];
+        }else{
+            $response = [
+                'error' => true,
+                'message' => 'Error !',
+                'type' => 'error',
+            ];
+        }
+        return response()->json($response);
     }
 }

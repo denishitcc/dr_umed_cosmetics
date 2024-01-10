@@ -85,6 +85,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/clients', ClientsController::class); 
     Route::post('clients/table',[ClientsController::class, 'index'])->name('clients.table');
     Route::post('clients/checkClientEmail', [ClientsController::class, 'checkClientEmail']);
+    Route::post('clients/updateStatus', [ClientsController::class, 'updateStatus']);
 
     //SMS Templates
     Route::resource('/sms-templates', SMSTemplatesController::class);

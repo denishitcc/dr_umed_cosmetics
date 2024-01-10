@@ -36,8 +36,8 @@
         <div class="row">
             <div class="col-lg-4">
                 <div class="form-group">
-                    <label class="form-label">Email  Address</label>
-                    <input type="text" class="form-control" id="email" name="email" maxlength="100" value="{{$enquiries->email}}">
+                    <label class="form-label">Email Address</label>
+                    <input type="text" class="form-control" id="email" name="email" maxlength="100" value="{{$enquiries->email}}" disabled>
                     </div>
             </div>
             <div class="col-lg-4">
@@ -184,6 +184,17 @@
 @section('script')
 <script>
 $(document).ready(function() {
+    //min enquiry date select
+    var now = new Date(),
+    minDate = now.toISOString().substring(0,10);
+
+    $('#enquiry_date').prop('min', minDate);
+
+    //min appointment date select
+    minDate = now.toISOString().substring(0,10);
+
+    $('#appointment_date').prop('min', minDate);
+
     $("#edit_enquiry").validate({
         rules: {
             firstname: {

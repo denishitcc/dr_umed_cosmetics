@@ -7,9 +7,9 @@
         <div class="toolbar mb-0">
                 <div class="tool-left">
                     <a href="{{ route('clients.create') }}" class="btn btn-primary btn-md me-2">Add New Client</a>
-                    <a href="#" class="btn btn-primary btn-md">Import Client</a>
-                    <a href="#" class="btn btn-primary btn-md">Add New Waitlist Client</a>
-                    <a href="#" class="btn btn-primary btn-md">Add New Walk-in Sale</a>
+                    <a href="#" class="btn btn-primary btn-md me-2">Import Client</a>
+                    <a href="#" class="btn btn-primary btn-md me-2">Add New Waitlist Client</a>
+                    <a href="#" class="btn btn-primary btn-md me-2">Add New Walk-in Sale</a>
                     <a href="#" class="btn btn-primary btn-md">Make New Appointment</a>
                 </div>
             </div>
@@ -39,12 +39,12 @@
         </div>
         <div class="card-head py-3">
             <div class="toolbar">
-                <div class="tool-left">
-                    <div class="cst-drop-select"><select class="location" multiple="multiple"></select></div>
+                <div class="tool-left d-flex align-items-center ">
+                    <div class="cst-drop-select me-3"><select class="location" multiple="multiple"></select></div>
+                    <label class="cst-check"><input type="checkbox" class="checkbox" value="Sunday" name="" checked=""><span class="checkmark me-2"></span>Exclude Inactive Clients</label>
                 </div>
-                <label class="cst-check"><input type="checkbox" class="checkbox" value="Sunday" name="" checked=""><span class="checkmark"></span>Exclude Inactive Clients</label>
                 <div class="tool-right">
-                    <div class="cst-drop-select"><select class="filter_by" multiple="multiple"></select></div>
+                    <div class="cst-drop-select drop-right"><select class="filter_by" multiple="multiple"></select></div>
                 </div>
             </div>
         </div>
@@ -61,6 +61,7 @@
                     <th>Date and Time</th>
                     <!-- <th>Status</th> -->
                     <th>Location</th>
+                    <th>status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -163,6 +164,11 @@ $(document).ready(function() {
             {"defaultContent": ""},//{data: 'id', name: 'id',"defaultContent": ""},//next appointment details
             {"defaultContent": ""},//{data: 'id', name: 'id'},//appointment date
             // {data: 'status', name: 'status'},
+            { data: 'status_bar', name: 'status_bar',
+                render: function( data, type, full, meta ) {debugger;
+                    return "<div class='form-check form-switch green'><input class='form-check-input flexSwitchCheckDefault' id='flexSwitchCheckDefault' type='checkbox' ids='"+full.id+"' value='"+data +"' "+data +"></div>"
+                }
+            },
             {"defaultContent": ""},//{data: 'id', name: 'id'},//appointment location
             // {data: 'action', name: 'action', orderable: false, searchable: false},
         ],
@@ -315,6 +321,45 @@ $(document).on('click', '.dt-delete', function(e) {
         table.row(dtRow[0].rowIndex-1).remove().draw( false );
     }
 });
+$(document).on('click','.flexSwitchCheckDefault',function(){
+    var id =$(this).attr('ids');
+    var chk = $(this).val();
+    var url = "clients/updateStatus";
+    $.ajax({
+        type: "POST",
+        headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        url: url,
+        data: {// change data to this object
+          _token : $('meta[name="csrf-token"]').attr('content'), 
+          id:id,
+          chk:chk
+        },
+        dataType: "json",
+        success: function(response) {
+            if (response.success) {
+      
+      Swal.fire({
+        title: "Client Status!",
+        text: "Client Status updated successfully.",
+        type: "success",
+      }).then((result) => {
+              window.location = "{{url('clients')}}"//'/player_detail?username=' + name;
+          });
+    } else {
+      Swal.fire({
+        title: "Error!",
+        text: response.message,
+        type: "error",
+      });
+    }
+        },
+        error: function (jqXHR, exception) {
+
+        }
+    });
+})
 </script>
 </html>
 @endsection

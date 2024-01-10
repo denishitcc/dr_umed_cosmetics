@@ -171,6 +171,17 @@
 @section('script')
 <script>
 $(document).ready(function() {
+    //min enquiry date select
+    var now = new Date(),
+    minDate = now.toISOString().substring(0,10);
+
+    $('#enquiry_date').prop('min', minDate);
+
+    //min appointment date select
+    minDate = now.toISOString().substring(0,10);
+
+    $('#appointment_date').prop('min', minDate);
+    
     $("#create_enquiry").validate({
         rules: {
             firstname: {

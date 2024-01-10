@@ -106,7 +106,7 @@ class EnquiriesController extends Controller
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
             'gender' => $request->gender,
-            'email' => $request->email,
+            // 'email' => $request->email,
             'phone_number' => $request->phone_number,
             'enquiry_date' => $request->enquiry_date,
             'appointment_date' => $request->appointment_date,

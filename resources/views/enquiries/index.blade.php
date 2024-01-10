@@ -30,35 +30,35 @@
                     $follow_up_done = \App\Models\Enquiries::where(['enquiry_status' => 'Follow Up Done'])->get();
                     @endphp
                 <div class="font-24 mb-1">{{count($follow_up_done)}}</div>
-                    <b class="text-succes-light">Follow Up Done </b>
+                    <b class="text-succes">Follow Up Done </b>
                 </li>
                 <li>
                     @php
                     $first_call_done = \App\Models\Enquiries::where(['enquiry_status' => 'First Call Done'])->get();
                     @endphp
                     <div class="font-24 mb-1">{{count($first_call_done)}}</div>
-                    <b class="text-danger">First Call Done</b>
+                    <b class="text-yellow">First Call Done</b>
                 </li>
                 <li>
                     @php
                     $client_contacted = \App\Models\Enquiries::where(['enquiry_status' => 'Client Contacted'])->get();
                     @endphp
                     <div class="font-24 mb-1">{{count($client_contacted)}}</div>
-                    <b class="text-warning">Client Contacted</b>
+                    <b class="text-cyan">Client Contacted</b>
                 </li>
                 <li>
                     @php
                     $no_response = \App\Models\Enquiries::where(['enquiry_status' => 'No Response'])->get();
                     @endphp
                     <div class="font-24 mb-1">{{count($no_response)}}</div>
-                    <b class="text-warning">No Response</b>
+                    <b class="text-light-red">No Response</b>
                 </li>
                 <li>
                     @php
                     $not_intrested = \App\Models\Enquiries::where(['enquiry_status' => 'Not Intrested'])->get();
                     @endphp
                     <div class="font-24 mb-1">{{count($not_intrested)}}</div>
-                    <b class="text-warning">Not Intrested</b>
+                    <b class="text-red">Not Intrested</b>
                 </li>
             </ul>
         </div>
@@ -144,27 +144,27 @@ $(document).ready(function() {
             "render": function(data, type, row, meta){debugger;
                 if(data=='Follow Up Done')
                 {
-                    data = '<b class="text-succes-light">' + data;
+                    data = '<span class="badge text-bg-green badge-md">' + data;
                     return data;
                 }
                 else if(data=='First Call Done')
                 {
-                    data = '<b class="text-succes-light">' + data;
+                    data = '<span class="badge text-bg-yellow badge-md">' + data;
                     return data;
                 }
                 else if(data=='Client Contacted')
                 {
-                    data = '<b class="text-succes-light">' + data;
+                    data = '<span class="badge text-bg-cyan badge-md">' + data;
                     return data;
                 }
                 else if(data=='No Response')
                 {
-                    data = '<b class="text-succes-light">' + data;
+                    data = '<span class="badge text-bg-light-red badge-md">' + data;
                     return data;
                 }
                 else if(data=='Not Intrested')
                 {
-                    data = '<b class="text-succes-light">' + data;
+                    data = '<span class="badge text-bg-red badge-md">' + data;
                     return data;
                 }
             }

@@ -48,7 +48,7 @@
                 <div class="col-lg-4">
                     <div class="form-group">
                         <label class="form-label">Email Address</label>
-                        <input type="email" class="form-control" id="email" name="email" maxlength="100" value="{{$users->email}}" onblur="duplicateEmail(this)" readonly>
+                        <input type="email" class="form-control" id="email" name="email" maxlength="100" value="{{$users->email}}" onblur="duplicateEmail(this)" disabled>
                         </div>
                 </div>
                 <div class="col-lg-4">
@@ -100,7 +100,7 @@
             <div class="row">
                 <div class="col-lg-3">
                     <label class="form-label">Is a staff member</label>
-                    <div class="toggle mb-4">
+                    <div class="toggle form-group">
                         <input type="radio" name="is_staff_memeber" value="1" {{ ($users->is_staff_memeber=="1")? "checked" : "" }}  id="yes" checked="checked" />
                         <label for="yes">Yes <i class="ico-tick"></i></label>
                         <input type="radio" name="is_staff_memeber" value="0" {{ ($users->is_staff_memeber=="0")? "checked" : "" }}  id="no" />
