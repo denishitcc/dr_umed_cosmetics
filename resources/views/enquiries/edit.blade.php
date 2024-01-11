@@ -100,7 +100,7 @@
                         <option value="Follow Up Done" {{ ($enquiries->enquiry_status == "Follow Up Done")? "selected" : "" }} >Follow Up Done</option>
                         <option value="First Call Done" {{ ($enquiries->enquiry_status == "First Call Done")? "selected" : "" }} >First Call Done</option>
                         <option value="Client Contacted" {{ ($enquiries->enquiry_status == "Client Contacted")? "selected" : "" }} >Client Contacted</option>
-                        <option value="No response" {{ ($enquiries->enquiry_status == "No response")? "selected" : "" }} >No response</option>
+                        <option value="No Response" {{ ($enquiries->enquiry_status == "No Response")? "selected" : "" }} >No Response</option>
                         <option value="Not Intrested" {{ ($enquiries->enquiry_status == "Not Intrested")? "selected" : "" }} >Not Intrested</option>
                     </select>
                     </div>
