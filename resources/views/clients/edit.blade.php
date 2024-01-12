@@ -37,13 +37,13 @@
             <a class="nav-link" data-bs-toggle="tab" href="#tab_2" aria-selected="false" tabindex="-1" role="tab"><i class="ico-task"></i> Client Details</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#tab_3" aria-selected="false" tabindex="-1" role="tab"><i class="ico-photo"></i> Photos</a>
+            <a class="nav-link" data-bs-toggle="tab" href="#tab_3" aria-selected="false" tabindex="-1" role="tab"><i class="ico-photo"></i> Photos<span class="badge badge-circle ms-2">{{count($client_photos)}}</span></a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#tab_4" aria-selected="false" tabindex="-1" role="tab"><i class="ico-folder"></i> Documents</a>
+            <a class="nav-link" data-bs-toggle="tab" href="#tab_4" aria-selected="false" tabindex="-1" role="tab"><i class="ico-folder"></i> <span class="badge badge-circle ms-2">{{count($client_documents)}}</span></a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#tab_5" aria-selected="false" tabindex="-1" role="tab"><i class="ico-appt-reminder"></i> Forms</a>
+            <a class="nav-link" data-bs-toggle="tab" href="#tab_5" aria-selected="false" tabindex="-1" role="tab"><i class="ico-appt-reminder"></i> Forms<span class="badge badge-circle ms-2">5</span></a>
         </li>
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="tab" href="#tab_6" aria-selected="false" tabindex="-1" role="tab"><i class="ico-payment-gateway"></i> Messages</a>
@@ -254,27 +254,15 @@
                                 </div>
                         </div>
                         <h4 class="d-grey mb-3 mt-5">Photos</h4>
-                        <div class="gallery client-phbox grid-4">
-                            <!-- <figure>
-                                <a href="https://www.realself.com/news/wp-content/uploads/2021/09/RS_Biggest-Bang-for-Your-Buck-Treatments.jpg"><img src="https://www.realself.com/news/wp-content/uploads/2021/09/RS_Biggest-Bang-for-Your-Buck-Treatments.jpg" alt=""></a>
-                            </figure>
-                        
-                            <figure>
-                                <a href="https://dragarwalsclinic.com/wp-content/uploads/2020/04/Cosmetic-Skin-Treatments.jpg"><img src="https://dragarwalsclinic.com/wp-content/uploads/2020/04/Cosmetic-Skin-Treatments.jpg" alt=""></a></figure>
-
-                            <figure>
-                                <a href="https://hips.hearstapps.com/hmg-prod/images/professional-female-cosmetologist-doing-hydrafacial-royalty-free-image-1682540818.jpg?crop=0.668xw:1.00xh;0.0816xw,0&resize=640:*"><img src="https://hips.hearstapps.com/hmg-prod/images/professional-female-cosmetologist-doing-hydrafacial-royalty-free-image-1682540818.jpg?crop=0.668xw:1.00xh;0.0816xw,0&resize=640:*" alt=""></a></figure>
-                            
-                            <figure>
-                                <a class="col" href="https://ucarecdn.com/a719a842-79ff-447d-875b-c7ba49f89183/-/format/auto/-/preview/3000x3000/-/quality/lighter/"><img src="https://ucarecdn.com/a719a842-79ff-447d-875b-c7ba49f89183/-/format/auto/-/preview/3000x3000/-/quality/lighter/" alt=""></a>
-                            </figure>
-                        <figure>
-                            <a href="https://introlift.com/wp-content/uploads/non-surgical.jpg"><img src="https://introlift.com/wp-content/uploads/non-surgical.jpg" alt=""></a>
-                        </figure>
-                        <figure>
-                        <a href="https://i.pinimg.com/736x/cd/96/87/cd9687a032de5724b869feb8cb3722ab.jpg"><img src="https://i.pinimg.com/736x/cd/96/87/cd9687a032de5724b869feb8cb3722ab.jpg" alt=""></a>
-                        </figure> -->
-                    </div>
+                        @if(count($client_photos)>0)
+                            <div class="gallery client-phbox grid-4">
+                            @foreach($client_photos as $photos)
+                                <figure>
+                                    <a href="{{URL::to('/images/clients_photos/'.$photos->client_photos)}}"><img src="{{URL::to('/images/clients_photos/'.$photos->client_photos)}}" alt=""></a>
+                                </figure>
+                            @endforeach
+                        </div>
+                        @endif
                     </div>
                 </div>
                 </div>
@@ -438,7 +426,7 @@
                     @foreach($client_photos as $photos)
                     <figure>
                         <a href="{{URL::to('/images/clients_photos/'.$photos->client_photos)}}" data-fancybox="mygallery"><img src="{{URL::to('/images/clients_photos/'.$photos->client_photos)}}" alt=""></a>
-                        <button type="button" photos ids="{{$photos->id}}"class="btn black-btn round-6 dt-delete remove_image"><i class="ico-trash"></i></button>
+                        <!-- <button type="button" photos ids="{{$photos->id}}"class="btn black-btn round-6 dt-delete remove_image"><i class="ico-trash"></i></button> -->
                     </figure>
                     @endforeach
                 </div>
@@ -455,7 +443,7 @@
                         <div class="icon-box">
                             <img src="../img/upload-icon.png" alt="" class="up-icon">
                             <span class="txt-up">Choose a File or drag them here</span>
-                            <span class="txt-up" style="opacity: .5;">.xls, Word, PNG, JPG or PDF (max. 5MB Upload)</span>
+                            <span class="txt-up" style="opacity: .5;">.xls, Word, PNG, JPG or PDF</span>
                             <input class="form-control" type="file" id="client_documents" name="client_documents" accept="application/pdf, applucation/vnd.ms-excel,application/msword,image/png, image/jpeg" multiple>
                         </div>
                     </label>
