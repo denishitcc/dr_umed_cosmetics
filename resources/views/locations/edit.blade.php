@@ -4,7 +4,7 @@
     <!-- <main> -->
         <div class="card">
             
-            <div class="card-head pt-3">
+            <div class="card-head">
                 <h4 class="small-title mb-5">Edit Location</h4>
                 <h5 class="d-grey mb-0">Details</h5>
             </div>
@@ -88,11 +88,11 @@
                     </div>
                 </div>
 
-                <div class="map">
+                <div class="map form-group">
                     <img src="{{ asset('img/demo-map.jpg') }}" alt="">
                 </div>
     
-                <h5 class="small-title mb-4 mt-3">Opening Hours</h5>
+                <h5 class="small-title mb-3 mt-5">Opening Hours</h5>
                     <div class="row">
                         <div class="col-lg-8">
                             <div class="table-responsive">
@@ -100,7 +100,7 @@
                                 @foreach($working_hours_location as $works)
                                 <tr class="rows_data">
                                     <td>
-                                        <label class="cst-check"><input type="checkbox" name="days[{{$works->day}}][check_status]" value="{{$works->day}}" {{$works->day==$works->day && $works->day_status=='Open' ? 'checked' : ''}} class="checkbox"><span class="checkmark"></span></label>
+                                    <label class="cst-check"><input type="checkbox" id="check_days_text" name="days[{{$works->day}}][check_status]" value="{{$works->day}}" {{$works->day==$works->day && $works->day_status=='Open' ? 'checked' : ''}} class="checkbox"><span class="checkmark"></span></label>
                                     </td>
                                     <td>Open</td>
                                     <td>{{$works->day}}</td>
@@ -359,7 +359,11 @@
     }
     $(document).ready(function() {
         $('.rows_data').each(function(){
-            debugger;
+            var ts = $(this).find('#check_days_text').prop('checked');
+            if(ts==false)
+            {
+                $(this).find('.show-timing').hide();
+            }
             if($(this).find(".checkbox").prop('checked') == true){
                 // alert('checked');
             }

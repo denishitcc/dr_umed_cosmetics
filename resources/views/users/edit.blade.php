@@ -101,10 +101,10 @@
                 <div class="col-lg-3">
                     <label class="form-label">Is a staff member</label>
                     <div class="toggle form-group">
-                        <input type="radio" name="is_staff_memeber" value="1" {{ ($users->is_staff_memeber=="1")? "checked" : "" }}  id="yes" checked="checked" />
-                        <label for="yes">Yes <i class="ico-tick"></i></label>
-                        <input type="radio" name="is_staff_memeber" value="0" {{ ($users->is_staff_memeber=="0")? "checked" : "" }}  id="no" />
-                        <label for="no">No <i class="ico-tick"></i></label>
+                        <input type="radio" name="is_staff_memeber" value="1" {{ ($users->is_staff_memeber=="1")? "checked" : "" }}  id="yes_staff" checked="checked" />
+                        <label for="yes_staff">Yes <i class="ico-tick"></i></label>
+                        <input type="radio" name="is_staff_memeber" value="0" {{ ($users->is_staff_memeber=="0")? "checked" : "" }}  id="no_staff" />
+                        <label for="no_staff">No <i class="ico-tick"></i></label>
                     </div>
                 </div>
                 <div class="col-lg-4 staff_hide">

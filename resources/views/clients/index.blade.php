@@ -47,7 +47,7 @@
             <div class="toolbar">
                 <div class="tool-left d-flex align-items-center ">
                     <div class="cst-drop-select me-3"><select class="location" multiple="multiple"></select></div>
-                    <label class="cst-check"><input type="checkbox" class="checkbox" value="Sunday" name="" checked=""><span class="checkmark me-2"></span>Exclude Inactive Clients</label>
+                    <label class="cst-check"><input type="checkbox" class="checkbox" value="" id="exclude" name="" checked=""><span class="checkmark me-2"></span>Exclude Inactive Clients</label>
                 </div>
                 <div class="tool-right">
                     <div class="cst-drop-select drop-right"><select class="filter_by" multiple="multiple"></select></div>
@@ -91,7 +91,6 @@
             cache: false,
             type: "POST",
             success: function(res) {
-                debugger;
                 for (var i = 0; i < res.length; ++i) {
                     $("#results").append(res[i].location_name);
                     loc_name.push(res[i].location_name); // Push the location_name to the array
@@ -171,8 +170,12 @@ $(document).ready(function() {
             {"defaultContent": ""},//{data: 'id', name: 'id'},//appointment date
             // {data: 'status', name: 'status'},
             { data: 'status_bar', name: 'status_bar',
-                render: function( data, type, full, meta ) {debugger;
-                    return "<div class='form-check form-switch green'><input class='form-check-input flexSwitchCheckDefault' id='flexSwitchCheckDefault' type='checkbox' ids='"+full.id+"' value='"+data +"' "+data +"></div>"
+                render: function( data, type, full, meta ) {
+                    if(data==null)
+                    {
+                        data='';
+                    }
+                    return "<span style='display:none;'>"+data +"</span><div class='form-check form-switch green'><input class='form-check-input flexSwitchCheckDefault' id='flexSwitchCheckDefault' type='checkbox' ids='"+full.id+"' value='"+data +"' "+data +"></div>"
                 }
             },
             {"defaultContent": ""},//{data: 'id', name: 'id'},//appointment location
@@ -274,7 +277,7 @@ $(document).ready(function() {
             $('#pagelist').val(page_info.page);
         }
     });
-
+    table.column(6).search('checked', true, false).draw();
     $(document).on('keyup', '.dt-search', function()
     {
         table.search($(this).val()).draw() ;
@@ -285,10 +288,20 @@ $(document).ready(function() {
         var table = $('.data-table').dataTable();
         table.fnPageChange(page_no - 1,true);
     });
+    $(document).on('change','#exclude',function(){
+        var ts = $('#exclude').prop('checked');
+        if(ts==false)
+        {
+            table.column(6).search('checked|', true, false).draw();
+        }
+        else
+        {
+            table.column(6).search('checked').draw();
+        }
+    })
 });
 $(document).on('click', '.dt-edit', function(e) {
     e.preventDefault();
-    debugger;
     var ids = $(this).attr('ids');
     window.location = 'email-templates/' + ids;
 });

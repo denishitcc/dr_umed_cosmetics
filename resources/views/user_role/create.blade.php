@@ -5,7 +5,7 @@
     <div class="card">
         
         <div class="card-head">
-            <h4 class="small-title mb-5">Add User Role</h4>
+            <h4 class="small-title mb-0">Add User Role</h4>
         </div>
         <!-- <form class="form"  action="{{ route('users.store') }}" method="post" enctype="multipart/form-data">
         @csrf -->

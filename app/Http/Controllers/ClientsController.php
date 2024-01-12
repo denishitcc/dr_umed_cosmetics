@@ -71,6 +71,8 @@ class ClientsController extends Controller
             'date_of_birth' => $request['date_of_birth'],
             'gender' => $request['gender'],
             'mobile_number' => $request['mobile_number'],
+            'home_phone' => $request['home_phone'],
+            'work_phone' => $request['work_phone'],
             'contact_method' => $request['contact_method'],
             'send_promotions' => $request['send_promotions'],
             'street_address' => $request['street_address'],
@@ -132,7 +134,12 @@ class ClientsController extends Controller
      */
     public function show(string $id)
     {
-        return view('clients.edit');
+        $client = Clients::where('id',$id)->first();
+        // dd($client);
+        $client_photos = ClientsPhotos::where('client_id',$client->id)->get();
+        $client_documents = ClientsDocuments::where('client_id',$client->id)->get();
+        // dd($client_photos);
+        return view('clients.edit',compact('client','client_photos','client_documents'));
     }
 
     /**
@@ -148,7 +155,28 @@ class ClientsController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $newUser = Clients::updateOrCreate(['id' => $request->id],[
+            'firstname' => $request['firstname'],
+            'lastname' => $request['lastname'],
+            // 'email' => $request['email'],
+            'date_of_birth' => $request['date_of_birth'],
+            'gender' => $request['gender'],
+            'mobile_number' => $request['mobile_number'],
+            'home_phone' => $request['home_phone'],
+            'work_phone' => $request['work_phone'],
+            'contact_method' => $request['contact_method'],
+            'send_promotions' => $request['send_promotions'],
+            'street_address' => $request['street_address'],
+            'suburb' => $request['suburb'],
+            'city' => $request['city'],
+            'postcode' => $request['postcode']
+        ]);
+        $response = [
+            'success' => true,
+            'message' => 'Client Updated successfully!',
+            'type' => 'success',
+        ];
+        return response()->json($response);
     }
 
     /**
@@ -195,6 +223,76 @@ class ClientsController extends Controller
                 'type' => 'error',
             ];
         }
+        return response()->json($response);
+    }
+    public function updatePhotos(Request $request)
+    {
+        if(isset($request->pics))
+        {
+            foreach($request->pics as $pics)
+            {
+                $file = $pics;
+                $destinationPath = public_path() . '/' . 'images/clients_photos/';
+                $file->move($destinationPath,$file->getClientOriginalName());   
+                $photo = ClientsPhotos::create([
+                    'client_id' => $request->id,
+                    'client_photos' => $file->getClientOriginalName(),
+                ]);
+            }
+        }
+        $response = [
+            'success' => true,
+            'message' => 'Client Photos Updated successfully!',
+            'type' => 'success',
+        ];
+        return response()->json($response);
+    }
+    public function updateDocuments(Request $request)
+    {
+        if(isset($request->pics))
+        {
+            foreach($request->pics as $pics)
+            {
+                $file = $pics;
+                $destinationPath = public_path() . '/' . 'images/clients_documents/';
+                $file->move($destinationPath,$file->getClientOriginalName());   
+                $photo = ClientsDocuments::create([
+                    'client_id' => $request->id,
+                    'client_documents' => $file->getClientOriginalName(),
+                ]);
+            }
+        }
+        $response = [
+            'success' => true,
+            'message' => 'Client Documents Updated successfully!',
+            'type' => 'success',
+        ];
+        return response()->json($response);
+    }
+    public function removeDocuments(Request $request)
+    {
+        // dd($request->all());
+        ClientsDocuments::where('id',$request->doc_id)->where('client_id',$request->id)->delete();
+        
+        $response = [
+            'success' => true,
+            'message' => 'Location deleted successfully!',
+            'type' => 'success',
+            'data_id' => $request->id
+        ];
+        return response()->json($response);
+    }
+    public function removePhotos(Request $request)
+    {
+        // dd($request->all());
+        ClientsPhotos::where('id',$request->photo_id)->where('client_id',$request->id)->delete();
+        
+        $response = [
+            'success' => true,
+            'message' => 'Client deleted successfully!',
+            'type' => 'success',
+            'data_id' => $request->id
+        ];
         return response()->json($response);
     }
 }

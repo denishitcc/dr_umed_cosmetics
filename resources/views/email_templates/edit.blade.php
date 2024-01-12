@@ -4,7 +4,7 @@
     
         <div class="card">
             
-            <div class="card-head  pt-3">
+            <div class="card-head">
                 <h4 class="small-title mb-5">Edit Email Template</h4>
                 <h5 class="d-grey mb-0">{{$email_templates->email_template_type}}</h5>
             </div>
@@ -28,13 +28,12 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="card-body">
                 <div class="col-lg-12 text-lg-end mt-4">
                     <button type="button" class="btn btn-light me-2" onclick="window.location='{{ url("email-templates") }}'">Discard</button>
                     <button type="submit" class="btn btn-primary">Save Changes</button>
                 </div>
             </div>
+            
             </form>
         </div>
 @endsection

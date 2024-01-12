@@ -5,7 +5,7 @@
 <!-- <script src="https://code.jquery.com/jquery-3.5.1.js"></script>   -->
   <!-- <main> -->
           <div class="card">
-              <div class="card-head  pt-3">
+              <div class="card-head">
               <div class="toolbar mb-0">
                 <div class="tool-left">
                     <h4 class="small-title mb-0">Staff Management</h4>

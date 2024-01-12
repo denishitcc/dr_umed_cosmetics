@@ -5,7 +5,7 @@
     
     <div class="card">
                         
-        <div class="card-head  pt-3">
+        <div class="card-head">
             <div class="toolbar mb-5">
                 <div class="tool-left"><h4 class="small-title mb-0">Add Clients</h4></div>
                 <div class="tool-right"><a href="#" class="btn btn-primary btn-md">Get client to fill the details</a></div></div>
@@ -60,6 +60,20 @@
                         <label class="form-label">Mobile Number</label>
                         <input type="text" class="form-control" name="mobile_number" id="mobile_number" maxlength="15">
                         </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label class="form-label">Home Phone</label>
+                        <input type="text" class="form-control" name="home_phone" id="home_phone" maxlength="15">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label class="form-label">Work Phone</label>
+                        <input type="text" class="form-control" name="work_phone" id="work_phone" maxlength="15">
+                    </div>
                 </div>
             </div>
         </div>

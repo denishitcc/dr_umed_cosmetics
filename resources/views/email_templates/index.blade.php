@@ -5,7 +5,7 @@
 <!-- <main> -->
     <div class="card">
         <div class="card-head">
-        <div class="toolbar mb-0">
+            <div class="toolbar mb-0">
                 <div class="tool-left">
                     <h4 class="small-title mb-0">Email Templates</h4>
                 </div>
@@ -13,14 +13,10 @@
                     <!-- <a href="{{ route('email-templates.create') }}" class="btn btn-primary btn-md">Add Email</a> -->
                 </div>
             </div>
-            
         </div>
         
         <div class="card-body">
-        <div class="row">
-                <div class="col-md-7">
-                </div>
-                <table class="table data-table all-db-table align-middle display">
+            <table class="table data-table all-db-table align-middle display">
                 <thead>
                     <tr>
                     <!-- <th>
@@ -33,15 +29,13 @@
                 <tbody>
                     @foreach($email_templates as $email)
                     <tr>
-                        <td><a href="email-templates/{{$email->id}}">{{$email->email_template_type}}</a></td>
+                        <td><a href="email-templates/{{$email->id}}" class="blue-bold">{{$email->email_template_type}}</a></td>
                         <td>{{$email->subject}}</td>
                     </tr>
                     @endforeach
                 </tbody>
                 </table>
-        </div>
-        
-        
+         </div>
     </div>
 <!-- </main> -->
      
