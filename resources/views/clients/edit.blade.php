@@ -40,7 +40,7 @@
             <a class="nav-link" data-bs-toggle="tab" href="#tab_3" aria-selected="false" tabindex="-1" role="tab"><i class="ico-photo"></i> Photos<span class="badge badge-circle ms-2">{{count($client_photos)}}</span></a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#tab_4" aria-selected="false" tabindex="-1" role="tab"><i class="ico-folder"></i> <span class="badge badge-circle ms-2">{{count($client_documents)}}</span></a>
+            <a class="nav-link" data-bs-toggle="tab" href="#tab_4" aria-selected="false" tabindex="-1" role="tab"><i class="ico-folder"></i> Documents<span class="badge badge-circle ms-2">{{count($client_documents)}}</span></a>
         </li>
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="tab" href="#tab_5" aria-selected="false" tabindex="-1" role="tab"><i class="ico-appt-reminder"></i> Forms<span class="badge badge-circle ms-2">5</span></a>
