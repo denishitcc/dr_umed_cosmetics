@@ -48,7 +48,7 @@
                             <li><a href="#">Recurring</a></li>
                         </ul>
                     </li>
-                    <li class="{{ (request()->is('suppliers')) ? 'active' : '' }} || {{ (request()->is('suppliers/*')) ? 'active' : '' }}"><a href="{{ route('suppliers.index') }}"><i class="ico-products"></i>Suppliers </a></li>
+                    <li class="{{ (request()->is('suppliers')) ? 'active' : '' }} || {{ (request()->is('suppliers/*')) ? 'active' : '' }}"><a href="{{ route('suppliers.index') }}"><i class="ico-location1"></i>Suppliers </a></li>
                     <li><a href="#"><i class="ico-products"></i>Products </a></li>
                     <li class="dropdown"><a href="#"><i class="ico-promotion"></i>Promotions </a>
                         <ul>
