@@ -12,6 +12,7 @@ use App\Http\Controllers\EmailTemplatesController;
 use App\Http\Controllers\ClientsController;
 use App\Http\Controllers\SMSTemplatesController;
 use App\Http\Controllers\EnquiriesController;
+use App\Http\Controllers\SuppliersController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -100,4 +101,8 @@ Route::middleware(['auth'])->group(function () {
 
     //Get All Location
     Route::post('/get-all-locations', [UsersController::class, 'get_all_locations'])->name('get-all-locations');
+
+    //Suppliers
+    Route::resource('/suppliers', SuppliersController::class); 
+    Route::post('suppliers/table',[SuppliersController::class, 'index'])->name('suppliers.table');
 });
