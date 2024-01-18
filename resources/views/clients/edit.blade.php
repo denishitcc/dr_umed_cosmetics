@@ -606,7 +606,118 @@
             
         </div>
         </div>
-        <div class="tab-pane fade" id="tab_6" role="tabpanel">6</div>
+        <div class="tab-pane fade" id="tab_6" role="tabpanel">
+        <div class="card-body">
+            <h6 class="fiord mb-4">This client has no upcoming appointments.</h6>
+            <div class="time-line--outr pd-20">
+                <div class="time-line-item">
+                    <div class="time-line-icon">
+                        <div class="avatar" style="background: #D0D0D0; color: #000;">M</div>
+                    </div>
+                    <div class="time-line-content">
+                        <div class="dot-box">
+                            <span class="badge booked me-3 font-13">Booked</span>
+                            <div class="dropdown">
+                                <button class="dot-nav" data-bs-toggle="dropdown"><i class="ico-nav-dots"></i></button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">Booked</a></li>
+                                    <li><a class="dropdown-item" href="#">Completed</a></li>
+                                    <li><a class="dropdown-item" href="#">Turned-up</a></li>
+                                </ul>
+                                </div>
+                        </div>
+                        <div class="blue-bold mb-2">Appointment: Wed 4 Oct 2023@ Hope Island</div>
+                        <p class="mb-2">Zeina, Dr Umed Cosmetics 1/341 Hope Island Rd Hope Island 4212 Wed, 4-Oct 12:00pm. Please respond YES to confirm or call 0407 194 519 to reschedule.</p>
+                        <em class="d-grey font-13">SMS Sent 4 Oct 2023, 12.00 PM</em>
+                    </div>
+                </div>
+                <div class="time-line-item">
+                    <div class="time-line-icon">
+                        <div class="avatar" style="background: #D0D0D0; color: #000;">M</div>
+                    </div>
+                    <div class="time-line-content">
+                        <div class="dot-box">
+                            <span class="badge completed me-3 font-13">Completed</span>
+                            <div class="dropdown">
+                                <button class="dot-nav" data-bs-toggle="dropdown"><i class="ico-nav-dots"></i></button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">Booked</a></li>
+                                    <li><a class="dropdown-item" href="#">Completed</a></li>
+                                    <li><a class="dropdown-item" href="#">Turned-up</a></li>
+                                </ul>
+                                </div>
+                        </div>
+                        <div class="blue-bold mb-2">Appointment: Wed 4 Oct 2023@ Hope Island</div>
+                        <p class="mb-2">Zeina, Dr Umed Cosmetics 1/341 Hope Island Rd Hope Island 4212 Wed, 4-Oct 12:00pm. Please respond YES to confirm or call 0407 194 519 to reschedule.</p>
+                        <em class="d-grey font-13">SMS Sent 4 Oct 2023, 12.00 PM</em>
+                    </div>
+                </div>
+                <div class="time-line-item">
+                    <div class="time-line-icon">
+                        <div class="avatar" style="background: #D0D0D0; color: #000;">M</div>
+                    </div>
+                    <div class="time-line-content">
+                        <div class="dot-box">
+                            <span class="badge turned-up me-3 font-13">Turned-up</span>
+                            <div class="dropdown">
+                                <button class="dot-nav" data-bs-toggle="dropdown"><i class="ico-nav-dots"></i></button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">Booked</a></li>
+                                    <li><a class="dropdown-item" href="#">Completed</a></li>
+                                    <li><a class="dropdown-item" href="#">Turned-up</a></li>
+                                </ul>
+                                </div>
+                        </div>
+                        <div class="blue-bold mb-2">Appointment: Wed 4 Oct 2023@ Hope Island</div>
+                        <p class="mb-2">Zeina, Dr Umed Cosmetics 1/341 Hope Island Rd Hope Island 4212 Wed, 4-Oct 12:00pm. Please respond YES to confirm or call 0407 194 519 to reschedule.</p>
+                        <em class="d-grey font-13">SMS Sent 4 Oct 2023, 12.00 PM</em>
+                    </div>
+                </div>
+                <div class="time-line-item">
+                    <div class="time-line-icon">
+                        <div class="avatar" style="background: #D0D0D0; color: #000;">M</div>
+                    </div>
+                    <div class="time-line-content">
+                        <div class="dot-box">
+                            <span class="badge completed me-3 font-13">Completed</span>
+                            <div class="dropdown">
+                                <button class="dot-nav" data-bs-toggle="dropdown"><i class="ico-nav-dots"></i></button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">Booked</a></li>
+                                    <li><a class="dropdown-item" href="#">Completed</a></li>
+                                    <li><a class="dropdown-item" href="#">Turned-up</a></li>
+                                </ul>
+                                </div>
+                        </div>
+                        <div class="blue-bold mb-2">Appointment: Wed 4 Oct 2023@ Hope Island</div>
+                        <p class="mb-2">Zeina, Dr Umed Cosmetics 1/341 Hope Island Rd Hope Island 4212 Wed, 4-Oct 12:00pm. Please respond YES to confirm or call 0407 194 519 to reschedule.</p>
+                        <em class="d-grey font-13">SMS Sent 4 Oct 2023, 12.00 PM</em>
+                    </div>
+                </div>
+                <div class="time-line-item">
+                    <div class="time-line-icon">
+                        <div class="avatar" style="background: #D0D0D0; color: #000;">M</div>
+                    </div>
+                    <div class="time-line-content">
+                        <div class="dot-box">
+                            <span class="badge completed me-3 font-13">Completed</span>
+                            <div class="dropdown">
+                                <button class="dot-nav" data-bs-toggle="dropdown"><i class="ico-nav-dots"></i></button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">Booked</a></li>
+                                    <li><a class="dropdown-item" href="#">Completed</a></li>
+                                    <li><a class="dropdown-item" href="#">Turned-up</a></li>
+                                </ul>
+                                </div>
+                        </div>
+                        <div class="blue-bold mb-2">Appointment: Wed 4 Oct 2023@ Hope Island</div>
+                        <p class="mb-2">Zeina, Dr Umed Cosmetics 1/341 Hope Island Rd Hope Island 4212 Wed, 4-Oct 12:00pm. Please respond YES to confirm or call 0407 194 519 to reschedule.</p>
+                        <em class="d-grey font-13">SMS Sent 4 Oct 2023, 12.00 PM</em>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
     </div>
 </div>
 @endsection
