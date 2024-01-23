@@ -13,6 +13,7 @@ use App\Http\Controllers\ClientsController;
 use App\Http\Controllers\SMSTemplatesController;
 use App\Http\Controllers\EnquiriesController;
 use App\Http\Controllers\SuppliersController;
+use App\Http\Controllers\ServicesController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -105,4 +106,11 @@ Route::middleware(['auth'])->group(function () {
     //Suppliers
     Route::resource('/suppliers', SuppliersController::class); 
     Route::post('suppliers/table',[SuppliersController::class, 'index'])->name('suppliers.table');
+
+    //Services
+    Route::resource('/services', ServicesController::class);
+    Route::post('services/store-category',[ServicesController::class, 'store_category'])->name('services.store-category');
+    Route::post('services/update-category',[ServicesController::class, 'update_category'])->name('services.update-category');
+    Route::post('services/get-services',[ServicesController::class, 'get_services'])->name('services.get-services');
+    Route::post('services/change-services-availability',[ServicesController::class, 'change_services_availability'])->name('services.change-services-availability');
 });

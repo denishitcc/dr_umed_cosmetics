@@ -28,6 +28,7 @@ return new class extends Migration
             $table->string('body')->nullable();
             $table->text('comments')->nullable();
             $table->text('enquiry_status')->nullable();
+            $table->string('location_name',100)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

@@ -104,6 +104,19 @@
                     </select>
                     </div>
             </div>
+            <div class="col-lg-4">
+                <div class="form-group mb-0">
+                    <label class="form-label">Location </label>
+                    <select class="form-select form-control" name="location_name">
+                        <option selected value=""> -- select an option -- </option>
+                        @if(count($location)>0)
+                        @foreach($location as $loc)
+                            <option value="{{$loc->location_name}}"> {{$loc->location_name}} </option>
+                        @endforeach
+                        @endif
+                    </select>
+                    </div>
+            </div>
         </div>
     </div>
     <div class="card-head">

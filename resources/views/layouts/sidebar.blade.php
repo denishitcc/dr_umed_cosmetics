@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css">
     <!-- <link href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" rel="stylesheet"/> -->
     <!-- <link href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css" rel="stylesheet"/> -->
+    <link rel="stylesheet" href="https://res.cloudinary.com/dxfq3iotg/raw/upload/v1569006288/BBBootstrap/choices.min.css?version=7.0.0">
 </head>
 
 <body>
@@ -40,13 +41,14 @@
                     <li class="{{ (request()->is('enquiries')) ? 'active' : '' }} || {{ (request()->is('enquiries/*')) ? 'active' : '' }}"><a href="{{ route('enquiries.index') }}"><i class="ico-enquiries"></i>Enquiries </a></li>
                     <li><a href="#"><i class="ico-finance"></i>Finance </a></li>
                     <li><a href="#"><i class="ico-reports"></i>Reports </a></li>
-                    <li class="dropdown"><a href="#"><i class="ico-services"></i>Services </a>
-                        <ul>
+                    <!-- dropdown -->
+                    <li class="{{ (request()->is('services')) ? 'active' : '' }} || {{ (request()->is('services/*')) ? 'active' : '' }}"><a href="{{ route('services.index') }}"><i class="ico-services"></i>Services </a>
+                        <!-- <ul>
                             <li><a href="#">Categories</a></li>
                             <li><a href="#">Treatments</a></li>
                             <li><a href="#"> After Care</a></li>
                             <li><a href="#">Recurring</a></li>
-                        </ul>
+                        </ul> -->
                     </li>
                     <li class="{{ (request()->is('suppliers')) ? 'active' : '' }} || {{ (request()->is('suppliers/*')) ? 'active' : '' }}"><a href="{{ route('suppliers.index') }}"><i class="ico-location1"></i>Suppliers </a></li>
                     <li><a href="#"><i class="ico-products"></i>Products </a></li>
@@ -209,6 +211,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+    <script src="https://res.cloudinary.com/dxfq3iotg/raw/upload/v1569006273/BBBootstrap/choices.min.js?version=7.0.0"></script>
     @yield('script')
     <script>
         $(document).ready(function(){

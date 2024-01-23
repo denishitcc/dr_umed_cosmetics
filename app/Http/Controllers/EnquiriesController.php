@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Enquiries;
+use App\Models\Locations;
 use DataTables;
 
 class EnquiriesController extends Controller
@@ -37,7 +38,8 @@ class EnquiriesController extends Controller
      */
     public function create()
     {
-        return view('enquiries.create');
+        $location = Locations::all();
+        return view('enquiries.create',compact('location'));
     }
 
     /**
@@ -60,7 +62,8 @@ class EnquiriesController extends Controller
             'surgical' => implode (",", $request->surgical),
             'body' => implode (",", $request->body),
             'comments'=> $request->comments,
-            'enquiry_status'=>$request->enquiry_status
+            'enquiry_status'=>$request->enquiry_status,
+            'location_name' => $request->location_name
         ]);
         if($newEnquiry){
 
@@ -86,7 +89,8 @@ class EnquiriesController extends Controller
     public function show(string $id)
     {
         $enquiries = Enquiries::where('id',$id)->first();
-        return view('enquiries.edit',compact('enquiries'));
+        $location = Locations::all();
+        return view('enquiries.edit',compact('enquiries','location'));
     }
 
     /**
@@ -117,7 +121,8 @@ class EnquiriesController extends Controller
             'surgical' => implode (",", $request->surgical),
             'body' => implode (",", $request->body),
             'comments'=> $request->comments,
-            'enquiry_status'=>$request->enquiry_status
+            'enquiry_status'=>$request->enquiry_status,
+            'location_name' => $request->location_name
         ]);
         if($editEnquiry){
             $response = [

@@ -92,6 +92,10 @@ img{ max-width: 100%;}
 .black-btn{ background-color: #232323; color: #fff; border-color: #232323;}
 .black-btn:hover{background: #0747A6; border-color: #0747A6; color: #fff;}
 
+.btn-cross{ padding: .25em; height: 28px; width: 28px;}
+.cross-red{ background: #FF4858; color: #fff; border-color:#FF4858 ;}
+.cross-red:hover{ background: transparent; color: #FF4858;}
+
 .form-group label{ color: #232323;}
 .form-group .form-control{border-radius: 5px; border: 1px solid #D1D1D1; color:#666; font-size: 15px; min-height: 45px; padding: .6rem 1.2rem; }
 
@@ -537,6 +541,7 @@ div.dataTables_filter { text-align: right; float: right;}
 .text-seagreen{ color: #1BC5BD;}
 
 .text-bg-blue{ background: #0747a6;}
+
 .text-bg-grey{ background: #D9D9D9;}
 
 .badge{ border-radius: 4px; font-weight: normal; vertical-align: middle; position: relative;}
@@ -710,7 +715,9 @@ div.dataTables_filter { text-align: right; float: right;}
 .dot-nav + .dropdown-menu{ min-width: unset; border-radius: 8px; border: 1px solid #D1D1D1; background: #FFF; box-shadow: 0px 6px 3px 0px rgba(0, 0, 0, 0.16); right: 0 !important; left: auto !important;}
 
 
+.shaded-dropdown{border-radius: 8px; border: 1px solid #D1D1D1; background: #FFF; box-shadow: 0px 4px 2px 0px rgba(0, 0, 0, 0.06); margin: 0; }
 
+.table.no-border-table td, .table.no-border-table th{ border: none;}
 
 /*  Responsive  */
 

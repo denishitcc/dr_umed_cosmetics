@@ -28,6 +28,7 @@ class Enquiries extends Model
         'surgical',
         'body',
         'comments',
-        'enquiry_status'
+        'enquiry_status',
+        'location_name'
     ];
 }
