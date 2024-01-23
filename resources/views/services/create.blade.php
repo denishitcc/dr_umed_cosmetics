@@ -29,7 +29,11 @@
                                 <option selected="" value=""> -- select an option -- </option>
                                 @if(count($list_cat)>0)
                                     @foreach($list_cat as $cats)
-                                    <option value="{{$cats->id}}">{{$cats->category_name}}</option>
+                                        @if($cats->parent_category != '(top-level)')
+                                            <option value="{{$cats->id}}">&nbsp;&nbsp;{{$cats->category_name}}</option>
+                                        @else
+                                            <option value="{{$cats->id}}">{{$cats->category_name}}</option>
+                                        @endif
                                     @endforeach
                                 @endif
                             </select>

@@ -109,7 +109,11 @@
                         <option selected value="(top-level)"> (top-level) </option>
                         @if(count($list_cat)>0)
                             @foreach($list_cat as $cats)
-                            <option>{{$cats->category_name}}</option>
+                            @if($cats->parent_category != '(top-level)')
+                                <option>&nbsp;&nbsp;{{$cats->category_name}}</option>
+                            @else
+                                <option>{{$cats->category_name}}</option>
+                            @endif
                             @endforeach
                         @endif
                     </select>
@@ -154,7 +158,11 @@
                         <option selected value="(top-level)" > (top-level) </option>
                         @if(count($list_cat)>0)
                             @foreach($list_cat as $cats)
-                            <option>{{$cats->category_name}}</option>
+                                @if($cats->parent_category != '(top-level)')
+                                    <option>&nbsp;&nbsp;{{$cats->category_name}}</option>
+                                @else
+                                    <option>{{$cats->category_name}}</option>
+                                @endif
                             @endforeach
                         @endif
                     </select>

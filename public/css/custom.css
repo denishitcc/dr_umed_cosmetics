@@ -583,12 +583,14 @@ div.dataTables_filter { text-align: right; float: right;}
 
 .ctg-tree{ list-style: none; padding: 0 1.5rem; margin: 0;  overflow-y: scroll; height: calc(100vh - 135px);}
 .ctg-tree li{ margin-bottom: 5px; }
+
+.ctg-tree li.parent_category ul{ border-left: 2px solid #0747A6;}
 .ctg-tree li a{ color: #000; font-weight: 500; line-height: normal; text-decoration: none;}
 .ctg-tree li .count{ color: #3699FF; font-weight: 500;}
 
 .ctg-tree li .disflex{display: flex; position: relative; justify-content: space-between; align-items: center; border-radius: 5px; padding: .6em .75em;}
 .ctg-tree li.white-active .disflex{ background-color: #fff;}
-.ctg-tree li.blue-active{ background: rgba(54, 153, 255, 0.10);}
+.ctg-tree li.blue-active ul{ background: rgba(54, 153, 255, 0.10);}
 .ctg-tree li.blue-active .disflex{ background-color: #0747A6;}
 .ctg-tree li.blue-active a,
 .ctg-tree li.blue-active .count{ color: #fff;}
@@ -597,7 +599,7 @@ div.dataTables_filter { text-align: right; float: right;}
 .ctg-tree li.blue-active .disflex:before{ height: 24px; width: 24px; display: inline-block; background: #EEF1F5; border-radius: 5px; vertical-align: middle; content: ''; position: absolute;}
 .ctg-tree li.blue-active .disflex:after { content: "\e91a"; position: absolute; line-height: normal; left: 14px; top: 11px; color: #0747A6; font-family: 'ico'; font-size: 18px;}
 
-.ctg-tree li ul{ list-style: none; padding: 0; margin: 5px 0 0 0;}
+.ctg-tree li ul{ list-style: none; padding: 0; margin: 0 0 0 15px;}
 .ctg-tree li li {display: flex; position: relative; justify-content: space-between; align-items: center; border-radius: 5px; padding: .6em .75em; margin-bottom: 2px;}
 .ctg-tree li li:hover, .ctg-tree li li.active{ background: rgba(54, 153, 255, 0.10);}
 .ctg-tree li li a{ color: var(--d-grey) !important;  line-height: normal; margin: 0 ; font-weight: normal;}
