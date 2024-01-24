@@ -270,16 +270,10 @@ $(document).ready(function() {
     $('.select_none').click(function(){
         debugger;
         $("input[name='locations[]']:checkbox").prop('checked',false);
-        $('.branch_price_overrides').find('.single_branch').hide();
-        $('.show_disabled').hide();
-        $('.branch_override').hide();
     })
     $('.select_all').click(function(){
         debugger;
         $("input[name='locations[]']:checkbox").prop('checked',true);
-        $('.branch_price_overrides').find('.single_branch').show();
-        $('.show_disabled').show();
-        $('.branch_override').show();
     })
     $("#edit_service").validate({
         rules: {

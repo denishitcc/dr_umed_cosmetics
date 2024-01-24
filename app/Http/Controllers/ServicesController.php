@@ -289,7 +289,15 @@ class ServicesController extends Controller
     public function get_services(Request $request)
     {
         // dd($request->all());
-        if($request->categories == 'All Services & Tasks')
+        if($request->categories == 'All Services & Tasks' && $request->search != '')
+        {
+            // $list_services = Services::get();
+            $list_services = Services::leftJoin('services_appear_on_calendars', 'services.id', '=', 'services_appear_on_calendars.service_id')
+            ->select('services.*', 'services_appear_on_calendars.duration')
+            ->where('services.service_name', 'like', '%' . $request->search . '%')
+            ->get();
+        }
+        else if($request->categories == 'All Services & Tasks')
         {
             // $list_services = Services::get();
             $list_services = Services::leftJoin('services_appear_on_calendars', 'services.id', '=', 'services_appear_on_calendars.service_id')

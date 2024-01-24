@@ -478,11 +478,57 @@ $(document).ready(function() {
     });
     $(document).on('keyup', '#search_services', function(e) {
         debugger;
-        var value = $(this).val().toLowerCase();
-        $(".service-tbl > tbody > tr").each(function() {
-            var rowText = $(this).text().toLowerCase();
-            $(this).toggle(rowText.indexOf(value) > -1 || value === "");
+        // blue-active
+        $('.ctg-tree').find('.blue-active').removeClass('blue-active');
+        $('.ctg-tree').find('.active').removeClass('active');
+        $('.ctg-tree').find('.white-active').addClass('blue-active');
+        var search = $(this).val().toLowerCase();
+        //get services from category
+        var categories = 'All Services & Tasks';
+        $.ajax({
+            type: "POST",
+            headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: "{{route('services.get-services')}}",
+            data: {// change data to this object
+                _token : $('meta[name="csrf-token"]').attr('content'), 
+                categories:categories,
+                search:search
+            },
+            dataType: "json",
+            success: function(res) {
+                debugger;
+                if(res.data.length > 0)
+                {
+                    $('.table-responsive').empty();
+                    $('.table-responsive').append("<table class='table all-db-table align-middle table-striped service-tbl'><thead><tr><th class='blue-bold' width='75%' aria-sort='ascending'>Services in this category</th><th class='blue-bold' width='25%'>Minutes </th></tr></thead><tbody id='fbody'>");
+                    $.each(res.data, function(index, res) {
+                        var url = '{{ URL::to("services/") }}/' + res.id; // Corrected URL formatting
+                        if(res.duration != null)
+                        {
+                            var dur = res.duration;
+                        }else{
+                            var dur = '0';
+                        }
+                        $('.table-striped').append("<tr><td><a href='" + url + "' style='color: #282828;'><b>" + res.service_name + "</b></a></td><td>" + dur + " mins</td></tr>");
+                    });
+                    $('.table-responsive').append("</tbody></table>");
+                }
+                else{
+                    $('.table-responsive').empty();
+                }
+            },
+            error: function (jqXHR, exception) {
+
+            }
         });
+        
+        // var value = $(this).val().toLowerCase();
+        // $(".service-tbl > tbody > tr").each(function() {
+        //     var rowText = $(this).text().toLowerCase();
+        //     $(this).toggle(rowText.indexOf(value) > -1 || value === "");
+        // });
     });
     function submitCreateCategoryForm(data){
         debugger;
