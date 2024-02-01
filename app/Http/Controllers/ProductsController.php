@@ -19,7 +19,7 @@ class ProductsController extends Controller
     {
         $products = Products::all();
         $all_product_categories = ProductsCategories::all();
-
+        $locations = Locations::get();
         if ($request->ajax()) {
             $data = Products::all();
             return Datatables::of($data)
@@ -52,7 +52,7 @@ class ProductsController extends Controller
             ->make(true);
 
         }
-        return view('products.index', compact('products','all_product_categories'));
+        return view('products.index', compact('products','all_product_categories','locations'));
     }
 
     /**

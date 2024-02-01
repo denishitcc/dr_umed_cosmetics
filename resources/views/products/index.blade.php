@@ -85,7 +85,7 @@
         </div>
     </div>
 
-    <div id="new_category" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="newCategoryModalLabel" aria-hidden="true">
+<div id="new_category" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="newCategoryModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -119,6 +119,116 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="change_Availability" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h4 class="modal-title">Change availability</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="change_availability_form" name="change_availability_form" class="form">
+            @csrf
+            <input type="hidden" name="hdn_cat_id" id="hdn_cat_id" value="">
+            <div class="modal-body">
+                <table class="table all-db-table align-middle mb-0">
+                    <thead>
+                    <tr>
+                        <th class="blue-bold" width="40%" aria-sort="ascending">Location</th>
+                        <th class="blue-bold text-center" width="20%">(no change)</th>
+                        <th class="blue-bold text-center" width="20%" style="background-color: #F4B5A7;">Not available</th>
+                        <th class="blue-bold text-center" width="20%" style="background-color: #D3EDBF;">Available </th>
+                    </tr>
+                </thead>
+                <tbody>
+                @if(count($locations) > 0)
+                    @foreach($locations as $index => $loc)
+                        <tr>
+                            <td><b>{{$loc->location_name}}</b></td>
+                            <input type="hidden" name="locs_name[]" value="{{$loc->location_name}}">
+                            <td class="text-center"><label class="cst-radio"><input type="radio" checked class="no_change" name="availability{{$index}}" value="(no change)"><span class="radio-lg dark"></span></label></td>
+                            <td class="text-center"><label class="cst-radio"><input type="radio" name="availability{{$index}}" value="Not available"><span class="radio-lg dark"></span></label></td>
+                            <td class="text-center"><label class="cst-radio"><input type="radio" name="availability{{$index}}" value="Available"><span class="radio-lg dark"></span></label></td>
+                        </tr>
+                    @endforeach
+                @endif
+                
+                </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light btn-md cancel_form">Cancel</button>
+                <button type="submit" class="btn btn-primary btn-md">Save Changes</button>
+            </div>
+        </form>
+    </div>
+    </div>
+</div>
+<div class="modal fade" id="Change_min_max" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h4 class="modal-title">Change min/max for selected products</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="change_availability_form" name="change_availability_form" class="form">
+        @csrf
+        <div class="modal-body">
+            
+            <div class="row">
+            
+            <div class="col-lg-2">
+                <div class="form-group mb-0">
+                    <label class="form-label">Min</label>
+                    <input type="text" class="form-control" placeholder="-">
+                    </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="form-group mb-0">
+                    <label class="form-label">Max </label>
+                    <input type="text" class="form-control" placeholder="-">
+                    </div>
+            </div>
+            <div class="col-auto mt-5">
+                <label class="cst-check"><input type="checkbox" value="" id="set_loc"><span class="checkmark me-2"></span> Set differently by location</label>
+            </div>
+
+        </div>
+
+        <div class="table-responsive mt-3">
+            <table class="table align-middle mb-0 set_locations_data" style="display:none;">
+                <thead>
+                    <tr>
+                        <th colspan="2">Set location min/max overrides	</th>
+                        <th>Min</th>
+                        <th>Max</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @if(count($locations) > 0)
+                    @foreach($locations as $index => $loc)
+                    <tr>
+                        <td width="3%">
+                            <label class="cst-check"><input type="checkbox" value=""><span class="checkmark"></span></label>
+                        </td>
+                        <td width="65%"> {{$loc->location_name}}</td>
+                        <td><input type="text" class="form-control" placeholder="-"> </td>
+                        
+                        <td> <input type="text" class="form-control" placeholder="-"></td>
+                    </tr>
+                    @endforeach
+                @endif
+                </tbody>
+            </table>
+        </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-light btn-md">Cancel</button>
+            <button type="button" class="btn btn-primary btn-md">Save</button>
+        </div>
+        </form>
+    </div>
+    </div>
+</div>
 <!-- </main> -->
      
 @stop
@@ -131,6 +241,16 @@ headers: {
 });
 $(document).ready(function() {
     
+    $('#set_loc').click(function(){
+        debugger;
+        if (!$(this).is(':checked')) {
+            $('.set_locations_data').hide();
+        }
+        else{
+            $('.set_locations_data').show();
+        }
+    })
+
     $('#select-all').on('change', function () {
         // Select or deselect all checkboxes based on the 'select-all' checkbox state
         $('.data-table td:first-child input[type="checkbox"]').prop('checked', this.checked);
@@ -213,8 +333,40 @@ $(document).ready(function() {
                             $('.dt-button-collection').hide();
                         },
                     },
-                    { text: "Availability", action: function () { alert('Button 2 clicked'); } },
-                    { text: "Min/Max Stocks Level", action: function () { alert('Button 2 clicked'); } },
+                    { 
+                        text: "Availability",
+                        action: function () { 
+                            debugger;
+                            var checkedArr = [];
+                            $(".checked_data").each(function () {
+                                if ($(this).is(":checked")) {
+                                    // If checkbox is checked, add its value to the array
+                                    checkedArr.push($(this).attr('data-ids'));
+                                }
+                            });
+                            console.log('test',checkedArr);
+                            $('#products_id').val(checkedArr);
+                            $('#change_Availability').modal('show');
+                            $('.dt-button-collection').hide();
+                        }
+                    },
+                    { 
+                        text: "Min/Max Stocks Level",
+                        action: function () { 
+                            debugger;
+                            var checkedArr = [];
+                            $(".checked_data").each(function () {
+                                if ($(this).is(":checked")) {
+                                    // If checkbox is checked, add its value to the array
+                                    checkedArr.push($(this).attr('data-ids'));
+                                }
+                            });
+                            console.log('test',checkedArr);
+                            $('#products_id').val(checkedArr);
+                            $('#Change_min_max').modal('show');
+                            $('.dt-button-collection').hide();
+                        }
+                    },
                 ],
                 dropup: true
             },
