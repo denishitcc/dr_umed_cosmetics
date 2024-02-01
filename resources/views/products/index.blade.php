@@ -57,7 +57,7 @@
         </div> -->
         <div class="card-body">
         <div class="row">
-                <table class="table data-table all-db-table align-middle display">
+                <table class="table data-table all-db-table align-middle display" style="width:100%;">
                 <thead>
                     <tr>
                     <th>
@@ -483,41 +483,41 @@ $(document).on('click', '.dt-edit', function(e) {
     var ids = $(this).attr('ids');
     window.location = 'products/' + ids;
 });
-$(document).on('click', '.dt-delete', function(e) {
-    e.preventDefault();
-    $this = $(this);
-    var dtRow = $this.parents('tr');
-    if(confirm("Are you sure to delete this row?")){
-        $.ajax({
-        headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-        url: "email-templates/"+$(this).attr('ids'),
-        type: 'DELETE',
-        data: {
-            "id": $(this).attr('ids'),
-        },
-        success: function(response) {
-            // Show a Sweet Alert message after the form is submitted.
-            if (response.success) {
-            Swal.fire({
-                title: "Email Template!",
-                text: "Your Email Template deleted successfully.",
-                type: "success",
-            }).then((result) => {
-                            window.location = "{{url('email-templates')}}"//'/player_detail?username=' + name;
-                        });
-            } else {
-            Swal.fire({
-                title: "Error!",
-                text: response.message,
-                type: "error",
-            });
-            }
-        },
-        });
-        var table = $('#example').DataTable();
-        table.row(dtRow[0].rowIndex-1).remove().draw( false );
-    }
-});
+// $(document).on('click', '.dt-delete', function(e) {
+//     e.preventDefault();
+//     $this = $(this);
+//     var dtRow = $this.parents('tr');
+//     if(confirm("Are you sure to delete this row?")){
+//         $.ajax({
+//         headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+//         url: "email-templates/"+$(this).attr('ids'),
+//         type: 'DELETE',
+//         data: {
+//             "id": $(this).attr('ids'),
+//         },
+//         success: function(response) {
+//             // Show a Sweet Alert message after the form is submitted.
+//             if (response.success) {
+//             Swal.fire({
+//                 title: "Email Template!",
+//                 text: "Your Email Template deleted successfully.",
+//                 type: "success",
+//             }).then((result) => {
+//                             window.location = "{{url('email-templates')}}"//'/player_detail?username=' + name;
+//                         });
+//             } else {
+//             Swal.fire({
+//                 title: "Error!",
+//                 text: response.message,
+//                 type: "error",
+//             });
+//             }
+//         },
+//         });
+//         var table = $('#example').DataTable();
+//         table.row(dtRow[0].rowIndex-1).remove().draw( false );
+//     }
+// });
 function submitUpdateProductCategoryForm(data){
     debugger;
     $.ajax({

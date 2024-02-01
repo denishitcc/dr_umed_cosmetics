@@ -15,7 +15,7 @@
         <div class="row">
                 <div class="col-md-7">
                 </div>
-                <table class="table data-table all-db-table align-middle display">
+                <table class="table data-table all-db-table align-middle display" style="width:100%;">
                 <thead>
                     <tr>
                     <!-- <th> -->
