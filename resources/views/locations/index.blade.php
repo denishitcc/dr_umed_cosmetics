@@ -158,7 +158,8 @@ $(document).ready(function() {
 
             btns.addClass('btn-group');
             btns.find('button').removeAttr('class');
-            btns.find('button').addClass('btn btn-default buttons-collection btn-default-dt-options');
+            // btns.find('button').addClass('btn btn-default buttons-collection btn-default-dt-options');
+            btns.find('button').addClass('btn btn-default buttons-collection');
         },
         "drawCallback": function( settings ) {
                 var   api     = this.api(),

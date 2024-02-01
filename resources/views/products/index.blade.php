@@ -3,17 +3,19 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <!-- <main> -->
     <div class="card">
-        <div class="card-head">
-        <div class="toolbar mb-0">
-                <div class="tool-left">
-                    <a href="{{ route('products.create') }}" class="btn btn-primary btn-md me-2">Add One Product</a>
-                    <a href="#" class="btn btn-primary btn-md me-2">Import a Product List</a>
-                    <a href="{{ route('products-categories.index') }}" class="btn btn-primary btn-md me-2">Categories</a>
-                    <a href="{{ route('suppliers.index') }}" class="btn btn-primary btn-md me-2">Suppliers</a>
-                </div>
-            </div>
-            
+    <div class="card-head">
+    <div class="toolbar">
+        <div class="tool-left d-flex">
+            <a href="{{ route('products.create') }}" class="btn btn-primary btn-md icon-btn-left me-2"><i class="ico-add me-2 fs-5"></i> Add One Product</a>
+            <a href="#" class="btn btn-primary btn-md icon-btn-left me-2"><i class="ico-import me-2 fs-4"></i> Import a Product List</a>
+            <a href="{{ route('products-categories.index') }}" class="btn btn-orange btn-md icon-btn-left me-2"><i class="ico-forms me-2 fs-5"></i> Categories</a>
+            <a href="{{ route('suppliers.index') }}" class="btn btn-sea-green btn-md icon-btn-left me-2"><i class="ico-truck me-2 fs-4"></i> Suppliers</a>
         </div>
+        <div class="tool-right">
+            <a href="#" class="btn icon-btn-left btn-md btn-light-grey"><i class="ico-filter me-2 fs-6"></i> Filter By</a>
+        </div>
+    </div>
+    </div>
         <div class="card-head">
             <h4 class="small-title mb-3">Products Summary</h4>
             
@@ -191,7 +193,7 @@ $(document).ready(function() {
             },
             {
                 extend: 'collection',
-                text: 'EDIT',
+                text: '<i class="fa fa-edit"></i> Edit',
                 buttons: [
                     {
                         text: "Category",
@@ -216,6 +218,16 @@ $(document).ready(function() {
                 ],
                 dropup: true
             },
+            {
+                text: '<i class="ico-trash fs-5 text-light-red"></i>', // Delete icon
+                className: 'btn btn-default-delete',
+                action: function (e, dt, node, config) {
+                    // Define the action you want to perform when the icon is clicked
+                    // For example, you can trigger a delete action here
+                    alert('Delete icon clicked!');
+                },
+            },
+
         ],
         select: {
             style : "multi",
@@ -266,7 +278,7 @@ $(document).ready(function() {
 
             btns.addClass('btn-group');
             btns.find('button').removeAttr('class');
-            btns.find('button').addClass('btn btn-default buttons-collection btn-default-dt-options');
+            btns.find('button').addClass('btn btn-default buttons-collection');
         },
         "drawCallback": function( settings ) {
             var   api     = this.api(),
