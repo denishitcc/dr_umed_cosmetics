@@ -10,7 +10,7 @@
                 </div>
                 <div class="tool-right">
                     <a href="{{ route('suppliers.create') }}" class="btn btn-primary btn-md">Create New Supplier</a>
-                    <a href="#" class="btn btn-primary btn-md">Back to Products</a>
+                    <a href="{{ route('products.index') }}" class="btn btn-primary btn-md">Back to Products</a>
                 </div>
             </div>
         </div>

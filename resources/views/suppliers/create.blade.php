@@ -6,7 +6,7 @@
     <div class="card-head">
         <div class="toolbar mb-5">
             <div class="tool-left"><h4 class="small-title mb-0">Add Supplier</h4></div>
-            <div class="tool-right"><a href="#" class="btn btn-primary btn-md">Back to Products</a></div>
+            <div class="tool-right"><a href="{{ route('products.index') }}" class="btn btn-primary btn-md">Back to Products</a></div>
         </div>
         
         <h5 class="bright-gray mb-0">Details</h5>
