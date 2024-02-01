@@ -51,15 +51,15 @@
                         </ul> -->
                     </li>
                     <li class="{{ (request()->is('suppliers')) ? 'active' : '' }} || {{ (request()->is('suppliers/*')) ? 'active' : '' }}"><a href="{{ route('suppliers.index') }}"><i class="ico-location1"></i>Suppliers </a></li>
-                    <li><a href="#"><i class="ico-products"></i>Products </a></li>
+                    <li class="{{ (request()->is('products')) ? 'active' : '' }} || {{ (request()->is('products/*')) ? 'active' : '' }}"><a href="{{ route('products.index') }}"><i class="ico-products"></i>Products </a></li>
                     <li class="dropdown"><a href="#"><i class="ico-promotion"></i>Promotions </a>
                         <ul>
                             <li><a href="#">Gift Cards</a></li>
                             <li><a href="#">Discount Coupons</a></li>
                         </ul>
                     </li>
-                    <li><a href="#"><i class="ico-forms"></i>Forms </a></li>
-                    <li class="dropdown {{ (request()->is('email-templates')) ? 'show' : '' }} || {{ (request()->is('sms-templates')) ? 'show' : '' }} || {{ (request()->is('email-templates/*')) ? 'show' : '' }} || {{ (request()->is('sms-templates/*')) ? 'show' : '' }}"><a href="#"><i class="ico-templates"></i>Templates </a>
+                    <li class="{{ (request()->is('forms')) ? 'active' : '' }} || {{ (request()->is('forms/*')) ? 'active' : '' }}"><a href="{{ route('forms.index') }}"><i class="ico-forms"></i>Forms </a></li>
+                    <li class="dropdown {{ (request()->is('email-templates')) ? 'show' : '' }} || {{ (request()->is('email-templates')) ? 'active' : '' }} || {{ (request()->is('sms-templates')) ? 'show' : '' }} || {{ (request()->is('sms-templates')) ? 'active' : '' }} || {{ (request()->is('email-templates/*')) ? 'show' : '' }} || {{ (request()->is('sms-templates/*')) ? 'show' : '' }}"><a href="#"><i class="ico-templates"></i>Templates </a>
                         <ul>
                             <li class="{{ (request()->is('email-templates')) ? 'active' : '' }} || {{ (request()->is('email-templates/*')) ? 'active' : '' }}"><a href="{{ route('email-templates.index') }}">Email Templates</a></li>
                             <li class="{{ (request()->is('sms-templates')) ? 'active' : '' }} || {{ (request()->is('sms-templates/*')) ? 'active' : '' }}"><a href="{{ route('sms-templates.index') }}">SMS Templates</a></li>
@@ -68,7 +68,7 @@
                     <li class="{{ (request()->is('locations')) ? 'active' : '' }} || {{ (request()->is('locations/*')) ? 'active' : '' }}"><a href="{{ route('locations.index') }}"><i class="ico-locations"></i>Locations </a></li>
                     <li class="{{ (request()->is('users')) ? 'active' : '' }} || {{ (request()->is('users/*')) ? 'active' : '' }}"><a href="{{ route('users.index') }}"><i class="ico-staff"></i>Staffs</a>
                     </li>
-                    <li class="dropdown {{ (request()->is('settings')) ? 'show' : '' }} || {{ (request()->is('users-roles')) ? 'show' : '' }} || {{ (request()->is('users-roles/*')) ? 'show' : '' }} || {{ (request()->is('users-roles')) ? 'show' : '' }} || {{ (request()->is('access-level')) ? 'show' : '' }}"><a href="#"><i class="ico-templates"></i>Settings </a>
+                    <li class="dropdown {{ (request()->is('settings')) ? 'active' : '' }} || {{ (request()->is('settings')) ? 'show' : '' }} || {{ (request()->is('users-roles')) ? 'active' : '' }} || {{ (request()->is('users-roles/*')) ? 'active' : '' }} || {{ (request()->is('users-roles')) ? 'show' : '' }} || {{ (request()->is('access-level')) ? 'show' : '' }} || {{ (request()->is('access-level')) ? 'active' : '' }}"><a href="#"><i class="ico-templates"></i>Settings </a>
                         <ul>
                             <li class="{{ (request()->is('settings')) ? 'active' : '' }}"><a href="{{ route('settings') }}">User Settings</a></li>
                             <li class="{{ (request()->is('users-roles')) ? 'active' : '' }} || {{ (request()->is('users-roles/*')) ? 'active' : '' }}"><a href="{{ route('users-roles.index') }}">User Role</a></li>
@@ -212,6 +212,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
     <script src="https://res.cloudinary.com/dxfq3iotg/raw/upload/v1569006273/BBBootstrap/choices.min.js?version=7.0.0"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     @yield('script')
     <script>
         $(document).ready(function(){

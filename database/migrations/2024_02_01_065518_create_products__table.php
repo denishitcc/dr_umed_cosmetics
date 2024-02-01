@@ -22,7 +22,7 @@ return new class extends Migration
             $table->unsignedBigInteger('category_id');
             $table->foreign('category_id')
                 ->references('id')
-                ->on('category')
+                ->on('products_categories')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
             $table->unsignedBigInteger('supplier_id');

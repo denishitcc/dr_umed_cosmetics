@@ -23,10 +23,10 @@ class EnquiriesController extends Controller
             ->addColumn('username', function ($row) {
                 return $row->firstname.' '.$row->lastname;
             })
-            ->addColumn('date_created', function ($row) {
+            // ->addColumn('date_created', function ($row) {
                 
-                return date("Y/m/d  H:i:s", strtotime($row->created_at));
-            })
+            //     return date("Y/m/d  H:i:s", strtotime($row->created_at));
+            // })
             ->make(true);
 
         }

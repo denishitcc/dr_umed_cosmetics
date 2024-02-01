@@ -28,8 +28,8 @@
                             <label class="form-label">Parent Category </label>
                             <select class="form-select form-control" name="parent_category" id="parent_category">
                                 <option selected="" value=""> -- select an option -- </option>
-                                @if(count($list_cat)>0)
-                                    @foreach($list_cat as $cats)
+                                @if(count($list_parent_cat)>0)
+                                    @foreach($list_parent_cat as $cats)
                                     @if($cats->parent_category != '(top-level)')
                                     <option value="{{ $cats->id }}" {{ ( $cats->id == $services->parent_category) ? 'selected' : '' }}> &nbsp;&nbsp;{{ $cats->category_name }} </option>
                                     @else

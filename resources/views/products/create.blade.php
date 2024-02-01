@@ -1,0 +1,323 @@
+@extends('layouts/sidebar')
+@section('content')
+<meta name="csrf-token" content="{{ csrf_token() }}">
+<div class="card">
+    <div class="card-head">
+        <div class="toolbar mb-5">
+            <div class="tool-left"><h4 class="small-title mb-0">Add Products</h4></div>
+            <div class="tool-right"><a href="#" class="btn btn-primary btn-md"  onclick="window.location='{{ url("products") }}'">Back to Products</a></div></div>
+        
+        <h5 class="bright-gray mb-0">Details</h5>
+    </div>
+    <form id="create_product" name="create_product" class="form">
+    @csrf
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-7">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label class="form-label">Product Name</label>
+                            <input type="text" class="form-control" name="product_name" id="product_name" maxlength="100">
+                            </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-label">Price</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="0"  name="price" id="price" maxlength="10">
+                                <span class="input-group-text"><span class="ico-dollar fs-4"></span></span>
+                            </div>
+                            <span class="form-text">incl. GST</span>
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-label">Cost</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="0" name="cost" id="cost" maxlength="100">
+                                <span class="input-group-text cost_validate"><span class="ico-dollar fs-4"></span></span>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Type </label><br>
+                    <label class="cst-radio me-3"><input type="radio" checked="" name="type" value="Retail"><span class="checkmark me-2"></span>Retail</label>
+                    <label class="cst-radio"><input type="radio" name="type" value="Professional"><span class="checkmark me-2"></span>Professional</label>
+                </div>
+                
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="form-group mb-0">
+                            <label class="form-label">GST code</label>
+                            <select class="form-select form-control" name="gst_code" id="gst_code">
+                                <option selected="" value=""> -- select an option -- </option>
+                                <option>Standard</option>
+                                <option>Zero-rated</option>
+                            </select>
+                            </div>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="col-lg-5">
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" rows="6"  name="description" id="description"></textarea>
+                </div>
+                
+            </div>
+        </div>                            
+    </div>
+    <div class="card-head">
+        <h5 class="bright-gray mb-0">Category</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <select class="form-select form-control" name="category_id" id="category_id">
+                        <option selected value=""> -- select an option -- </option>
+                        @if(count($product_category)>0)
+                        @foreach($product_category as $cat)
+                            <option value="{{$cat->id}}"> {{$cat->category_name}} </option>
+                        @endforeach
+                        @endif
+                    </select>
+                    </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-label">Supplier</label>
+                    <select class="form-select form-control" name="supplier_id" id="supplier_id">
+                        <option selected="" value=""> -- select an option -- </option>
+                        @if(count($suppliers)>0)
+                        @foreach($suppliers as $supplier)
+                            <option value="{{$supplier->id}}">{{$supplier->business_name}}</option>
+                        @endforeach
+                        @endif
+                    </select>
+                    </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-label">Supplier Code</label>
+                    <input type="text" class="form-control" placeholder="SP001" name="supplier_code" id="supplier_code" maxlength="10">
+                    </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-label">Barcode 1</label>
+                    <input type="text" class="form-control" placeholder="-" name="barcode_1" id="barcode_1" maxlength="10">
+                    </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-label">Barcode 2</label>
+                    <input type="text" class="form-control" placeholder="-" name="barcode_2" id="barcode_2" maxlength="10">
+                    </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-1">
+                <div class="form-group mb-0">
+                    <label class="form-label">Order lot</label>
+                    <input type="text" class="form-control" placeholder="-" name="order_lot" id="order_lot" maxlength="5">
+                    </div>
+            </div>
+            <div class="col-lg-1">
+                <div class="form-group mb-0">
+                    <label class="form-label">Min <i class="ico-help" data-toggle="tooltip" data-placement="top" title="The minimum amount of this item to have on-hand before you need to order more."></i></label>
+                    <input type="text" class="form-control" placeholder="-" name="min" id="min" maxlength="5">
+                    </div>
+            </div>
+            <div class="col-lg-1">
+                <div class="form-group mb-0">
+                    <label class="form-label">Max <i class="ico-help" data-toggle="tooltip" data-placement="top" title="When reordering, the maximum quantity you'd like to have on-hand."></i></label>
+                    <input type="text" class="form-control" placeholder="-" name="max" id="max" maxlength="5">
+                    </div>
+            </div>
+            
+        </div>
+    </div>
+    <div class="card-head">
+        <h5 class="bright-gray mb-0">Availablity</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="d-flex justify-content-between mb-4">
+                    <label class="form-label">Location</label>
+                    <label class="form-label">Location overrides <i class="ico-help" data-toggle="tooltip" data-placement="top" title="Leave fields blank to use the chain-level settings."></i></label>
+                    
+                </div>
+                <div class="small-tool">Select:   <a href="javascript:void(0)" class="me-2 ms-2 btn-link select_all">All</a>  |   <a href="javascript:void(0)" class="ms-2 btn-link select_none">None</a></div>
+                <div class="table-responsive">
+                    <table class="table table-relax align-middle table-hover form-group">
+                        <tbody>
+                            @if(count($locations)>0)
+                            @foreach($locations as $loc)
+                            <tr>
+                                <td>
+                                    <label class="cst-check"><input type="checkbox" value="{{$loc->location_name}}" name="locations[]" id="locations" class="locations" checked><span class="checkmark"></span></label>
+                                </td>
+                                <td width="40%">{{$loc->location_name}}</td>
+                                <td>
+                                    <div class="show-timing">
+                                        <div class="show-inner">
+                                            <div class="min-max loc_details">
+                                                    <label class="form-label">Min <i class="ico-help" data-toggle="tooltip" data-placement="top" title="The minimum amount of this item to have on-hand before you need to order more."></i></label>
+                                                    <input type="text" class="form-control" placeholder="-" name="availability_min[]" maxlength="5">
+                                            </div>
+                                            <div class="min-max loc_details">
+                                                    <label class="form-label">Max <i class="ico-help" data-toggle="tooltip" data-placement="top" title="When reordering, the maximum quantity you'd like to have on-hand."></i></label>
+                                                    <input type="text" class="form-control" placeholder="-" name="availability_max[]" maxlength="5">
+                                            </div>
+                                            <div class="col loc_details">
+                                                    <label class="form-label">Price</label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" placeholder="0" name="availability_price[]" maxlength="5">
+                                                        <span class="input-group-text"><span class="ico-dollar fs-4"></span></span>
+                                                        </div>
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endforeach
+                            @endif
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12 text-lg-end mt-4">
+            <button type="button" class="btn btn-light me-2" onclick="window.location='{{ url("products") }}'">Discard</button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+    </div>
+    </form>
+</div>
+@stop
+@section('script')
+<script>
+$(document).ready(function() {
+    $('.locations').click(function(){
+        debugger;
+        if (!$(this).is(':checked')) {
+            $(this).parent().parent().parent().find('.show-timing').hide();
+        }
+        else{
+            $(this).parent().parent().parent().find('.show-timing').show();
+        }
+    })
+    $(".list-group ul li.dropdown").click(function(){
+        $(this).toggleClass("show");
+    });
+    $('[data-toggle="tooltip"]').tooltip();
+
+    $('.select_none').click(function(){
+        $("input[name='locations[]']:checkbox").prop('checked',false);
+        $('.loc_details').hide();
+    })
+    $('.select_all').click(function(){
+        $("input[name='locations[]']:checkbox").prop('checked',true);
+        $('.loc_details').show();
+    })
+
+    $("#create_product").validate({
+        rules: {
+            product_name: {
+                required: true,
+            },
+            price:{
+                required: true,
+            },
+            cost:{
+                required: true,
+            },
+            gst_code:{
+                required: true,
+            },
+            category_id:{
+                required: true,
+            },
+            supplier_id:{
+                required: true,
+            },
+            order_lot:{
+                required: true,
+            },
+            min:{
+                required: true,
+            },
+            max:{
+                required: true,
+            },
+        },
+        errorPlacement: function (error, element) {
+            if (element.attr("name") === "price") {
+                error.insertAfter('.form-text');
+            }else if(element.attr("name") === "cost") {
+                error.insertAfter('.cost_validate');
+            }
+            else {
+                error.insertAfter(element);
+            }
+        },
+    });
+    $(document).on('submit','#create_product',function(e){debugger;
+        e.preventDefault();
+        var valid= $("#create_product").validate();
+            if(valid.errorList.length == 0){
+            var data = $('#create_product').serialize() ;
+            submitCreateProductForm(data);
+        }
+    });
+    function submitCreateProductForm(data){
+        debugger;
+        $.ajax({
+            headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            url: "{{route('products.store')}}",
+            type: "post",
+            // contentType: 'multipart/form-data',
+            // cache: false,
+            // contentType: false,
+            // processData: false,
+            data: data,
+            success: function(response) {
+                debugger;
+                // Show a Sweet Alert message after the form is submitted.
+                if (response.success) {
+                    
+                    Swal.fire({
+                        title: "Product!",
+                        text: "Product created successfully.",
+                        type: "success",
+                    }).then((result) => {
+                        window.location = "{{url('products')}}"//'/player_detail?username=' + name;
+                    });
+                    
+                } else {
+                    debugger;
+                    Swal.fire({
+                        title: "Error!",
+                        text: response.message,
+                        type: "error",
+                    });
+                }
+            },
+        });
+    }
+});
+</script>
+@endsection

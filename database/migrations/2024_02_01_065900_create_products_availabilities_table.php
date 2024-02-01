@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('availability', function (Blueprint $table) {
+        Schema::create('product_availabilities', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('product_id');
             $table->foreign('product_id')
@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('min', 50)->nullable();
             $table->string('max', 50)->nullable();
             $table->decimal('price', 10, 2)->nullable(); // Example decimal type, adjust as needed
+            $table->string('availability', 100)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

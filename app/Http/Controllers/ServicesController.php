@@ -23,13 +23,14 @@ class ServicesController extends Controller
         // Fetch all categories for display
         $list_cat = Category::get();
 
+        $list_parent_cat = Category::where('parent_category','(top-level)')->get();
         //services
         $list_service = Services::get();
         // dd($list_service);
 
         //locations
         $locations = Locations::get();
-        return view('services.index', compact('list_cat', 'distinctParentCategories','list_service','locations'));
+        return view('services.index', compact('list_cat', 'distinctParentCategories','list_service','locations','list_parent_cat'));
     }
 
     /**
@@ -42,7 +43,8 @@ class ServicesController extends Controller
         $locations = Locations::get();
         $services = Services::get();
         $users = User::get();
-        return view('services.create',compact('list_cat','locations','services','users'));
+        $list_parent_cat = Category::where('parent_category','(top-level)')->get();
+        return view('services.create',compact('list_cat','locations','services','users','list_parent_cat'));
     }
 
     /**
@@ -111,6 +113,7 @@ class ServicesController extends Controller
     public function show(string $id)
     {
         $list_cat = Category::get();
+        $list_parent_cat = Category::where('parent_category','(top-level)')->get();
         $locations = Locations::get();
         // $services = Services::where('id',$id)->first();
         // $services = Services::join('services_appear_on_calendars', 'services.id', '=', 'services_appear_on_calendars.service_id')
@@ -130,7 +133,7 @@ class ServicesController extends Controller
         $all_services = Services::get();
         // dd($all_services);
         $users = User::get();
-        return view('services.edit',compact('list_cat','locations','services','service_availability','all_services','users'));
+        return view('services.edit',compact('list_cat','locations','services','service_availability','all_services','users','list_parent_cat'));
     }
 
     /**

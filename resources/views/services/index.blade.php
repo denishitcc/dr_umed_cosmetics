@@ -107,8 +107,8 @@
                     <label class="form-label">Parent Category</label>
                     <select class="form-select form-control" id="parent_category" name="parent_category" maxlength="50">
                         <option selected value="(top-level)"> (top-level) </option>
-                        @if(count($list_cat)>0)
-                            @foreach($list_cat as $cats)
+                        @if(count($list_parent_cat)>0)
+                            @foreach($list_parent_cat as $cats)
                             @if($cats->parent_category != '(top-level)')
                                 <option>&nbsp;&nbsp;{{$cats->category_name}}</option>
                             @else
@@ -156,8 +156,8 @@
                     <label class="form-label">Parent Category</label>
                     <select class="form-select form-control edit_parent_category_name" id="parent_category_edit" name="parent_category" maxlength="50">
                         <option selected value="(top-level)" > (top-level) </option>
-                        @if(count($list_cat)>0)
-                            @foreach($list_cat as $cats)
+                        @if(count($list_parent_cat)>0)
+                            @foreach($list_parent_cat as $cats)
                                 @if($cats->parent_category != '(top-level)')
                                     <option>&nbsp;&nbsp;{{$cats->category_name}}</option>
                                 @else
@@ -352,8 +352,14 @@ $(document).ready(function() {
         return false;
     })
     $('.child_category').click(function(e){debugger;
+        if($(this).find('.count').text() > 0)
+        {
+            $('.set_availability').show();
+        }else{
+            $('.set_availability').hide();
+        }
         $('.edit_service').show();
-        $('.set_availability').show();
+        // $('.set_availability').show();
         //for active current class
         $(this).parent().parent().parent().parent().find('.blue-active').removeClass('blue-active');
         $(this).parent().parent().parent().parent().find('.active').removeClass('active');
@@ -412,8 +418,15 @@ $(document).ready(function() {
         return false;
     })
     $('.parent_category').click(function(){debugger;
+        if($(this).find('.disflex').find('.count').text() > 0)
+        {
+            $('.set_availability').show();
+        }
+        else{
+            $('.set_availability').hide();
+        }
         $('.edit_service').show();
-        $('.set_availability').show();
+        
         //for active current class
         $(this).parent().find('.blue-active').removeClass('blue-active');
         $(this).parent().parent().parent().parent().find('.active').removeClass('active');
@@ -517,6 +530,7 @@ $(document).ready(function() {
                 }
                 else{
                     $('.table-responsive').empty();
+                    $('.table-responsive').html('No results for this search.');
                 }
             },
             error: function (jqXHR, exception) {

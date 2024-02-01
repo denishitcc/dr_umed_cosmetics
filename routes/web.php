@@ -14,6 +14,9 @@ use App\Http\Controllers\SMSTemplatesController;
 use App\Http\Controllers\EnquiriesController;
 use App\Http\Controllers\SuppliersController;
 use App\Http\Controllers\ServicesController;
+use App\Http\Controllers\ProductsController;
+use App\Http\Controllers\FormsController;
+use App\Http\Controllers\ProductCategoriesController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -113,4 +116,17 @@ Route::middleware(['auth'])->group(function () {
     Route::post('services/update-category',[ServicesController::class, 'update_category'])->name('services.update-category');
     Route::post('services/get-services',[ServicesController::class, 'get_services'])->name('services.get-services');
     Route::post('services/change-services-availability',[ServicesController::class, 'change_services_availability'])->name('services.change-services-availability');
+
+    //Products
+    Route::resource('/products', ProductsController::class);
+    Route::post('products/table',[ProductsController::class, 'index'])->name('products.table');
+    Route::post('products/update-product-category',[ProductsController::class, 'updateProductCategory'])->name('products.update-product-category');
+
+    //forms
+    Route::resource('/forms', FormsController::class);
+    Route::post('forms/table',[FormsController::class, 'index'])->name('forms.table');
+
+    //Product Categories
+    Route::resource('/products-categories', ProductCategoriesController::class);
+    Route::post('products-categories/table',[ProductCategoriesController::class, 'index'])->name('products-categories.table');
 });

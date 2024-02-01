@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Availability extends Model
+class ProductsCategories extends Model
 {
     use HasFactory;
     use SoftDeletes;
@@ -14,10 +14,7 @@ class Availability extends Model
 
     protected $fillable = [
         'id',
-        'product_id',
-        'location_name',
-        'min',
-        'max',
-        'price'
+        'category_name',
+        'sub_category_name',
     ];
 }

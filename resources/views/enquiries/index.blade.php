@@ -139,7 +139,15 @@ $(document).ready(function() {
         {data: 'phone_number', name: 'phone_number'},
         {data: 'location_name', name: 'location_name'},
         {data: 'enquiry_date', name: 'enquiry_date'},
-        {data: 'date_created', name: 'date_created'},
+        {
+            data: 'created_at',
+            name: 'created_at',
+            render: function(data, type, row, meta) {
+                // Assuming 'date_created' is in a format that can be parsed by Moment.js
+                var formattedDate = moment(data).format('DD/MM/YYYY HH:mm:ss');
+                return formattedDate;
+            }
+        },
         {data: 'enquiry_source', name: 'enquiry_source'},
         // {data: 'enquiry_status', name: 'enquiry_status'},
         {data: 'enquiry_status', name: 'enquiry_status',
