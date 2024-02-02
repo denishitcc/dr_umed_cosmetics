@@ -101,7 +101,7 @@
                         <div class="form-group">
                             <label class="form-label">Category Name</label>
                             <select class="form-select form-control" id="category_name" name="category_name" maxlength="50">
-                                <option selected value="(top-level)" > -- select an option -- </option>
+                                <option selected value="" > -- select an option -- </option>
                                 @if(count($all_product_categories)>0)
                                     @foreach($all_product_categories as $cats)
                                             <option value="{{$cats->id}}">{{$cats->category_name}}</option>
@@ -240,7 +240,13 @@ headers: {
 }
 });
 $(document).ready(function() {
-    
+    $("#update_product_category").validate({
+        rules: {
+            category_name: {
+                required: true,
+            }
+        }
+    });
     $('#set_loc').click(function(){
         debugger;
         if (!$(this).is(':checked')) {
@@ -507,15 +513,16 @@ $(document).ready(function() {
         var table = $('.data-table').dataTable();
         table.fnPageChange(page_no - 1,true);
     });
-
     $(document).on('submit','#update_product_category',function(e){debugger;
-        e.preventDefault();
-        var valid= $("#update_product_category").validate();
-            if(valid.errorList.length == 0){
-            var data = $('#update_product_category').serialize() ;
-            submitUpdateProductCategoryForm(data);
-        }
-    });
+		e.preventDefault();
+		var valid= $("#update_product_category").validate();
+			if(valid.errorList.length == 0){
+			var data = $('#update_product_category').serialize() ;
+
+            // var data = new FormData(this);
+			submitUpdateProductCategoryForm(data);
+		}
+	});
     $(document).on('submit','#change_product_availability',function(e){debugger;
         e.preventDefault();
         var valid= $("#change_product_availability").validate();
