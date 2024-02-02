@@ -211,9 +211,9 @@ class ProductsController extends Controller
                 } else {
                     $final_array[] = [
                         'product_id' => $updateProduct->id,
-                        'min' => '',
-                        'max' => '',
-                        'price' => null,
+                        'min' => $request->availability_min[$index],//'' .for update min/max/price to 0 logic
+                        'max' => $request->availability_max[$index],//'' .for update min/max/price to 0 logic
+                        'price' => $price,//null .for update min/max/price to 0 logic
                         'location_name' => $in->location_name,
                         'availability' => 'Not available'
                     ];
@@ -330,12 +330,13 @@ class ProductsController extends Controller
                     foreach($availability_data as $ava) {
                         // Update the status only if the record is found
                         if ($ava) {
-                            if($selectedStatus =='Not available')
-                            {
-                                $ava->update(['availability' => $selectedStatus,'min'=>null,'max'=>null,'price'=>null]);
-                            }else{
+                            //for update min/max/price to 0 logic
+                            // if($selectedStatus =='Not available')
+                            // {
+                            //     $ava->update(['availability' => $selectedStatus,'min'=>null,'max'=>null,'price'=>null]);
+                            // }else{
                                 $ava->update(['availability' => $selectedStatus]);
-                            }
+                            // }
                             
                         }
                     }
