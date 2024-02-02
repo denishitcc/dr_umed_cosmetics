@@ -269,9 +269,22 @@ class ProductsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
-        //
+        foreach($request->id as $ids){
+            Products::find($ids)->delete();
+
+            // Delete associated availability records
+            ProductAvailabilities::where('product_id', $ids)->delete();
+
+            $response = [
+                'success' => true,
+                'message' => 'Product deleted successfully!',
+                'type' => 'success',
+                'data_id' => $ids
+            ];
+        }
+        return response()->json($response);
     }
     public function updateProductCategory(Request $request)
     {
@@ -299,4 +312,51 @@ class ProductsController extends Controller
         }
         return response()->json($response);
     }
+    public function changeProductAvailability(Request $request){
+        $product_ids = explode(',', $request->prds_id);
+        $response = []; // Initialize response outside the loop
+    
+        foreach($product_ids as $pro)
+        {
+            // Retrieve the existing availability records
+            $availability = ProductAvailabilities::where('product_id', $pro)->get();
+            
+            // Loop through the form data and update the status for each location
+            foreach ($request->locs_name as $i => $locName) {
+                $selectedStatus = $request->input("availability$i");
+                if($selectedStatus != '(no change)') {
+                    // Find the corresponding availability record for the current location
+                    $availability_data = $availability->where('location_name', $locName);
+                    foreach($availability_data as $ava) {
+                        // Update the status only if the record is found
+                        if ($ava) {
+                            if($selectedStatus =='Not available')
+                            {
+                                $ava->update(['availability' => $selectedStatus,'min'=>null,'max'=>null,'price'=>null]);
+                            }else{
+                                $ava->update(['availability' => $selectedStatus]);
+                            }
+                            
+                        }
+                    }
+                }
+            }
+        }
+    
+        // Move the response part outside the loop
+        if ($availability) {
+            $response = [
+                'success' => true,
+                'message' => 'Availability updated successfully!',
+                'type' => 'success',
+            ];
+        } else {
+            $response = [
+                'error' => true,
+                'message' => 'Error!',
+                'type' => 'error',
+            ];
+        }
+        return response()->json($response);
+    }    
 }

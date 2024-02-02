@@ -126,9 +126,9 @@
         <h4 class="modal-title">Change availability</h4>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <form id="change_availability_form" name="change_availability_form" class="form">
+        <form id="change_product_availability" name="change_product_availability" class="form">
             @csrf
-            <input type="hidden" name="hdn_cat_id" id="hdn_cat_id" value="">
+            <input type="hidden" name="prds_id" id="prds_id" value="">
             <div class="modal-body">
                 <table class="table all-db-table align-middle mb-0">
                     <thead>
@@ -345,7 +345,7 @@ $(document).ready(function() {
                                 }
                             });
                             console.log('test',checkedArr);
-                            $('#products_id').val(checkedArr);
+                            $('#prds_id').val(checkedArr);
                             $('#change_Availability').modal('show');
                             $('.dt-button-collection').hide();
                         }
@@ -368,15 +368,54 @@ $(document).ready(function() {
                         }
                     },
                 ],
-                dropup: true
+                dropup: true,
             },
             {
                 text: '<i class="ico-trash fs-5 text-light-red"></i>', // Delete icon
                 className: 'btn btn-default-delete',
                 action: function (e, dt, node, config) {
-                    // Define the action you want to perform when the icon is clicked
-                    // For example, you can trigger a delete action here
-                    alert('Delete icon clicked!');
+                    debugger;
+                    var checkedArr = [];
+                    $(".checked_data").each(function () {
+                        if ($(this).is(":checked")) {
+                            // If checkbox is checked, add its value to the array
+                            checkedArr.push($(this).attr('data-ids'));
+                        }
+                    });
+                    console.log('test',checkedArr);
+
+                    // $this = $(this);
+                    // var dtRow = $this.parents('tr');
+                    if(confirm("Are you sure to delete this row?")){
+                        $.ajax({
+                        headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                        url: "products/"+checkedArr,
+                        type: 'DELETE',
+                        data: {
+                            "id": checkedArr,
+                        },
+                        success: function(response) {
+                            // Show a Sweet Alert message after the form is submitted.
+                            if (response.success) {
+                            Swal.fire({
+                                title: "Product!",
+                                text: "Your Product deleted successfully.",
+                                type: "success",
+                            }).then((result) => {
+                                            window.location = "{{url('products')}}"//'/player_detail?username=' + name;
+                                        });
+                            } else {
+                            Swal.fire({
+                                title: "Error!",
+                                text: response.message,
+                                type: "error",
+                            });
+                            }
+                        },
+                        });
+                        var table = $('#example').DataTable();
+                        // table.row(dtRow[0].rowIndex-1).remove().draw( false );
+                    }
                 },
             },
 
@@ -477,57 +516,62 @@ $(document).ready(function() {
             submitUpdateProductCategoryForm(data);
         }
     });
+    $(document).on('submit','#change_product_availability',function(e){debugger;
+        e.preventDefault();
+        var valid= $("#change_product_availability").validate();
+            if(valid.errorList.length == 0){
+            var data = $('#change_product_availability').serialize() ;
+            submitChangeProductAvailabilityForm(data);
+        }
+    });
+
+    //default edit button disabled
+    $('.fa-edit').parent().parent().attr('disabled',true);
+    //default delete icon disabled
+    $('.ico-trash').parent().parent().attr('disabled',true);
 });
 $(document).on('click', '.dt-edit', function(e) {
     e.preventDefault();
     var ids = $(this).attr('ids');
     window.location = 'products/' + ids;
 });
-// $(document).on('click', '.dt-delete', function(e) {
-//     e.preventDefault();
-//     $this = $(this);
-//     var dtRow = $this.parents('tr');
-//     if(confirm("Are you sure to delete this row?")){
-//         $.ajax({
-//         headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-//         url: "email-templates/"+$(this).attr('ids'),
-//         type: 'DELETE',
-//         data: {
-//             "id": $(this).attr('ids'),
-//         },
-//         success: function(response) {
-//             // Show a Sweet Alert message after the form is submitted.
-//             if (response.success) {
-//             Swal.fire({
-//                 title: "Email Template!",
-//                 text: "Your Email Template deleted successfully.",
-//                 type: "success",
-//             }).then((result) => {
-//                             window.location = "{{url('email-templates')}}"//'/player_detail?username=' + name;
-//                         });
-//             } else {
-//             Swal.fire({
-//                 title: "Error!",
-//                 text: response.message,
-//                 type: "error",
-//             });
-//             }
-//         },
-//         });
-//         var table = $('#example').DataTable();
-//         table.row(dtRow[0].rowIndex-1).remove().draw( false );
-//     }
-// });
+$(document).on('click', '#select-all', function (e) {
+    if ($(this).is(':checked')) {
+        // Default edit button enabled
+        $('.fa-edit').parent().parent().prop('disabled', false);
+        // Default delete icon enabled
+        $('.ico-trash').parent().parent().prop('disabled', false);
+    } else {
+        var anyCheckboxChecked = false;
+
+        $('.checkbox').each(function (key, element) {
+            debugger;
+            if ($(element).is(':checked')) {
+                // At least one checkbox is checked
+                console.log('Checkbox is checked.');
+                anyCheckboxChecked = true;
+                return false;  // Stop the iteration, as we only need to know if any checkbox is checked
+            }
+
+            // Enable or disable based on the variable
+            if (anyCheckboxChecked) {
+                $('.fa-edit').parent().parent().prop('disabled', false);
+                $('.ico-trash').parent().parent().prop('disabled', false);
+            } else {
+                $('.fa-edit').parent().parent().prop('disabled', true);
+                $('.ico-trash').parent().parent().prop('disabled', true);
+            }
+        });
+
+
+    }
+});
 function submitUpdateProductCategoryForm(data){
     debugger;
     $.ajax({
         headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
         url: "{{route('products.update-product-category')}}",
         type: "post",
-        // contentType: 'multipart/form-data',
-        // cache: false,
-        // contentType: false,
-        // processData: false,
         data: data,
         success: function(response) {
             debugger;
@@ -539,6 +583,41 @@ function submitUpdateProductCategoryForm(data){
                     text: "Product Category updated successfully.",
                     type: "success",
                 }).then((result) => {
+                    // $('.data-table').DataTable().ajax.reload();
+                    // $('#new_category').modal('hide');
+                    window.location = "{{url('products')}}"//'/player_detail?username=' + name;
+                });
+                
+            } else {
+                debugger;
+                Swal.fire({
+                    title: "Error!",
+                    text: response.message,
+                    type: "error",
+                });
+            }
+        },
+    });
+}
+function submitChangeProductAvailabilityForm(data){
+    debugger;
+    $.ajax({
+        headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        url: "{{route('products.change-product-availability')}}",
+        type: "post",
+        data: data,
+        success: function(response) {
+            debugger;
+            // Show a Sweet Alert message after the form is submitted.
+            if (response.success) {
+                
+                Swal.fire({
+                    title: "Product Availability!",
+                    text: "Product Availability updated successfully.",
+                    type: "success",
+                }).then((result) => {
+                    // $('.data-table').DataTable().ajax.reload();
+                    // $('#new_category').modal('hide');
                     window.location = "{{url('products')}}"//'/player_detail?username=' + name;
                 });
                 
