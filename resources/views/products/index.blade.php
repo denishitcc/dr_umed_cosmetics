@@ -170,8 +170,9 @@
         <h4 class="modal-title">Change min/max for selected products</h4>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <form id="change_availability_form" name="change_availability_form" class="form">
+        <form id="change_min_max_form" name="change_min_max_form" class="form">
         @csrf
+        <input type="hidden" name="hdn_id" id="hdn_id">
         <div class="modal-body">
             
             <div class="row">
@@ -179,17 +180,18 @@
             <div class="col-lg-2">
                 <div class="form-group mb-0">
                     <label class="form-label">Min</label>
-                    <input type="text" class="form-control" placeholder="-">
+                    <input type="text" class="form-control" placeholder="-" name="min_price" id="min_price" maxlength="5">
                     </div>
             </div>
             <div class="col-lg-2">
                 <div class="form-group mb-0">
                     <label class="form-label">Max </label>
-                    <input type="text" class="form-control" placeholder="-">
+                    <input type="text" class="form-control" placeholder="-" name="max_price" id="max_price" maxlength="5">
                     </div>
             </div>
             <div class="col-auto mt-5">
-                <label class="cst-check"><input type="checkbox" value="" id="set_loc"><span class="checkmark me-2"></span> Set differently by location</label>
+                <input type="hidden" name="loc_status" id="loc_status" value="0">
+                <label class="cst-check"><input type="checkbox" value="1" id="set_loc" name="loc_status"><span class="checkmark me-2"></span> Set differently by location</label>
             </div>
 
         </div>
@@ -208,12 +210,13 @@
                     @foreach($locations as $index => $loc)
                     <tr>
                         <td width="3%">
-                            <label class="cst-check"><input type="checkbox" value=""><span class="checkmark"></span></label>
+                            <!-- <input type="hidden" name="locations_availability[]" value="{{$loc->location_name}}"> -->
+                            <label class="cst-check check_value"><input type="checkbox" value="{{$loc->location_name}}" checked name="locations_availability[]"><span class="checkmark"></span></label>
                         </td>
                         <td width="65%"> {{$loc->location_name}}</td>
-                        <td><input type="text" class="form-control" placeholder="-"> </td>
+                        <td class="ava_check"><input type="text" class="form-control" placeholder="-" name="availability_min[]" maxlength="5" > </td>
                         
-                        <td> <input type="text" class="form-control" placeholder="-"></td>
+                        <td class="ava_check"> <input type="text" class="form-control" placeholder="-" name="availability_max[]" maxlength="5" ></td>
                     </tr>
                     @endforeach
                 @endif
@@ -223,7 +226,7 @@
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-light btn-md">Cancel</button>
-            <button type="button" class="btn btn-primary btn-md">Save</button>
+            <button type="submit" class="btn btn-primary btn-md">Save</button>
         </div>
         </form>
     </div>
@@ -240,6 +243,22 @@ headers: {
 }
 });
 $(document).ready(function() {
+
+    $(document).on("input", "#min_price", function() {
+        this.value = this.value.replace(/\D/g,'');
+    });
+    $(document).on("input", "#max_price", function() {
+        this.value = this.value.replace(/\D/g,'');
+    });
+
+    $('.check_value').click(function(){
+        debugger;
+        if (!$(this).find('input').is(':checked')) {
+            $(this).parent().parent().find('.ava_check').hide();
+        }else{
+            $(this).parent().parent().find('.ava_check').show();
+        }
+    })
     $("#update_product_category").validate({
         rules: {
             category_name: {
@@ -368,7 +387,7 @@ $(document).ready(function() {
                                 }
                             });
                             console.log('test',checkedArr);
-                            $('#products_id').val(checkedArr);
+                            $('#hdn_id').val(checkedArr);
                             $('#Change_min_max').modal('show');
                             $('.dt-button-collection').hide();
                         }
@@ -523,6 +542,17 @@ $(document).ready(function() {
 			submitUpdateProductCategoryForm(data);
 		}
 	});
+    $(document).on('submit','#change_min_max_form',function(e){debugger;
+		e.preventDefault();
+		// var valid= $("#change_min_max_form").validate();
+			// if(valid.errorList.length == 0){
+			var data = $('#change_min_max_form').serialize() ;
+
+            // var data = new FormData(this);
+			submitMinMaxForm(data);
+		// }
+	});
+    
     $(document).on('submit','#change_product_availability',function(e){debugger;
         e.preventDefault();
         var valid= $("#change_product_availability").validate();
@@ -621,6 +651,38 @@ function submitChangeProductAvailabilityForm(data){
                 Swal.fire({
                     title: "Product Availability!",
                     text: "Product Availability updated successfully.",
+                    type: "success",
+                }).then((result) => {
+                    // $('.data-table').DataTable().ajax.reload();
+                    // $('#new_category').modal('hide');
+                    window.location = "{{url('products')}}"//'/player_detail?username=' + name;
+                });
+                
+            } else {
+                debugger;
+                Swal.fire({
+                    title: "Error!",
+                    text: response.message,
+                    type: "error",
+                });
+            }
+        },
+    });
+}
+function submitMinMaxForm(data){
+    $.ajax({
+        headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        url: "{{route('products.update-stocks-level-products')}}",
+        type: "post",
+        data: data,
+        success: function(response) {
+            debugger;
+            // Show a Sweet Alert message after the form is submitted.
+            if (response.success) {
+                
+                Swal.fire({
+                    title: "Stock Level!",
+                    text: "Stock Level updated successfully.",
                     type: "success",
                 }).then((result) => {
                     // $('.data-table').DataTable().ajax.reload();

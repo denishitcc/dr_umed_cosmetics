@@ -359,5 +359,125 @@ class ProductsController extends Controller
             ];
         }
         return response()->json($response);
-    }    
+    }   
+    // public function changeStocksLevel(Request $request){
+    //     $product_ids = explode(',', $request->hdn_id);
+
+    //     $response = []; // Initialize response outside the loop
+    //     // dd($request->all());
+    //     if($request->loc_status == '0')
+    //     {
+    //         // dd($product_ids);
+    //         foreach($product_ids as $pro)
+    //         {
+    //             // Retrieve the existing availability records
+    //             $availability = ProductAvailabilities::where('product_id', $pro)->get();
+    //             // dd($availability);
+    //             $availability_data = $availability->where('product_id', $pro);
+    //             // dd($availability_data);
+    //             foreach($availability_data as $ava) {
+    //                 $ava->update(['min' => $request->min_price,'max' => $request->max_price]);
+    //             }
+    //         }
+    //     }else{
+    //         // dd($request->locations_availability);
+    //         foreach ($request->locations_availability as $i => $locName) {
+    //             // Find the first matching record for the location
+    //             $availability_data = $availability->firstWhere('location_name', $locName);
+
+    //             // If the record is found, update it
+    //             if ($availability_data) {
+    //                 // Update the status only if the record is found
+    //                 $availabilityStatus = isset($request->locations_availability[$i]) ? 'Available' : 'Not available';
+
+    //                 $availability_data->update([
+    //                     'min' => $request->availability_min[$i],
+    //                     'max' => $request->availability_max[$i],
+    //                     'availability' => $availabilityStatus,
+    //                 ]);
+    //             }
+    //         }
+
+
+
+            
+                    
+    //     }
+    //     // Move the response part outside the loop
+    //     if ($availability) {
+    //         $response = [
+    //             'success' => true,
+    //             'message' => 'Availability updated successfully!',
+    //             'type' => 'success',
+    //         ];
+    //     } else {
+    //         $response = [
+    //             'error' => true,
+    //             'message' => 'Error!',
+    //             'type' => 'error',
+    //         ];
+    //     }
+    //     return response()->json($response);
+    // }
+    public function changeStocksLevel(Request $request)
+    {
+        $product_ids = explode(',', $request->hdn_id);
+
+        $response = []; // Initialize response outside the loop
+
+        foreach ($product_ids as $pro) {
+            $availability = ProductAvailabilities::where('product_id', $pro)->get();
+
+            if ($request->loc_status == '0') {
+                $availability_data = $availability->where('product_id', $pro);
+                // dd($availability_data);
+                foreach($availability_data as $ava) {
+                    $ava->update(['min' => $request->min_price,'max' => $request->max_price]);
+                }
+            }else{
+                $locations_data = Locations::get();
+
+                foreach ($locations_data as $index => $location) {
+                    $locName = $location->location_name;
+                    
+                    // Find the first matching record for the location
+                    $availability_data = $availability->firstWhere('location_name', $locName);
+
+                    // Determine availability status based on the condition
+                    $isChecked = isset($request->locations_availability) && in_array($locName, $request->locations_availability);
+                    $availabilityStatus = $isChecked ? 'Available' : 'Not available';
+
+                    // Update availability data
+                    $availability_data->update([
+                        'min' => $isChecked ? $request->availability_min[$index] : null,
+                        'max' => $isChecked ? $request->availability_max[$index] : null,
+                        'availability' => $availabilityStatus,
+                    ]);
+
+                    // Optional: If you want to do something with the final_array
+                    $final_array[] = $availability_data;
+                }
+
+                // Optional: If you want to do something with the final_array
+                // dd($final_array);
+
+
+                
+            }
+        }
+        if ($availability) {
+            $response = [
+                'success' => true,
+                'message' => 'Availability updated successfully!',
+                'type' => 'success',
+            ];
+        } else {
+            $response = [
+                'error' => true,
+                'message' => 'Error!',
+                'type' => 'error',
+            ];
+        }
+        return response()->json($response);
+    }
 }

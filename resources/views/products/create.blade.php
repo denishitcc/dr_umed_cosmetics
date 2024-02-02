@@ -175,16 +175,16 @@
                                         <div class="show-inner">
                                             <div class="min-max loc_details">
                                                     <label class="form-label">Min <i class="ico-help" data-toggle="tooltip" data-placement="top" title="The minimum amount of this item to have on-hand before you need to order more."></i></label>
-                                                    <input type="text" class="form-control" placeholder="-" name="availability_min[]" maxlength="5">
+                                                    <input type="text" class="form-control" placeholder="-" id="availability_min" name="availability_min[]" maxlength="5">
                                             </div>
                                             <div class="min-max loc_details">
                                                     <label class="form-label">Max <i class="ico-help" data-toggle="tooltip" data-placement="top" title="When reordering, the maximum quantity you'd like to have on-hand."></i></label>
-                                                    <input type="text" class="form-control" placeholder="-" name="availability_max[]" maxlength="5">
+                                                    <input type="text" class="form-control" placeholder="-" id="availability_max" name="availability_max[]" maxlength="5">
                                             </div>
                                             <div class="col loc_details">
                                                     <label class="form-label">Price</label>
                                                     <div class="input-group">
-                                                        <input type="text" class="form-control" placeholder="0" name="availability_price[]" maxlength="5">
+                                                        <input type="text" class="form-control" placeholder="0" id="availability_price" name="availability_price[]" maxlength="5">
                                                         <span class="input-group-text"><span class="ico-dollar fs-4"></span></span>
                                                         </div>
                                             </div>
@@ -211,6 +211,55 @@
 @section('script')
 <script>
 $(document).ready(function() {
+    $(document).on("input", "#price", function() {
+        // Allow only numbers and the decimal point
+        this.value = this.value.replace(/[^0-9.]/g, '');
+
+        // Ensure there is only one decimal point
+        let parts = this.value.split('.');
+        if (parts.length > 2) {
+            // More than one decimal point found, keep only the first part
+            this.value = parts[0] + '.' + parts.slice(1).join('');
+        }
+    });
+    $(document).on("input", "#cost", function() {
+        // Allow only numbers and the decimal point
+        this.value = this.value.replace(/[^0-9.]/g, '');
+
+        // Ensure there is only one decimal point
+        let parts = this.value.split('.');
+        if (parts.length > 2) {
+            // More than one decimal point found, keep only the first part
+            this.value = parts[0] + '.' + parts.slice(1).join('');
+        }
+    });
+    $(document).on("input", "#order_lot", function() {
+        this.value = this.value.replace(/\D/g,'');
+    });
+    $(document).on("input", "#min", function() {
+        this.value = this.value.replace(/\D/g,'');
+    });
+    $(document).on("input", "#max", function() {
+        this.value = this.value.replace(/\D/g,'');
+    });
+    $(document).on("input", "#availability_min", function() {
+        this.value = this.value.replace(/\D/g,'');
+    });
+    $(document).on("input", "#availability_max", function() {
+        this.value = this.value.replace(/\D/g,'');
+    });
+    $(document).on("input", "#availability_price", function() {
+        // Allow only numbers and the decimal point
+        this.value = this.value.replace(/[^0-9.]/g, '');
+
+        // Ensure there is only one decimal point
+        let parts = this.value.split('.');
+        if (parts.length > 2) {
+            // More than one decimal point found, keep only the first part
+            this.value = parts[0] + '.' + parts.slice(1).join('');
+        }
+    });
+    
     $('.locations').click(function(){
         debugger;
         if (!$(this).is(':checked')) {
