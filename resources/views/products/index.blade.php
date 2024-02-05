@@ -61,7 +61,7 @@
                 <thead>
                     <tr>
                     <th>
-                        <label class="cst-check">
+                        <label class="cst-check blue">
                             <input type="checkbox" id="select-all"class="checkbox">
                             <span class="checkmark"></span>
                         </label>
@@ -299,7 +299,7 @@ $(document).ready(function() {
             {
             data: null,
                 "render": function(data, type, row, meta){
-                        data = '<label class="cst-check"><input type="checkbox" data-ids="' + row.id + '" id="select-all" class="checkbox checked_data"><span class="checkmark"></span></label>';
+                        data = '<label class="cst-check blue"><input type="checkbox" data-ids="' + row.id + '" id="select-all" class="checkbox checked_data"><span class="checkmark"></span></label>';
                         return data;
                     },
                 orderable: false,
@@ -396,8 +396,8 @@ $(document).ready(function() {
                 dropup: true,
             },
             {
-                text: '<i class="ico-trash fs-5 text-light-red"></i>', // Delete icon
-                className: 'btn btn-default-delete',
+                text: '<i class="ico-trash fs-5 text-light-red btn-default-delete"></i>', // Delete icon
+                className: '',
                 action: function (e, dt, node, config) {
                     debugger;
                     var checkedArr = [];
