@@ -23,6 +23,11 @@ class EnquiriesController extends Controller
             ->addColumn('username', function ($row) {
                 return $row->firstname.' '.$row->lastname;
             })
+            ->addColumn('locations_names', function ($row) {
+                $get_location_name = Locations::where('id',$row->location_name)->first();
+                $location_name = $get_location_name->location_name;
+                return $location_name;
+            })
             // ->addColumn('date_created', function ($row) {
                 
             //     return date("Y/m/d  H:i:s", strtotime($row->created_at));

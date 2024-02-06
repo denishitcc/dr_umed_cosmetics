@@ -137,7 +137,7 @@ $(document).ready(function() {
         },
         {data: 'email', name: 'email'},
         {data: 'phone_number', name: 'phone_number'},
-        {data: 'location_name', name: 'location_name'},
+        {data: 'locations_names', name: 'locations_names'},
         {data: 'enquiry_date', name: 'enquiry_date'},
         {
             data: 'created_at',
