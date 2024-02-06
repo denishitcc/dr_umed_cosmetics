@@ -42,7 +42,7 @@
                 <div class="col-lg-4">
                     <div class="form-group">
                         <label class="form-label">Email Address</label>
-                        <input type="email" class="form-control" id="email" name="email" maxlength="100" onblur="duplicateEmail(this)">
+                        <input type="email" class="form-control" id="email" name="email" maxlength="100">
                         </div>
                 </div>
                 <div class="col-lg-4">
@@ -159,32 +159,46 @@
                 first_name: {
                     required: true,
                 },
-                last_name:{
+                last_name: {
                     required: true,
                 },
-                email:{
+                email: {
                     required: true,
-                    email: true
+                    email: true,
+                    remote: {
+                        url: "../users/checkEmail", // Replace with the actual URL to check email uniqueness
+                        type: "post", // Use "post" method for the AJAX request
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: {
+                            email: function () {
+                                return $("#email").val(); // Pass the value of the email field to the server
+                            }
+                        },
+                        dataFilter: function (data) {
+                            var json = $.parseJSON(data);
+                            var chk = json.exists ? '"Email already exist!"' : '"true"';
+                            return chk;
+                        }
+                    }
                 },
-                phone:{
+                phone: {
                     required: true,
                 },
-                last_name:{
+                last_name: {
                     required: true,
                 },
-                // image:{
-                //     required:true,
-                // },
-                role_type:{
-                    required:true
+                role_type: {
+                    required: true
                 },
-                access_level:{
-                    required:true
+                access_level: {
+                    required: true
                 },
-                staff_member_location:{
-                    required:true
+                staff_member_location: {
+                    required: true
                 }
-            }
+            },
         });
 
         $("#imgInput").change(function() {
@@ -278,32 +292,5 @@
 			},
 		});
 	}
-    function duplicateEmail(element){
-        var email = $(element).val();
-        var url = "../users/checkEmail";
-        $.ajax({
-            type: "POST",
-            headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            url: url,
-            data: {// change data to this object
-              _token : $('meta[name="csrf-token"]').attr('content'), 
-              email:email
-            },
-            dataType: "json",
-            success: function(res) {
-                if(res.exists){
-                  $('#email').after('<p style="color:red";>Email already exist');
-                    // alert('true');
-                }else{
-                    // alert('false');
-                }
-            },
-            error: function (jqXHR, exception) {
-
-           }
-       });
-   }
 </script> 
 @endsection

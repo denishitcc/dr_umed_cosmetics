@@ -112,7 +112,7 @@
                         <option selected value=""> -- select an option -- </option>
                         @if(count($location)>0)
                         @foreach($location as $loc)
-                            <option value="{{ $loc->location_name }}" {{ ( $loc->location_name == $enquiries->location_name) ? 'selected' : '' }}> {{ $loc->location_name }} </option>
+                            <option value="{{ $loc->id }}" {{ ( $loc->id == $enquiries->location_name) ? 'selected' : '' }}> {{ $loc->location_name }} </option>
                             @endforeach
                         @endif
                     </select>

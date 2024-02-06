@@ -211,9 +211,9 @@ class ProductsController extends Controller
                 } else {
                     $final_array[] = [
                         'product_id' => $updateProduct->id,
-                        'min' => $request->availability_min[$index],//'' .for update min/max/price to 0 logic
-                        'max' => $request->availability_max[$index],//'' .for update min/max/price to 0 logic
-                        'price' => $price,//null .for update min/max/price to 0 logic
+                        'min' => '',//'' .for update min/max/price to 0 logic
+                        'max' => '',//'' .for update min/max/price to 0 logic
+                        'price' => null,//null .for update min/max/price to 0 logic
                         'location_name' => $in->location_name,
                         'availability' => 'Not available'
                     ];
@@ -331,12 +331,12 @@ class ProductsController extends Controller
                         // Update the status only if the record is found
                         if ($ava) {
                             //for update min/max/price to 0 logic
-                            // if($selectedStatus =='Not available')
-                            // {
-                            //     $ava->update(['availability' => $selectedStatus,'min'=>null,'max'=>null,'price'=>null]);
-                            // }else{
+                            if($selectedStatus =='Not available')
+                            {
+                                $ava->update(['availability' => $selectedStatus,'min'=>null,'max'=>null,'price'=>null]);
+                            }else{
                                 $ava->update(['availability' => $selectedStatus]);
-                            // }
+                            }
                             
                         }
                     }
@@ -432,7 +432,7 @@ class ProductsController extends Controller
                 $availability_data = $availability->where('product_id', $pro);
                 // dd($availability_data);
                 foreach($availability_data as $ava) {
-                    $ava->update(['min' => $request->min_price,'max' => $request->max_price]);
+                    $ava->update(['min' => $request->min_price,'max' => $request->max_price,'availability' => 'Available']);
                 }
             }else{
                 $locations_data = Locations::get();

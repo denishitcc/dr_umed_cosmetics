@@ -371,4 +371,31 @@ class ServicesController extends Controller
         }
         return response()->json($response);
     }
+    public function checkCategoryName(Request $request){
+        // dd($request->all());
+        if($request->page_type=='create')
+        {
+            $category_name = $request->input('category_name');
+                $isExists = Category::where('category_name',$category_name)->first();
+                if($isExists){
+                    return response()->json(array("exists" => true));
+                }else{
+                    return response()->json(array("exists" => false));
+                }
+        }else{
+            $category_name = $request->input('category_name');
+            $current_id = $request->input('category_id');
+
+            $isExists = Category::where('category_name', $category_name)
+                                ->where('id', '!=', $current_id)
+                                ->exists();
+
+            if ($isExists) {
+                return response()->json(["exists" => true]);
+            } else {
+                return response()->json(["exists" => false]);
+            }
+
+        }
+    }
 }

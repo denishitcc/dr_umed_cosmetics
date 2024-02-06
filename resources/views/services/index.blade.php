@@ -148,7 +148,7 @@
                     <div class="col-lg-12">
                         <div class="form-group">
                             <label class="form-label">Category Name</label>
-                            <input type="text" class="form-control edit_category_name" id="category_name" name="category_name" maxlength="50">
+                            <input type="text" class="form-control edit_category_name" id="edit_category_name" name="category_name" maxlength="50">
                         </div>
                     </div>
                 </div>
@@ -276,14 +276,53 @@ $(document).ready(function() {
         rules: {
             category_name: {
                 required: true,
-            }
-        }
+                remote: {
+                    url: "../services/checkCategoryName", // Replace with the actual URL to check email uniqueness
+                    type: "post", // Use "post" method for the AJAX request
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {
+                        category_name: function () {
+                            return $("#category_name").val(); // Pass the value of the email field to the server
+                        },
+                        page_type:'create'
+                    },
+                    dataFilter: function (data) {
+                        var json = $.parseJSON(data);
+                        var chk = json.exists ? '"Category already exist!"' : '"true"';
+                        return chk;
+                    }
+                }
+            },
+        },
     });
     $("#edit_category").validate({
         rules: {
             category_name: {
                 required: true,
-            }
+                remote: {
+                    url: "../services/checkCategoryName", // Replace with the actual URL to check email uniqueness
+                    type: "post", // Use "post" method for the AJAX request
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {
+                        category_id: function () {
+                            return $("#cat_hdn_id").val(); // Pass the value of the email field to the server
+                        },
+                        category_name: function () {
+                            return $("#edit_category_name").val(); // Pass the value of the email field to the server
+                        },
+                        page_type:'edit'
+                    },
+                    dataFilter: function (data) {debugger;
+                        var json = $.parseJSON(data);
+                        var chk = json.exists ? '"Category already exist!"' : '"true"';
+                        return chk;
+                    }
+                }
+            },
         }
     });
     $(document).on('submit','#create_category',function(e){debugger;
@@ -489,6 +528,33 @@ $(document).ready(function() {
             submitChangeAvailabilityForm(data);
         }
     });
+    // $(document).on('blur','#category_name',function(e){debugger;
+    //     var category_name = $(this).val();
+    //     var url = "../services/checkCategoryName";
+    //     $.ajax({
+    //         type: "POST",
+    //         headers: {
+    //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    //         },
+    //         url: url,
+    //         data: {// change data to this object
+    //           _token : $('meta[name="csrf-token"]').attr('content'), 
+    //           category_name:category_name
+    //         },
+    //         dataType: "json",
+    //         success: function(res) {
+    //             if(res.exists){
+    //               $('#category_name').after('<p style="color:red";>Category already exist');
+    //                 // alert('true');
+    //             }else{
+    //                 // alert('false');
+    //             }
+    //         },
+    //         error: function (jqXHR, exception) {
+
+    //        }
+    //    });
+    // })
     $(document).on('keyup', '#search_services', function(e) {
         debugger;
         // blue-active

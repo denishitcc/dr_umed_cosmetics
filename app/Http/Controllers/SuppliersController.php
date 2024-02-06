@@ -150,4 +150,13 @@ class SuppliersController extends Controller
 
         return response()->json($response);
     }
+    public function checkSupplierEmail(Request $request){
+        $email = $request->input('email');
+        $isExists = Suppliers::where('email',$email)->first();
+        if($isExists){
+            return response()->json(array("exists" => true));
+        }else{
+            return response()->json(array("exists" => false));
+        }
+    }
 }

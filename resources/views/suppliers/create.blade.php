@@ -148,9 +148,26 @@ $(document).ready(function() {
             home_phone:{
                 required: true,
             },
-            email:{
+            email: {
                 required: true,
-                email: true
+                email: true,
+                remote: {
+                    url: "../suppliers/checkSupplierEmail", // Replace with the actual URL to check email uniqueness
+                    type: "post", // Use "post" method for the AJAX request
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {
+                        email: function () {
+                            return $("#email").val(); // Pass the value of the email field to the server
+                        }
+                    },
+                    dataFilter: function (data) {
+                        var json = $.parseJSON(data);
+                        var chk = json.exists ? '"Email already exist!"' : '"true"';
+                        return chk;
+                    }
+                }
             },
             street_address:{
                 required: true,
