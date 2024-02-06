@@ -276,7 +276,7 @@ $(document).ready(function() {
         }
     })
 
-    $('#select-all').on('change', function () {
+    $('#select-all').on('change', function () {debugger;
         // Select or deselect all checkboxes based on the 'select-all' checkbox state
         $('.data-table td:first-child input[type="checkbox"]').prop('checked', this.checked);
         // Update DataTable's selected rows
@@ -582,25 +582,31 @@ $(document).on('click', '#select-all', function (e) {
         var anyCheckboxChecked = false;
 
         $('.checkbox').each(function (key, element) {
-            debugger;
             if ($(element).is(':checked')) {
                 // At least one checkbox is checked
                 console.log('Checkbox is checked.');
                 anyCheckboxChecked = true;
                 return false;  // Stop the iteration, as we only need to know if any checkbox is checked
             }
-
-            // Enable or disable based on the variable
-            if (anyCheckboxChecked) {
-                $('.fa-edit').parent().parent().prop('disabled', false);
-                $('.ico-trash').parent().parent().prop('disabled', false);
-            } else {
-                $('.fa-edit').parent().parent().prop('disabled', true);
-                $('.ico-trash').parent().parent().prop('disabled', true);
-            }
         });
 
+        // Enable or disable based on the variable
+        if (anyCheckboxChecked) {
+            $('.fa-edit').parent().parent().prop('disabled', false);
+            $('.ico-trash').parent().parent().prop('disabled', false);
+        } else {
+            // No checkbox is checked
+            $('.fa-edit').parent().parent().prop('disabled', true);
+            $('.ico-trash').parent().parent().prop('disabled', true);
+        }
+    }
+});
 
+// Additional code to handle the case where all checkboxes are unchecked
+$(document).on('change', '.checkbox', function() {
+    if (!$('.checkbox:checked').length) {
+        $('.fa-edit').parent().parent().prop('disabled', true);
+        $('.ico-trash').parent().parent().prop('disabled', true);
     }
 });
 function submitUpdateProductCategoryForm(data){

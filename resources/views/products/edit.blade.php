@@ -148,16 +148,29 @@
         </div>
     </div>
     <div class="card-head">
-        <h5 class="bright-gray mb-0">Availablity</h5>
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="toolbar">
+                    <div class="tool-left">
+                        <h5 class="bright-gray mb-0">Availablity</h5>
+                    </div>
+                    <div class="tool-right">
+                        <label class="form-label mb-0">Location overrides <i class="ico-help" data-toggle="tooltip" data-placement="top" title="Leave fields blank to use the chain-level settings."></i></label>
+                    </div>
+
+                </div>
+            </div>
+            
+        </div>
     </div>
     <div class="card-body">
         <div class="row">
             <div class="col-lg-8">
-                <div class="d-flex justify-content-between mb-4">
+                <!-- <div class="d-flex justify-content-between mb-4">
                     <label class="form-label">Location</label>
                     <label class="form-label">Location overrides <i class="ico-help" data-toggle="tooltip" data-placement="top" title="Leave fields blank to use the chain-level settings."></i></label>
                     
-                </div>
+                </div> -->
                 <div class="small-tool">Select:   <a href="javascript:void(0)" class="me-2 ms-2 btn-link select_all">All</a>  |   <a href="javascript:void(0)" class="ms-2 btn-link select_none">None</a></div>
                 <div class="table-responsive">
                     <table class="table table-relax align-middle table-hover form-group">
