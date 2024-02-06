@@ -225,7 +225,7 @@
         </div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-light btn-md">Cancel</button>
+            <button type="button" class="btn btn-light btn-md cancel_min_max">Cancel</button>
             <button type="submit" class="btn btn-primary btn-md">Save</button>
         </div>
         </form>
@@ -243,7 +243,12 @@ headers: {
 }
 });
 $(document).ready(function() {
-
+    $('.cancel_form').click(function(){
+        $('#change_Availability').modal('toggle');
+    })
+    $('.cancel_min_max').click(function(){
+        $('#Change_min_max').modal('toggle');
+    })
     $(document).on("input", "#min_price", function() {
         this.value = this.value.replace(/\D/g,'');
     });
