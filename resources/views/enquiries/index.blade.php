@@ -193,10 +193,10 @@ $(document).ready(function() {
             extend: 'collection',
             text: 'Export',
             buttons: [
-            { text: "Excel",exportOptions: { columns: [0,1,2,3,4,5,7] } ,extend: 'excelHtml5'},
-            { text: "CSV" ,exportOptions: { columns: [0,1,2,3,4,5,7] } ,extend: 'csvHtml5'},
-            { text: "PDF" ,exportOptions: { columns: [0,1,2,3,4,5,7] } ,extend: 'pdfHtml5'},
-            { text: "PRINT" ,exportOptions: { columns: [0,1,2,3,4,5,7] } ,extend: 'print'},
+            { text: "Excel",exportOptions: { columns: [0,1,2,3,4,5,6,7] } ,extend: 'excelHtml5'},
+            { text: "CSV" ,exportOptions: { columns: [0,1,2,3,4,5,6,7] } ,extend: 'csvHtml5'},
+            { text: "PDF" ,exportOptions: { columns: [0,1,2,3,4,5,6,7] } ,extend: 'pdfHtml5'},
+            { text: "PRINT" ,exportOptions: { columns: [0,1,2,3,4,5,6,7] } ,extend: 'print'},
         ],
         dropup: true
         },

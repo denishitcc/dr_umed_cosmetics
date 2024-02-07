@@ -132,8 +132,9 @@ $(document).ready(function() {
         {data: 'role_type', name: 'role_type'},
         {data: 'staff_member_location', name: 'staff_member_location'},
         { data: 'status_bar', name: 'status_bar',
-            render: function( data, type, full, meta ) {debugger;
-                return "<div class='form-check form-switch green'><input class='form-check-input flexSwitchCheckDefault' id='flexSwitchCheckDefault' type='checkbox' ids='"+full.id+"' value='"+data +"' "+data +"></div>"
+            render: function( data, type, full, meta ) {
+                return "<span style='display:none;'>"+data +"</span><div class='form-check form-switch green'><input class='form-check-input flexSwitchCheckDefault' id='flexSwitchCheckDefault' type='checkbox' ids='"+full.id+"' value='"+data +"' "+data +"></div>"
+                // return "<div class='form-check form-switch green'><input class='form-check-input flexSwitchCheckDefault' id='flexSwitchCheckDefault' type='checkbox' ids='"+full.id+"' value='"+data +"' "+data +"></div>"
             }
         },
         {data: 'last_login', name: 'last_login'},
@@ -152,13 +153,84 @@ $(document).ready(function() {
             extend: 'collection',
             text: 'Export',
             buttons: [
-            { text: "Excel",exportOptions: { columns: [1,2,3,4,5,7] } ,extend: 'excelHtml5'},
-            { text: "CSV" ,exportOptions: { columns: [1,2,3,4,5,7] } ,extend: 'csvHtml5'},
-            { text: "PDF" ,exportOptions: { columns: [1,2,3,4,5,7] } ,extend: 'pdfHtml5'},
-            { text: "PRINT" ,exportOptions: { columns: [1,2,3,4,5,7] } ,extend: 'print'},
-        ],
-        dropup: true
-        },
+                { 
+                    text: "Excel",
+                    exportOptions: { 
+                        columns: [1,2,3,4,5,6,7,8],
+                        format: {
+                            body: function (data, row, column, node) {
+                                // For the 7th column, replace 'checked' with 'Active' and 'unchecked' with 'Deactive'
+                                if (column === 1) {debugger;
+                                    return node.textContent;
+                                }
+                                else if (column === 6) {debugger;
+                                    return node.textContent === 'checked' ? 'Active' : 'Deactive';
+                                }
+                                return data;
+                            }
+                        }
+                    },
+                    extend: 'excelHtml5'
+                },
+                { 
+                    text: "CSV",
+                    exportOptions: { 
+                        columns: [1,2,3,4,5,6,7,8],
+                        format: {
+                            body: function (data, row, column, node) {
+                                // For the 7th column, replace 'checked' with 'Active' and 'unchecked' with 'Deactive'
+                                if (column === 1) {
+                                    return node.textContent;
+                                }
+                                else if (column === 6) {debugger;
+                                    return node.textContent === 'checked' ? 'Active' : 'Deactive';
+                                }
+                                return data;
+                            }
+                        }
+                    },
+                    extend: 'csvHtml5'
+                },
+                { 
+                    text: "PDF",
+                    exportOptions: { 
+                        columns: [1,2,3,4,5,6,7,8],
+                        format: {
+                            body: function (data, row, column, node) {
+                                // For the 7th column, replace 'checked' with 'Active' and 'unchecked' with 'Deactive'
+                                if (column === 1) {
+                                    return node.textContent;
+                                }
+                                else if (column === 6) {debugger;
+                                    return node.textContent === 'checked' ? 'Active' : 'Deactive';
+                                }
+                                return data;
+                            }
+                        }
+                    },
+                    extend: 'pdfHtml5'
+                },
+                { 
+                    text: "PRINT",
+                    exportOptions: { 
+                        columns: [1,2,3,4,5,6,7,8],
+                        format: {
+                            body: function (data, row, column, node) {
+                                // For the 7th column, replace 'checked' with 'Active' and 'unchecked' with 'Deactive'
+                                if (column === 1) {
+                                    return node.textContent;
+                                }
+                                else if (column === 6) {debugger;
+                                    return node.textContent === 'checked' ? 'Active' : 'Deactive';
+                                }
+                                return data;
+                            }
+                        }
+                    },
+                    extend: 'print'
+                },
+            ]
+        }
     ],
     select: {
       style : "multi",
