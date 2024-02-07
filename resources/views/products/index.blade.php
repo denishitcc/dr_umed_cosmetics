@@ -214,9 +214,9 @@
                             <label class="cst-check check_value"><input type="checkbox" value="{{$loc->location_name}}" checked name="locations_availability[]"><span class="checkmark"></span></label>
                         </td>
                         <td width="65%"> {{$loc->location_name}}</td>
-                        <td class="ava_check"><input type="text" class="form-control" placeholder="-" name="availability_min[]" maxlength="5" > </td>
+                        <td class="ava_check"><input type="text" class="form-control" placeholder="-" id="min_price" name="availability_min[]" maxlength="5" > </td>
                         
-                        <td class="ava_check"> <input type="text" class="form-control" placeholder="-" name="availability_max[]" maxlength="5" ></td>
+                        <td class="ava_check"> <input type="text" class="form-control" placeholder="-" id="max_price" name="availability_max[]" maxlength="5" ></td>
                     </tr>
                     @endforeach
                 @endif
@@ -309,7 +309,13 @@ $(document).ready(function() {
                     },
                 orderable: false,
             },
-            {data: 'product_name', name: 'product_name'},
+            {
+                data: 'product_name', name: 'product_name',
+                "render": function(data, type, row, meta){
+                    data = '<a class="blue-bold" href="products/' + row.id + '">' + data + '</a>';
+                    return data;
+                }
+            },
             {data: 'type', name: 'type'},
             {data: 'price', name: 'price'},
             {data: 'cost', name: 'cost'},
