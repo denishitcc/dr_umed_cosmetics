@@ -8,6 +8,7 @@ use App\Http\Controllers\UsersController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\UserRoleController;
 use App\Http\Controllers\AccessLevelController;
+use App\Http\Controllers\CalenderController;
 use App\Http\Controllers\EmailTemplatesController;
 use App\Http\Controllers\ClientsController;
 use App\Http\Controllers\SMSTemplatesController;
@@ -35,7 +36,7 @@ Route::get('login', [AuthController::class, 'index'])->name('login');
 Route::post('post-login', [AuthController::class, 'postLogin'])->name('login.post'); 
 // Route::get('registration', [AuthController::class, 'registration'])->name('register');
 // Route::post('post-registration', [AuthController::class, 'postRegistration'])->name('register.post'); 
-Route::get('logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('logout', [AuthController::class, 'logout'])->name('auth.logout');
 
 Route::get('forgot-password', [AuthController::class, 'forgotpassword'])->name('forgotpassword');
 Route::post('forget-password', [AuthController::class, 'submitForgetPasswordForm'])->name('forget.password.post'); 
@@ -132,4 +133,8 @@ Route::middleware(['auth'])->group(function () {
     //Product Categories
     Route::resource('/products-categories', ProductCategoriesController::class);
     Route::post('products-categories/table',[ProductCategoriesController::class, 'index'])->name('products-categories.table');
+
+    //Calender
+    Route::resource('/calender', CalenderController::class);
 });
+Route::get('/doctor-appointments', [CalenderController::class,'doctorAppointments'])->name('doctor-appointments');
