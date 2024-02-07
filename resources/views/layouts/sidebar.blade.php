@@ -172,7 +172,7 @@
                                 <li><a href="#" class="tap"><i class="ico-equalizer"></i></a></li>
                                 <li><a href="#" class="tap"><i class="ico-notification"></i><span class="badge badge-circle text-bg-blue notification">25</span></a></li>
                                 <li><a href="#" class="tap"><i class="ico-settings"></i></a></li>
-                                <li class="profile" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">Hi, <span>{{Auth::user()->first_name.' '.Auth::user()->last_name}}</span> 
+                                <!-- <li class="profile" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">Hi, <span>{{Auth::user()->first_name.' '.Auth::user()->last_name}}</span> 
                                 @if(Auth::user()->image=='')
                                 <figure><img src="{{URL::to('/images/banner_image/no-image.jpg')}}" alt=""></figure>
                                 @else
@@ -183,15 +183,39 @@
                                         <li><a href="{{ route('settings') }}" onclick="event.preventDefault(); document.getElementById('settings-form').submit();"> Manage Account</a>
                                         <form id="settings-form" action="{{ route('settings') }}">
                                         </form>
-                                    </li>
+                                        </li>
                                         <li> <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a></li>
                                             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
                                                 {{ csrf_field() }}
                                             </form>
                                         </li>
-                                      </ul>
-                                </li>
-
+                                    </ul>
+                                </li> -->
+                                <li>
+                                    <a href="#" class="profile" id="dropdownMenuClickableInside" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">Hi, <span>{{Auth::user()->first_name.' '.Auth::user()->last_name}}</span> 
+                                    @if(Auth::user()->image=='')
+                                    <figure><img src="{{URL::to('/images/banner_image/no-image.jpg')}}" alt=""></figure>
+                                    @else
+                                    <figure><img src="{{URL::to('/images/user_image/'.Auth::user()->image)}}" alt=""></figure>
+                                    @endif
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                        <div class="client-name">
+                                            <div class="drop-cap" style="background: #0747A6; color: #fff;">{{substr(Auth::user()->first_name, 0, 1)}}</div>
+                                            <div class="client-info">
+                                                <h6 class="mb-0">{{Auth::user()->first_name.' '.Auth::user()->last_name}} <small>{{Auth::user()->role_type}}</small> </h6>
+                                                
+                                            </div>
+                                        </div>
+                                        <ul>
+                                            <li><a href="{{ route('settings') }}"> My Account</a></li>
+                                            <li><a href="#"> Support</a></li>
+                                            <li><a href="#"> Notifications </a></li>
+                                            <li><a href="{{ route('logout') }}">Logout</a></li>
+                                          </ul>
+                                    </div>
+                                    
+                                  </li>
                             </ul>
                             
                               
