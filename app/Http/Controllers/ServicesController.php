@@ -18,12 +18,12 @@ class ServicesController extends Controller
     public function index()
     {
         // Fetch all distinct parent categories
-        $distinctParentCategories = Category::where('parent_category', '(top-level)')->get();
+        $distinctParentCategories = Category::where('parent_category', '0')->get();
 
         // Fetch all categories for display
         $list_cat = Category::get();
 
-        $list_parent_cat = Category::where('parent_category','(top-level)')->get();
+        $list_parent_cat = Category::where('parent_category','0')->get();
         //services
         $list_service = Services::get();
         // dd($list_service);
@@ -43,7 +43,7 @@ class ServicesController extends Controller
         $locations = Locations::get();
         $services = Services::get();
         $users = User::get();
-        $list_parent_cat = Category::where('parent_category','(top-level)')->get();
+        $list_parent_cat = Category::where('parent_category','0')->get();
         return view('services.create',compact('list_cat','locations','services','users','list_parent_cat'));
     }
 
@@ -113,7 +113,7 @@ class ServicesController extends Controller
     public function show(string $id)
     {
         $list_cat = Category::get();
-        $list_parent_cat = Category::where('parent_category','(top-level)')->get();
+        $list_parent_cat = Category::where('parent_category','0')->get();
         $locations = Locations::get();
         // $services = Services::where('id',$id)->first();
         // $services = Services::join('services_appear_on_calendars', 'services.id', '=', 'services_appear_on_calendars.service_id')

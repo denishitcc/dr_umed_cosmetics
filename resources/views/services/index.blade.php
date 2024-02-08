@@ -39,7 +39,7 @@
                                         <span class="count">{{ $list_service->where('parent_category', $parentCategory->id)->count() }}</span>
                                     </div>
                                     <ul>
-                                        @foreach($list_cat->where('parent_category', $parentCategory->category_name) as $subcategory)
+                                        @foreach($list_cat->where('parent_category', $parentCategory->id) as $subcategory)
                                             <li ids="{{$subcategory->id}}" class="child_category"><!-- class="active"-->
                                                 <a href="#">{{ $subcategory->category_name }}</a>
                                                 <span class="count">{{ $list_service->where('parent_category', $subcategory->id)->count() }}</span>
@@ -106,13 +106,13 @@
                 <div class="form-group">
                     <label class="form-label">Parent Category</label>
                     <select class="form-select form-control" id="parent_category" name="parent_category" maxlength="50">
-                        <option selected value="(top-level)"> (top-level) </option>
+                        <option selected value="0"> (top-level) </option>
                         @if(count($list_parent_cat)>0)
                             @foreach($list_parent_cat as $cats)
-                            @if($cats->parent_category != '(top-level)')
+                            @if($cats->parent_category != '0')
                                 <option>&nbsp;&nbsp;{{$cats->category_name}}</option>
                             @else
-                                <option>{{$cats->category_name}}</option>
+                                <option value="{{$cats->id}}">{{$cats->category_name}}</option>
                             @endif
                             @endforeach
                         @endif
@@ -155,13 +155,13 @@
                 <div class="form-group">
                     <label class="form-label">Parent Category</label>
                     <select class="form-select form-control edit_parent_category_name" id="parent_category_edit" name="parent_category" maxlength="50">
-                        <option selected value="(top-level)" > (top-level) </option>
+                        <option selected value="0" > (top-level) </option>
                         @if(count($list_parent_cat)>0)
                             @foreach($list_parent_cat as $cats)
-                                @if($cats->parent_category != '(top-level)')
+                                @if($cats->parent_category != '0')
                                     <option>&nbsp;&nbsp;{{$cats->category_name}}</option>
                                 @else
-                                    <option>{{$cats->category_name}}</option>
+                                    <option value="{{$cats->id}}">{{$cats->category_name}}</option>
                                 @endif
                             @endforeach
                         @endif
@@ -408,7 +408,8 @@ $(document).ready(function() {
         $('.edit_category_name').val($(this).find('a').text());
         
         //parent category selected
-        var cat = $(this).parent().parent().find('.disflex').find('a').text();
+        // var cat = $(this).parent().parent().find('.disflex').find('a').text();
+        var cat = $(this).parent().parent().find('.disflex').find('a').attr('ids');
         var targetValue = cat;
 
         $('#parent_category_edit  option').each(function(){
@@ -477,9 +478,9 @@ $(document).ready(function() {
         // $('#cat_hdn_id').val($(this).attr('ids'));
         $('#cat_hdn_id').val($(this).find('.disflex').find('a').attr('ids'));
 
-        $('#parent_category_edit').val('(top-level)');
+        $('#parent_category_edit').val('0');
         $('.service_name').text($(this).find('.disflex').find('a').text());
-        
+        $('#parent_category_edit option:not(:first)').prop('disabled', true);
         //get services from category
         var categories = $(this).find('.disflex').find('a').attr('ids');
         

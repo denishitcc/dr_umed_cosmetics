@@ -7,7 +7,8 @@
     <div class="toolbar">
         <div class="tool-left d-flex">
             <a href="{{ route('products.create') }}" class="btn btn-primary btn-md icon-btn-left me-2"><i class="ico-add me-2 fs-5"></i> Add One Product</a>
-            <a href="#" class="btn btn-primary btn-md icon-btn-left me-2"><i class="ico-import me-2 fs-4"></i> Import a Product List</a>
+            <label for="import" class="btn btn-primary btn-md icon-btn-left me-2"><i class="ico-import me-2 fs-4"></i> Import a Product List</label>
+            <input type="file" id="import" name="csv_file" style="display:none;" accept=".csv">    
             <a href="{{ route('products-categories.index') }}" class="btn btn-orange btn-md icon-btn-left me-2"><i class="ico-forms me-2 fs-5"></i> Categories</a>
             <a href="{{ route('suppliers.index') }}" class="btn btn-sea-green btn-md icon-btn-left me-2"><i class="ico-truck me-2 fs-4"></i> Suppliers</a>
         </div>
@@ -492,7 +493,7 @@ $(document).ready(function() {
             dtFilter.html(
             `
             <label>
-                <div class="input-group">
+                <div class="input-group search">
                     <span class="input-group-addon">
                         <span class="ico-mini-search"></span>
                     </span>
@@ -502,10 +503,16 @@ $(document).ready(function() {
             `);
             
             $(pageInfoHtml).insertAfter(dtInfo);
-
             btns.addClass('btn-group');
             btns.find('button').removeAttr('class');
             btns.find('button').addClass('btn btn-default buttons-collection');
+            $.each(btns.find('button'), function(index, button) {
+                if(index==2)
+                {
+                    $(this).addClass('btn-default-delete');
+                }
+            });
+
         },
         "drawCallback": function( settings ) {
             var   api     = this.api(),

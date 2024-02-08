@@ -116,7 +116,7 @@ $(document).ready(function() {
             dtFilter.html(
             `
             <label>
-                <div class="input-group">
+                <div class="input-group search">
                     <span class="input-group-addon">
                         <span class="ico-mini-search"></span>
                     </span>
