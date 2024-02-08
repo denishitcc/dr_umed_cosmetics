@@ -12,7 +12,11 @@
                     </span>
                     <input type="search" class="form-control input-sm" placeholder="Search Services" id="search_services">
                     </div>
-                    <a href="#" class="btn btn-primary btn-md icon-btn-left"><i class="ico-import me-2 fs-4"></i> Import a Services List</a>
+                    <form id="import_service" name="import_service" class="form">
+                        @csrf
+                        <label for="import" class="btn btn-primary btn-md icon-btn-left me-2"><i class="ico-import me-2 fs-4"></i> Import a Product List</label>
+                        <input type="file" id="import" name="csv_file" style="display:none;" accept=".csv">    
+                    </form>
             </div>
         </div>
     </div>
@@ -611,6 +615,14 @@ $(document).ready(function() {
         //     $(this).toggle(rowText.indexOf(value) > -1 || value === "");
         // });
     });
+    $(document).on('change','#import_service',function(e){debugger;
+        e.preventDefault();
+        // var valid= $("#import_service").validate();
+            // if(valid.errorList.length == 0){
+            var data = new FormData(this);
+            submitImportServiceForm(data);
+        // }
+    });
     function submitCreateCategoryForm(data){
         debugger;
 		$.ajax({
@@ -704,6 +716,42 @@ $(document).ready(function() {
 			},
 		});
 	}
+    function submitImportServiceForm(data){
+        debugger;
+        $.ajax({
+            headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            url: "{{route('services.import')}}",
+            type: "post",
+            cache: false,
+            contentType: false,
+            processData: false,
+            data: data,
+            success: function(response) {
+                debugger;
+                // Show a Sweet Alert message after the form is submitted.
+                if (response.success) {
+                    
+                    Swal.fire({
+                        title: "Service!",
+                        text: "Service import successfully.",
+                        type: "success",
+                    }).then((result) => {
+                        window.location = "{{url('services')}}";
+                    });
+                    
+                } else {
+                    debugger;
+                    Swal.fire({
+                        title: "Error!",
+                        text: response.message,
+                        type: "error",
+                    }).then((result) => {
+                        window.location = "{{url('services')}}";
+                    });
+                }
+            },
+        });
+    }
 });
 
 </script>

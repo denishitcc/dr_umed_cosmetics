@@ -398,4 +398,169 @@ class ServicesController extends Controller
 
         }
     }
+    public function checkServiceName(Request $request){
+        if($request->type == 'create'){
+            $service_name = $request->input('service_name');
+            $isExists = Services::where('service_name',$service_name)->first();
+            if($isExists){
+                return response()->json(array("exists" => true));
+            }else{
+                return response()->json(array("exists" => false));
+            }
+        }else{
+            $service_name = $request->input('service_name');
+            $current_id = $request->input('service_id');
+            $isExists = Services::where('service_name', $service_name)
+                                ->where('id', '!=', $current_id)
+                                ->exists();
+
+            if ($isExists) {
+                return response()->json(["exists" => true]);
+            } else {
+                return response()->json(["exists" => false]);
+            }
+        }
+    }
+    public function import(Request $request) {
+        $errors = []; // Track errors
+        $dataToInsert = []; // Store data to be inserted
+        
+        if ($request->hasFile('csv_file')) {
+            $path = $request->file('csv_file')->getRealPath();
+            $data = array_map('str_getcsv', file($path));
+            
+            // Remove the header row if present
+            if (count($data) > 0 && isset($data[0]) && is_array($data[0])) {
+                array_shift($data);
+            }
+
+            $maxFilesAllowed = 50;
+            $uploadedFilesCount = count($data);
+            if ($uploadedFilesCount > $maxFilesAllowed) {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'You can upload a maximum of ' . $maxFilesAllowed . ' files.',
+                    'type' => 'error',
+                ]);
+            }
+            $service_data = Services::pluck('service_name', 'id')->toArray();
+    
+            foreach ($data as $rowIndex => $row) {
+                $rowErrors = []; // Track errors for this specific row
+                
+                // Check if service name already exists
+                if (in_array($row[0], $service_data)) {
+                    $rowErrors[] = 'Service with name "' . $row[0] . '" already exists.';
+                }
+                
+                // Check if parent category exists
+                $category = Category::where('category_name', $row[1])->first();
+                if (!$category) {
+                    $rowErrors[] = 'Parent category "' . $row[1] . '" does not exist.';
+                }
+    
+                // Check if follow-on services exist and get their IDs
+                $follow_on_service_ids = [];
+                if (!empty($row[16])) {
+                    $follow_on_services = explode(',', $row[16]);
+                    foreach ($follow_on_services as $follow_on_service_name) {
+                        $service = Services::where('service_name', $follow_on_service_name)->first();
+                        if (!$service) {
+                            $rowErrors[] = 'Follow-on service "' . $follow_on_service_name . '" does not exist.';
+                        } else {
+                            $follow_on_service_ids[] = $service->id;
+                        }
+                    }                    
+                }
+    
+                // Check if usual next service exists
+                $usual_next_service = Services::where('service_name', $row[9])->first();
+                if (!$usual_next_service && !empty($row[9])) {
+                    $rowErrors[] = 'Usual next service "' . $row[9] . '" does not exist.';
+                }
+    
+                if (!empty($rowErrors)) {
+                    $errors[] = [
+                        'row' => $rowIndex + 1,
+                        'fields' => $rowErrors,
+                    ];
+                } else {
+                    // Store data for insertion
+                    $dataToInsert[] = [
+                        'service_name' => $row[0],
+                        'parent_category' => $category->id,
+                        'gender_specific' => $row[2],
+                        'code' => $row[3],
+                        'appear_on_calendar' => $row[4],
+                        'standard_price' => $row[17],
+                        'duration' => $row[5],
+                        'processing_time' => $row[6],
+                        'fast_duration' => $row[7],
+                        'slow_duration' => $row[8],
+                        'usual_next_service' => $usual_next_service ? $usual_next_service->id : null,
+                        'dont_include_reports' => $row[10],
+                        'technical_service' => $row[11],
+                        'available_on_online_booking' => $row[12],
+                        'require_a_room' => $row[13],
+                        'unpaid_time' => $row[14],
+                        'require_a_follow_on_service' => $row[15],
+                        'follow_on_services' => implode(',', $follow_on_service_ids),
+                    ];
+                }
+            }
+    
+            // If there are no errors, insert the data
+            if (empty($errors)) {
+                foreach ($dataToInsert as $rowData) {
+                    $service = Services::create([
+                        'service_name' => $rowData['service_name'],
+                        'parent_category' => $rowData['parent_category'],
+                        'gender_specific' => $rowData['gender_specific'],
+                        'code' => $rowData['code'],
+                        'appear_on_calendar' => $rowData['appear_on_calendar'],
+                        'standard_price' => $rowData['standard_price'],
+                    ]);
+    
+                    ServicesAppearOnCalendar::create([
+                        'service_id' => $service->id,
+                        'duration' => $rowData['duration'],
+                        'processing_time' => $rowData['processing_time'],
+                        'fast_duration' => $rowData['fast_duration'],
+                        'slow_duration' => $rowData['slow_duration'],
+                        'usual_next_service' => $rowData['usual_next_service'],
+                        'dont_include_reports' => $rowData['dont_include_reports'],
+                        'technical_service' => $rowData['technical_service'],
+                        'available_on_online_booking' => $rowData['available_on_online_booking'],
+                        'require_a_room' => $rowData['require_a_room'],
+                        'unpaid_time' => $rowData['unpaid_time'],
+                        'require_a_follow_on_service' => $rowData['require_a_follow_on_service'],
+                        'follow_on_services' => $rowData['follow_on_services'],
+                    ]);
+                }
+    
+                return response()->json([
+                    'success' => true,
+                    'message' => 'CSV data imported successfully!',
+                    'type' => 'success',
+                ]);
+            }
+        } else {
+            $errors[] = 'No CSV file selected.';
+        }
+        
+        // Constructing error messages for specific errors
+        $errorMsg = '';
+        foreach ($errors as $error) {
+            foreach ($error['fields'] as $fieldError) {
+                $errorMsg .= 'Row ' . $error['row'] . ': ' . $fieldError . ' ';
+            }
+        }
+        
+        // If errors were found, return error response with specific error message
+        return response()->json([
+            'error' => true,
+            'message' => 'Errors occurred while importing CSV data. ' . $errorMsg,
+            'type' => 'error',
+        ]);
+    }                              
 }

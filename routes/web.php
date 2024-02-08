@@ -119,6 +119,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('services/get-services',[ServicesController::class, 'get_services'])->name('services.get-services');
     Route::post('services/change-services-availability',[ServicesController::class, 'change_services_availability'])->name('services.change-services-availability');
     Route::post('services/checkCategoryName', [ServicesController::class, 'checkCategoryName']);
+    Route::post('services/checkServiceName', [ServicesController::class, 'checkServiceName']);
+    Route::post('services/import',[ServicesController::class, 'import'])->name('services.import');
     //Products
     Route::resource('/products', ProductsController::class);
     Route::post('products/table',[ProductsController::class, 'index'])->name('products.table');

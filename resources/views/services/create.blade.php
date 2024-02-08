@@ -29,7 +29,7 @@
                                 <option selected="" value=""> -- select an option -- </option>
                                 @if(count($list_parent_cat)>0)
                                     @foreach($list_parent_cat as $cats)
-                                        @if($cats->parent_category != '(top-level)')
+                                        @if($cats->parent_category != '0')
                                             <option value="{{$cats->id}}">&nbsp;&nbsp;{{$cats->category_name}}</option>
                                         @else
                                             <option value="{{$cats->id}}">{{$cats->category_name}}</option>
@@ -111,7 +111,7 @@
                                     <option selected="" value=""> -- select an option -- </option>
                                     @if(count($services)>0)
                                         @foreach($services as $ser)
-                                            <option>{{$ser->service_name}}</option>
+                                            <option value="{{$ser->id}}">{{$ser->service_name}}</option>
                                         @endforeach
                                     @endif
                                 </select>
@@ -166,7 +166,7 @@
                                     <select class="form-select form-control" id="choices-multiple-remove-button" name="follow_on_services[]" placeholder="-- select an option --" multiple>
                                         @if(count($services)>0)
                                             @foreach($services as $ser)
-                                                <option>{{$ser->service_name}}</option>
+                                                <option value="{{$ser->id}}">{{$ser->service_name}}</option>
                                             @endforeach
                                         @endif
                                     </select>
@@ -245,6 +245,24 @@ $(document).ready(function() {
         rules: {
             service_name: {
                 required: true,
+                remote: {
+                    url: "../services/checkServiceName", // Replace with the actual URL to check service_name uniqueness
+                    type: "post", // Use "post" method for the AJAX request
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {
+                        type:'create',
+                        service_name: function () {
+                            return $("#service_name").val(); // Pass the value of the service_name field to the server
+                        }
+                    },
+                    dataFilter: function (data) {
+                        var json = $.parseJSON(data);
+                        var chk = json.exists ? '"Service already exist!"' : '"true"';
+                        return chk;
+                    }
+                }
             },
             parent_category:{
                 required: true,

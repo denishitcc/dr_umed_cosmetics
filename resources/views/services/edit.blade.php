@@ -30,7 +30,7 @@
                                 <option selected="" value=""> -- select an option -- </option>
                                 @if(count($list_parent_cat)>0)
                                     @foreach($list_parent_cat as $cats)
-                                    @if($cats->parent_category != '(top-level)')
+                                    @if($cats->parent_category != '0')
                                     <option value="{{ $cats->id }}" {{ ( $cats->id == $services->parent_category) ? 'selected' : '' }}> &nbsp;&nbsp;{{ $cats->category_name }} </option>
                                     @else
                                     <option value="{{ $cats->id }}" {{ ( $cats->id == $services->parent_category) ? 'selected' : '' }}> {{ $cats->category_name }} </option>
@@ -114,7 +114,7 @@
                                     <option selected="" value=""> -- select an option -- </option>
                                     @if(count($all_services)>0)
                                     @foreach ($all_services as $serv)
-                                        <option value="{{ $serv->service_name }}" {{ ( $serv->service_name == $services->usual_next_service) ? 'selected' : '' }}> {{ $serv->service_name }} </option>
+                                        <option value="{{ $serv->id }}" {{ ( $serv->id == $services->usual_next_service) ? 'selected' : '' }}> {{ $serv->service_name }} </option>
                                     @endforeach
                                     @endif
                                 </select>
@@ -174,7 +174,7 @@
                                     
                                     @if(count($all_services) > 0)
                                         @foreach($all_services as $serv)
-                                            <option value="{{ $serv->service_name }}" {{ (in_array($serv->service_name, explode(',', $services->follow_on_services))) ? 'selected' : '' }}>
+                                            <option value="{{ $serv->id }}" {{ (in_array($serv->id, explode(',', $services->follow_on_services))) ? 'selected' : '' }}>
                                                 {{ $serv->service_name }}
                                             </option>
                                         @endforeach
@@ -279,6 +279,27 @@ $(document).ready(function() {
         rules: {
             service_name: {
                 required: true,
+                remote: {
+                    url: "../services/checkServiceName", // Replace with the actual URL to check service_name uniqueness
+                    type: "post", // Use "post" method for the AJAX request
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {
+                        type:'edit',
+                        service_id: function () {
+                            return $("#id").val(); // Pass the value of the email field to the server
+                        },
+                        service_name: function () {
+                            return $("#service_name").val(); // Pass the value of the service_name field to the server
+                        }
+                    },
+                    dataFilter: function (data) {
+                        var json = $.parseJSON(data);
+                        var chk = json.exists ? '"Service already exist!"' : '"true"';
+                        return chk;
+                    }
+                }
             },
             parent_category:{
                 required: true,
