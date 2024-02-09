@@ -11,7 +11,7 @@
         <div class="row">
             <div class="col-lg-3">
                 <div class="mb-3 d-flex">
-                    <a href="#" class="btn btn-primary btn-md me-3 w-100">New Appointment</a>
+                    <a href="javascript:void(0);" class="btn btn-primary btn-md me-3 w-100" id="appointment">New Appointment</a>
                     <a href="#" class="btn btn-wait-list"><i class="ico-calendar"></i></a>
                 </div>
                 <div class="form-group icon">
@@ -215,13 +215,15 @@
 <script src="{{ asset('js/fullcalendar-scheduler-6.1.10/dist/index.global.js') }}"></script>
 <script src="{{ asset('js/fullcalendar-scheduler-6.1.10/dist/index.global.min.js') }}"></script>
 <script src="{{ asset('js/appointment.js') }}"></script>
-<script>
-    $( function() {
-        jQuery( "#mycalendar" ).datepicker();
-    } );
+<script type="text/javascript">
     var moduleConfig = {
         doctorAppointments: "{!! route('doctor-appointments') !!}",
     };
+
+    $(document).ready(function()
+    {
+        DU.appointment.init();
+    });
 </script>
 </html>
 @endsection
