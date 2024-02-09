@@ -16,8 +16,8 @@ table{color:#232323 !important;}
 .font-20{ font-size: 20px;}
 
 :root {
-    --white: #fff;
-    --d-grey: #666666;
+   --white: #fff;
+   --d-grey: #666666;
    --blue: #0747A6;
    --l-grey: #D0D0D0;
    --black: #282828;
@@ -85,7 +85,7 @@ img{ max-width: 100%;}
 .auth-outr .form-group label {color: #181C32; font-size: 14px; margin-bottom:5px;}
 .auth-outr .form-control{border-radius: 12px; background: #EEF1F5; border-color: #EEF1F5; display: block;  padding: 0.775rem 1rem; font-size: 14px; color: #8B8B8B; box-shadow: none; height: 62px;}
 
-.btn{ text-align: center; vertical-align: middle; cursor: pointer; user-select: none; border-radius: 8px; box-shadow: none; padding: 12px 40px; transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out; font-weight: 500;}
+.btn{ text-align: center; vertical-align: middle; cursor: pointer; user-select: none; border-radius: 5px; box-shadow: none; padding: 12px 40px; transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out; font-weight: 500;}
 .btn.btn-md{padding: 9px 20px; }
 .btn.btn-sm{padding: 0.25rem 0.4rem; line-height: normal; }
 .btn.btn-sm i{font-size: 23px; }
@@ -97,7 +97,7 @@ img{ max-width: 100%;}
 .cross-red:hover{ background: transparent; color: #FF4858;}
 
 .form-group label{ color: #232323;}
-.form-group .form-control{border-radius: 5px; border: 1px solid #D1D1D1; color:#666; font-size: 15px; min-height: 45px; padding: .6rem 1.2rem; }
+.form-group .form-control{border-radius: 5px; border: 1px solid #D1D1D1; color:#666; font-size: 15px; min-height: 43px; padding: .5rem 1.2rem; }
 
 .btn-primary{background: #0747A6; border-color:#0747A6;}
 .btn-primary:hover{background: #232323; border-color:#232323;}
@@ -396,15 +396,16 @@ div.dataTables_filter { text-align: right; float: right;}
 .dataTables_paginate{ margin-top: 1em;}
 .dataTables_info{ float: left;}
 .dataTables_paginate{ float: right;}
-.dt-page-jump{ float: right;}
-.dataTables_paginate a{ height: 2.35rem; min-width: 2.5rem; color: #337AB7; background-color: transparent; border: 1px solid #DDD; padding: 8px .75rem; text-decoration: none; display: inline-block; margin-left: -1px; cursor: pointer;}
+
+.dataTables_paginate a{ height: 2.1rem; min-width: 2.2rem; color: #337AB7; background-color: transparent; border: 1px solid #DDD; padding: 0.5em 0.75rem; text-decoration: none; display: inline-block; margin-left: -1px; cursor: pointer; font-size: 13px; text-align: center;}
 .dataTables_paginate a.current{border-color:#282828; background:#282828; color: #fff;}
 
 .dataTables_paginate a.previous{border-radius: 4px 0px 0px 4px;}
 .dataTables_paginate a.disabled{ color: #777777; cursor: default;}
 .dataTables_paginate a.next{border-radius: 0px 4px 4px 0px;}
 
-.dt-page-jump select{margin-top: 1em; margin-left: 15px; border: 1px solid #ddd; width: auto; border-radius: 4px; border: 1px solid #DDD; width: 70px; padding: .5em;}
+.dt-page-jump{ float: right; margin-top:1em; margin-left: 15px;}
+.dt-page-jump select{ border: 1px solid #ddd; border-radius: 4px;  width: 70px; padding: 0.45em; height: 2.1rem; font-size: 13px; }
 
 /* custom upload */
 
@@ -777,7 +778,6 @@ div.dataTables_filter { text-align: right; float: right;}
 
 .report-sum .badge{position: absolute; right: 0;}
 
-
 /* sliding menu */
 
 .menu-wrapper { position: relative; overflow: hidden; }
@@ -788,7 +788,6 @@ div.dataTables_filter { text-align: right; float: right;}
 .menu-wrapper .left-pointer { left: 0;}
 .menu-wrapper .right-pointer {right: 0;}
 .menu-wrapper .dis i {color: #ccc;}
-
 
 /* new appointment */
 
@@ -810,9 +809,7 @@ div.dataTables_filter { text-align: right; float: right;}
 .custname{color: #A1A1AA;}
 .custname i{ color: #000;}
 
-
 /* Notification  */
-
 
 .notification-wrapper ul{list-style: none; margin: 0; padding: 0;}
 .notification-wrapper li{ display: flex; align-items: center; border-bottom: 1px solid #F1F4F9; padding-bottom: 20px; margin-bottom: 20px; color: #787774;}
@@ -828,14 +825,18 @@ div.dataTables_filter { text-align: right; float: right;}
 .notification-wrapper .btn{ border: 1px solid #DEDEDD;}
 .notification-wrapper li:hover{color:#302F2A;}
 
-
 .app-navbar ul.items li .dropdown-menu.notification-wrapper{  width: 500px; min-width: auto; margin-top: 22px;}
 .app-navbar .notification-wrapper li{  padding: 15px; margin: 0;}
 
 .app-navbar .notification-wrapper li:first-child{ margin-bottom: 0; border: 0;}
 .app-navbar .notification-wrapper li figure{width: auto; height: auto; flex: 0 0 40px;}
 
+/* calendar */
 
+.btn-wait-list{ border-color:#EEF1F5; background: #EEF1F5; padding: 0.3em 0.6em 0 0.6em; font-size: 20px;}
+.btn-wait-list:hover{ background: #232323; border-color: #232323; color: #fff;}
+
+.ui-datepicker{ width: auto !important;}
 /*  Responsive  */
 
 @media (min-width: 768px) {

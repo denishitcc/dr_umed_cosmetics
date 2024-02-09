@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -12,7 +13,8 @@ class CalenderController extends Controller
      */
     public function index()
     {
-        return view('calender.index');
+        $list_parent_cat = Category::where('parent_category','(top-level)')->get();
+        return view('calender.index',compact('list_parent_cat'));
     }
 
     /**
@@ -26,8 +28,8 @@ class CalenderController extends Controller
         $data = [];
         foreach ($user as $value) {
             $data[] = [
-                'id'    => $value['id'],
-                'title'  => $value['first_name'].' '.$value['last_name']
+                'resourceId' => $value['id'],
+                'title'      => $value['first_name'].' '.$value['last_name']
             ];
         }
         return response()->json($data);
