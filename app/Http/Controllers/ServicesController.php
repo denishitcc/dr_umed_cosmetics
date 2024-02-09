@@ -433,7 +433,14 @@ class ServicesController extends Controller
             if (count($data) > 0 && isset($data[0]) && is_array($data[0])) {
                 array_shift($data);
             }
-
+            // Check if CSV is empty
+            if (empty($data)) {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'The CSV file is empty.',
+                    'type' => 'error',
+                ]);
+            }
             $maxFilesAllowed = 50;
             $uploadedFilesCount = count($data);
             if ($uploadedFilesCount > $maxFilesAllowed) {
@@ -448,17 +455,53 @@ class ServicesController extends Controller
             foreach ($data as $rowIndex => $row) {
                 $rowErrors = []; // Track errors for this specific row
                 
-                // Check if service name already exists
-                if (in_array($row[0], $service_data)) {
-                    $rowErrors[] = 'Service with name "' . $row[0] . '" already exists.';
+                // Initialize locationsInRow array
+                $locationsInRow = [];
+                
+                // Check if service name is empty
+                if (empty($row[0])) {
+                    $rowErrors[] = 'Service name is required.';
+                } else {
+                    // Check if service name already exists
+                    if (in_array($row[0], $service_data)) {
+                        $rowErrors[] = 'Service with name "' . $row[0] . '" already exists.';
+                    }
                 }
                 
-                // Check if parent category exists
-                $category = Category::where('category_name', $row[1])->first();
-                if (!$category) {
-                    $rowErrors[] = 'Parent category "' . $row[1] . '" does not exist.';
+                // If there are errors with this row, add them to the general errors array
+                if (!empty($rowErrors)) {
+                    $errors[] = [
+                        'row' => $rowIndex + 1,
+                        'fields' => $rowErrors,
+                    ];
+                    // Skip processing this row
+                    continue;
                 }
-    
+                
+                // Initialize category to null
+                $category = null;
+                
+                // Check if parent category is empty
+                if (empty($row[1])) {
+                    $rowErrors[] = 'Parent category is required.';
+                } else {
+                    // Check if parent category exists
+                    $category = Category::where('category_name', $row[1])->first();
+                    if (!$category) {
+                        $rowErrors[] = 'Parent category "' . $row[1] . '" does not exist.';
+                    }
+                }
+                
+                // Check if gender specific is empty
+                if (empty($row[2])) {
+                    $rowErrors[] = 'Gender specific is required.';
+                }
+
+                // Check if duration is empty
+                if (empty($row[5])) {
+                    $rowErrors[] = 'Duration is required.';
+                }
+
                 // Check if follow-on services exist and get their IDs
                 $follow_on_service_ids = [];
                 if (!empty($row[16])) {
@@ -481,10 +524,10 @@ class ServicesController extends Controller
                 
                 // Get all locations
                 $locations = Locations::all();
-
+    
                 // Initialize availability data array
                 $availabilityData = [];
-
+    
                 // Iterate over all locations and add availability data
                 foreach ($locations as $location) {
                     // Check if the location name exists in row[18]
@@ -544,19 +587,19 @@ class ServicesController extends Controller
                         'parent_category' => $category->id,
                         'gender_specific' => $row[2],
                         'code' => $row[3],
-                        'appear_on_calendar' => $row[4],
+                        'appear_on_calendar' => $row[4]==""?'1':$row[4],
                         'standard_price' => $row[17],
                         'duration' => $row[5],
                         'processing_time' => $row[6],
                         'fast_duration' => $row[7],
                         'slow_duration' => $row[8],
                         'usual_next_service' => $usual_next_service ? $usual_next_service->id : null,
-                        'dont_include_reports' => $row[10],
-                        'technical_service' => $row[11],
-                        'available_on_online_booking' => $row[12],
-                        'require_a_room' => $row[13],
-                        'unpaid_time' => $row[14],
-                        'require_a_follow_on_service' => $row[15],
+                        'dont_include_reports' => $row[10] == "" ? 0 : $row[10],
+                        'technical_service' => $row[11] == "" ? 0 : $row[11],
+                        'available_on_online_booking' => $row[12] == "" ? 1 : $row[12],
+                        'require_a_room' => $row[13] == "" ? 0 : $row[13],
+                        'unpaid_time' => $row[14] == "" ? 0 : $row[14],
+                        'require_a_follow_on_service' => $row[15] == "" ? 0 : $row[15],
                         'follow_on_services' => implode(',', $follow_on_service_ids),
                     ];
                 }
@@ -625,5 +668,5 @@ class ServicesController extends Controller
             'message' => 'Errors occurred while importing CSV data. ' . $errorMsg,
             'type' => 'error',
         ]);
-    }                
+    }                 
 }
