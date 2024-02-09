@@ -130,7 +130,7 @@ $(document).ready(function() {
         {data: 'email', name: 'email'},
         {data: 'phone', name: 'phone'},
         {data: 'role_type', name: 'role_type'},
-        {data: 'staff_member_location', name: 'staff_member_location'},
+        {data: 'locations', name: 'locations'},
         { data: 'status_bar', name: 'status_bar',
             render: function( data, type, full, meta ) {
                 return "<span style='display:none;'>"+data +"</span><div class='form-check form-switch green'><input class='form-check-input flexSwitchCheckDefault' id='flexSwitchCheckDefault' type='checkbox' ids='"+full.id+"' value='"+data +"' "+data +"></div>"

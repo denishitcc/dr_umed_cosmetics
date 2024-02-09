@@ -42,6 +42,10 @@ class UsersController extends Controller
                 ->addColumn('username', function ($row) { 
                     return $row->first_name.' '.$row->last_name;
                 })
+                ->addColumn('locations', function ($row) {
+                    $loc = Locations::where('id',$row->staff_member_location)->first(); 
+                    return $loc->location_name??null;
+                })
                 ->addColumn('status_bar', function($row){
                     if($row->status == 'active')
                     {
