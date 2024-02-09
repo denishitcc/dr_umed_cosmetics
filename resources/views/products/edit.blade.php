@@ -180,8 +180,8 @@
                                     <tr>
                                         <td>
                                             <label class="cst-check">
-                                                <input type="checkbox" value="{{$loc->location_name}}" 
-                                                    {{$loc->location_name && isset($product->availability[$index]['availability']) && $product->availability[$index]['availability'] == 'Available' ? 'checked' : ''}}
+                                                <input type="checkbox" value="{{$loc->id}}" 
+                                                    {{$loc->id && isset($product->availability[$index]['availability']) && $product->availability[$index]['availability'] == 'Available' ? 'checked' : ''}}
                                                     name="locations[]" class="locations">
                                                 <span class="checkmark"></span>
                                             </label>
@@ -189,10 +189,10 @@
                                         <td width="40%">{{$loc->location_name}}</td>
                                         <td>
                                             <div class="show-timing" 
-                                                style="{{ $loc->location_name && isset($product->availability[$index]['availability']) && $product->availability[$index]['availability'] == 'Available' ? '' : 'display:none;' }}">
+                                                style="{{ $loc->id && isset($product->availability[$index]['availability']) && $product->availability[$index]['availability'] == 'Available' ? '' : 'display:none;' }}">
                                                 <div class="show-inner">
                                                     @foreach ($product->availability as $availability)
-                                                        @if ($availability->location_name == $loc->location_name)
+                                                        @if ($availability->location_name == $loc->id)
                                                             <div class="min-max loc_details">
                                                                 <label class="form-label">Min <i class="ico-help" data-toggle="tooltip" data-placement="top" title="The minimum amount of this item to have on-hand before you need to order more."></i></label>
                                                                 <input type="text" class="form-control" placeholder="-" id="availability_min" name="availability_min[]" maxlength="5" value="{{$availability->min}}">

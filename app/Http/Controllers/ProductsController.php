@@ -96,13 +96,13 @@ class ProductsController extends Controller
             foreach ($locations_data as $index => $in) {
                 $price = is_numeric($request->availability_price[$index]) ? $request->availability_price[$index] : null;
             
-                if ($request->has('locations') && is_array($request->locations) && in_array($in->location_name, $request->locations)) {
+                if ($request->has('locations') && is_array($request->locations) && in_array($in->id, $request->locations)) {
                     $final_array[] = [
                         'product_id' => $newProduct->id,
                         'min' => $request->availability_min[$index],
                         'max' => $request->availability_max[$index],
                         'price' => $price,
-                        'location_name' => $in->location_name,
+                        'location_name' => $in->id,
                         'availability' => 'Available'
                     ];
                 } else {
@@ -111,7 +111,7 @@ class ProductsController extends Controller
                         'min' => '',
                         'max' => '',
                         'price' => $price,
-                        'location_name' => $in->location_name,
+                        'location_name' => $in->id,
                         'availability' => 'Not available'
                     ];
                 }
@@ -199,13 +199,13 @@ class ProductsController extends Controller
             foreach ($locations_data as $index => $in) {
                 $price = is_numeric($request->availability_price[$index]) ? $request->availability_price[$index] : null;
             
-                if ($request->has('locations') && is_array($request->locations) && in_array($in->location_name, $request->locations)) {
+                if ($request->has('locations') && is_array($request->locations) && in_array($in->id, $request->locations)) {
                     $final_array[] = [
                         'product_id' => $updateProduct->id,
                         'min' => $request->availability_min[$index],
                         'max' => $request->availability_max[$index],
                         'price' => $price,
-                        'location_name' => $in->location_name,
+                        'location_name' => $in->id,
                         'availability' => 'Available'
                     ];
                 } else {
@@ -214,7 +214,7 @@ class ProductsController extends Controller
                         'min' => '',//'' .for update min/max/price to 0 logic
                         'max' => '',//'' .for update min/max/price to 0 logic
                         'price' => null,//null .for update min/max/price to 0 logic
-                        'location_name' => $in->location_name,
+                        'location_name' => $in->id,
                         'availability' => 'Not available'
                     ];
                 }

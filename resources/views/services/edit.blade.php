@@ -199,14 +199,14 @@
                             @php 
                                 $ck_service = \App\Models\ServicesAvailability::where([
                                     'service_id' => $services->id, // Use $loc->id instead of $services->id
-                                    'location_name' => $loc->location_name,
+                                    'location_name' => $loc->id,
                                     'availability' => 'Available'
                                 ])->first();
                             @endphp
                             <li class="list-group-item">
                                 <label class="cst-check d-flex align-items-center">
                                     <input type="checkbox" 
-                                        value="{{$loc->location_name}}" 
+                                        value="{{$loc->id}}" 
                                         {{ ($ck_service && $ck_service->availability == 'Available') ? "checked" : "" }} 
                                         name="locations[]" 
                                         id="locations" 

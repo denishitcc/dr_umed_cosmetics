@@ -84,10 +84,10 @@ class ServicesController extends Controller
             $final_array = [];
             //for check locations in locations table and locations in locations checked values
             foreach ($locations_data as $index => $in) {
-                if ($request->has('locations') && is_array($request->locations) && in_array($in->location_name, $request->locations)) {
-                    $final_array[] = ['service_id' => $newService->id,'category_id' => $request->parent_category,'location_name' => $in->location_name,'availability'=>'Available'];
+                if ($request->has('locations') && is_array($request->locations) && in_array($in->id, $request->locations)) {
+                    $final_array[] = ['service_id' => $newService->id,'category_id' => $request->parent_category,'location_name' => $in->id,'availability'=>'Available'];
                 } else {
-                    $final_array[] = ['service_id' => $newService->id,'category_id' => $request->parent_category,'location_name' => $in->location_name,'availability'=>'Not available'];
+                    $final_array[] = ['service_id' => $newService->id,'category_id' => $request->parent_category,'location_name' => $in->id,'availability'=>'Not available'];
                 }
             }
             ServicesAvailability::insert($final_array);
@@ -190,10 +190,10 @@ class ServicesController extends Controller
             $final_array = [];
             //for check locations in locations table and locations in locations checked values
             foreach ($locations_data as $index => $in) {
-                if ($request->has('locations') && is_array($request->locations) && in_array($in->location_name, $request->locations)) {
-                    $final_array[] = ['service_id' => $editService->id,'category_id' => $request->parent_category,'location_name' => $in->location_name,'availability'=>'Available'];
+                if ($request->has('locations') && is_array($request->locations) && in_array($in->id, $request->locations)) {
+                    $final_array[] = ['service_id' => $editService->id,'category_id' => $request->parent_category,'location_name' => $in->id,'availability'=>'Available'];
                 } else {
-                    $final_array[] = ['service_id' => $editService->id,'category_id' => $request->parent_category,'location_name' => $in->location_name,'availability'=>'Not available'];
+                    $final_array[] = ['service_id' => $editService->id,'category_id' => $request->parent_category,'location_name' => $in->id,'availability'=>'Not available'];
                 }
             }
             // Prepare data for update

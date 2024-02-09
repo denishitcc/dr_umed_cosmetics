@@ -36,6 +36,12 @@ return new class extends Migration
             $table->softDeletes();
             $table->timestamps();
         });
+
+        // Modify unique constraint to include soft-deleted records
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropUnique(['email']);
+            $table->unique(['email', 'deleted_at']);
+        });
     }
 
     /**

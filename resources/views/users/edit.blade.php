@@ -113,7 +113,7 @@
                         <select class="form-select form-control" name="staff_member_location" id="staff_member_location">
                         <option selected value> -- select an option -- </option>
                             @foreach($locations as $location)
-                            <option value="{{ $location->location_name }}" {{ ( $location->location_name == $users->staff_member_location) ? 'selected' : '' }}> {{ $location->location_name }} </option>
+                            <option value="{{ $location->id }}" {{ ( $location->id == $users->staff_member_location) ? 'selected' : '' }}> {{ $location->location_name }} </option>
                             @endforeach
                         </select>
                     </div>

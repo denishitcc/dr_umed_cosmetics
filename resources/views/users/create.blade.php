@@ -106,7 +106,7 @@
                         <select class="form-select form-control" name="staff_member_location" id="staff_member_location">
                         <option selected value> -- select an option -- </option>
                             @foreach($locations as $location)
-                            <option>{{$location->location_name}}</option>
+                            <option value="{{$location->id}}">{{$location->location_name}}</option>
                             @endforeach
                         </select>
                     </div>

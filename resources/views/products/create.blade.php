@@ -180,7 +180,7 @@
                             @foreach($locations as $loc)
                             <tr>
                                 <td>
-                                    <label class="cst-check"><input type="checkbox" value="{{$loc->location_name}}" name="locations[]" id="locations" class="locations" checked><span class="checkmark"></span></label>
+                                    <label class="cst-check"><input type="checkbox" value="{{$loc->id}}" name="locations[]" id="locations" class="locations" checked><span class="checkmark"></span></label>
                                 </td>
                                 <td width="40%">{{$loc->location_name}}</td>
                                 <td>

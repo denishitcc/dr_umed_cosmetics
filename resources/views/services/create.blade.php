@@ -187,7 +187,7 @@
                     @if(count($locations)>0)
                     <ul class="list-group list-group-flush ad-flus">
                         @foreach($locations as $loc)
-                            <li class="list-group-item"><label class="cst-check d-flex align-items-center"><input type="checkbox" value="{{$loc->location_name}}" name="locations[]" id="locations" class="locations" checked><span class="checkmark me-2"></span>{{$loc->location_name}}</label></li>
+                            <li class="list-group-item"><label class="cst-check d-flex align-items-center"><input type="checkbox" value="{{$loc->id}}" name="locations[]" id="locations" class="locations" checked><span class="checkmark me-2"></span>{{$loc->location_name}}</label></li>
                         @endforeach
                     </ul>
                     @endif
