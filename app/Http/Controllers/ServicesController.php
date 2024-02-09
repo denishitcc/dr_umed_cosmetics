@@ -478,7 +478,60 @@ class ServicesController extends Controller
                 if (!$usual_next_service && !empty($row[9])) {
                     $rowErrors[] = 'Usual next service "' . $row[9] . '" does not exist.';
                 }
-    
+                
+                // Get all locations
+                $locations = Locations::all();
+
+                // Initialize availability data array
+                $availabilityData = [];
+
+                // Iterate over all locations and add availability data
+                foreach ($locations as $location) {
+                    // Check if the location name exists in row[18]
+                    if (!empty($row[18])) {
+                        $locationsInRow = explode(',', $row[18]);
+                        foreach ($locationsInRow as $locationName) {
+                            // Check if the location name exists in the locations table
+                            if ($locationName === $location->location_name) {
+                                // Location found, set availability to 'Available'
+                                $availability = [
+                                    'service_name' => $row[0],
+                                    'category_id' => $category ? $category->id : null,
+                                    'location_id' => $location->id,
+                                    'availability' => 'Available',
+                                ];
+                                // Add availability data to the array
+                                $availabilityData[] = $availability;
+                            }
+                        }
+                    } else {
+                        // If row[18] is empty, default availability to 'Not available'
+                        $availability = [
+                            'service_name' => $row[0],
+                            'category_id' => $category ? $category->id : null,
+                            'location_id' => $location->id,
+                            'availability' => 'Not available',
+                        ];
+                        // Add availability data to the array
+                        $availabilityData[] = $availability;
+                    }
+                }
+                
+                // Check if any value in row[18] doesn't match any location name
+                foreach ($locationsInRow as $locationName) {
+                    $locationExists = false;
+                    foreach ($locations as $location) {
+                        if ($locationName === $location->location_name) {
+                            $locationExists = true;
+                            break;
+                        }
+                    }
+                    if (!$locationExists) {
+                        // Add error message if location doesn't exist
+                        $rowErrors[] = 'Location "' . $locationName . '" does not exist.';
+                    }
+                }                
+
                 if (!empty($rowErrors)) {
                     $errors[] = [
                         'row' => $rowIndex + 1,
@@ -536,6 +589,16 @@ class ServicesController extends Controller
                         'require_a_follow_on_service' => $rowData['require_a_follow_on_service'],
                         'follow_on_services' => $rowData['follow_on_services'],
                     ]);
+
+                    // Store availability data
+                    foreach ($availabilityData as $availability) {
+                        ServicesAvailability::create([
+                            'service_id' => $service->id,
+                            'category_id' => $availability['category_id'],
+                            'location_name' => $availability['location_id'],
+                            'availability' => $availability['availability'],
+                        ]);
+                    }
                 }
     
                 return response()->json([
@@ -562,5 +625,5 @@ class ServicesController extends Controller
             'message' => 'Errors occurred while importing CSV data. ' . $errorMsg,
             'type' => 'error',
         ]);
-    }                              
+    }                
 }
