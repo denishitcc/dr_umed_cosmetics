@@ -41,6 +41,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('services_appear_on_calendar');
+        Schema::dropIfExists('services_appear_on_calendars');
     }
 };
