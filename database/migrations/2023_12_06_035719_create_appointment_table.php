@@ -17,20 +17,17 @@ return new class extends Migration
             $table->foreign('client_id')
                   ->references('id')
                   ->on('clients')
-                  ->onDelete('cascade')
-                  ->onUpdate('cascade');
+                  ->onDelete('cascade');
             $table->unsignedBigInteger('category_id');
             $table->foreign('category_id')
                 ->references('id')
-                ->on('category')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+                ->on('categories')
+                ->onDelete('cascade');
             $table->unsignedBigInteger('service_id');
             $table->foreign('service_id')
                     ->references('id')
                     ->on('services')
-                    ->onDelete('cascade')
-                    ->onUpdate('cascade');
+                    ->onDelete('cascade');
             $table->softDeletes();
             $table->timestamps();
         });
