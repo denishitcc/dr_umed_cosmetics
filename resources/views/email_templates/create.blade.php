@@ -72,7 +72,7 @@
             },
         });
     });
-    $(document).on('submit','#create_email_templates',function(e){debugger;
+    $(document).on('submit','#create_email_templates',function(e){
 		e.preventDefault();
 		var valid= $("#create_email_templates").validate();
 			if(valid.errorList.length == 0){
@@ -87,7 +87,7 @@
 			type: "post",
 			data: data,
 			success: function(response) {
-				debugger;
+				
 				if (response.success) {
 					
 					Swal.fire({
@@ -99,7 +99,7 @@
                     });
 					
 				} else {
-					debugger;
+					
 					Swal.fire({
 						title: "Error!",
 						text: response.message,

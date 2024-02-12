@@ -281,7 +281,7 @@ $(document).ready(function() {
         }
     });
     $('.locations').click(function(){
-        debugger;
+        
         if (!$(this).is(':checked')) {
             $(this).parent().parent().parent().find('.show-timing').hide();
         }
@@ -323,14 +323,14 @@ $(document).ready(function() {
         $('.loc_details').hide();
     })
     $('.select_all').click(function () {
-        debugger;
+        
         $("input[name='locations[]']:checkbox").prop('checked', true);
         $('.loc_details').show();
         $('.show-timing').show();
 
         //if new location add and bind this min,max,price content
         $(this).parent().parent().parent().find('.show-timing').each(function (index, element) {
-            debugger;
+            
             if ($.trim($(element).find('.show-inner').text()) === '') {
                 $(element).find('.show-inner').html(`
                     <div class="min-max loc_details">
@@ -395,7 +395,7 @@ $(document).ready(function() {
             }
         },
     });
-    $(document).on('submit','#edit_product',function(e){debugger;
+    $(document).on('submit','#edit_product',function(e){
         e.preventDefault();
         var valid= $("#edit_product").validate();
         var id = $('#id').val();
@@ -405,14 +405,14 @@ $(document).ready(function() {
         }
     });
     function submitEditProductForm(data,id){
-        debugger;
+        
         $.ajax({
             headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             url: id,
             type: "PUT",
             data: data,
             success: function(response) {
-                debugger;
+                
                 // Show a Sweet Alert message after the form is submitted.
                 if (response.success) {
                     
@@ -425,7 +425,7 @@ $(document).ready(function() {
                     });
                     
                 } else {
-                    debugger;
+                    
                     Swal.fire({
                         title: "Error!",
                         text: response.message,

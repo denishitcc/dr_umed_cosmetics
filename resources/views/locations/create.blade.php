@@ -1650,21 +1650,21 @@
             }
         });
         $('.checkbox').click(function() {
-            debugger;
+            
             if(this.checked) {
                 $(this).parent().parent().parent().find('.show-timing').show();
                 
             }
             else
             {
-                debugger;
+                
                 $(this).parent().parent().parent().find('.show-timing').hide();
                 
             }
             $('#textbox1').val(this.checked);        
         });
     });
-    $(document).on('submit','#create_location',function(e){debugger;
+    $(document).on('submit','#create_location',function(e){
 		e.preventDefault();
 		var valid= $("#create_location").validate();
 			if(valid.errorList.length == 0){
@@ -1679,7 +1679,7 @@
 			type: "post",
 			data: data,
 			success: function(response) {
-				debugger;
+				
 				// Show a Sweet Alert message after the form is submitted.
 				if (response.success) {
 					
@@ -1692,7 +1692,7 @@
                     });
 					
 				} else {
-					debugger;
+					
 					Swal.fire({
 						title: "Error!",
 						text: response.message,

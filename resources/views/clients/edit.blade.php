@@ -832,7 +832,7 @@
         });
         
         $("#client_photos").change(function () {
-            debugger;
+            
             var inputElement = document.getElementById('client_photos');
             var data = new FormData();
             var id=$('#id').val();
@@ -872,7 +872,7 @@
                             // window.location = "{{url('clients')}}"//'/player_detail?username=' + name;
                         });
                     } else {
-                        debugger;
+                        
                         Swal.fire({
                             title: "Error!",
                             text: response.message,
@@ -882,7 +882,7 @@
                 }
             });
         });
-        $("#client_documents").change(function() {debugger;
+        $("#client_documents").change(function() {
             var inputElement = document.getElementById('client_documents');
             var data = new FormData();
             var id=$('#id').val();
@@ -891,7 +891,7 @@
                 var files = this.files[i].name;
                 var currFile = this.files[i];
 
-                reader.onload = (function (file) {debugger;
+                reader.onload = (function (file) {
                     return function (e) {
                         var d = new Date();
                         const month = d.toLocaleString('default', { month: 'long' });
@@ -926,7 +926,7 @@
                             // window.location = "{{url('clients')}}"//'/player_detail?username=' + name;
                         });
                     } else {
-                        debugger;
+                        
                         Swal.fire({
                             title: "Error!",
                             text: response.message,
@@ -938,7 +938,7 @@
         });
         
     });
-    $(document).on('submit','#update_client_detail',function(e){debugger;
+    $(document).on('submit','#update_client_detail',function(e){
 		e.preventDefault();
         var id=$('#id').val();
 		var valid= $("#update_client_detail").validate();
@@ -946,19 +946,19 @@
                 var data = $('#update_client_detail').serialize() ;
             // var data = new FormData(this);
             // $.each($('.client-phbox').find('img'),function(index){
-            //     debugger;
+            //     
             //     var photos_img = $('.client-phbox').find('img')[index].src;
             //     data.append('pics[]', photos_img);
             // });
             // $.each($('.file-hoder').find('a'),function(index){
-            //     debugger;
+            //     
             //     var docs_imgs = $('.file-hoder').find('img')[index].src;
             //     data.append('docs[]', docs_imgs);
             // });
 			SubmitUpdateClientDetails(data,id);
 		}
 	});
-    $(document).on('click', '.remove_image', function (e) {debugger;
+    $(document).on('click', '.remove_image', function (e) {
         e.preventDefault();
         $(this).parent().remove();
         var data = new FormData();
@@ -985,7 +985,7 @@
                         window.location = "{{url('clients')}}/" + id
                     });
                 } else {
-                    debugger;
+                    
                     Swal.fire({
                         title: "Error!",
                         text: response.message,
@@ -995,7 +995,7 @@
             }
         });
     });
-    $(document).on('click', '.remove_doc', function (e) {debugger;
+    $(document).on('click', '.remove_doc', function (e) {
         e.preventDefault();
         $(this).parent().remove();
         var data = new FormData();
@@ -1023,7 +1023,7 @@
                         // window.location = "{{url('clients')}}/" + id
                     });
                 } else {
-                    debugger;
+                    
                     Swal.fire({
                         title: "Error!",
                         text: response.message,
@@ -1040,7 +1040,7 @@
 			type: "PUT",
 			data: data,
             success: function(response) {
-				debugger;
+				
 				// Show a Sweet Alert message after the form is submitted.
 				if (response.success) {
 					
@@ -1054,7 +1054,7 @@
                     });
 					
 				} else {
-					debugger;
+					
 					Swal.fire({
 						title: "Error!",
 						text: response.message,

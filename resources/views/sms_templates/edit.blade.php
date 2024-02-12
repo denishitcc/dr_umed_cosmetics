@@ -49,7 +49,7 @@
             },
         });
     });
-    $(document).on('submit','#update_sms_templates',function(e){debugger;
+    $(document).on('submit','#update_sms_templates',function(e){
 		e.preventDefault();
         var id=$('#id').val();
 		var valid= $("#update_sms_templates").validate();
@@ -65,7 +65,7 @@
 			type: "PUT",
 			data: data,
 			success: function(response) {
-				debugger;
+				
 				// Show a Sweet Alert message after the form is submitted.
 				if (response.success) {
 					
@@ -78,7 +78,7 @@
                     });
 					
 				} else {
-					debugger;
+					
 					Swal.fire({
 						title: "Error!",
 						text: response.message,

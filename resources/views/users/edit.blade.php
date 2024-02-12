@@ -159,13 +159,13 @@
 
 
     $(document).ready(function() {
-        debugger;
+        
         var staffs = $("input[type=radio][name='is_staff_memeber']:checked").val();
         if(staffs== 0) {
             $('.staff_hide').hide();
         }
 
-        $('input[type=radio][name=is_staff_memeber]').change(function() {debugger;
+        $('input[type=radio][name=is_staff_memeber]').change(function() {
             if (this.value == '1') {
                 $('.staff_hide').show();
             }
@@ -219,14 +219,14 @@
             }
         });
         $('.remove_image').click(function(e){
-            debugger;
+            
             $('#imgPreview').attr('src', "{{URL::to('/images/banner_image/no-image.jpg')}}");
             $('#imgremove').val('1');
             $("#imgInput").val(null);
             e.preventDefault();
         })
     });
-    $(document).on('submit','#edit_users',function(e){debugger;
+    $(document).on('submit','#edit_users',function(e){
 		e.preventDefault();
         var id=$('#id').val();
 		var valid= $("#edit_users").validate();
@@ -246,7 +246,7 @@
             contentType: false,
             data: data,
 			success: function(response) {
-				debugger;
+				
 				// Show a Sweet Alert message after the form is submitted.
 				if (response.success) {
 					
@@ -259,7 +259,7 @@
                     });
 					
 				} else {
-					debugger;
+					
 					Swal.fire({
 						title: "Error!",
 						text: response.message,

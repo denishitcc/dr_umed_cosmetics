@@ -252,7 +252,7 @@ $(document).ready(function() {
         },
         dataType: "json",
         success: function(res) {
-            debugger;
+            
             if(res.data.length > 0)
             {
                 $('.table-responsive').empty();
@@ -321,7 +321,7 @@ $(document).ready(function() {
                         },
                         page_type:'edit'
                     },
-                    dataFilter: function (data) {debugger;
+                    dataFilter: function (data) {
                         var json = $.parseJSON(data);
                         var chk = json.exists ? '"Category already exist!"' : '"true"';
                         return chk;
@@ -330,7 +330,7 @@ $(document).ready(function() {
             },
         }
     });
-    $(document).on('submit','#create_category',function(e){debugger;
+    $(document).on('submit','#create_category',function(e){
 		e.preventDefault();
 		var valid= $("#create_category").validate();
 			if(valid.errorList.length == 0){
@@ -340,7 +340,7 @@ $(document).ready(function() {
 			submitCreateCategoryForm(data);
 		}
 	});
-    $(document).on('submit','#edit_category',function(e){debugger;
+    $(document).on('submit','#edit_category',function(e){
 		e.preventDefault();
 		var valid= $("#edit_category").validate();
 			if(valid.errorList.length == 0){
@@ -350,7 +350,7 @@ $(document).ready(function() {
 			submitEditCategoryForm(data);
 		}
 	});
-    $('.all_services').click(function(){debugger;
+    $('.all_services').click(function(){
         $('.edit_service').hide();
         $('.set_availability').hide();
         //for active current class
@@ -374,7 +374,7 @@ $(document).ready(function() {
             },
             dataType: "json",
             success: function(res) {
-                debugger;
+                
                 if(res.data.length > 0)
                 {
                     $('.table-responsive').empty();
@@ -395,7 +395,7 @@ $(document).ready(function() {
         });
         return false;
     })
-    $('.child_category').click(function(e){debugger;
+    $('.child_category').click(function(e){
         if($(this).find('.count').text() > 0)
         {
             $('.set_availability').show();
@@ -441,7 +441,7 @@ $(document).ready(function() {
             },
             dataType: "json",
             success: function(res) {
-                debugger;
+                
                 if(res.data.length > 0)
                 {
                     $('.table-responsive').empty();
@@ -462,7 +462,7 @@ $(document).ready(function() {
         });
         return false;
     })
-    $('.parent_category').click(function(){debugger;
+    $('.parent_category').click(function(){
         if($(this).find('.disflex').find('.count').text() > 0)
         {
             $('.set_availability').show();
@@ -503,7 +503,7 @@ $(document).ready(function() {
             },
             dataType: "json",
             success: function(res) {
-                debugger;
+                
                 if(res.data.length > 0)
                 {
                     $('.table-responsive').empty();
@@ -524,7 +524,7 @@ $(document).ready(function() {
         });
         return false;
     })
-    $(document).on('submit','#change_availability_form',function(e){debugger;
+    $(document).on('submit','#change_availability_form',function(e){
         e.preventDefault();
         var valid= $("#change_availability_form").validate();
             if(valid.errorList.length == 0){
@@ -534,7 +534,7 @@ $(document).ready(function() {
             submitChangeAvailabilityForm(data);
         }
     });
-    // $(document).on('blur','#category_name',function(e){debugger;
+    // $(document).on('blur','#category_name',function(e){
     //     var category_name = $(this).val();
     //     var url = "../services/checkCategoryName";
     //     $.ajax({
@@ -562,7 +562,7 @@ $(document).ready(function() {
     //    });
     // })
     $(document).on('keyup', '#search_services', function(e) {
-        debugger;
+        
         // blue-active
         $('.ctg-tree').find('.blue-active').removeClass('blue-active');
         $('.ctg-tree').find('.active').removeClass('active');
@@ -583,7 +583,7 @@ $(document).ready(function() {
             },
             dataType: "json",
             success: function(res) {
-                debugger;
+                
                 if(res.data.length > 0)
                 {
                     $('.table-responsive').empty();
@@ -616,7 +616,7 @@ $(document).ready(function() {
         //     $(this).toggle(rowText.indexOf(value) > -1 || value === "");
         // });
     });
-    $(document).on('change','#import_service',function(e){debugger;
+    $(document).on('change','#import_service',function(e){
         e.preventDefault();
         // var valid= $("#import_service").validate();
             // if(valid.errorList.length == 0){
@@ -625,14 +625,14 @@ $(document).ready(function() {
         // }
     });
     function submitCreateCategoryForm(data){
-        debugger;
+        
 		$.ajax({
 			headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
 			url: "{{route('services.store-category')}}",
             type: "post",
 			data: data,
 			success: function(response) {
-				debugger;
+				
 				// Show a Sweet Alert message after the form is submitted.
 				if (response.success) {
 					
@@ -645,7 +645,7 @@ $(document).ready(function() {
                     });
 					
 				} else {
-					debugger;
+					
 					Swal.fire({
 						title: "Error!",
 						text: response.message,
@@ -656,14 +656,14 @@ $(document).ready(function() {
 		});
 	}
     function submitEditCategoryForm(data){
-        debugger;
+        
 		$.ajax({
 			headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
 			url: "{{route('services.update-category')}}",
             type: "post",
 			data: data,
 			success: function(response) {
-				debugger;
+				
 				// Show a Sweet Alert message after the form is submitted.
 				if (response.success) {
 					
@@ -676,7 +676,7 @@ $(document).ready(function() {
                     });
 					
 				} else {
-					debugger;
+					
 					Swal.fire({
 						title: "Error!",
 						text: response.message,
@@ -687,14 +687,14 @@ $(document).ready(function() {
 		});
 	}
     function submitChangeAvailabilityForm(data){
-        debugger;
+        
 		$.ajax({
 			headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
 			url: "{{route('services.change-services-availability')}}",
             type: "post",
 			data: data,
 			success: function(response) {
-				debugger;
+				
 				// Show a Sweet Alert message after the form is submitted.
 				if (response.success) {
 					
@@ -707,7 +707,7 @@ $(document).ready(function() {
                     });
 					
 				} else {
-					debugger;
+					
 					Swal.fire({
 						title: "Error!",
 						text: response.message,
@@ -718,7 +718,7 @@ $(document).ready(function() {
 		});
 	}
     function submitImportServiceForm(data){
-        debugger;
+        
         $.ajax({
             headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             url: "{{route('services.import')}}",
@@ -728,7 +728,7 @@ $(document).ready(function() {
             processData: false,
             data: data,
             success: function(response) {
-                debugger;
+                
                 // Show a Sweet Alert message after the form is submitted.
                 if (response.success) {
                     
@@ -741,7 +741,7 @@ $(document).ready(function() {
                     });
                     
                 } else {
-                    debugger;
+                    
                     Swal.fire({
                         title: "Error!",
                         text: response.message,

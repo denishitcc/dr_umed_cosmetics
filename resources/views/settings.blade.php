@@ -290,7 +290,7 @@ headers: {
         $('.city_info').hide();
         $('.postcode_info').hide();
         $("#business_details_for").change(function() {
-            debugger;
+            
             $('#business_details_fors').val($('option:selected', this).val());
 
             $.ajax({
@@ -299,7 +299,7 @@ headers: {
             type: "post",
             cache: false,
                 success: function(html){
-                    debugger;
+                    
                     $('#business_name').val(html.business_name);
                     $('#name_customers_see').val(html.name_customers_see);
                     $('#business_email').val(html.business_email);
@@ -341,7 +341,7 @@ headers: {
             }
         });
         $('.remove_image').click(function(e){
-            debugger;
+            
             $('#imgPreview').attr('src', "{{URL::to('/images/banner_image/no-image.jpg')}}");
             $('#imgremove').val('1');
             e.preventDefault();
@@ -450,7 +450,7 @@ headers: {
 			type: "post",
 			data: data,
 			success: function(response) {
-				debugger;
+				
 				// Show a Sweet Alert message after the form is submitted.
 				if (response.success) {
 					
@@ -463,7 +463,7 @@ headers: {
                     });
 					
 				} else {
-					debugger;
+					
 					Swal.fire({
 						title: "Error!",
 						text: response.message,
@@ -483,7 +483,7 @@ headers: {
             processData: false, // To send DOMDocument or non processed data file it is set to false (i.e. data should not be in the form of string)
             cache: false,
 			success: function(response) {
-				debugger;
+				
 				// Show a Sweet Alert message after the form is submitted.
 				if (response.success) {
 					Swal.fire({
@@ -510,7 +510,7 @@ headers: {
 			type: "post",
 			data: data,
 			success: function(response) {
-				debugger;
+				
 				// Show a Sweet Alert message after the form is submitted.
 				if (response.success) {
 					Swal.fire({

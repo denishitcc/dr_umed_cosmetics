@@ -240,7 +240,7 @@ $(document).ready(function() {
             }
         }
     });
-    $(document).on('submit','#edit_enquiry',function(e){debugger;
+    $(document).on('submit','#edit_enquiry',function(e){
 		e.preventDefault();
 		var valid= $("#edit_enquiry").validate();
 			if(valid.errorList.length == 0){
@@ -251,7 +251,7 @@ $(document).ready(function() {
 		}
 	});
     function submitEditEnquiryform(data){
-        debugger;
+        
 		$.ajax({
 			headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
 			url: id,
@@ -262,7 +262,7 @@ $(document).ready(function() {
             // processData: false,
 			data: data,
 			success: function(response) {
-				debugger;
+				
 				// Show a Sweet Alert message after the form is submitted.
 				if (response.success) {
 					
@@ -275,7 +275,7 @@ $(document).ready(function() {
                     });
 					
 				} else {
-					debugger;
+					
 					Swal.fire({
 						title: "Error!",
 						text: response.message,

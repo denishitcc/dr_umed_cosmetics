@@ -40,7 +40,7 @@
             }
         });
     });
-    $(document).on('submit','#create_user_role',function(e){debugger;
+    $(document).on('submit','#create_user_role',function(e){
 		e.preventDefault();
 		var valid= $("#create_user_role").validate();
 			if(valid.errorList.length == 0){
@@ -49,7 +49,7 @@
 		}
 	});
     function submitCreateUserRoleForm(data){
-        debugger;
+        
 		$.ajax({
 			headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
 			url: "{{route('users-roles.store')}}",
@@ -61,7 +61,7 @@
             // processData: false,
 			data: data,
 			success: function(response) {
-				debugger;
+				
 				// Show a Sweet Alert message after the form is submitted.
 				if (response.success) {
 					
@@ -74,7 +74,7 @@
                     });
 					
 				} else {
-					debugger;
+					
 					Swal.fire({
 						title: "Error!",
 						text: response.message,

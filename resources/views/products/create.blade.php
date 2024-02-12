@@ -274,7 +274,7 @@ $(document).ready(function() {
     });
     
     $('.locations').click(function(){
-        debugger;
+        
         if (!$(this).is(':checked')) {
             $(this).parent().parent().parent().find('.show-timing').hide();
         }
@@ -337,7 +337,7 @@ $(document).ready(function() {
             }
         },
     });
-    $(document).on('submit','#create_product',function(e){debugger;
+    $(document).on('submit','#create_product',function(e){
         e.preventDefault();
         var valid= $("#create_product").validate();
             if(valid.errorList.length == 0){
@@ -346,7 +346,7 @@ $(document).ready(function() {
         }
     });
     function submitCreateProductForm(data){
-        debugger;
+        
         $.ajax({
             headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             url: "{{route('products.store')}}",
@@ -357,7 +357,7 @@ $(document).ready(function() {
             // processData: false,
             data: data,
             success: function(response) {
-                debugger;
+                
                 // Show a Sweet Alert message after the form is submitted.
                 if (response.success) {
                     
@@ -370,7 +370,7 @@ $(document).ready(function() {
                     });
                     
                 } else {
-                    debugger;
+                    
                     Swal.fire({
                         title: "Error!",
                         text: response.message,

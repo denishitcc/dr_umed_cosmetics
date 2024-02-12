@@ -124,7 +124,7 @@ $(document).ready(function() {
             },
             data: function(data)
             {
-                debugger;
+                
             },
         },
         columns: [
@@ -207,7 +207,7 @@ $(document).ready(function() {
             //   console.log( api.rows( {page:'current'} ).data() );
 
                 var page_info = api.rows( {page:'current'} ).data().page.info();
-            //   debugger;
+            //   
                 $('#totalpages').text(page_info.pages);
               var html = '';
 
@@ -256,7 +256,7 @@ $(document).ready(function() {
             }
         }
     });
-    $(document).on('submit','#create_product_category',function(e){debugger;
+    $(document).on('submit','#create_product_category',function(e){
 		e.preventDefault();
 		var valid= $("#create_product_category").validate();
 			if(valid.errorList.length == 0){
@@ -266,7 +266,7 @@ $(document).ready(function() {
 			submitCreateProductCategoryForm(data);
 		}
 	});
-    $(document).on('submit','#edit_product_category',function(e){debugger;
+    $(document).on('submit','#edit_product_category',function(e){
 		e.preventDefault();
 		var valid= $("#edit_product_category").validate();
 			if(valid.errorList.length == 0){
@@ -278,7 +278,7 @@ $(document).ready(function() {
 	});
 });
     $(document).on('click', '.dt-edit', function(e) {
-        debugger;
+        
       e.preventDefault();
       $('#cat_hdn_id').val($(this).attr('ids'));
       $('.edit_product_category_name').val($(this).attr('cat_name'));
@@ -324,14 +324,14 @@ $(document).ready(function() {
         }
     });
     function submitCreateProductCategoryForm(data){
-        debugger;
+        
 		$.ajax({
 			headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
 			url: "{{route('products-categories.store')}}",
             type: "post",
 			data: data,
 			success: function(response) {
-				debugger;
+				
 				// Show a Sweet Alert message after the form is submitted.
 				if (response.success) {
 					
@@ -344,7 +344,7 @@ $(document).ready(function() {
                     });
 					
 				} else {
-					debugger;
+					
 					Swal.fire({
 						title: "Error!",
 						text: response.message,
@@ -355,14 +355,14 @@ $(document).ready(function() {
 		});
 	}
     function submitEditProductCategoryForm(data,id){
-        debugger;
+        
 		$.ajax({
 			headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
 			url: 'products-categories/'+id,
             type: "PUT",
 			data: data,
 			success: function(response) {
-				debugger;
+				
 				// Show a Sweet Alert message after the form is submitted.
 				if (response.success) {
 					
@@ -375,7 +375,7 @@ $(document).ready(function() {
                     });
 					
 				} else {
-					debugger;
+					
 					Swal.fire({
 						title: "Error!",
 						text: response.message,

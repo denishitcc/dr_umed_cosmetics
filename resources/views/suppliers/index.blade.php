@@ -52,7 +52,7 @@ $(document).ready(function() {
             },
             data: function(data)
             {
-                debugger;
+                
             },
         },
         columns: [
@@ -139,7 +139,7 @@ $(document).ready(function() {
             //   console.log( api.rows( {page:'current'} ).data() );
 
                 var page_info = api.rows( {page:'current'} ).data().page.info();
-            //   debugger;
+            //   
                 $('#totalpages').text(page_info.pages);
               var html = '';
 

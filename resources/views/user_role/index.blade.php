@@ -173,7 +173,7 @@ $(document).ready(function() {
 });
 $(document).on('click', '.dt-edit', function(e) {
     e.preventDefault();
-    debugger;
+    
     var ids = $(this).attr('ids');
     window.location = 'users-roles/' + ids;
 });

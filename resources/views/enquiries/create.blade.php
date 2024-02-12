@@ -227,7 +227,7 @@ $(document).ready(function() {
             }
         }
     });
-    $(document).on('submit','#create_enquiry',function(e){debugger;
+    $(document).on('submit','#create_enquiry',function(e){
 		e.preventDefault();
 		var valid= $("#create_enquiry").validate();
 			if(valid.errorList.length == 0){
@@ -238,7 +238,7 @@ $(document).ready(function() {
 		}
 	});
     function submitCreateUserForm(data){
-        debugger;
+        
 		$.ajax({
 			headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
 			url: "{{route('enquiries.store')}}",
@@ -249,7 +249,7 @@ $(document).ready(function() {
             // processData: false,
 			data: data,
 			success: function(response) {
-				debugger;
+				
 				// Show a Sweet Alert message after the form is submitted.
 				if (response.success) {
 					
@@ -262,7 +262,7 @@ $(document).ready(function() {
                     });
 					
 				} else {
-					debugger;
+					
 					Swal.fire({
 						title: "Error!",
 						text: response.message,

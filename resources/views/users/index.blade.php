@@ -58,7 +58,7 @@
 @section('script')
 <script>
   $(function() {
-      debugger;
+      
       var loc_name = [];
 
       $.ajax({
@@ -66,7 +66,7 @@
           cache: false,
           type: "POST",
           success: function(res) {
-              debugger;
+              
               for (var i = 0; i < res.length; ++i) {
                   $("#results").append(res[i].location_name);
                   loc_name.push(res[i].location_name); // Push the location_name to the array
@@ -109,7 +109,7 @@ $(document).ready(function() {
     columns: [
         { data: 'image', name: 'image',
             render: function( data, type, full, meta ) {
-              debugger;
+              
               if(data == '')
               {
                 return "<figure class='photo'><img src=\"images/banner_image/no-image.jpg\"></figure>";
@@ -160,10 +160,10 @@ $(document).ready(function() {
                         format: {
                             body: function (data, row, column, node) {
                                 // For the 7th column, replace 'checked' with 'Active' and 'unchecked' with 'Deactive'
-                                if (column === 1) {debugger;
+                                if (column === 1) {
                                     return node.textContent;
                                 }
-                                else if (column === 6) {debugger;
+                                else if (column === 6) {
                                     return node.textContent === 'checked' ? 'Active' : 'Deactive';
                                 }
                                 return data;
@@ -182,7 +182,7 @@ $(document).ready(function() {
                                 if (column === 1) {
                                     return node.textContent;
                                 }
-                                else if (column === 6) {debugger;
+                                else if (column === 6) {
                                     return node.textContent === 'checked' ? 'Active' : 'Deactive';
                                 }
                                 return data;
@@ -201,7 +201,7 @@ $(document).ready(function() {
                                 if (column === 1) {
                                     return node.textContent;
                                 }
-                                else if (column === 6) {debugger;
+                                else if (column === 6) {
                                     return node.textContent === 'checked' ? 'Active' : 'Deactive';
                                 }
                                 return data;
@@ -220,7 +220,7 @@ $(document).ready(function() {
                                 if (column === 1) {
                                     return node.textContent;
                                 }
-                                else if (column === 6) {debugger;
+                                else if (column === 6) {
                                     return node.textContent === 'checked' ? 'Active' : 'Deactive';
                                 }
                                 return data;
@@ -369,7 +369,7 @@ $(document).on('change', '#pagelist', function()
   });
 $(document).on('click', '.dt-edit', function(e) {
     e.preventDefault();
-    debugger;
+    
     var ids = $(this).attr('ids');
     window.location = 'users/' + ids;
   });

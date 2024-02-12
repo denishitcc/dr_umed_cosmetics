@@ -219,7 +219,7 @@
 <script>
 $(document).ready(function() {
     $('.appear_on_calendar').click(function(){
-        debugger;
+        
         if (!$(this).is(':checked')) {
             $('.main_appear_on_calendar').hide();
         }
@@ -234,11 +234,11 @@ $(document).ready(function() {
         renderChoiceLimit:5
         });
     $('.select_none').click(function(){
-        debugger;
+        
         $("input[name='locations[]']:checkbox").prop('checked',false);
     })
     $('.select_all').click(function(){
-        debugger;
+        
         $("input[name='locations[]']:checkbox").prop('checked',true);
     })
     $("#create_service").validate({
@@ -277,7 +277,7 @@ $(document).ready(function() {
     });
 });
 
-$(document).on('submit','#create_service',function(e){debugger;
+$(document).on('submit','#create_service',function(e){
     e.preventDefault();
     var valid= $("#create_service").validate();
         if(valid.errorList.length == 0){
@@ -288,7 +288,7 @@ $(document).on('submit','#create_service',function(e){debugger;
     }
 });
 function submitCreateServiceForm(data){
-    debugger;
+    
     $.ajax({
         headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
         url: "{{route('services.store')}}",
@@ -299,7 +299,7 @@ function submitCreateServiceForm(data){
         processData: false,
         data: data,
         success: function(response) {
-            debugger;
+            
             // Show a Sweet Alert message after the form is submitted.
             if (response.success) {
                 
@@ -312,7 +312,7 @@ function submitCreateServiceForm(data){
                 });
                 
             } else {
-                debugger;
+                
                 Swal.fire({
                     title: "Error!",
                     text: response.message,

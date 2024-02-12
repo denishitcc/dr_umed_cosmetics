@@ -215,7 +215,7 @@
         });
 
         $('.remove_image').click(function(e){
-            debugger;
+            
             $('#imgPreview').attr('src', "{{URL::to('/images/banner_image/no-image.jpg')}}");
             $('#imgremove').val('1');
             // $('#imgInput').attr('src', '#');
@@ -223,7 +223,7 @@
             e.preventDefault();
         })
     });
-    $(document).on('submit','#create_user',function(e){debugger;
+    $(document).on('submit','#create_user',function(e){
 		e.preventDefault();
 		var valid= $("#create_user").validate();
 			if(valid.errorList.length == 0){
@@ -238,7 +238,7 @@
 		}
 	});
     function submitCreateUserForm(data){
-        debugger;
+        
         // var formData = new FormData();
         // var image = $('#imgInput').prop('files')[0];   
         // var first_name=$('#first_name').val();
@@ -269,7 +269,7 @@
             processData: false,
 			data: data,
 			success: function(response) {
-				debugger;
+				
 				// Show a Sweet Alert message after the form is submitted.
 				if (response.success) {
 					
@@ -282,7 +282,7 @@
                     });
 					
 				} else {
-					debugger;
+					
 					Swal.fire({
 						title: "Error!",
 						text: response.message,

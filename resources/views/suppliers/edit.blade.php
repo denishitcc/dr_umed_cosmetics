@@ -173,7 +173,7 @@ $(document).ready(function() {
             }
         }
     });
-    $(document).on('submit','#edit_suppliers',function(e){debugger;
+    $(document).on('submit','#edit_suppliers',function(e){
 		e.preventDefault();
         var id=$('#id').val();
 		var valid= $("#edit_suppliers").validate();
@@ -185,14 +185,14 @@ $(document).ready(function() {
 		}
 	});
     function submitEditSupplierForm(data,id){
-        debugger;
+        
 		$.ajax({
 			headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
 			url: id,
 			type: "PUT",
 			data: data,
 			success: function(response) {
-				debugger;
+				
 				// Show a Sweet Alert message after the form is submitted.
 				if (response.success) {
 					
@@ -205,7 +205,7 @@ $(document).ready(function() {
                     });
 					
 				} else {
-					debugger;
+					
 					Swal.fire({
 						title: "Error!",
 						text: response.message,

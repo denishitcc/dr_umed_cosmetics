@@ -59,7 +59,7 @@ $(document).ready(function() {
             },
             data: function(data)
             {
-                debugger;
+                
                 // var checkboxes = $.map($('input[name="id"]:checked'), function(c){return c.value; });
                 // data.category       = jQuery('.drink_cat.active').data('category_id'),
                 // data.search_main    = context.selectors.search.val(),
@@ -169,7 +169,7 @@ $(document).ready(function() {
             //   console.log( api.rows( {page:'current'} ).data() );
 
                 var page_info = api.rows( {page:'current'} ).data().page.info();
-            //   debugger;
+            //   
                 $('#totalpages').text(page_info.pages);
               var html = '';
 

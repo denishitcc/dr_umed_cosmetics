@@ -334,14 +334,14 @@
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
     //Targets
-    $.each( $('.targets'), function( key, value ) {debugger;
+    $.each( $('.targets'), function( key, value ) {
         console.log( value.text );
         if($(this).parent().parent().parent().find('#targets_content').val() == '1')
         {
             $(this).parent().parent().parent().find('#targets_content').remove();
         }
     });
-    $('.targets').on('change', function () {debugger;
+    $('.targets').on('change', function () {
         if ($(this).is(':checked')) {
             $(this).parent().parent().parent().find('#targets_content').remove();
         }
@@ -350,14 +350,14 @@ $(document).ready(function(){
         }
     });
     //Limited
-    $.each( $('.limited'), function( key, value ) {debugger;
+    $.each( $('.limited'), function( key, value ) {
         console.log( value.text );
         if($(this).parent().parent().parent().find('#limited_content').val() == '1')
         {
             $(this).parent().parent().parent().find('#limited_content').remove();
         }
     });
-    $('.limited').on('change', function () {debugger;
+    $('.limited').on('change', function () {
         if ($(this).is(':checked')) {
             $(this).parent().parent().parent().find('#limited_content').remove();
         }
@@ -366,14 +366,14 @@ $(document).ready(function(){
         }
     });
     //Standard
-    $.each( $('.standard'), function( key, value ) {debugger;
+    $.each( $('.standard'), function( key, value ) {
         console.log( value.text );
         if($(this).parent().parent().parent().find('#standard_content').val() == '1')
         {
             $(this).parent().parent().parent().find('#standard_content').remove();
         }
     });
-    $('.standard').on('change', function () {debugger;
+    $('.standard').on('change', function () {
         if ($(this).is(':checked')) {
             $(this).parent().parent().parent().find('#standard_content').remove();
         }
@@ -382,14 +382,14 @@ $(document).ready(function(){
         }
     });
     //Standard +
-    $.each( $('.standardplus'), function( key, value ) {debugger;
+    $.each( $('.standardplus'), function( key, value ) {
         console.log( value.text );
         if($(this).parent().parent().parent().find('#standardplus_content').val() == '1')
         {
             $(this).parent().parent().parent().find('#standardplus_content').remove();
         }
     });
-    $('.standardplus').on('change', function () {debugger;
+    $('.standardplus').on('change', function () {
         if ($(this).is(':checked')) {
             $(this).parent().parent().parent().find('#standardplus_content').remove();
         }
@@ -398,14 +398,14 @@ $(document).ready(function(){
         }
     });
     //Advanced
-    $.each( $('.advance'), function( key, value ) {debugger;
+    $.each( $('.advance'), function( key, value ) {
         console.log( value.text );
         if($(this).parent().parent().parent().find('#advance_content').val() == '1')
         {
             $(this).parent().parent().parent().find('#advance_content').remove();
         }
     });
-    $('.advance').on('change', function () {debugger;
+    $('.advance').on('change', function () {
         if ($(this).is(':checked')) {
             $(this).parent().parent().parent().find('#advance_content').remove();
         }
@@ -414,14 +414,14 @@ $(document).ready(function(){
         }
     });
     //Advanced +
-    $.each( $('.advanceplus'), function( key, value ) {debugger;
+    $.each( $('.advanceplus'), function( key, value ) {
         console.log( value.text );
         if($(this).parent().parent().parent().find('#advanceplus_content').val() == '1')
         {
             $(this).parent().parent().parent().find('#advanceplus_content').remove();
         }
     });
-    $('.advanceplus').on('change', function () {debugger;
+    $('.advanceplus').on('change', function () {
         if ($(this).is(':checked')) {
             $(this).parent().parent().parent().find('#advanceplus_content').remove();
         }
@@ -430,14 +430,14 @@ $(document).ready(function(){
         }
     });
     //Admin
-    $.each( $('.admin'), function( key, value ) {debugger;
+    $.each( $('.admin'), function( key, value ) {
         console.log( value.text );
         if($(this).parent().parent().parent().find('#admin_content').val() == '1')
         {
             $(this).parent().parent().parent().find('#admin_content').remove();
         }
     });
-    $('.admin').on('change', function () {debugger;
+    $('.admin').on('change', function () {
         if ($(this).is(':checked')) {
             $(this).parent().parent().parent().find('#admin_content').remove();
         }
@@ -446,14 +446,14 @@ $(document).ready(function(){
         }
     });
     //Accounts
-    $.each( $('.account'), function( key, value ) {debugger;
+    $.each( $('.account'), function( key, value ) {
         console.log( value.text );
         if($(this).parent().parent().parent().find('#account_content').val() == '1')
         {
             $(this).parent().parent().parent().find('#account_content').remove();
         }
     });
-    $('.account').on('change', function () {debugger;
+    $('.account').on('change', function () {
         if ($(this).is(':checked')) {
             $(this).parent().parent().parent().find('#account_content').remove();
         }

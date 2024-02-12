@@ -41,7 +41,7 @@
             }
         });
     });
-    $(document).on('submit','#edit_user_role',function(e){debugger;
+    $(document).on('submit','#edit_user_role',function(e){
 		e.preventDefault();
 		var valid= $("#edit_user_role").validate();
 			if(valid.errorList.length == 0){
@@ -50,7 +50,7 @@
 		}
 	});
     function submitEditUserRoleForm(data){
-        debugger;
+        
 		$.ajax({
 			headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
 			// url: "{{route('users.store')}}",
@@ -62,7 +62,7 @@
             // processData: false,
 			data: data,
 			success: function(response) {
-				debugger;
+				
 				// Show a Sweet Alert message after the form is submitted.
 				if (response.success) {
 					
@@ -75,7 +75,7 @@
                     });
 					
 				} else {
-					debugger;
+					
 					Swal.fire({
 						title: "Error!",
 						text: response.message,

@@ -293,7 +293,7 @@ $(document).ready(function() {
     }
     });
     $('.status').change(function(){
-        debugger;
+        
         if ($("input[name='status'][value='1']").prop("checked"))
         {
             $('.form_live').show();
@@ -304,7 +304,7 @@ $(document).ready(function() {
         }
     });
     $(document).on('keyup', '.dt-search', function()
-    {debugger;
+    {
         table.search($(this).val()).draw() ;
     });
     
@@ -315,7 +315,7 @@ $(document).ready(function() {
         table.fnPageChange(page_no - 1,true);
     });
 })
-$(document).on('submit','#create_forms',function(e){debugger;
+$(document).on('submit','#create_forms',function(e){
     e.preventDefault();
     var valid= $("#create_forms").validate();
         if(valid.errorList.length == 0){
@@ -326,7 +326,7 @@ $(document).on('submit','#create_forms',function(e){debugger;
     }
 });
 function submitCreateForms(data){
-    debugger;
+    
     $.ajax({
         headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
         url: "{{route('forms.store')}}",
@@ -337,7 +337,7 @@ function submitCreateForms(data){
         processData: false,
         data: data,
         success: function(response) {
-            debugger;
+            
             // Show a Sweet Alert message after the form is submitted.
             if (response.success) {
                 
@@ -350,7 +350,7 @@ function submitCreateForms(data){
                 });
                 
             } else {
-                debugger;
+                
                 Swal.fire({
                     title: "Error!",
                     text: response.message,

@@ -151,7 +151,7 @@ $(document).ready(function() {
         {data: 'enquiry_source', name: 'enquiry_source'},
         // {data: 'enquiry_status', name: 'enquiry_status'},
         {data: 'enquiry_status', name: 'enquiry_status',
-            "render": function(data, type, row, meta){debugger;
+            "render": function(data, type, row, meta){
                 if(data=='Follow Up Done')
                 {
                     data = '<span class="badge text-bg-green badge-md">' + data;

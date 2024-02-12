@@ -245,7 +245,7 @@
 <script>
 $(document).ready(function() {
     $('.appear_on_calendar').click(function(){
-        debugger;
+        
         if (!$(this).is(':checked')) {
             $('.main_appear_on_calendar').hide();
         }
@@ -268,11 +268,11 @@ $(document).ready(function() {
         });
 
     $('.select_none').click(function(){
-        debugger;
+        
         $("input[name='locations[]']:checkbox").prop('checked',false);
     })
     $('.select_all').click(function(){
-        debugger;
+        
         $("input[name='locations[]']:checkbox").prop('checked',true);
     })
     $("#edit_service").validate({
@@ -314,7 +314,7 @@ $(document).ready(function() {
     });
 });
 
-$(document).on('submit','#edit_service',function(e){debugger;
+$(document).on('submit','#edit_service',function(e){
     e.preventDefault();
     var valid= $("#edit_service").validate();
         if(valid.errorList.length == 0){
@@ -325,7 +325,7 @@ $(document).on('submit','#edit_service',function(e){debugger;
     }
 });
 function submitEditServiceForm(data,id){
-    debugger;
+    
     $.ajax({
         headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
         url: id,
@@ -336,7 +336,7 @@ function submitEditServiceForm(data,id){
         // processData: false,
         data: data,
         success: function(response) {
-            debugger;
+            
             // Show a Sweet Alert message after the form is submitted.
             if (response.success) {
                 
@@ -349,7 +349,7 @@ function submitEditServiceForm(data,id){
                 });
                 
             } else {
-                debugger;
+                
                 Swal.fire({
                     title: "Error!",
                     text: response.message,

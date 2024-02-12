@@ -319,7 +319,7 @@
             },
         });
         
-        $("#client_photos").change(function() {debugger;
+        $("#client_photos").change(function() {
             var inputElement = document.getElementById('client_photos');
             for (var i = 0; i < this.files.length; i++) {
                 $('.photos_cnt').text(file_cnt+1);
@@ -327,7 +327,7 @@
                 var files = this.files[i].name;
                 var currFile = this.files[i];
 
-                reader.onload = (function (file) {debugger;
+                reader.onload = (function (file) {
                     return function (e) {
                         var fileName = file.name;
                         var fileContents = e.target.result;
@@ -346,7 +346,7 @@
                 var files = this.files[i].name;
                 var currFile = this.files[i];
 
-                reader.onload = (function (file) {debugger;
+                reader.onload = (function (file) {
                     return function (e) {
                         var fileName = file.name;
                         var fileContents = e.target.result;
@@ -359,31 +359,31 @@
         });
         
     });
-    $(document).on('submit','#create_client',function(e){debugger;
+    $(document).on('submit','#create_client',function(e){
 		e.preventDefault();
 		var valid= $("#create_client").validate();
 			if(valid.errorList.length == 0){
             var data = new FormData(this);
             $.each($('.client-phbox').find('img'),function(index){
-                debugger;
+                
                 var photos_img = $('.client-phbox').find('img')[index].src;
                 data.append('pics[]', photos_img);
             });
             $.each($('.file-hoder').find('a'),function(index){
-                debugger;
+                
                 var docs_imgs = $('.file-hoder').find('img')[index].src;
                 data.append('docs[]', docs_imgs);
             });
 			SubmitCreateClient(data);
 		}
 	});
-    $(document).on('click', '.remove_image', function (e) {debugger;
+    $(document).on('click', '.remove_image', function (e) {
         e.preventDefault();
         $(this).remove();
         file_cnt--;
         $('.photos_cnt').text(file_cnt);
     });
-    $(document).on('click', '.remove_doc', function (e) {debugger;
+    $(document).on('click', '.remove_doc', function (e) {
         e.preventDefault();
         $(this).next().remove();
         $(this).remove();
@@ -400,7 +400,7 @@
             processData: false, // To send DOMDocument or non processed data file it is set to false (i.e. data should not be in the form of string)
             cache: false, // To unable request pages to be cached
 			success: function(response) {
-				debugger;
+				
 				// Show a Sweet Alert message after the form is submitted.
 				if (response.success) {
 					
@@ -413,7 +413,7 @@
                     });
 					
 				} else {
-					debugger;
+					
 					Swal.fire({
 						title: "Error!",
 						text: response.message,

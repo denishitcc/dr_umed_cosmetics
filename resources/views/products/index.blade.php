@@ -258,7 +258,6 @@ $(document).ready(function() {
     });
 
     $('.check_value').click(function(){
-        debugger;
         if (!$(this).find('input').is(':checked')) {
             $(this).parent().parent().find('.ava_check').hide();
         }else{
@@ -273,7 +272,6 @@ $(document).ready(function() {
         }
     });
     $('#set_loc').click(function(){
-        debugger;
         if (!$(this).is(':checked')) {
             $('.set_locations_data').hide();
         }
@@ -282,7 +280,7 @@ $(document).ready(function() {
         }
     })
 
-    $('#select-all').on('change', function () {debugger;
+    $('#select-all').on('change', function () {
         // Select or deselect all checkboxes based on the 'select-all' checkbox state
         $('.data-table td:first-child input[type="checkbox"]').prop('checked', this.checked);
         // Update DataTable's selected rows
@@ -356,7 +354,6 @@ $(document).ready(function() {
                         text: "Category",
                         className: 'copyButton',
                         action: function () {
-                            debugger;
                             var checkedArr = [];
                             $(".checked_data").each(function () {
                                 if ($(this).is(":checked")) {
@@ -372,8 +369,7 @@ $(document).ready(function() {
                     },
                     { 
                         text: "Availability",
-                        action: function () { 
-                            debugger;
+                        action: function () {
                             var checkedArr = [];
                             $(".checked_data").each(function () {
                                 if ($(this).is(":checked")) {
@@ -389,8 +385,7 @@ $(document).ready(function() {
                     },
                     { 
                         text: "Min/Max Stocks Level",
-                        action: function () { 
-                            debugger;
+                        action: function () {
                             var checkedArr = [];
                             $(".checked_data").each(function () {
                                 if ($(this).is(":checked")) {
@@ -411,7 +406,6 @@ $(document).ready(function() {
                 text: '<i class="ico-trash fs-5 text-light-red btn-default-delete"></i>', // Delete icon
                 className: '',
                 action: function (e, dt, node, config) {
-                    debugger;
                     var checkedArr = [];
                     $(".checked_data").each(function () {
                         if ($(this).is(":checked")) {
@@ -550,7 +544,7 @@ $(document).ready(function() {
         var table = $('.data-table').dataTable();
         table.fnPageChange(page_no - 1,true);
     });
-    $(document).on('submit','#update_product_category',function(e){debugger;
+    $(document).on('submit','#update_product_category',function(e){
 		e.preventDefault();
 		var valid= $("#update_product_category").validate();
 			if(valid.errorList.length == 0){
@@ -560,7 +554,7 @@ $(document).ready(function() {
 			submitUpdateProductCategoryForm(data);
 		}
 	});
-    $(document).on('submit','#change_min_max_form',function(e){debugger;
+    $(document).on('submit','#change_min_max_form',function(e){
 		e.preventDefault();
 		// var valid= $("#change_min_max_form").validate();
 			// if(valid.errorList.length == 0){
@@ -571,7 +565,7 @@ $(document).ready(function() {
 		// }
 	});
     
-    $(document).on('submit','#change_product_availability',function(e){debugger;
+    $(document).on('submit','#change_product_availability',function(e){
         e.preventDefault();
         var valid= $("#change_product_availability").validate();
             if(valid.errorList.length == 0){
@@ -628,14 +622,12 @@ $(document).on('change', '.checkbox', function() {
     }
 });
 function submitUpdateProductCategoryForm(data){
-    debugger;
     $.ajax({
         headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
         url: "{{route('products.update-product-category')}}",
         type: "post",
         data: data,
         success: function(response) {
-            debugger;
             // Show a Sweet Alert message after the form is submitted.
             if (response.success) {
                 
@@ -650,7 +642,6 @@ function submitUpdateProductCategoryForm(data){
                 });
                 
             } else {
-                debugger;
                 Swal.fire({
                     title: "Error!",
                     text: response.message,
@@ -661,14 +652,12 @@ function submitUpdateProductCategoryForm(data){
     });
 }
 function submitChangeProductAvailabilityForm(data){
-    debugger;
     $.ajax({
         headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
         url: "{{route('products.change-product-availability')}}",
         type: "post",
         data: data,
         success: function(response) {
-            debugger;
             // Show a Sweet Alert message after the form is submitted.
             if (response.success) {
                 
@@ -683,7 +672,6 @@ function submitChangeProductAvailabilityForm(data){
                 });
                 
             } else {
-                debugger;
                 Swal.fire({
                     title: "Error!",
                     text: response.message,
@@ -700,7 +688,6 @@ function submitMinMaxForm(data){
         type: "post",
         data: data,
         success: function(response) {
-            debugger;
             // Show a Sweet Alert message after the form is submitted.
             if (response.success) {
                 
@@ -715,7 +702,6 @@ function submitMinMaxForm(data){
                 });
                 
             } else {
-                debugger;
                 Swal.fire({
                     title: "Error!",
                     text: response.message,
