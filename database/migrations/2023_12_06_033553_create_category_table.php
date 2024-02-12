@@ -14,11 +14,13 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->string('category_name', 100)->nullable();
-            $table->string('parent_category', 100)->nullable();
+            $table->unsignedBigInteger('parent_category')->nullable();
             $table->boolean('show_business_summary')->default(true);
             $table->boolean('trigger_when_sold')->default(false);
             $table->softDeletes();
             $table->timestamps();
+
+            $table->foreign('parent_category')->references('id')->on('categories')->onDelete('cascade');
         });
     }
 
