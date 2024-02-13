@@ -37,7 +37,7 @@
                                     <a href="#">All Services & Tasks</a> <span class="count">{{count($list_service)}}</span>
                                 </div>
                             </li>
-                            @foreach($distinctParentCategories as $parentCategory)
+                            @foreach($categories as $parentCategory)
                                 <li class="parent_category">
                                     <div class="disflex">
                                         <a href="#" ids="{{$parentCategory->id}}">{{ $parentCategory->category_name }}</a>
@@ -47,7 +47,6 @@
                                         @foreach($list_cat->where('parent_category', $parentCategory->id) as $subcategory)
                                             <li ids="{{$subcategory->id}}" class="child_category"><!-- class="active"-->
                                                 <a href="#">{{ $subcategory->category_name }}</a>
-                                                <span class="count">{{ $list_service->where('parent_category', $subcategory->id)->count() }}</span>
                                             </li>
                                         @endforeach
                                     </ul>
@@ -359,7 +358,7 @@ $(document).ready(function() {
         $(this).parent().addClass('blue-active'); 
         $(this).parent().addClass('active');
         $('.service_name').text($(this).find('a').text());
-        
+        alert('hi');return false;
         //get services from category
         var categories = 'All Services & Tasks';
         $.ajax({

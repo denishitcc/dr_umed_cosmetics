@@ -9,11 +9,18 @@ use Illuminate\Database\Eloquent\Model;
 class ServicesAppearOnCalendar extends Model
 {
     use HasFactory;
-
     // use SoftDeletes;
+
+    /** @var string $table */
+    protected $table = 'services_appear_on_calendars';
 
     protected $dates = ['deleted_at'];
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
         'id',
         'service_id',

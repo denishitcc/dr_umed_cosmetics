@@ -8,11 +8,18 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ServicesAvailability extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
-    use SoftDeletes;
+    /** @var string $table */
+    protected $table = 'services_availabilities';
+
     protected $dates = ['deleted_at'];
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
         'id',
         'service_id',

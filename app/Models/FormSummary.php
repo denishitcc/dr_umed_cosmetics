@@ -9,8 +9,17 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class FormSummary extends Model
 {
     use HasFactory;
+
+    /** @var string $table */
+    protected $table = 'form_summary';
+
     protected $dates = ['deleted_at'];
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
         'id',
         'title',
