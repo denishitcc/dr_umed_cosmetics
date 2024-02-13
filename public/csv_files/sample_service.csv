@@ -1,10 +1,10 @@
-service name,parent category,gender specific,code,appear on calendar,duration,processing time,fast duration,slow duration,usual next services,don't include in reports,technical service,available in online booking,requires a room,unpaid time,requires a follow-on service,follow on service,standard price,availability
-Add on - Toe,COSMETIC SERVICES,Anyone,,1,60,10,10,10,BBL - Face & Neck,0,0,1,0,0,0,"BBL - Face & Neck,Clinic Promo Day",100,"Chatswood (Sydney) + Byron (NSW),Greenacre (Sydney)"
-,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,
-Add on - Toe,COSMETIC SERVICES,Only famales,,0,60,10,10,10,BBL - Face & Neck,1,1,0,1,1,1,"BBL - Face & Neck,Clinic Promo Day",100,"Chatswood (Sydney) + Byron (NSW),Greenacre (Sydney)"
-,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,
-Add on - Toe,COSMETIC SERVICES,Only males,,1,60,10,10,10,BBL - Face & Neck,0,0,1,0,0,0,"BBL - Face & Neck,Clinic Promo Day",100,"Chatswood (Sydney) + Byron (NSW),Greenacre (Sydney)"
+service name,parent category,gender specific,code,appear on calendar,duration,processing time,fast duration,slow duration,usual next services,don't include in reports,technical service,available in online booking,requires a room,unpaid time,requires a follow-on service,follow on service,standard price
+Add on - Toe,COSMETIC SERVICES,Anyone,,1,60,10,10,10,BBL - Face & Neck,0,0,1,0,0,0,"BBL - Face & Neck,Clinic Promo Day",100
+,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,
+Add on - Toe,COSMETIC SERVICES,Only famales,,0,60,10,10,10,BBL - Face & Neck,1,1,0,1,1,1,"BBL - Face & Neck,Clinic Promo Day",100
+,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,
+Add on - Toe,COSMETIC SERVICES,Only males,,1,60,10,10,10,BBL - Face & Neck,0,0,1,0,0,0,"BBL - Face & Neck,Clinic Promo Day",100

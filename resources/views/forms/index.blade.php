@@ -7,7 +7,7 @@
         <div class="toolbar">
             <div class="tool-left">
                 <a href="#" class="btn btn-primary btn-md me-2" data-bs-toggle="modal" data-bs-target="#new_form">New Form</a>
-                <a href="#" class="btn btn-primary btn-md">Import Form</a>
+                <!-- <a href="#" class="btn btn-primary btn-md">Import Form</a> -->
             </div>
             <div class="tool-right">
                 <a href="#" class="btn tag icon-btn-left btn-md btn-light-grey"><i class="ico-filter me-2 fs-6"></i> Filter By</a>

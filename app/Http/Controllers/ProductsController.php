@@ -197,13 +197,13 @@ class ProductsController extends Controller
             $final_array = [];
             //for check locations in locations table and locations in locations checked values
             foreach ($locations_data as $index => $in) {
-                $price = is_numeric($request->availability_price[$index]) ? $request->availability_price[$index] : null;
+                $price = isset($request->availability_price[$index]) && is_numeric($request->availability_price[$index]) ? $request->availability_price[$index] : null;
             
                 if ($request->has('locations') && is_array($request->locations) && in_array($in->id, $request->locations)) {
                     $final_array[] = [
                         'product_id' => $updateProduct->id,
-                        'min' => $request->availability_min[$index],
-                        'max' => $request->availability_max[$index],
+                        'min' => $request->availability_min[$index] ?? null,
+                        'max' => $request->availability_max[$index] ?? null,
                         'price' => $price,
                         'location_name' => $in->id,
                         'availability' => 'Available'
@@ -479,5 +479,335 @@ class ProductsController extends Controller
             ];
         }
         return response()->json($response);
+    }
+    public function import(Request $request) {
+        $errors = []; // Track errors
+        $dataToInsert = []; // Store data to be inserted
+        
+        if ($request->hasFile('csv_file')) {
+            $path = $request->file('csv_file')->getRealPath();
+            $data = array_map('str_getcsv', file($path));
+            
+            // Remove the header row if present
+            if (count($data) > 0 && isset($data[0]) && is_array($data[0])) {
+                array_shift($data);
+            }
+            // Check if CSV is empty
+            if (empty($data)) {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'The CSV file is empty.',
+                    'type' => 'error',
+                ]);
+            }
+            $maxFilesAllowed = 50;
+            $uploadedFilesCount = count($data);
+            if ($uploadedFilesCount > $maxFilesAllowed) {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'You can upload a maximum of ' . $maxFilesAllowed . ' files.',
+                    'type' => 'error',
+                ]);
+            }
+            $product_data = Products::pluck('product_name', 'id')->toArray();
+    
+            foreach ($data as $rowIndex => $row) {
+                $rowErrors = []; // Track errors for this specific row
+                
+                // Initialize locationsInRow array
+                $locationsInRow = [];
+                
+                // Check if product name is empty
+                if (empty($row[0])) {
+                    $rowErrors[] = 'Product name is required.';
+                } else {
+                    // Check if product name already exists
+                    if (in_array($row[0], $product_data)) {
+                        $rowErrors[] = 'Product with name "' . $row[0] . '" already exists.';
+                    }
+                }
+                
+                // If there are errors with this row, add them to the general errors array
+                if (!empty($rowErrors)) {
+                    $errors[] = [
+                        'row' => $rowIndex + 1,
+                        'fields' => $rowErrors,
+                    ];
+                    // Skip processing this row
+                    continue;
+                }
+                
+                // Check if price is empty
+                if (empty($row[2])) {
+                    $rowErrors[] = 'Price is required.';
+                }
+                // Check if price is empty or not numeric
+                if (empty($row[2]) || !is_numeric($row[2]) || !is_float(floatval($row[2]))) {
+                    $rowErrors[] = 'Price must be a numeric value.';
+                }
+
+                
+                // Check if cost is empty
+                if (empty($row[3])) {
+                    $rowErrors[] = 'Cost is required.';
+                }
+                if (empty($row[3]) || !is_numeric($row[3]) || !is_float(floatval($row[3]))) {
+                    $rowErrors[] = 'Cost must be a numeric value.';
+                }
+
+                // Check if type is empty
+                if (empty($row[4])) {
+                    $rowErrors[] = 'Type is required.';
+                }
+
+                // Check if gst code is empty
+                if (empty($row[5])) {
+                    $rowErrors[] = 'GST code is required.';
+                }
+
+                // Check if category is empty
+                if (empty($row[6])) {
+                    $rowErrors[] = 'Category is required.';
+                }
+
+                // Check if supplier is empty
+                if (empty($row[7])) {
+                    $rowErrors[] = 'Supplier is required.';
+                }
+
+                // Check if Order lot is empty
+                if (empty($row[11])) {
+                    $rowErrors[] = 'Order lot is required.';
+                }
+                // Check if cost is empty or not numeric
+                if (empty($row[11]) || !is_numeric($row[11])) {
+                    $rowErrors[] = 'Order lot must be a numeric value.';
+                }
+
+                // Check if Order min is empty
+                if (empty($row[12])) {
+                    $rowErrors[] = 'Order min is required.';
+                }
+                // Check if cost is empty or not numeric
+                if (empty($row[12]) || !is_numeric($row[12])) {
+                    $rowErrors[] = 'Order cost must be a numeric value.';
+                }
+
+                // Check if Order max is empty
+                if (empty($row[13])) {
+                    $rowErrors[] = 'Order max is required.';
+                }
+                // Check if cost is empty or not numeric
+                if (empty($row[13]) || !is_numeric($row[13])) {
+                    $rowErrors[] = 'Order max must be a numeric value.';
+                }
+
+                // Check if category exists
+                $category = ProductsCategories::where('category_name', $row[6])->first();
+                if (!$category && !empty($row[6])) {
+                    $rowErrors[] = 'Category "' . $row[6] . '" does not exist.';
+                }
+
+                // Check if supplier exists
+                $supplier = Suppliers::where('business_name', $row[7])->first();
+                if (!$supplier && !empty($row[7])) {
+                    $rowErrors[] = 'Supplier "' . $row[7] . '" does not exist.';
+                }
+                
+                // Get all locations
+                $locations = Locations::all();
+    
+                // // Initialize availability data array
+                $availabilityData = [];
+                
+                // Check if availability information is provided
+                if (!empty($row[14]) && !empty($row[15]) && !empty($row[16]) && !empty($row[17])) {
+
+                    
+                    
+                    // Explode the comma-separated values and store them in separate variables
+                    $availabilityLocation = explode(',', $row[14]);
+                    $availabilityMinValues = explode(',', $row[15]);
+                    $availabilityMaxValues = explode(',', $row[16]);
+                    $availabilityPriceValues = explode(',', $row[17]);
+
+                    // Check if any value in row[18] doesn't match any location name
+                    foreach ($availabilityLocation as $locationName) {
+                        $locationExists = false;
+                        foreach ($locations as $location) {
+                            if ($locationName === $location->location_name) {
+                                $locationExists = true;
+                                break;
+                            }
+                        }
+                        if (!$locationExists) {
+                            // Add error message if location doesn't exist
+                            $rowErrors[] = 'Location "' . $locationName . '" does not exist.';
+                        }
+                    }
+                    
+                    if (!empty($availabilityMinValues)) {
+                        foreach ($availabilityMinValues as $value) {
+                            if (!is_numeric($value)) {
+                                $rowErrors[] = 'Availability min must be a numeric value.';
+                                // break; // exit the loop if error found for efficiency
+                            }
+                        }
+                    }
+                    
+                    if (!empty($availabilityMaxValues)) {
+                        foreach ($availabilityMaxValues as $value) {
+                            if (!is_numeric($value)) {
+                                $rowErrors[] = 'Availability max must be a numeric value.';
+                                // break; // exit the loop if error found for efficiency
+                            }
+                        }
+                    }
+                    
+                    if (!empty($availabilityPriceValues)) {
+                        foreach ($availabilityPriceValues as $value) {
+                            if (!is_numeric($value) || !is_float(floatval($value))) {
+                                $rowErrors[] = 'Availability price must be a numeric value.';
+                                // break; // exit the loop if error found for efficiency
+                            }
+                        }
+                    }
+                    
+                     // Check if availability information indices match
+                    if (count($availabilityLocation) !== count($availabilityMinValues) || 
+                        count($availabilityMinValues) !== count($availabilityMaxValues) ||
+                        count($availabilityMaxValues) !== count($availabilityPriceValues)) {
+                        $rowErrors[] = 'Mismatch in availability data indices.';
+                    }
+
+                    // Loop through each location and assign availability data
+                    foreach ($locations as $location) {
+                        $locationName = $location->location_name;
+                        $availabilityMin = null;
+                        $availabilityMax = null;
+                        $availabilityPrice = null;
+                        $availabilityStatus = 'Available'; // Default
+
+                        // Check if the location exists in the provided availability data
+                        $index = array_search($locationName, $availabilityLocation);
+                        if ($index !== false) {
+                            // Assign availability data if found
+                            $availabilityMin = isset($availabilityMinValues[$index]) ? $availabilityMinValues[$index] : null;
+                            $availabilityMax = isset($availabilityMaxValues[$index]) ? $availabilityMaxValues[$index] : null;
+                            $availabilityPrice = isset($availabilityPriceValues[$index]) ? $availabilityPriceValues[$index] : null;
+
+                            // Determine availability status
+                            // $availabilityStatus = (!empty($availabilityMin) || !empty($availabilityMax) || !empty($availabilityPrice)) ? 'Available' : 'Not available';
+                        }
+
+                        // Add availability data to the array
+                        $availabilityData[] = [
+                            'location_name' => $location->id, // Use location ID
+                            'availability_min' => $availabilityMin,
+                            'availability_max' => $availabilityMax,
+                            'availability_price' => $availabilityPrice,
+                            'availability' => $availabilityStatus,
+                        ];
+                    }
+                } else {
+                    // If availability information is not provided, set default data for all locations
+                    foreach ($locations as $location) {
+                        $availabilityData[] = [
+                            'location_name' => $location->id,
+                            'availability_min' => null,
+                            'availability_max' => null,
+                            'availability_price' => null,
+                            'availability' => 'Available',
+                        ];
+                    }
+                }
+                   
+                
+                
+                               
+
+                if (!empty($rowErrors)) {
+                    $errors[] = [
+                        'row' => $rowIndex + 1,
+                        'fields' => $rowErrors,
+                    ];
+                } else {
+                    // Store data for insertion
+                    $dataToInsert[] = [
+                        'product_name' => $row[0],
+                        'description' => $row[1],
+                        'price' => $row[2],
+                        'cost' => $row[3],
+                        'type' => $row[4],
+                        'gst_code' => $row[5],
+                        'category_id' => $category ? $category->id : null,
+                        'supplier_id' => $supplier ? $supplier->id : null,
+                        'supplier_code' => $row[8],
+                        'barcode_1' => $row[9],
+                        'barcode_2' => $row[10],
+                        'order_lot' => $row[10] == "" ? 0 : $row[10],
+                        'min' => $row[11] == "" ? 0 : $row[11],
+                        'max' => $row[12] == "" ? 1 : $row[12],
+                    ];
+                }
+            }
+    
+            // If there are no errors, insert the data
+            if (empty($errors)) {
+                foreach ($dataToInsert as $rowData) {
+                    $product = Products::create([
+                        'product_name' => $rowData['product_name'],
+                        'description' => $rowData['description'],
+                        'price' => $rowData['price'],
+                        'cost' => $rowData['cost'],
+                        'type' => $rowData['type'],
+                        'gst_code' => $rowData['gst_code'],
+                        'category_id' => $rowData['category_id'],
+                        'supplier_id' => $rowData['supplier_id'],
+                        'supplier_code' => $rowData['supplier_code'],
+                        'barcode_1' => $rowData['barcode_1'],
+                        'barcode_2' => $rowData['barcode_2'],
+                        'order_lot' => $rowData['order_lot'],
+                        'min' => $rowData['min'],
+                        'max' => $rowData['max'],
+                    ]);
+
+                    // Store availability data
+                    foreach ($availabilityData as $availability) {
+                        ProductAvailabilities::create([
+                            'product_id' => $product->id,
+                            'location_name' => $availability['location_name'],
+                            'min' => $availability['availability_min'],
+                            'max' => $availability['availability_max'],
+                            'price' => $availability['availability_price'],
+                            'availability' => $availability['availability'],
+                        ]);
+                    }
+                }
+    
+                return response()->json([
+                    'success' => true,
+                    'message' => 'CSV data imported successfully!',
+                    'type' => 'success',
+                ]);
+            }
+        } else {
+            $errors[] = 'No CSV file selected.';
+        }
+        
+        // Constructing error messages for specific errors
+        $errorMsg = '';
+        foreach ($errors as $error) {
+            foreach ($error['fields'] as $fieldError) {
+                $errorMsg .= 'Row ' . $error['row'] . ': ' . $fieldError . ' ';
+            }
+        }
+        
+        // If errors were found, return error response with specific error message
+        return response()->json([
+            'error' => true,
+            'message' => 'Errors occurred while importing CSV data. ' . $errorMsg,
+            'type' => 'error',
+        ]);
     }
 }

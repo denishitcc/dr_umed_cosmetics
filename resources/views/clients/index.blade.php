@@ -7,7 +7,7 @@
         <div class="toolbar mb-0">
                 <div class="tool-left">
                     <a href="{{ route('clients.create') }}" class="btn btn-primary btn-md me-2">Add New Client</a>
-                    <a href="#" class="btn btn-primary btn-md me-2">Import Client</a>
+                    <!-- <a href="#" class="btn btn-primary btn-md me-2">Import Client</a> -->
                     <a href="#" class="btn btn-primary btn-md me-2">Add New Waitlist Client</a>
                     <a href="#" class="btn btn-primary btn-md me-2">Add New Walk-in Sale</a>
                     <a href="#" class="btn btn-primary btn-md">Make New Appointment</a>

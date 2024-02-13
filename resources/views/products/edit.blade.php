@@ -177,19 +177,29 @@
                         <tbody>
                             @if(count($locations) > 0)
                                 @foreach($locations as $index => $loc)
+                                @php 
+                                    $ck_service = \App\Models\ProductAvailabilities::where([
+                                        'product_id' => $product->id, // Use $loc->id instead of $services->id
+                                        'location_name' => $loc->id,
+                                        'availability' => 'Available'
+                                    ])->first();
+                                @endphp
                                     <tr>
                                         <td>
                                             <label class="cst-check">
-                                                <input type="checkbox" value="{{$loc->id}}" 
-                                                    {{$loc->id && isset($product->availability[$index]['availability']) && $product->availability[$index]['availability'] == 'Available' ? 'checked' : ''}}
-                                                    name="locations[]" class="locations">
+                                                    <input type="checkbox" 
+                                                    value="{{$loc->id}}" 
+                                                    {{ ($ck_service && $ck_service->availability == 'Available') ? "checked" : "" }} 
+                                                    name="locations[]" 
+                                                    id="locations" 
+                                                    class="locations">
                                                 <span class="checkmark"></span>
                                             </label>
                                         </td>
                                         <td width="40%">{{$loc->location_name}}</td>
                                         <td>
                                             <div class="show-timing" 
-                                                style="{{ $loc->id && isset($product->availability[$index]['availability']) && $product->availability[$index]['availability'] == 'Available' ? '' : 'display:none;' }}">
+                                                style="{{ $ck_service && $ck_service->availability == 'Available' ? '' : 'display:none;' }}">
                                                 <div class="show-inner">
                                                     @foreach ($product->availability as $availability)
                                                         @if ($availability->location_name == $loc->id)

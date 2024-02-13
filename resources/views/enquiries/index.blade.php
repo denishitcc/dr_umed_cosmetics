@@ -9,7 +9,7 @@
               <div class="toolbar">
                 <div class="tool-left">
                     <a href="{{ route('enquiries.create') }}" class="btn btn-primary btn-md me-2">New Enquiry</a>
-                    <a href="#" class="btn btn-primary btn-md">Import Enquiry</a>
+                    <!-- <a href="#" class="btn btn-primary btn-md">Import Enquiry</a> -->
                 </div>
                 <!-- <div class="tool-right">
                     <a href="#" class="btn tag icon-btn-left btn-md btn-light-grey"><i class="ico-filter me-2 fs-6"></i> Filter By</a>

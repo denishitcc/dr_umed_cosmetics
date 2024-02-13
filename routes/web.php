@@ -127,6 +127,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('products/update-product-category',[ProductsController::class, 'updateProductCategory'])->name('products.update-product-category');
     Route::post('products/change-product-availability',[ProductsController::class, 'changeProductAvailability'])->name('products.change-product-availability');
     Route::post('products/update-stocks-level-products',[ProductsController::class, 'changeStocksLevel'])->name('products.update-stocks-level-products');
+    Route::post('products/import',[ProductsController::class, 'import'])->name('products.import');
 
     //forms
     Route::resource('/forms', FormsController::class);

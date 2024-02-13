@@ -7,8 +7,12 @@
     <div class="toolbar">
         <div class="tool-left d-flex">
             <a href="{{ route('products.create') }}" class="btn btn-primary btn-md icon-btn-left me-2"><i class="ico-add me-2 fs-5"></i> Add One Product</a>
+            <form id="import_product" name="import_product" class="form">
+            @csrf
             <label for="import" class="btn btn-primary btn-md icon-btn-left me-2"><i class="ico-import me-2 fs-4"></i> Import a Product List</label>
+            <a href="{{URL::to('csv_files/sample_product.csv')}}">Download sample file</a>
             <input type="file" id="import" name="csv_file" style="display:none;" accept=".csv">    
+            </form>
             <a href="{{ route('products-categories.index') }}" class="btn btn-orange btn-md icon-btn-left me-2"><i class="ico-forms me-2 fs-5"></i> Categories</a>
             <a href="{{ route('suppliers.index') }}" class="btn btn-sea-green btn-md icon-btn-left me-2"><i class="ico-truck me-2 fs-4"></i> Suppliers</a>
         </div>
@@ -621,6 +625,11 @@ $(document).on('change', '.checkbox', function() {
         $('.ico-trash').parent().parent().prop('disabled', true);
     }
 });
+$(document).on('change','#import_product',function(e){
+    e.preventDefault();
+    var data = new FormData(this);
+    submitImportProductForm(data);
+});
 function submitUpdateProductCategoryForm(data){
     $.ajax({
         headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
@@ -706,6 +715,39 @@ function submitMinMaxForm(data){
                     title: "Error!",
                     text: response.message,
                     type: "error",
+                });
+            }
+        },
+    });
+}
+function submitImportProductForm(data){
+    $.ajax({
+        headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        url: "{{route('products.import')}}",
+        type: "post",
+        cache: false,
+        contentType: false,
+        processData: false,
+        data: data,
+        success: function(response) {
+            // Show a Sweet Alert message after the form is submitted.
+            if (response.success) {
+                
+                Swal.fire({
+                    title: "Product!",
+                    text: "Product import successfully.",
+                    type: "success",
+                }).then((result) => {
+                    window.location = "{{url('products')}}";
+                });
+                
+            } else {
+                Swal.fire({
+                    title: "Error!",
+                    text: response.message,
+                    type: "error",
+                }).then((result) => {
+                    window.location = "{{url('products')}}";
                 });
             }
         },

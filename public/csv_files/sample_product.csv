@@ -1,0 +1,5 @@
+product name,description,price,cost,type,gst code,category,supplier,supplier code,barcode 1,barcode 2,order lot,min,max,availability,availability min,availability max,availability price
+10,test,1,50,Retail,Standard,Injectables,Alex Cosmetics,1,1,1,1,1,1,"Chatswood (Sydney) + Byron (NSW),Hope Island,Surfers Paradise","1,2,3","1,2,3","1,2,3"
+,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,
+10,test,1,50,Professional,Zero-rated,Injectables,Alex Cosmetics,1,1,1,1,1,1,"Chatswood (Sydney) + Byron (NSW),Hope Island,Surfers Paradise","1,2,3","1,2,3","1,2,3"
