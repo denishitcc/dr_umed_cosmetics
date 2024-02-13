@@ -353,13 +353,11 @@ headers: {
             }
         });
         $('.remove_image').click(function(e){
-            debugger;
             $('#imgPreview').attr('src', "{{ asset('/storage/images/banner_image/no-image.jpg') }}");
             $('#imgremove').val('1');
             e.preventDefault();
         })
         $('.remove_banner').click(function(e){
-            debugger;
             $('#imgBannerPreview').attr('src', "{{ asset('/storage/images/banner_image/no-image.jpg') }}");
             $('#bannerremove').val('1');
             e.preventDefault();
