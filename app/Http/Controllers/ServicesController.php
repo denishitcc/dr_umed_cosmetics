@@ -25,13 +25,12 @@ class ServicesController extends Controller
         // Fetch all categories for display
         $list_cat = Category::get();
 
-        $list_parent_cat = Category::where('parent_category','0')->get();
         //services
         $list_service = Services::get();
 
         //locations
         $locations = Locations::get();
-        return view('services.index', compact('list_cat','list_service','locations','list_parent_cat','categories'));
+        return view('services.index', compact('list_cat','list_service','locations','categories'));
     }
 
     /**
