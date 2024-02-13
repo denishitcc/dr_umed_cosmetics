@@ -64,7 +64,14 @@ class CalenderController extends Controller
      */
     public function getCategoryServices(Request $request)
     {
-        $services   = Services::where('parent_category','=',$request->category_id)->get();
+        $services   = Services::select();
+
+        if ($request->category_id) {
+            $services->where('parent_category', $request->category_id);
+        }
+
+        $services = $services->get();
+
         $data       = [];
 
         foreach ($services as $value) {

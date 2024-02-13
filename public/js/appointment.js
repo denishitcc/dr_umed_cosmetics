@@ -135,9 +135,11 @@ var DU = {};
 
         changeServices: function(){
             var context = this;
-            $('.parent_category_id').on('click', function(e)
-            {
-                var categoryId = $(this).find('a').attr('ids');
+            jQuery('.parent_category_id').on('click', function(e) {
+                e.preventDefault();
+                var $this           = $(this),
+                    categoryId      = $this.data('category_id'),
+                    categoryTitle   = $this.text();
 
                 $.ajax({
                     url: moduleConfig.categotyByservices, // Replace with your actual API endpoint
@@ -146,12 +148,11 @@ var DU = {};
                         'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
                     },
                     data: {
-                        'category_id' : categoryId
+                        'category_id' : categoryId === undefined ? 0 : categoryId
                     },
                     success: function (data) {
-                        // Update the FullCalendar resources with the retrieved data
-                        context.calendar.setOption('resources', data);
-                        context.calendar.refetchEvents(); // Refresh events if needed
+
+                        $('#subcategory_text').text(categoryTitle);
                     },
                     error: function (error) {
                         console.error('Error fetching resources:', error);

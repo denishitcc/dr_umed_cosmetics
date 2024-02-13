@@ -61,13 +61,13 @@
                                 <ul class="ctg-tree ps-0 pe-1">
                                     <li class="pt-title">
                                         <div class="disflex">
-                                            <label id="category_text">All Services &amp; Tasks </label>
+                                            <a href="javascript:void(0);" class="parent_category_id">All Services &amp; Tasks </a>
                                         </div>
                                     </li>
                                     @foreach ($categories as $category)
                                     <li>
-                                        <div class="disflex parent_category_id">
-                                            <a href="javascript:void(0);" ids="{{$category->id}}">{{$category->category_name}}</a>
+                                        <div class="disflex">
+                                            <a href="javascript:void(0);" class="parent_category_id" ids="{{$category->id}}" data-category_id="{{$category->id}}">{{$category->category_name}}</a>
                                         </div>
                                         @if ($category->children)
                                             <ul>
@@ -90,7 +90,7 @@
                                 <ul class="ctg-tree ps-0 pe-1">
                                     <li class="pt-title">
                                         <div class="disflex">
-                                            All Services &amp; Tasks
+                                            <label id="subcategory_text">All Services &amp; Tasks</label>
                                         </div>
                                         <ul>
                                             @foreach ($services as $services)
@@ -105,21 +105,21 @@
                         </div>
                         <div class="col">
                             <h6>Selected Services</h6>
-                            {{-- <div class="service-list-box p-2">
+                            <div class="service-list-box p-2">
                                 <ul class="ctg-tree ps-0 pe-1">
                                     <li class="pt-title">
                                         <div class="disflex">
                                             Please Select/Deselect Services
                                         </div>
-                                        <ul>
+                                        {{-- <ul>
                                             <li class="selected remove"><a href="#">1# Christmas Offer</a> <span class="btn btn-cross cross-red"><i class="ico-close"></i></span></li>
                                             <li class="selected remove"><a href="#">1# Offer DMK 3 Enzymes</a> <span class="btn btn-cross cross-red"><i class="ico-close"></i></span></li>
                                             <li class="selected remove"><a href="#">2 Areas $264</a> <span class="btn btn-cross cross-red"><i class="ico-close"></i></span></li>
                                             <li class="selected remove"><a href="#">3V (Forma V + VTone + M8V - in this order) x 3 monthly package</a> <span class="btn btn-cross cross-red"><i class="ico-close"></i></span></li>
-                                        </ul>
+                                        </ul> --}}
                                     </li>
                                 </ul>
-                            </div> --}}
+                            </div>
                         </div>
                     </div>
                 </div>

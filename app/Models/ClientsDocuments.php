@@ -11,7 +11,7 @@ class ClientsDocuments extends Model
     use HasFactory, SoftDeletes;
 
     /** @var string $table */
-    protected $table = 'clients';
+    protected $table = 'clients_documents';
 
     protected $dates = ['deleted_at'];
 

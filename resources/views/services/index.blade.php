@@ -110,14 +110,10 @@
                 <div class="form-group">
                     <label class="form-label">Parent Category</label>
                     <select class="form-select form-control" id="parent_category" name="parent_category" maxlength="50">
-                        <option selected value="0"> (top-level) </option>
-                        @if(count($list_parent_cat)>0)
-                            @foreach($list_parent_cat as $cats)
-                            @if($cats->parent_category != '0')
-                                <option>&nbsp;&nbsp;{{$cats->category_name}}</option>
-                            @else
+                        <option selected value=""> (top-level) </option>
+                        @if(count($categories)>0)
+                            @foreach($categories as $cats)
                                 <option value="{{$cats->id}}">{{$cats->category_name}}</option>
-                            @endif
                             @endforeach
                         @endif
                     </select>
@@ -159,14 +155,10 @@
                 <div class="form-group">
                     <label class="form-label">Parent Category</label>
                     <select class="form-select form-control edit_parent_category_name" id="parent_category_edit" name="parent_category" maxlength="50">
-                        <option selected value="0" > (top-level) </option>
-                        @if(count($list_parent_cat)>0)
-                            @foreach($list_parent_cat as $cats)
-                                @if($cats->parent_category != '0')
-                                    <option>&nbsp;&nbsp;{{$cats->category_name}}</option>
-                                @else
-                                    <option value="{{$cats->id}}">{{$cats->category_name}}</option>
-                                @endif
+                        <option selected value="" > (top-level) </option>
+                        @if(count($categories)>0)
+                            @foreach($categories as $cats)
+                                <option value="{{$cats->id}}">{{$cats->category_name}}</option>
                             @endforeach
                         @endif
                     </select>
