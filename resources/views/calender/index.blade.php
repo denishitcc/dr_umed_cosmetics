@@ -92,7 +92,7 @@
                                         <div class="disflex">
                                             <label id="subcategory_text">All Services &amp; Tasks</label>
                                         </div>
-                                        <ul>
+                                        <ul id="sub_services">
                                             @foreach ($services as $services)
                                                 <li>
                                                     <a href="javascript:void(0);">{{ $services->service_name }}</a>
@@ -111,12 +111,12 @@
                                         <div class="disflex">
                                             Please Select/Deselect Services
                                         </div>
-                                        {{-- <ul>
-                                            <li class="selected remove"><a href="#">1# Christmas Offer</a> <span class="btn btn-cross cross-red"><i class="ico-close"></i></span></li>
+                                        <ul>
+                                            {{-- <li class="selected remove"><a href="#">1# Christmas Offer</a> <span class="btn btn-cross cross-red"><i class="ico-close"></i></span></li>
                                             <li class="selected remove"><a href="#">1# Offer DMK 3 Enzymes</a> <span class="btn btn-cross cross-red"><i class="ico-close"></i></span></li>
                                             <li class="selected remove"><a href="#">2 Areas $264</a> <span class="btn btn-cross cross-red"><i class="ico-close"></i></span></li>
-                                            <li class="selected remove"><a href="#">3V (Forma V + VTone + M8V - in this order) x 3 monthly package</a> <span class="btn btn-cross cross-red"><i class="ico-close"></i></span></li>
-                                        </ul> --}}
+                                            <li class="selected remove"><a href="#">3V (Forma V + VTone + M8V - in this order) x 3 monthly package</a> <span class="btn btn-cross cross-red"><i class="ico-close"></i></span></li> --}}
+                                        </ul>
                                     </li>
                                 </ul>
                             </div>

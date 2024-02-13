@@ -153,6 +153,10 @@ var DU = {};
                     success: function (data) {
 
                         $('#subcategory_text').text(categoryTitle);
+                        $('#sub_services').empty();
+                        $.each(data, function(index, item) {
+                            $("#sub_services").append("<li><a href='javascript:void(0);'>" + item.service_name + "</a></li>");
+                        });
                     },
                     error: function (error) {
                         console.error('Error fetching resources:', error);
