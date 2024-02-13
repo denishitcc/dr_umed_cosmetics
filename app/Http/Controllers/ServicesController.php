@@ -457,7 +457,7 @@ class ServicesController extends Controller
                 $rowErrors = []; // Track errors for this specific row
                 
                 // Initialize locationsInRow array
-                $locationsInRow = [];
+                // $locationsInRow = [];
                 
                 // Check if service name is empty
                 if (empty($row[0])) {
@@ -531,50 +531,31 @@ class ServicesController extends Controller
     
                 // Iterate over all locations and add availability data
                 foreach ($locations as $location) {
-                    // Check if the location name exists in row[18]
-                    if (!empty($row[18])) {
-                        $locationsInRow = explode(',', $row[18]);
-                        foreach ($locationsInRow as $locationName) {
-                            // Check if the location name exists in the locations table
-                            if ($locationName === $location->location_name) {
-                                // Location found, set availability to 'Available'
-                                $availability = [
-                                    'service_name' => $row[0],
-                                    'category_id' => $category ? $category->id : null,
-                                    'location_id' => $location->id,
-                                    'availability' => 'Available',
-                                ];
-                                // Add availability data to the array
-                                $availabilityData[] = $availability;
-                            }
-                        }
-                    } else {
-                        // If row[18] is empty, default availability to 'Not available'
-                        $availability = [
-                            'service_name' => $row[0],
-                            'category_id' => $category ? $category->id : null,
-                            'location_id' => $location->id,
-                            'availability' => 'Not available',
-                        ];
-                        // Add availability data to the array
-                        $availabilityData[] = $availability;
-                    }
+                    // Location found, set availability to 'Available'
+                    $availability = [
+                        'service_name' => $row[0],
+                        'category_id' => $category ? $category->id : null,
+                        'location_id' => $location->id,
+                        'availability' => 'Available',
+                    ];
+                    // Add availability data to the array
+                    $availabilityData[] = $availability;
                 }
                 
                 // Check if any value in row[18] doesn't match any location name
-                foreach ($locationsInRow as $locationName) {
-                    $locationExists = false;
-                    foreach ($locations as $location) {
-                        if ($locationName === $location->location_name) {
-                            $locationExists = true;
-                            break;
-                        }
-                    }
-                    if (!$locationExists) {
-                        // Add error message if location doesn't exist
-                        $rowErrors[] = 'Location "' . $locationName . '" does not exist.';
-                    }
-                }                
+                // foreach ($locationsInRow as $locationName) {
+                //     $locationExists = false;
+                //     foreach ($locations as $location) {
+                //         if ($locationName === $location->location_name) {
+                //             $locationExists = true;
+                //             break;
+                //         }
+                //     }
+                //     if (!$locationExists) {
+                //         // Add error message if location doesn't exist
+                //         $rowErrors[] = 'Location "' . $locationName . '" does not exist.';
+                //     }
+                // }                
 
                 if (!empty($rowErrors)) {
                     $errors[] = [
