@@ -11,7 +11,7 @@ class FormSummary extends Model
     use HasFactory;
 
     /** @var string $table */
-    protected $table = 'form_summary';
+    protected $table = 'form_summaries';
 
     protected $dates = ['deleted_at'];
 
