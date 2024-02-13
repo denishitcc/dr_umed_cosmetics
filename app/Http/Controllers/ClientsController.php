@@ -86,7 +86,7 @@ class ClientsController extends Controller
             foreach($request->pics as $pics)
             {
                 // dd($pics);
-                $folderPath = storage_path('app/public/images/clients_photos');
+                $folderPath = storage_path('app/public/images/clients_photos/');
                 $image_parts = explode(";base64,", $pics);
                 // dd($image_parts);
                 $image_type_aux = explode("image/", $image_parts[0]);
@@ -105,7 +105,7 @@ class ClientsController extends Controller
         {
             foreach($request->docs as $docs)
             {
-                $folderPath = storage_path('app/public/images/clients_documents');
+                $folderPath = storage_path('app/public/images/clients_documents/');
                 $image_parts = explode(";base64,", $docs);
                 // dd($image_parts);
                 $image_type_aux = explode("image/", $image_parts[0]);
