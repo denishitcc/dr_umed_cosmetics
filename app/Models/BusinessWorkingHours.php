@@ -13,7 +13,7 @@ class BusinessWorkingHours extends Model
     // protected $dates = ['deleted_at'];
 
     /** @var string $table */
-    protected $table = 'busines_working_hours';
+    protected $table = 'business_working_hours';
 
     /**
      * The attributes that are mass assignable.
