@@ -282,11 +282,7 @@ $(document).ready(function() {
             $(this).parent().parent().parent().find('.show-timing').show();
         }
     })
-    $(".list-group ul li.dropdown").click(function(){
-        $(this).toggleClass("show");
-    });
-    $('[data-toggle="tooltip"]').tooltip();
-
+    
     $('.select_none').click(function(){
         $("input[name='locations[]']:checkbox").prop('checked',false);
         $('.loc_details').hide();

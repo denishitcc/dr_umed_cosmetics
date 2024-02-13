@@ -7,14 +7,14 @@
     <div class="toolbar">
         <div class="tool-left d-flex">
             <a href="{{ route('products.create') }}" class="btn btn-primary btn-md icon-btn-left me-2"><i class="ico-add me-2 fs-5"></i> Add One Product</a>
-            <form id="import_product" name="import_product" class="form">
-            @csrf
-            <label for="import" class="btn btn-primary btn-md icon-btn-left me-2"><i class="ico-import me-2 fs-4"></i> Import a Product List</label>
-            <a href="{{URL::to('csv_files/sample_product.csv')}}">Download sample file</a>
-            <input type="file" id="import" name="csv_file" style="display:none;" accept=".csv">    
-            </form>
             <a href="{{ route('products-categories.index') }}" class="btn btn-orange btn-md icon-btn-left me-2"><i class="ico-forms me-2 fs-5"></i> Categories</a>
             <a href="{{ route('suppliers.index') }}" class="btn btn-sea-green btn-md icon-btn-left me-2"><i class="ico-truck me-2 fs-4"></i> Suppliers</a>
+            <form id="import_product" name="import_product" class="form d-flex align-items-center">
+            @csrf
+            <label for="import" class="btn btn-primary btn-md icon-btn-left me-2"><i class="ico-import me-2 fs-4"></i> Import a Product List</label>
+            <a href="{{URL::to('csv_files/sample_product.csv')}}" class="simple-link">Download sample file</a>
+            <input type="file" id="import" name="csv_file" style="display:none;" accept=".csv">    
+            </form>
         </div>
         <div class="tool-right">
             <!-- <a href="#" class="btn icon-btn-left btn-md btn-light-grey"><i class="ico-filter me-2 fs-6"></i> Filter By</a> -->
