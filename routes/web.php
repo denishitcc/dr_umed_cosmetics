@@ -141,4 +141,4 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/calender', CalenderController::class);
     Route::post('calender/get-category-services', [CalenderController::class,'getCategoryServices'])->name('calender.get-category-services');
 });
-Route::get('/doctor-appointments', [CalenderController::class,'doctorAppointments'])->name('doctor-appointments');
+Route::get('/doctor-appointments', [CalenderController::class,'doctorAppointments'])->name('doctor-appointments'); 
