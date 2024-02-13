@@ -8,10 +8,18 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class BusinessSettings extends Model
 {
-    use HasFactory;
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
+
+    /** @var string $table */
+    protected $table = 'business_settings';
+
     protected $dates = ['deleted_at'];
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
         'id',
         'user_id',

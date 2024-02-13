@@ -14,6 +14,7 @@ var DU = {};
 
             context.initialCalender();
             context.openAppointmentModal();
+            context.changeServices();
         },
 
         initialCalender: function(){
@@ -129,6 +130,33 @@ var DU = {};
             $('#appointment').on('click', function(e)
             {
                 context.selectors.appointmentModal.modal('show');
+            });
+        },
+
+        changeServices: function(){
+            var context = this;
+            $('.parent_category_id').on('click', function(e)
+            {
+                var categoryId = $(this).find('a').attr('ids');
+
+                $.ajax({
+                    url: moduleConfig.categotyByservices, // Replace with your actual API endpoint
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {
+                        'category_id' : categoryId
+                    },
+                    success: function (data) {
+                        // Update the FullCalendar resources with the retrieved data
+                        context.calendar.setOption('resources', data);
+                        context.calendar.refetchEvents(); // Refresh events if needed
+                    },
+                    error: function (error) {
+                        console.error('Error fetching resources:', error);
+                    }
+                });
             });
         },
 

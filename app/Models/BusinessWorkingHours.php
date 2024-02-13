@@ -12,6 +12,14 @@ class BusinessWorkingHours extends Model
     // use SoftDeletes;
     // protected $dates = ['deleted_at'];
 
+    /** @var string $table */
+    protected $table = 'busines_working_hours';
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
         'id',
         'location_id',

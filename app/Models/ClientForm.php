@@ -8,10 +8,18 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ClientForm extends Model
 {
-    use HasFactory;
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
+
+    /** @var string $table */
+    protected $table = 'client_form';
+
     protected $dates = ['deleted_at'];
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
         'id',
         'form_summary_id',

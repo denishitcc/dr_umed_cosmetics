@@ -61,92 +61,26 @@
                                 <ul class="ctg-tree ps-0 pe-1">
                                     <li class="pt-title">
                                         <div class="disflex">
-                                            All Services &amp; Tasks
+                                            <label id="category_text">All Services &amp; Tasks </label>
                                         </div>
                                     </li>
+                                    @foreach ($categories as $category)
                                     <li>
-                                        <div class="disflex">
-                                            <a href="#">BBL/LASER SERVICES</a>
+                                        <div class="disflex parent_category_id">
+                                            <a href="javascript:void(0);" ids="{{$category->id}}">{{$category->category_name}}</a>
                                         </div>
-                                        <ul>
-                                            <li class="selected"><a href="#">BBL &amp; HALO - Combination Packages</a></li>
-                                            <li><a href="#">BBL Hero</a> </li>
-                                            <li><a href="#">Clear V - Nd Yag Laser 1064nm</a></li>
-                                            <li><a href="#">ClearSilk</a> </li>
-                                            <li><a href="#">HALO Fractional Laser</a></li>
-                                        </ul>
+                                        @if ($category->children)
+                                            <ul>
+                                                @foreach ($category->children as $child)
+                                                    {{-- <li class="selected"><a href="#">BBL &amp; HALO - Combination Packages</a></li> --}}
+                                                    <li>
+                                                        <a href="javascript:void(0);">{{$child->category_name}}</a>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        @endif
                                     </li>
-                                    <li>
-                                        <div class="disflex">
-                                            <a href="#">BROW BAR</a>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="disflex">
-                                            <a href="#">Christmas Offers 2022</a>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="disflex">
-                                            <a href="#">CLIENT PAYMENTS</a>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="disflex">
-                                            <a href="#">COSMETIC SERVICES</a>
-                                        </div>
-                                        <ul>
-                                            <li>
-                                                <a href="#">Anti Wrinkle</a>
-                                            </li>
-                                            <li>
-                                                <a href="#">Cosmetic Consultation</a>
-                                            </li>
-                                            <li>
-                                                <a href="#">Filler</a>
-                                            </li>
-                                            <li class="selected">
-                                                <a href="#">IV Drip Therapy</a>
-                                            </li>
-                                            <li>
-                                                <a href="#">Review</a>
-                                            </li>
-                                            <li>
-                                                <a href="#">Revival &amp; Dr Umed</a>
-                                            </li>
-                                            <li class="selected">
-                                                <a href="#">Sculptra</a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <div class="disflex">
-                                            <a href="#">HOPE ISLAND LASER</a>
-                                        </div>
-                                        <ul>
-                                            <li>
-                                                <a href="#">Female Laser Treatment</a>
-                                            </li>
-                                            <li>
-                                                <a href="#">Male Laser Services</a>
-                                            </li>
-                                            <li class="selected">
-                                                <a href="#">Piercing</a>
-                                            </li>
-                                            <li>
-                                                <a href="#">Hope Island Skin</a>
-                                            </li>
-                                            <li>
-                                                <a href="#">Female Laser Treatment</a>
-                                            </li>
-                                            <li>
-                                                <a href="#">Female Laser Treatment</a>
-                                            </li>
-                                            <li>
-                                                <a href="#">Female Laser Treatment</a>
-                                            </li>
-                                        </ul>
-                                    </li>
+                                    @endforeach
                                 </ul>
                             </div>
                         </div>
@@ -159,23 +93,11 @@
                                             All Services &amp; Tasks
                                         </div>
                                         <ul>
-                                            <li><a href="#">1# Christmas Offer</a> </li>
-                                            <li><a href="#">1# Offer DMK 3 Enzymes</a></li>
-                                            <li><a href="#">2 Areas $264</a></li>
-                                            <li><a href="#">2# Offer HIFU Face</a></li>
-                                            <li><a href="#">3 Area Anti Wrinkle Package</a></li>
-                                            <li><a href="#">3 Area Anti Wrinkle Package</a></li>
-                                            <li><a href="#">3# Christmas Offer</a></li>
-                                            <li><a href="#">3# Offer Tixel Fu ll Face w Eyes</a></li>
-                                            <li><a href="#">30 min Skin Treatment-Intro</a></li>
-                                            <li class="selected"><a href="#">3V (Forma V + VTone + M8V - in this order) x 3 monthly package</a></li>
-                                            <li><a href="#">4# Christmas Offer</a></li>
-                                            <li><a href="#">4# Offer Needling Face 4 treatments</a></li>
-                                            <li><a href="#">45 min Skin Treatment-Intro</a></li>
-                                            <li><a href="#">4D Face, Neck & Chest</a></li>
-                                            <li><a href="#">4D Hifu Consultation</a></li>
-                                            <li><a href="#">4D HIFU Full Face and Neck</a></li>
-                                            <li><a href="#">4D Hifu Full Face</a></li>
+                                            @foreach ($services as $services)
+                                                <li>
+                                                    <a href="javascript:void(0);">{{ $services->service_name }}</a>
+                                                </li>
+                                            @endforeach
                                         </ul>
                                     </li>
                                 </ul>
@@ -183,7 +105,7 @@
                         </div>
                         <div class="col">
                             <h6>Selected Services</h6>
-                            <div class="service-list-box p-2">
+                            {{-- <div class="service-list-box p-2">
                                 <ul class="ctg-tree ps-0 pe-1">
                                     <li class="pt-title">
                                         <div class="disflex">
@@ -197,7 +119,7 @@
                                         </ul>
                                     </li>
                                 </ul>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                 </div>
@@ -218,6 +140,7 @@
 <script type="text/javascript">
     var moduleConfig = {
         doctorAppointments: "{!! route('doctor-appointments') !!}",
+        categotyByservices: "{!! route('calender.get-category-services') !!}",
     };
 
     $(document).ready(function()

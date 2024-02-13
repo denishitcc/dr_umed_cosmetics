@@ -3,18 +3,38 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Services;
 use App\Models\User;
+use App\Repositories\CalendarRepository;
 use Illuminate\Http\Request;
 
 class CalenderController extends Controller
 {
+    // /** @var \App\Repositories\CalendarRepository $repository */
+    // protected $repository;
+
+    // public function __construct(CalendarRepository $repository)
+    // {
+    //     $this->repository = $repository;
+    // }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $list_parent_cat = Category::where('parent_category','(top-level)')->get();
-        return view('calender.index',compact('list_parent_cat'));
+        $categories = Category::with([
+                            'children'
+                        ])->whereNull('parent_category')->get();
+
+        $services   = Services::get();
+
+        return view('calender.index')->with(
+            [
+                'categories' => $categories,
+                'services'   => $services
+            ]
+        );
     }
 
     /**
@@ -32,6 +52,28 @@ class CalenderController extends Controller
                 'title'      => $value['first_name'].' '.$value['last_name']
             ];
         }
+        return response()->json($data);
+    }
+
+    /**
+     * Method getCategoryServices
+     *
+     * @param Request $request [explicite description]
+     *
+     * @return mixed
+     */
+    public function getCategoryServices(Request $request)
+    {
+        $services   = Services::where('parent_category','=',$request->category_id)->get();
+        $data       = [];
+
+        foreach ($services as $value) {
+            $data[] = [
+                'id'            => $value['id'],
+                'service_name'  => $value['service_name']
+            ];
+        }
+
         return response()->json($data);
     }
 
