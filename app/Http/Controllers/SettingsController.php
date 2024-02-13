@@ -9,6 +9,8 @@ use Auth;
 use App\Models\User;
 use App\Models\Locations;
 use App\Models\BusinessSettings;
+use Illuminate\Support\Facades\Storage;
+
 class SettingsController extends Controller
 {
     public function settings(){
@@ -89,7 +91,7 @@ class SettingsController extends Controller
         {
             if($file != null)
             {
-                $destinationPath = public_path('images/user_image');
+                $destinationPath = storage_path('app/public/images/user_image');
                 $file->move($destinationPath,$file->getClientOriginalName());
                 $img = $file->getClientOriginalName();
             }
@@ -216,7 +218,7 @@ class SettingsController extends Controller
         // dd($file);
         if($file != null)
         {
-            $destinationPath = public_path('images/banner_image');
+            $destinationPath = storage_path('app/public/images/banner_image');
             $file->move($destinationPath,$file->getClientOriginalName());
 
             $auth = auth();
@@ -230,7 +232,7 @@ class SettingsController extends Controller
         {
             $auth = auth();
             $user = User::find($auth->user()->id);
-            if($request->imgremove == '1')
+            if($request->bannerremove == '1')
             {
                 $newUser = User::updateOrCreate(['id' => $auth->user()->id],[
                     'banner_image' => 'no-image.jpg',

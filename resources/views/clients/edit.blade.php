@@ -258,7 +258,7 @@
                             <div class="gallery client-phbox grid-4">
                             @foreach($client_photos as $photos)
                                 <figure>
-                                    <a href="{{URL::to('/images/clients_photos/'.$photos->client_photos)}}"><img src="{{URL::to('/images/clients_photos/'.$photos->client_photos)}}" alt=""></a>
+                                    <a href="{{asset('storage/images/clients_photos/').'/'.$photos->client_photos}}"><img src="{{asset('storage/images/clients_photos/').'/'.$photos->client_photos}}" alt=""></a>
                                 </figure>
                             @endforeach
                         </div>
@@ -425,7 +425,7 @@
                 <div class="gallery client-phbox grid-6 gap-2 h-188">
                     @foreach($client_photos as $photos)
                     <figure>
-                        <a href="{{URL::to('/images/clients_photos/'.$photos->client_photos)}}" data-fancybox="mygallery"><img src="{{URL::to('/images/clients_photos/'.$photos->client_photos)}}" alt=""></a>
+                        <a href="{{asset('storage/images/clients_photos/').'/'.$photos->client_photos}}" data-fancybox="mygallery"><img src="{{asset('storage/images/clients_photos/').'/'.$photos->client_photos}}" alt=""></a>
                         <!-- <button type="button" photos ids="{{$photos->id}}"class="btn black-btn round-6 dt-delete remove_image"><i class="ico-trash"></i></button> -->
                     </figure>
                     @endforeach

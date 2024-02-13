@@ -125,7 +125,7 @@
                     <div class="mt-2 d-grey font-13"><em>Photos you add here will be visible to this client in Online Booking.</em></div>
                 </div>
                 <div class="col-lg-2 text-center">
-                    <figure class="profile-img"><img src="../images/banner_image/no-image.jpg" alt="" id="imgPreview"></figure>
+                    <figure class="profile-img"><img src="{{ asset('/storage/images/banner_image/no-image.jpg') }}" alt="" id="imgPreview"></figure>
                     <button type="button" class="btn btn-sm black-btn round-6 dt-delete remove_image">
                         <i class="ico-trash"></i>
                         </button>
@@ -216,7 +216,7 @@
 
         $('.remove_image').click(function(e){
             
-            $('#imgPreview').attr('src', "{{URL::to('/images/banner_image/no-image.jpg')}}");
+            $('#imgPreview').attr('src', "{{ asset('/storage/images/banner_image/no-image.jpg') }}");
             $('#imgremove').val('1');
             // $('#imgInput').attr('src', '#');
             $("#imgInput").val(null);

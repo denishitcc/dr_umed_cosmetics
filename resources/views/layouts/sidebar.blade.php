@@ -199,9 +199,9 @@
                                 <li>
                                     <a href="#" class="profile" id="dropdownMenuClickableInside" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">Hi, <span>{{Auth::user()->first_name.' '.Auth::user()->last_name}}</span> 
                                     @if(Auth::user()->image=='')
-                                    <figure><img src="{{URL::to('/images/banner_image/no-image.jpg')}}" alt=""></figure>
+                                    <figure><img src="{{ asset('/storage/images/banner_image/no-image.jpg') }}" alt=""></figure>
                                     @else
-                                    <figure><img src="{{URL::to('/images/user_image/'.Auth::user()->image)}}" alt=""></figure>
+                                    <figure><img src="{{ asset('/storage/images/user_image/'.Auth::user()->image) }}" alt=""></figure>
                                     @endif
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">

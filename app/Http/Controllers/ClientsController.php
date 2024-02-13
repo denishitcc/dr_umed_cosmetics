@@ -86,7 +86,7 @@ class ClientsController extends Controller
             foreach($request->pics as $pics)
             {
                 // dd($pics);
-                $folderPath = public_path() . '/' . 'images/clients_photos/';
+                $folderPath = storage_path('app/public/images/clients_photos');
                 $image_parts = explode(";base64,", $pics);
                 // dd($image_parts);
                 $image_type_aux = explode("image/", $image_parts[0]);
@@ -105,7 +105,7 @@ class ClientsController extends Controller
         {
             foreach($request->docs as $docs)
             {
-                $folderPath = public_path() . '/' . 'images/clients_documents/';
+                $folderPath = storage_path('app/public/images/clients_documents');
                 $image_parts = explode(";base64,", $docs);
                 // dd($image_parts);
                 $image_type_aux = explode("image/", $image_parts[0]);
@@ -232,7 +232,7 @@ class ClientsController extends Controller
             foreach($request->pics as $pics)
             {
                 $file = $pics;
-                $destinationPath = public_path() . '/' . 'images/clients_photos/';
+                $destinationPath = storage_path('app/public/images/clients_photos');
                 $file->move($destinationPath,$file->getClientOriginalName());   
                 $photo = ClientsPhotos::create([
                     'client_id' => $request->id,
@@ -254,7 +254,7 @@ class ClientsController extends Controller
             foreach($request->pics as $pics)
             {
                 $file = $pics;
-                $destinationPath = public_path() . '/' . 'images/clients_documents/';
+                $destinationPath = storage_path('app/public/images/clients_documents');
                 $file->move($destinationPath,$file->getClientOriginalName());   
                 $photo = ClientsDocuments::create([
                     'client_id' => $request->id,

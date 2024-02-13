@@ -67,12 +67,12 @@
                                             
                                             <div class="col-lg-3 text-center">
                                                 @if($user->image!='')
-                                                    <figure class="profile-img"><img src="{{URL::to('/images/user_image/'.$user->image)}}" alt="" id="imgPreview"></figure>
+                                                    <figure class="profile-img"><img src="{{ asset('/storage/images/user_image/'.$user->image) }}" alt="" id="imgPreview"></figure>
                                                     <button type="button" class="btn btn-sm black-btn round-6 dt-delete remove_image">
                                                     <i class="ico-trash"></i>
                                                     </button>
                                                 @else
-                                                    <figure class="profile-img"><img src="{{URL::to('/images/banner_image/no-image.jpg')}}" alt="" id="imgPreview"></figure>
+                                                    <figure class="profile-img"><img src="{{ asset('/storage/images/banner_image/no-image.jpg') }}" alt="" id="imgPreview"></figure>
                                                     <button type="button" class="btn btn-sm black-btn round-6 dt-delete remove_image">
                                                     <i class="ico-trash"></i>
                                                     </button>
@@ -194,11 +194,11 @@
                                 <h5 class="d-grey mb-4">Recommended dimensions: 800px x 200px</h5>
                                 <form id="update_brand_image" name="update_brand_image" class="form" enctype='multipart/form-data' action="{{route('update-brand-image')}}" method="post">
                                 @csrf
-                                <input type="hidden" name="imgremove" id="imgremove" value="">
+                                <input type="hidden" name="bannerremove" id="bannerremove" value="">
                                 @if($user->banner_image!='')
-                                <div class="form-group"><img src="{{URL::to('/images/banner_image/'.$user->banner_image)}}" alt="" id="imgPreview"></div>
+                                <div class="form-group"><img src="{{ asset('/storage/images/banner_image/'.$user->banner_image) }}" alt="" id="imgBannerPreview"></div>
                                 @else
-                                <div class="form-group"><img src="{{URL::to('/images/banner_image/no-image.jpg')}}" alt="" id="imgPreview"></div>
+                                <div class="form-group"><img src="{{ asset('/storage/images/banner_image/no-image.jpg') }}" alt="" id="imgBannerPreview"></div>
                                 @endif
                                 
                                 <div class="row">
@@ -207,12 +207,12 @@
                                             <div class="icon-box">
                                                 <img src="img/upload-icon.png" alt="" class="up-icon">
                                                 <span class="txt-up">Upload File</span>
-                                                <input class="form-control" type="file" id="imgInput" name="banner_image" accept="image/png, image/gif, image/jpeg">
+                                                <input class="form-control" type="file" id="brandInput" name="banner_image" accept="image/png, image/gif, image/jpeg">
                                             </div>
                                         </label>
                                         
                                         
-                                        <button class="simple-link remove_image p-0 btn mt-2">Remove Banner</button> 
+                                        <button class="simple-link remove_banner p-0 btn mt-2">Remove Banner</button> 
                                     </div>
                                 </div>
                                 <div class="col-lg-12 text-lg-end mt-4">
@@ -340,12 +340,30 @@ headers: {
                 reader.readAsDataURL(this.files[0]);
             }
         });
+        $('#brandInput').change(function() {
+            if (this.files && this.files[0]) {
+
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    $('#imgBannerPreview').attr('src', e.target.result);
+                }
+
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
         $('.remove_image').click(function(e){
-            
-            $('#imgPreview').attr('src', "{{URL::to('/images/banner_image/no-image.jpg')}}");
+            debugger;
+            $('#imgPreview').attr('src', "{{ asset('/storage/images/banner_image/no-image.jpg') }}");
             $('#imgremove').val('1');
             e.preventDefault();
         })
+        $('.remove_banner').click(function(e){
+            debugger;
+            $('#imgBannerPreview').attr('src', "{{ asset('/storage/images/banner_image/no-image.jpg') }}");
+            $('#bannerremove').val('1');
+            e.preventDefault();
+        });
         $(".custom-close").on('click', function() {
             $('#change_pass').modal('hide');
         });

@@ -80,7 +80,7 @@ class UsersController extends Controller
         $file = $request->file('image');
         if($file != null)
         {
-            $destinationPath = public_path('images/user_image');
+            $destinationPath = storage_path('app/public/images/user_image');
             $file->move($destinationPath,$file->getClientOriginalName());
             $img = $file->getClientOriginalName();
         }
@@ -186,7 +186,7 @@ class UsersController extends Controller
         $file = $request->file('image');
         if($file != null)
         {
-            $destinationPath = public_path('images/user_image');
+            $destinationPath = storage_path('app/public/images/user_image');
             $file->move($destinationPath,$file->getClientOriginalName());
             $img = $file->getClientOriginalName();
         }

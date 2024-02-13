@@ -15,7 +15,7 @@
                     <form id="import_service" name="import_service" class="form d-flex align-items-center">
                         @csrf
                         <label for="import" class="btn btn-primary btn-md icon-btn-left me-2"><i class="ico-import me-2 fs-4"></i> Import a Services List</label>
-                        <a href="{{URL::to('csv_files/sample_service.csv')}}" class="simple-link">Download sample file</a>
+                        <a href="{{ asset('/storage/csv_files/sample_service.csv') }}" class="simple-link">Download sample file</a>
                         <input type="file" id="import" name="csv_file" style="display:none;" accept=".csv">    
                     </form>
             </div>

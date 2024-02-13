@@ -133,9 +133,9 @@
                 </div>
                 <div class="col-lg-2 text-center">
                     @if($users->image != '')
-                    <figure class="profile-img"><img src="{{asset('images/user_image/').'/'.$users->image}}" alt="" id="imgPreview"></figure>
+                    <figure class="profile-img"><img src="{{asset('storage/images/user_image/').'/'.$users->image}}" alt="" id="imgPreview"></figure>
                     @else
-                    <figure class="profile-img"><img src="../images/banner_image/no-image.jpg" alt="" id="imgPreview"></figure>
+                    <figure class="profile-img"><img src="{{asset('storage/images/banner_image/no-image.jpg')}}" alt="" id="imgPreview"></figure>
                     @endif
                     <button type="button" class="btn btn-sm black-btn round-6 dt-delete remove_image">
                         <i class="ico-trash"></i>
@@ -220,7 +220,7 @@
         });
         $('.remove_image').click(function(e){
             
-            $('#imgPreview').attr('src', "{{URL::to('/images/banner_image/no-image.jpg')}}");
+            $('#imgPreview').attr('src', "{{URL::to('/storage/images/banner_image/no-image.jpg')}}");
             $('#imgremove').val('1');
             $("#imgInput").val(null);
             e.preventDefault();

@@ -112,11 +112,11 @@ $(document).ready(function() {
               
               if(data == '')
               {
-                return "<figure class='photo'><img src=\"images/banner_image/no-image.jpg\"></figure>";
+                return "<figure class='photo'><img src=\"storage/images/banner_image/no-image.jpg\"></figure>";
               }
               else
               {
-                return "<figure class='photo'><img src=\"images/user_image/" + data + "\"></figure>";
+                return "<figure class='photo'><img src=\"storage/images/user_image/" + data + "\"></figure>";
               }
             }
         },
