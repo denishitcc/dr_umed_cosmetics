@@ -15,6 +15,8 @@ var DU = {};
             context.initialCalender();
             context.openAppointmentModal();
             context.changeServices();
+            context.selecedServices();
+            context.removeSelectedServices();
         },
 
         initialCalender: function(){
@@ -155,7 +157,7 @@ var DU = {};
                         $('#subcategory_text').text(categoryTitle);
                         $('#sub_services').empty();
                         $.each(data, function(index, item) {
-                            $("#sub_services").append("<li><a href='javascript:void(0);'>" + item.service_name + "</a></li>");
+                            $("#sub_services").append("<li><a href='javascript:void(0);' class='services' data-services_id="+ item.id +">" + item.service_name + "</a></li>");
                         });
                     },
                     error: function (error) {
@@ -165,5 +167,26 @@ var DU = {};
             });
         },
 
+        selecedServices: function(){
+            var context = this;
+
+            jQuery('#sub_services').on('click',".services", function(e) {
+                e.preventDefault();
+                var $this           = $(this),
+                    serviceId      = $this.data('services_id'),
+                    serviceTitle   = $this.text();
+
+                $("#selected_services").append("<li class='selected remove'><a href='javascript:void(0);' data-services_id="+ serviceId +">" + serviceTitle + "</a><span class='btn btn-cross cross-red remove_services'><i class='ico-close'></i></span></li>");
+            });
+        },
+
+        removeSelectedServices: function(){
+            var context = this;
+
+            jQuery('#selected_services').on('click',".remove_services", function(e) {
+                e.preventDefault();
+                $(this).closest('li').remove();
+            });
+        },
     }
 })();
