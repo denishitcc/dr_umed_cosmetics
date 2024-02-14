@@ -438,25 +438,32 @@ class ProductsController extends Controller
                 $locations_data = Locations::get();
 
                 foreach ($locations_data as $index => $location) {
-                    $locName = $location->location_name;
+                    $locName = $location->id;
                     
                     // Find the first matching record for the location
                     $availability_data = $availability->firstWhere('location_name', $locName);
-
-                    // Determine availability status based on the condition
-                    $isChecked = isset($request->locations_availability) && in_array($locName, $request->locations_availability);
-                    $availabilityStatus = $isChecked ? 'Available' : 'Not available';
-
-                    // Update availability data
-                    $availability_data->update([
-                        'min' => $isChecked ? $request->availability_min[$index] : null,
-                        'max' => $isChecked ? $request->availability_max[$index] : null,
-                        'availability' => $availabilityStatus,
-                    ]);
-
-                    // Optional: If you want to do something with the final_array
-                    $final_array[] = $availability_data;
-                }
+                
+                    // Check if availability data exists
+                    if ($availability_data) {
+                        // Determine availability status based on the condition
+                        $isChecked = isset($request->locations_availability) && in_array($locName, $request->locations_availability);
+                        
+                        $availabilityStatus = $isChecked ? 'Available' : 'Not available';
+                        
+                        // Update availability data
+                        $availability_data->update([
+                            'min' => $isChecked ? $request->availability_min[$index] : null,
+                            'max' => $isChecked ? $request->availability_max[$index] : null,
+                            'availability' => $availabilityStatus,
+                        ]);
+                
+                        // Optional: If you want to do something with the final_array
+                        $final_array[] = $availability_data;
+                    } else {
+                        // Handle case where availability data is not found for the location
+                        // You might want to log this or handle it differently based on your requirements
+                    }
+                }                
 
                 // Optional: If you want to do something with the final_array
                 // dd($final_array);

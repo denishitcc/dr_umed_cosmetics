@@ -216,7 +216,7 @@
                     <tr>
                         <td width="3%">
                             <!-- <input type="hidden" name="locations_availability[]" value="{{$loc->location_name}}"> -->
-                            <label class="cst-check check_value"><input type="checkbox" value="{{$loc->location_name}}" checked name="locations_availability[]"><span class="checkmark"></span></label>
+                            <label class="cst-check check_value"><input type="checkbox" value="{{$loc->id}}" checked name="locations_availability[]"><span class="checkmark"></span></label>
                         </td>
                         <td width="65%"> {{$loc->location_name}}</td>
                         <td class="ava_check"><input type="text" class="form-control" placeholder="-" id="min_price" name="availability_min[]" maxlength="5" > </td>
