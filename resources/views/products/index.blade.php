@@ -149,7 +149,7 @@
                     @foreach($locations as $index => $loc)
                         <tr>
                             <td><b>{{$loc->location_name}}</b></td>
-                            <input type="hidden" name="locs_name[]" value="{{$loc->location_name}}">
+                            <input type="hidden" name="locs_name[]" value="{{$loc->id}}">
                             <td class="text-center"><label class="cst-radio"><input type="radio" checked class="no_change" name="availability{{$index}}" value="(no change)"><span class="radio-lg dark"></span></label></td>
                             <td class="text-center"><label class="cst-radio"><input type="radio" name="availability{{$index}}" value="Not available"><span class="radio-lg dark"></span></label></td>
                             <td class="text-center"><label class="cst-radio"><input type="radio" name="availability{{$index}}" value="Available"><span class="radio-lg dark"></span></label></td>
