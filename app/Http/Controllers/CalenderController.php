@@ -7,6 +7,7 @@ use App\Models\Services;
 use App\Models\User;
 use App\Repositories\CalendarRepository;
 use Illuminate\Http\Request;
+use App\Models\Clients;
 
 class CalenderController extends Controller
 {
@@ -130,5 +131,18 @@ class CalenderController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+    
+    public function getAllClients(Request $request){
+        $clients = Clients::all();
+
+        $response = [
+            'success' => true,
+            'message' => 'Client display successfully!',
+            'type' => 'success',
+            'data' => $clients
+        ];
+
+        return response()->json($response);
     }
 }
