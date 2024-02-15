@@ -74,12 +74,14 @@ class CalenderController extends Controller
         $services = $services->get();
 
         $data       = [];
-
-        foreach ($services as $value) {
-            $data[] = [
-                'id'            => $value['id'],
-                'service_name'  => $value['service_name']
-            ];
+        if($services)
+        {
+            foreach ($services as $value) {
+                $data[] = [
+                    'id'            => $value['id'],
+                    'service_name'  => $value['service_name']
+                ];
+            }
         }
 
         return response()->json($data);
@@ -132,17 +134,30 @@ class CalenderController extends Controller
     {
         //
     }
-    
-    public function getAllClients(Request $request){
-        $clients = Clients::all();
 
-        $response = [
-            'success' => true,
-            'message' => 'Client display successfully!',
-            'type' => 'success',
-            'data' => $clients
-        ];
+    /**
+     * Method getAllClients
+     *
+     * @param Request $request [explicite description]
+     *
+     * @return mixed
+     */
+    public function getAllClients(Request $request)
+    {
+        $clients = Clients::where('firstname', 'like', '%' . $request->name . '%')->get();
+        $data       = [];
+        if($clients)
+        {
+            foreach ($clients as $value) {
+                $data[] = [
+                    'id'            => $value['id'],
+                    'first_name'    => $value['firstname'],
+                    'email'         => $value['email'],
+                    'mobile_no'     => $value['mobile_number'],
+                ];
+            }
+        }
 
-        return response()->json($response);
+        return response()->json($data);
     }
 }
