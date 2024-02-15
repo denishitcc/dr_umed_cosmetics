@@ -195,6 +195,10 @@ var DU = {};
             var context = this;
             $('.search_client').autocomplete({
                 source: function (request, response,modal) {
+                    if (request.term.trim() === '') {
+                        context.clearResults();
+                        return;
+                    }
                     $.ajax({
                         url: moduleConfig.getClients, // Replace with your actual API endpoint
                         type: 'POST',
@@ -222,6 +226,16 @@ var DU = {};
                     return false; // Prevent the input value from being updated with the selected value
                 }
             });
+            // Handling the change event of the input field
+            $('.search_client').on('input', function() {
+                if ($(this).val().trim() === '') {
+                    context.clearResults();
+                }
+            });
+        },
+        clearResults: function() {
+            var resultElement = document.getElementById("result");
+            resultElement.innerHTML = '';
         },
 
         displayResults: function(data){
@@ -277,6 +291,16 @@ var DU = {};
                     return false; // Prevent the input value from being updated with the selected value
                 }
             });
+            // Handling the change event of the input field
+            $('.search_client_modal').on('input', function() {
+                if ($(this).val().trim() === '') {
+                    context.clearResultsModal();
+                }
+            });
+        },
+        clearResultsModal: function() {
+            var resultElement = document.getElementById("search_client_modal");
+            resultElement.innerHTML = '';
         },
 
         displayResultsmodal: function(data){
@@ -305,4 +329,14 @@ var DU = {};
             selectedProductsDiv.append(newProductDiv);
         }
     }
+    $('.add_new_client').click(function(){
+        $('.client_detail').hide();
+        $('.new_client_head').show();
+        $('.client_form').show();
+    })
+    $('.cancel_client').click(function(){
+        $('.new_client_head').hide();
+        $('.client_form').hide();
+        $('.client_detail').show();
+    })
 })();
