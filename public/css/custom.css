@@ -837,6 +837,17 @@ div.dataTables_filter { text-align: right; float: right;}
 .btn-wait-list:hover{ background: #232323; border-color: #232323; color: #fff;}
 
 .ui-datepicker{ width: auto !important;}
+
+#external-events {
+  position: fixed;
+  z-index: 2;
+  top: 20px;
+  left: 20px;
+  width: 150px;
+  padding: 0 10px;
+  border: 1px solid #ccc;
+  background: #eee;
+}
 /*  Responsive  */
 
 @media (min-width: 768px) {

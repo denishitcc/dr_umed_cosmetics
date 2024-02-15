@@ -19,10 +19,26 @@ var DU = {};
             context.removeSelectedServices();
             context.searchClient();
             context.searchClientModal();
+            context.appointmentSaveBtn();
+
+            $('#clientmodal').hide();
+            $('#service_error').hide();
         },
 
         initialCalender: function(){
-            var context = this;
+            var context = this,
+                Draggable = FullCalendar.Draggable;
+                containerEl = document.getElementById('external-events');
+
+            new Draggable(containerEl, {
+                itemSelector: '.fc-event',
+                eventData: function (eventEl) {
+                    console.log(eventEl.innerText);
+                    return {
+                        title: eventEl.innerText
+                    };
+                }
+            });
             // Calender
             var calendarEl = document.getElementById('calendar');
                 context.calendar = new FullCalendar.Calendar(calendarEl, {
@@ -194,11 +210,7 @@ var DU = {};
         searchClient: function(){
             var context = this;
             $('.search_client').autocomplete({
-                source: function (request, response,modal) {
-                    if (request.term.trim() === '') {
-                        context.clearResults();
-                        return;
-                    }
+                source: function (request, response) {
                     $.ajax({
                         url: moduleConfig.getClients, // Replace with your actual API endpoint
                         type: 'POST',
@@ -259,11 +271,7 @@ var DU = {};
         searchClientModal: function(){
             var context = this;
             $('.search_client_modal').autocomplete({
-                source: function (request, response,modal) {
-                    if (!request.term.trim()) {
-                        $('.search_client_modal').empty();
-                        return;
-                    }
+                source: function (request, response) {
                     $.ajax({
                         url: moduleConfig.getClients, // Replace with your actual API endpoint
                         type: 'POST',
@@ -282,15 +290,17 @@ var DU = {};
                     });
                 },
                 minLength: 2, // minimum characters before triggering autocomplete
-                select: function (event, ui) {
+                onSelect: function (event, ui,data) {
                     console.log(ui);
+                    console.log(data);
                     // Handle the selection event
                     context.addSelectedProduct(ui.item.value);
                     // Clear the input after selection if needed
                     $(this).val('');
                     return false; // Prevent the input value from being updated with the selected value
                 }
-            });
+                // .appendTo($('.test ul'))
+            })
             // Handling the change event of the input field
             $('.search_client_modal').on('input', function() {
                 if ($(this).val().trim() === '') {
@@ -327,6 +337,29 @@ var DU = {};
             var newProductDiv = $('<div class="selected-product">');
             newProductDiv.text(product);
             selectedProductsDiv.append(newProductDiv);
+        },
+
+        appointmentSaveBtn: function(){
+            $('#appointmentSaveBtn').on('click' ,function(e){
+                e.preventDefault();
+                var clientselectedServicesCount = $('#selected_services').children("li").length;
+
+                if(clientselectedServicesCount == 0)
+                {
+                    $('#service_error').show();
+                }
+                else{
+                    $('#service_error').hide();
+                    var resultElement = document.getElementById("clientDetails"),
+                        details =  "<div>";
+                        details += "<label>appointment summary</label><br><label>Drag and drop on to a day on the appointment book</label>";
+                        details += "</div>";
+
+                    resultElement.innerHTML += details ;
+
+                }
+                console.log(clientselectedServicesCount);
+            });
         }
     }
     $('.add_new_client').click(function(){
@@ -338,5 +371,9 @@ var DU = {};
         $('.new_client_head').hide();
         $('.client_form').hide();
         $('.client_detail').show();
+    })
+    $('.client_change').click(function(){
+        $('.clientCreateModal').show();
+        $('#clientmodal').hide();
     })
 })();

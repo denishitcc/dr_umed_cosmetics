@@ -152,6 +152,7 @@ class CalenderController extends Controller
                 $data[] = [
                     'id'            => $value['id'],
                     'first_name'    => $value['firstname'],
+                    'last_name'     => $value['lastname'],
                     'email'         => $value['email'],
                     'mobile_no'     => $value['mobile_number'],
                 ];
