@@ -14,9 +14,11 @@
                     <a href="javascript:void(0);" class="btn btn-primary btn-md me-3 w-100" id="appointment">New Appointment</a>
                     <a href="#" class="btn btn-wait-list"><i class="ico-calendar"></i></a>
                 </div>
-                <div class="form-group icon">
-                    <input type="text" id="search" class="form-control " placeholder="Search for a client" onkeyup="changeInput(this.value)">
+                <div class="form-group icon searh_data">
+                    <input type="text" id="search" class="form-control " autocomplete="off" placeholder="Search for a client" onkeyup="changeInput(this.value)">
                     <i class="ico-search"></i>
+                </div>
+                <div id="clientDetails">
                 </div>
                 <div id="result" class="list-group"></div>
                 <div id="selectedProducts"></div>
@@ -62,7 +64,7 @@
                 <div class="modal-body">
                     <div class="one-inline align-items-center mb-5 client_detail">
                         <div class="form-group icon mb-0 me-3">
-                            <input type="text" class="form-control" id="searchmodel" placeholder="Search for a client"  onkeyup="changeInputModal(this.value)">
+                            <input type="text" class="form-control" autocomplete="off" id="searchmodel" placeholder="Search for a client"  onkeyup="changeInputModal(this.value)">
                             <!-- search_client_modal -->
                             <i class="ico-search"></i>
                         </div>
@@ -267,6 +269,7 @@
                 for (var i = 0; i < res.length; ++i) {
                     // Push client details to the client_details array
                     client_details.push({
+                        id: res[i].id,
                         name: res[i].first_name,
                         email: res[i].email,
                         mobile_number: res[i].mobile_no
@@ -309,37 +312,110 @@
 
 
     function changeInput(val) {
+        $('#clientDetails').empty();
         var autoCompleteResult = matchClient(val);
         var resultElement = document.getElementById("result");
-        resultElement.innerHTML = "";
-        for (var i = 0, limit = 10, len = autoCompleteResult.length; i < len && i < limit; i++) {
-            var person = autoCompleteResult[i];
-            var firstCharacter = person.name.charAt(0).toUpperCase();
-            var details = "<div class='client-name'><div class='drop-cap' style='background: #D0D0D0; color: #000;'>" + firstCharacter + "</div></div>" + "<p>" + person.name + "<br>" + person.email + " | " + person.mobile_number + "</p>";
-            resultElement.innerHTML += "<a class='list-group-item list-group-item-action' href='#' onclick='setSearch(\"" + person.name + "\")'>" + details + "</a>";
+        if (val.trim() === "") {
+            resultElement.innerHTML = ""; // Clear the result if search box is empty
+        } else {
+            if (autoCompleteResult.length === 0) {
+                resultElement.innerHTML = "<p>No records found</p>";
+            } else {
+                resultElement.innerHTML = ""; // Clear previous message if records are found
+                for (var i = 0, limit = 10, len = autoCompleteResult.length; i < len && i < limit; i++) {
+                    var person = autoCompleteResult[i];
+                    var firstCharacter = person.name.charAt(0).toUpperCase();
+                    var details = "<div class='client-name'><div class='drop-cap' style='background: #D0D0D0; color: #000;'>" + firstCharacter + "</div></div>" + "<p>" + person.name + "<br>" + person.email + " | " + person.mobile_number + "</p>";
+                    resultElement.innerHTML += "<a class='list-group-item list-group-item-action' href='#' onclick='setSearch(\"" + person.name + "\")'>" + details + "</a>";
+                }
+            }
         }
     }
 
     function changeInputModal(val) {
+        $('#clientDetails').empty();
         var autoCompleteResult = matchClient(val);
         var resultElement = document.getElementById("resultmodal");
-        resultElement.innerHTML = "";
-        for (var i = 0, limit = 10, len = autoCompleteResult.length; i < len && i < limit; i++) {
-            var person = autoCompleteResult[i];
-            var firstCharacter = person.name.charAt(0).toUpperCase();
-            var details = "<div class='client-name'><div class='drop-cap' style='background: #D0D0D0; color: #000;'>" + firstCharacter + "</div></div>" + "<p>" + person.name + "<br>" + person.email + " | " + person.mobile_number + "</p>";
-            resultElement.innerHTML += "<a class='list-group-item list-group-item-action' href='#' onclick='setSearchModal(\"" + person.name + "\")'>" + details + "</a>";
+        if (val.trim() === "") {
+            resultElement.innerHTML = ""; // Clear the result if search box is empty
+        } else {
+            if (autoCompleteResult.length === 0) {
+                resultElement.innerHTML = "<p>No records found</p>";
+            } else {
+                resultElement.innerHTML = ""; // Clear previous message if records are found
+                for (var i = 0, limit = 10, len = autoCompleteResult.length; i < len && i < limit; i++) {
+                    var person = autoCompleteResult[i];
+                    var firstCharacter = person.name.charAt(0).toUpperCase();
+                    var details = "<div class='client-name'><div class='drop-cap' style='background: #D0D0D0; color: #000;'>" + firstCharacter + "</div></div>" + "<p>" + person.name + "<br>" + person.email + " | " + person.mobile_number + "</p>";
+                    resultElement.innerHTML += "<a class='list-group-item list-group-item-action' href='#' onclick='setSearchModal(\"" + person.name + "\")'>" + details + "</a>";
+                }
+            }
         }
     }
 
     function setSearch(value) {
         document.getElementById('search').value = value;
         document.getElementById("result").innerHTML = "";
+        
+        // Iterate over client_details to find a matching value
+        for (const key in client_details) {
+            if (client_details.hasOwnProperty(key)) {
+                const client = client_details[key];
+                // Check if value matches any field in the client object
+                if (client.email === value || client.mobile_number === value || client.name === value) {
+                    // If a match is found, dynamically bind HTML to clientDetails element
+                    $('#clientDetails').html(
+                        "<div class='client-name'><div class='drop-cap' style='background: #D0D0D0; color: #000;'>" + 
+                        client.name.charAt(0).toUpperCase() + 
+                        "</div></div>" + 
+                        "<p>" + 
+                        client.name + "<br>" + 
+                        client.email + " | " + 
+                        client.mobile_number +
+                        "</p>" +
+                        "<button class='btn btn-primary btn-sm me-2' client-id='"+ client.id+"' onclick='buttonAction1()'>Client Card</button>" +
+                        "<button class='btn btn-primary btn-sm me-2' client-id='"+ client.id+"' onclick='buttonAction2()'>History</button>" +
+                        "<button class='btn btn-primary btn-sm me-2' client-id='"+ client.id+"' onclick='buttonAction3()'>Upcoming</button>"
+                    );
+
+                    document.getElementById('search').value = '';
+                    break; // Stop iterating once a match is found
+                }
+            }
+        }
+        
     }
 
     function setSearchModal(value) {
         document.getElementById('searchmodel').value = value;
         document.getElementById("resultmodal").innerHTML = "";
+
+        // Iterate over client_details to find a matching value
+        for (const key in client_details) {
+            if (client_details.hasOwnProperty(key)) {
+                const client = client_details[key];
+                // Check if value matches any field in the client object
+                if (client.email === value || client.mobile_number === value || client.name === value) {
+                    // If a match is found, dynamically bind HTML to clientDetails element
+                    $('#clientDetails').html(
+                        "<div class='client-name'><div class='drop-cap' style='background: #D0D0D0; color: #000;'>" + 
+                        client.name.charAt(0).toUpperCase() + 
+                        "</div></div>" + 
+                        "<p>" + 
+                        client.name + "<br>" + 
+                        client.email + " | " + 
+                        client.mobile_number +
+                        "</p>" +
+                        "<button class='btn btn-primary btn-sm me-2' client-id='"+ client.id+"' onclick='buttonAction1()'>Client Card</button>" +
+                        "<button class='btn btn-primary btn-sm me-2' client-id='"+ client.id+"' onclick='buttonAction2()'>History</button>" +
+                        "<button class='btn btn-primary btn-sm me-2' client-id='"+ client.id+"' onclick='buttonAction3()'>Upcoming</button>"
+                    );
+
+                    document.getElementById('searchmodel').value = '';
+                    break; // Stop iterating once a match is found
+                }
+            }
+        }
     }
 </script>
 </html>
