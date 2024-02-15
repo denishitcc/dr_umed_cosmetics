@@ -15,19 +15,39 @@
                     <a href="#" class="btn btn-wait-list"><i class="ico-calendar"></i></a>
                 </div>
                 <div class="form-group icon">
-                    <input type="text" id="search" onkeyup="changeInput(this.value)" class="form-control" placeholder="Search for a client">
+                    <input type="text" id="search" class="form-control search_client" placeholder="Search for a client">
                     <i class="ico-search"></i>
-                    <div id="result" class="list-group"></div>
                 </div>
+                <div id="result" class="list-group"></div>
+                <div id="selectedProducts"></div>
                 <div id="mycalendar"> </div>
-                {{-- <img src="img/demo-calander.png" alt=""> --}}
+                {{-- <img src="img/demo-calander.png" alt=""> onkeyup="changeInput(this.value)" --}}
             </div>
 
             <div class="col-lg-9">
                 <div class="main-apnt-calendar" id="calendar">
                 </div>
             </div>
-
+            {{-- <div id='external-events'>
+                <p>
+                    <strong>Draggable Events</strong>
+                </p>
+                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+                    <div class='fc-event-main'>My Event 1</div>
+                </div>
+                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+                    <div class='fc-event-main'>My Event 2</div>
+                </div>
+                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+                    <div class='fc-event-main'>My Event 3</div>
+                </div>
+                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+                    <div class='fc-event-main'>My Event 4</div>
+                </div>
+                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+                    <div class='fc-event-main'>My Event 5</div>
+                </div>
+            </div> --}}
         </div>
     </div>
 
@@ -42,9 +62,10 @@
                 <div class="modal-body">
                     <div class="one-inline align-items-center mb-5">
                         <div class="form-group icon mb-0 me-3">
-                            <input type="text" class="form-control" placeholder="Search for a client">
+                            <input type="text" class="form-control search_client_modal" placeholder="Search for a client">
                             <i class="ico-search"></i>
                         </div>
+                        <div class="list-group" id="search_client_modal"></div>
                         <span class="me-3">Or</span>
                         <button type="button" class="btn btn-primary btn-md">Add a New Client</button>
                     </div>
@@ -137,6 +158,7 @@
     var moduleConfig = {
         doctorAppointments: "{!! route('doctor-appointments') !!}",
         categotyByservices: "{!! route('calender.get-category-services') !!}",
+        getClients:         "{!! route('calendar.get-all-clients') !!}",
     };
 
     $(document).ready(function()
@@ -149,78 +171,77 @@
 
     // $.ajaxvar client_details = [];
 
-    $.ajax({
-        type: "POST",
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        url: "{{route('calendar.get-all-clients')}}",
-        data: {
-            _token: $('meta[name="csrf-token"]').attr('content'),
-        },
-        dataType: "json",
-        success: function(res) {
-            debugger;
-            if (res.data.length > 0) {
-                for (var i = 0; i < res.data.length; ++i) {
-                    // Push client details to the client_details array
-                    client_details.push({
-                        name: res.data[i].firstname,
-                        email: res.data[i].email,
-                        mobile_number: res.data[i].mobile_number
-                    });
-                }
-            } else {
-                $('.table-responsive').empty();
-            }
-        },
-        error: function(jqXHR, exception) {
-            // Handle error
-        }
-    });
+    // $.ajax({
+    //     type: "POST",
+    //     headers: {
+    //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    //     },
+    //     url: "{{route('calendar.get-all-clients')}}",
+    //     data: {
+    //         _token: $('meta[name="csrf-token"]').attr('content'),
+    //     },
+    //     dataType: "json",
+    //     success: function(res) {
+    //         if (res.data.length > 0) {
+    //             for (var i = 0; i < res.data.length; ++i) {
+    //                 // Push client details to the client_details array
+    //                 client_details.push({
+    //                     name: res.data[i].firstname,
+    //                     email: res.data[i].email,
+    //                     mobile_number: res.data[i].mobile_number
+    //                 });
+    //             }
+    //         } else {
+    //             $('.table-responsive').empty();
+    //         }
+    //     },
+    //     error: function(jqXHR, exception) {
+    //         // Handle error
+    //     }
+    // });
 
 
-    function matchClient(input) {
-        var reg = new RegExp(input.trim(), "i");
-        var res = [];
-        if (input.trim().length === 0) {
-            return res;
-        }
-        for (var i = 0, len = client_details.length; i < len; i++) {
-            var person = client_details[i];
-            // Check specifically for the mobile_number number field
-            if (person.mobile_number && person.mobile_number.match(reg)) {
-                res.push(person);
-            } else {
-                // If mobile_number number didn't match, check other fields
-                for (var key in person) {
-                    if (person.hasOwnProperty(key) && typeof person[key] === 'string' && person[key].match(reg)) {
-                        res.push(person);
-                        break; // Break loop if any field matches
-                    }
-                }
-            }
-        }
-        return res;
-    }
+    // function matchClient(input) {
+    //     var reg = new RegExp(input.trim(), "i");
+    //     var res = [];
+    //     if (input.trim().length === 0) {
+    //         return res;
+    //     }
+    //     for (var i = 0, len = client_details.length; i < len; i++) {
+    //         var person = client_details[i];
+    //         // Check specifically for the mobile_number number field
+    //         if (person.mobile_number && person.mobile_number.match(reg)) {
+    //             res.push(person);
+    //         } else {
+    //             // If mobile_number number didn't match, check other fields
+    //             for (var key in person) {
+    //                 if (person.hasOwnProperty(key) && typeof person[key] === 'string' && person[key].match(reg)) {
+    //                     res.push(person);
+    //                     break; // Break loop if any field matches
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     return res;
+    // }
 
 
 
-    function changeInput(val) {
-        var autoCompleteResult = matchClient(val);
-        var resultElement = document.getElementById("result");
-        resultElement.innerHTML = "";
-        for (var i = 0, limit = 10, len = autoCompleteResult.length; i < len && i < limit; i++) {
-            var person = autoCompleteResult[i];
-            var details = "<p>" + person.name + "<br>" + person.email + " | " + person.mobile_number + "</p>";
-            resultElement.innerHTML += "<a class='list-group-item list-group-item-action' href='#' onclick='setSearch(\"" + person.name + "\")'>" + details + "</a>";
-        }
-    }
+    // function changeInput(val) {
+    //     var autoCompleteResult = matchClient(val);
+    //     var resultElement = document.getElementById("result");
+    //     resultElement.innerHTML = "";
+    //     for (var i = 0, limit = 10, len = autoCompleteResult.length; i < len && i < limit; i++) {
+    //         var person = autoCompleteResult[i];
+    //         var details = "<p>" + person.name + "<br>" + person.email + " | " + person.mobile_number + "</p>";
+    //         resultElement.innerHTML += "<a class='list-group-item list-group-item-action' href='#' onclick='setSearch(\"" + person.name + "\")'>" + details + "</a>";
+    //     }
+    // }
 
-    function setSearch(value) {
-        document.getElementById('search').value = value;
-        document.getElementById("result").innerHTML = "";
-    }
+    // function setSearch(value) {
+    //     document.getElementById('search').value = value;
+    //     document.getElementById("result").innerHTML = "";
+    // }
 </script>
 </html>
 @endsection

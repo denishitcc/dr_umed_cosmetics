@@ -17,6 +17,8 @@ var DU = {};
             context.changeServices();
             context.selecedServices();
             context.removeSelectedServices();
+            context.searchClient();
+            context.searchClientModal();
         },
 
         initialCalender: function(){
@@ -188,5 +190,119 @@ var DU = {};
                 $(this).closest('li').remove();
             });
         },
+
+        searchClient: function(){
+            var context = this;
+            $('.search_client').autocomplete({
+                source: function (request, response,modal) {
+                    $.ajax({
+                        url: moduleConfig.getClients, // Replace with your actual API endpoint
+                        type: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: {
+                            'name' : request.term
+                        },
+                        success: function (data) {
+                            context.displayResults(data);
+                        },
+                        error: function (error) {
+                            console.error('Error fetching resources:', error);
+                        }
+                    });
+                },
+                minLength: 2, // minimum characters before triggering autocomplete
+                select: function (event, ui) {
+                    console.log(ui);
+                    // Handle the selection event
+                    context.addSelectedProduct(ui.item.value);
+                    // Clear the input after selection if needed
+                    $(this).val('');
+                    return false; // Prevent the input value from being updated with the selected value
+                }
+            });
+        },
+
+        displayResults: function(data){
+            var resultElement = document.getElementById("result");
+            resultElement.innerHTML = '';
+
+            if (data.length === 0) {
+                resultElement.append('<p>No results found</p>');
+            } else {
+                $.each(data, function(index, item) {
+                    var title_details = "Results <label class='blue-bold'> (" + data.length + ")</label>";
+                    data.forEach(function (item) {
+
+                        var details = "<div class='client-invo-notice'>" + item.first_name + "<br>" + item.email + " | " + item.mobile_no + "</div>";
+                        resultElement.innerHTML += title_details + details ;
+                    });
+                });
+            }
+        },
+
+        searchClientModal: function(){
+            var context = this;
+            $('.search_client_modal').autocomplete({
+                source: function (request, response,modal) {
+                    if (!request.term.trim()) {
+                        $('.search_client_modal').empty();
+                        return;
+                    }
+                    $.ajax({
+                        url: moduleConfig.getClients, // Replace with your actual API endpoint
+                        type: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: {
+                            'name' : request.term
+                        },
+                        success: function (data) {
+                            context.displayResultsmodal(data);
+                        },
+                        error: function (error) {
+                            console.error('Error fetching resources:', error);
+                        }
+                    });
+                },
+                minLength: 2, // minimum characters before triggering autocomplete
+                select: function (event, ui) {
+                    console.log(ui);
+                    // Handle the selection event
+                    context.addSelectedProduct(ui.item.value);
+                    // Clear the input after selection if needed
+                    $(this).val('');
+                    return false; // Prevent the input value from being updated with the selected value
+                }
+            });
+        },
+
+        displayResultsmodal: function(data){
+            console.log(data);
+            var resultElement = document.getElementById("search_client_modal");
+            resultElement.innerHTML = '';
+
+            if (data.length === 0) {
+                resultElement.append('<p>No results found</p>');
+            } else {
+                $.each(data, function(index, item) {
+                    data.forEach(function (item) {
+                        var title_details = "Results <label class='blue-bold'> (" + data.length + ")</label>";
+                        var details = "<div class='client-invo-notice'>" + item.first_name + "<br>" + item.email + " | " + item.mobile_no + "</div>";
+                        resultElement.innerHTML += title_details + details ;
+                    });
+                });
+            }
+        },
+
+        addSelectedProduct: function(product){
+            console.log(product);
+            var selectedProductsDiv = $('#selectedProducts');
+            var newProductDiv = $('<div class="selected-product">');
+            newProductDiv.text(product);
+            selectedProductsDiv.append(newProductDiv);
+        }
     }
 })();
