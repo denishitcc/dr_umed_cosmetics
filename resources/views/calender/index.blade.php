@@ -1102,6 +1102,9 @@
                             text: "Client Documents Updated successfully.",
                             type: "success",
                         }).then((result) => {
+                            var documentsCount = parseInt($('.documents_count').text());
+                            var resultdoc = documentsCount + 1;
+                            $('.documents_count').text(resultdoc);
                             // Bind links for each uploaded file
                             var files = inputElement.files; // Get selected files
                             for (var i = 0; i < files.length; i++) {
