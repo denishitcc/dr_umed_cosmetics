@@ -838,15 +838,19 @@ div.dataTables_filter { text-align: right; float: right;}
 
 .ui-datepicker{ width: auto !important;}
 
-#external-events {
-  position: fixed;
+ #external-events {
+  /* position: fixed;
   z-index: 2;
   top: 20px;
   left: 20px;
   width: 150px;
-  padding: 0 10px;
-  border: 1px solid #ccc;
+  padding: 0 10px; */
   background: #eee;
+  border: 1px solid #ccc;
+}
+#external-events .fc-event {
+  cursor: move;
+  margin: 3px 0;
 }
 /*  Responsive  */
 
