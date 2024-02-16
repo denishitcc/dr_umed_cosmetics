@@ -23,11 +23,12 @@ var DU = {};
 
             $('#clientmodal').hide();
             $('#service_error').hide();
+            // $("#external-events").draggable()
         },
 
         initialCalender: function(){
-            var context = this,
-                Draggable = FullCalendar.Draggable;
+            var context     = this,
+                Draggable   = FullCalendar.Draggable;
                 containerEl = document.getElementById('external-events');
 
             new Draggable(containerEl, {
@@ -44,6 +45,8 @@ var DU = {};
                 context.calendar = new FullCalendar.Calendar(calendarEl, {
                 selectable: true,
                 editable: true,
+                droppable: true,
+                aspectRatio: 1.8,
                 initialView: 'resourceTimeGridDay',
                 buttonText: {
                     today: 'Today',
@@ -95,6 +98,11 @@ var DU = {};
                     //     "start": "2024-02-08T07:00:00+00:00"
                     // }
                 ],
+                drop: function(info) {
+                    //remove draggable event
+                    info.draggedEl.parentNode.removeChild(info.draggedEl);
+                    $("#external-events").remove();
+                },
                 dayMaxEvents: true,
                 select: function(start, end, allDays){
                     $('#New_appointment').modal('toggle');
@@ -194,7 +202,7 @@ var DU = {};
                     serviceId      = $this.data('services_id'),
                     serviceTitle   = $this.text();
 
-                $("#selected_services").append("<li class='selected remove'><a href='javascript:void(0);' data-services_id="+ serviceId +">" + serviceTitle + "</a><span class='btn btn-cross cross-red remove_services'><i class='ico-close'></i></span></li>");
+                $("#selected_services").append("<li class='selected remove' data-services_id="+ serviceId +"><a href='javascript:void(0);' data-services_id="+ serviceId +">" + serviceTitle + "</a><span class='btn btn-cross cross-red remove_services'><i class='ico-close'></i></span></li>");
             });
         },
 
@@ -314,7 +322,6 @@ var DU = {};
         },
 
         displayResultsmodal: function(data){
-            console.log(data);
             var resultElement = document.getElementById("search_client_modal");
             resultElement.innerHTML = '';
 
@@ -340,6 +347,8 @@ var DU = {};
         },
 
         appointmentSaveBtn: function(){
+            var context = this;
+
             $('#appointmentSaveBtn').on('click' ,function(e){
                 e.preventDefault();
                 var clientselectedServicesCount = $('#selected_services').children("li").length;
@@ -350,28 +359,37 @@ var DU = {};
                 }
                 else{
                     $('#service_error').hide();
+
                     var resultElement = document.getElementById("clientDetails"),
                         details =  "<div>";
                         details += "<label>appointment summary</label><br><label>Drag and drop on to a day on the appointment book</label>";
                         details += "</div>";
+                    resultElement.innerHTML += details;
 
-                    resultElement.innerHTML += details ;
+                    $("#selected_services > li").each(function(){
+                        $('#external-events').append("<div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'><div class='fc-event-main'>"+$(this).text()+"</div></div>");
+                    });
 
+                    // $('#external-events').draggable();
+
+                    context.selectors.appointmentModal.modal('hide');
                 }
-                console.log(clientselectedServicesCount);
             });
         }
     }
+
     $('.add_new_client').click(function(){
         $('.client_detail').hide();
         $('.new_client_head').show();
         $('.client_form').show();
     })
+
     $('.cancel_client').click(function(){
         $('.new_client_head').hide();
         $('.client_form').hide();
         $('.client_detail').show();
     })
+
     $('.client_change').click(function(){
         $('.clientCreateModal').show();
         $('#clientmodal').hide();

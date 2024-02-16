@@ -18,8 +18,8 @@
                     <input type="text" id="search" class="form-control " autocomplete="off" placeholder="Search for a client" onkeyup="changeInput(this.value)">
                     <i class="ico-search"></i>
                 </div>
-                <div id="clientDetails">
-                </div>
+                <div id="clientDetails"></div>
+                <div id='external-events'></div>
                 <div id="result" class="list-group"></div>
                 <div id="mycalendar"> </div>
                 {{-- <img src="img/demo-calander.png" alt="" class="search_client"> onkeyup="changeInput(this.value)" --}}
@@ -27,26 +27,6 @@
 
             <div class="col-lg-9">
                 <div class="main-apnt-calendar" id="calendar">
-                </div>
-            </div>
-            <div id='external-events'>
-                <p>
-                    <strong>Draggable Events</strong>
-                </p>
-                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-                    <div class='fc-event-main'>My Event 1</div>
-                </div>
-                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-                    <div class='fc-event-main'>My Event 2</div>
-                </div>
-                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-                    <div class='fc-event-main'>My Event 3</div>
-                </div>
-                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-                    <div class='fc-event-main'>My Event 4</div>
-                </div>
-                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-                    <div class='fc-event-main'>My Event 5</div>
                 </div>
             </div>
         </div>
@@ -248,6 +228,7 @@
     $(document).ready(function()
     {
         DU.appointment.init();
+        $('#external-events').draggable();
     });
     //get all client details
 
