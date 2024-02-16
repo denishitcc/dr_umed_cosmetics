@@ -249,6 +249,7 @@ class ClientsController extends Controller
     }
     public function updateDocuments(Request $request)
     {
+        $insertedIds = []; // Array to hold the inserted IDs
         if(isset($request->pics))
         {
             foreach($request->pics as $pics)
@@ -260,12 +261,15 @@ class ClientsController extends Controller
                     'client_id' => $request->id,
                     'client_documents' => $file->getClientOriginalName(),
                 ]);
+                // Add the inserted ID to the array
+                $insertedIds[] = $photo->id;
             }
         }
         $response = [
             'success' => true,
             'message' => 'Client Documents Updated successfully!',
             'type' => 'success',
+            'client_id' => $insertedIds // Include the client ID in the response
         ];
         return response()->json($response);
     }
