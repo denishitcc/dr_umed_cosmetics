@@ -1015,7 +1015,12 @@
                     return function (e) {
                         var fileName = file.name;
                         var fileContents = e.target.result;
-                        $('.client-phbox').append('<input type="hidden" name="hdn_img" value=' + file + '><figure imgname=' + fileName + ' id="remove_image" class="remove_image"><img src=' + fileContents + '></figure>');
+                        
+                        $('.client-phbox').append('<input type="hidden" name="hdn_img" value="' + file + '">' +
+                        '<figure imgname="' + fileName + '" id="remove_image" class="remove_image">' +
+                        '<a href='+ fileContents +' data-fancybox="mygallery">' +
+                        '<img src=' + fileContents + ' class="img-fluid">' +
+                        '</a></figure>');
                     };
                 })(currFile);
                 reader.readAsDataURL(this.files[i]);
@@ -1038,6 +1043,9 @@
                             text: "Client Photos Updated successfully.",
                             type: "success",
                         }).then((result) => {
+                            var photosCount = parseInt($('.photos_count').text());
+                            var resultdoc = photosCount + 1;
+                            $('.photos_count').text(resultdoc);
                             // window.location = "{{url('calender')}}/"
                             // window.location = "{{url('clients')}}"//'/player_detail?username=' + name;
                         });
@@ -1363,9 +1371,9 @@
                         client.email + " | " +
                         client.mobile_number +
                         "</p>" +
-                        "<button class='btn btn-primary btn-sm me-2' client-id='"+ client.id+"'>Client Card</button>" +
-                        "<button class='btn btn-primary btn-sm me-2' client-id='"+ client.id+"'>History</button>" +
-                        "<button class='btn btn-primary btn-sm me-2' client-id='"+ client.id+"'>Upcoming</button>"
+                        "<button class='btn btn-primary btn-sm me-2 open-client-card-btn' data-client-id='"+ client.id+"'>Client Card</button>" +
+                        "<button class='btn btn-primary btn-sm me-2' data-client-id='"+ client.id+"'>History</button>" +
+                        "<button class='btn btn-primary btn-sm me-2' data-client-id='"+ client.id+"'>Upcoming</button>"
                     );
                     document.getElementById('searchmodel').value = '';
                     break; // Stop iterating once a match is found
