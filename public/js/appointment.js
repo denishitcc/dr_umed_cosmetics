@@ -195,13 +195,16 @@ var DU = {};
 
         selecedServices: function(){
             var context = this;
-            $(document).on('click', '#sub_services', function (e) {
-                e.preventDefault();
-                var $this           = $(this),
-                    serviceId      = $this.data('services_id'),
-                    serviceTitle   = $this.text();        
-                $("#selected_services").append("<li class='selected remove' data-services_id="+ serviceId +"><a href='javascript:void(0);' data-services_id="+ serviceId +">" + serviceTitle + "</a><span class='btn btn-cross cross-red remove_services'><i class='ico-close'></i></span></li>");
-            });     
+            $(document).ready(function() {
+                $('#sub_services').on('click', '.services', function(e) {
+                  e.preventDefault();
+                  var $this = $(this),
+                    serviceId = $this.data('services_id'),
+                    serviceTitle = $this.text();
+              
+                  $("#selected_services").append("<li class='selected remove' data-services_id=" + serviceId + "><a href='javascript:void(0);' data-services_id=" + serviceId + ">" + serviceTitle + "</a><span class='btn btn-cross cross-red remove_services'><i class='ico-close'></i></span></li>");
+                });
+            });   
             // jQuery('#sub_services').on('click',".services", function(e) {
             //     e.preventDefault();
             //     var $this           = $(this),
