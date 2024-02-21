@@ -181,7 +181,7 @@
                                         <ul id="sub_services">
                                             @foreach ($services as $services)
                                                 <li>
-                                                    <a href="javascript:void(0);" class="services" data-services_id="{{$services->id}}">{{ $services->service_name }}</a>
+                                                    <a href="javascript:void(0);" class="services" data-services_id="{{$services->id}}" data-category_id="{{$services->parent_category}}">{{ $services->service_name }}</a>
                                                 </li>
                                             @endforeach
                                         </ul>
@@ -933,9 +933,11 @@
 <script src="{{ asset('js/appointment.js') }}"></script>
 <script type="text/javascript">
     var moduleConfig = {
-        doctorAppointments: "{!! route('doctor-appointments') !!}",
+        getStaffList:       "{!! route('get-staff-list') !!}",
         categotyByservices: "{!! route('calender.get-category-services') !!}",
         getClients:         "{!! route('calendar.get-all-clients') !!}",
+        createAppointment:  "{!! route('calendar.create-appointments') !!}",
+        getEvents:          "{!! route('calendar.get-events') !!}",
     };
 
     $(document).ready(function()
@@ -1326,23 +1328,25 @@
 
         // Iterate over client_details to find a matching value
         for (const key in client_details) {
+            console.log(client_details);
             if (client_details.hasOwnProperty(key)) {
                 const client = client_details[key];
                 // Check if value matches any field in the client object
                 if (client.email === value || client.mobile_number === value || client.name === value) {
+                    console.log(client);
                     // If a match is found, dynamically bind HTML to clientDetails element
                     $('#clientDetails').html(
-                        "<div class='client-name'><div class='drop-cap' style='background: #D0D0D0; color: #000;'>" +
-                        client.name.charAt(0).toUpperCase() +
-                        "</div></div>" +
-                        "<p>" +
-                        client.name + "<br>" +
-                        client.email + " | " +
-                        client.mobile_number +
-                        "</p>" +
-                        "<button class='btn btn-primary btn-sm me-2 open-client-card-btn' data-client-id='"+ client.id+"'>Client Card</button>" +
-                        "<button class='btn btn-primary btn-sm me-2' data-client-id='"+ client.id+"'>History</button>" +
-                        "<button class='btn btn-primary btn-sm me-2' data-client-id='"+ client.id+"'>Upcoming</button>"
+                        `<div class='client-name'><div class='drop-cap' style='background: #D0D0D0; color: #000;'>
+                        ${client.name.charAt(0).toUpperCase() }
+                        </div></div>
+                        <p><input type='hidden' name='client_name' value='${client.name} ${client.lastname}'><input type='hidden' name='client_id' value='${client.id}'>
+                        ${client.name} <br>
+                        ${client.email} |
+                        ${client.mobile_number}
+                        </p>
+                        <button class='btn btn-primary btn-sm me-2 open-client-card-btn' data-client-id="${client.id}">Client Card</button>
+                        <button class='btn btn-primary btn-sm me-2' data-client-id="${client.id}">History</button>
+                        <button class='btn btn-primary btn-sm me-2' data-client-id="${client.id}">Upcoming</button>`
                     );
 
                     document.getElementById('search').value = '';
@@ -1369,17 +1373,17 @@
                     $("#clientDetailsModal").html(
                         "<i class='ico-user2 me-2 fs-6'></i> "+ client.name +' '+ client.lastname);
                     $('#clientDetails').html(
-                        "<div class='client-name'><div class='drop-cap' style='background: #D0D0D0; color: #000;'>" +
-                        client.name.charAt(0).toUpperCase() +
-                        "</div></div>" +
-                        "<p>" +
-                        client.name + "<br>" +
-                        client.email + " | " +
-                        client.mobile_number +
-                        "</p>" +
-                        "<button class='btn btn-primary btn-sm me-2 open-client-card-btn' data-client-id='"+ client.id+"'>Client Card</button>" +
-                        "<button class='btn btn-primary btn-sm me-2' data-client-id='"+ client.id+"'>History</button>" +
-                        "<button class='btn btn-primary btn-sm me-2' data-client-id='"+ client.id+"'>Upcoming</button>"
+                        `<div class='client-name'><div class='drop-cap' style='background: #D0D0D0; color: #000;'>
+                        ${client.name.charAt(0).toUpperCase() }
+                        </div></div>
+                        <p><input type='hidden' name='client_name' value='${client.name} ${client.lastname}'><input type='hidden' name='client_id' value='${client.id}'>
+                        ${client.name} <br>
+                        ${client.email} |
+                        ${client.mobile_number}
+                        </p>
+                        <button class='btn btn-primary btn-sm me-2 open-client-card-btn' data-client-id="${client.id}">Client Card</button>
+                        <button class='btn btn-primary btn-sm me-2' data-client-id="${client.id}">History</button>
+                        <button class='btn btn-primary btn-sm me-2' data-client-id="${client.id}">Upcoming</button>`
                     );
                     document.getElementById('searchmodel').value = '';
                     break; // Stop iterating once a match is found

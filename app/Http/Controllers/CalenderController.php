@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Appointment;
 use App\Models\Category;
 use App\Models\Services;
 use App\Models\User;
@@ -10,6 +11,7 @@ use Illuminate\Http\Request;
 use App\Models\Clients;
 use App\Models\ClientsPhotos;
 use App\Models\ClientsDocuments;
+use Illuminate\Support\Facades\DB;
 
 class CalenderController extends Controller
 {
@@ -41,17 +43,17 @@ class CalenderController extends Controller
     }
 
     /**
-     * Method doctorAppointments
+     * Method getStaffList
      *
      * @return mixed
      */
-    public function doctorAppointments()
+    public function getStaffList()
     {
         $user = User::where('role_type','!=','admin')->get();
         $data = [];
         foreach ($user as $value) {
             $data[] = [
-                'resourceId' => $value['id'],
+                'id'        => $value['id'],
                 'title'      => $value['first_name'].' '.$value['last_name']
             ];
         }
@@ -80,8 +82,9 @@ class CalenderController extends Controller
         {
             foreach ($services as $value) {
                 $data[] = [
-                    'id'            => $value['id'],
-                    'service_name'  => $value['service_name']
+                    'id'                => $value['id'],
+                    'service_name'      => $value['service_name'],
+                    'parent_category'   => $value['parent_category']
                 ];
             }
         }
@@ -187,6 +190,121 @@ class CalenderController extends Controller
             $data[] = $clientData;
         }
 
+        return response()->json($data);
+    }
+
+    /**
+     * Method getAllAppointments
+     *
+     * @param Request $request [explicite description]
+     *
+     * @return mixed
+     */
+    public function createAppointments(Request $request)
+    {
+        DB::beginTransaction();
+        $appointmentsData = [
+            'client_id'     => $request->client_id,
+            'service_id'    => $request->service_id,
+            'category_id'   => $request->category_id,
+            'staff_id'      => $request->staff_id,
+            'start_date'    => $request->start_time,
+            'end_date'      => $request->end_time,
+            'duration'      => $request->duration,
+            'status'        => Appointment::BOOKED,
+            'current_date'  => $request->start_date
+        ];
+
+        try {
+            $findAppointment = $this->updateAppointment($appointmentsData);
+
+            if( isset($findAppointment->id) ){
+                $findAppointment->update($appointmentsData);
+            }
+            else
+            {
+                Appointment::create($appointmentsData);
+            }
+
+            DB::commit();
+            $data = [
+                'success' => true,
+                'message' => 'Appointment booked successfully!',
+                'type'    => 'success',
+            ];
+
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollback();
+            $data = [
+                'success' => false,
+                'message' => 'something went wrong!',
+                'type'    => 'fail',
+            ];
+        }
+
+        return response()->json($data);
+    }
+
+    /**
+     * Method updateAppointment
+     *
+     * @param Array $appointmentsData [explicite description]
+     *
+     * @return mixed
+     */
+    public function updateAppointment(Array $appointmentsData)
+    {
+        $findArr = [
+            'client_id'     => $appointmentsData['client_id'],
+            'service_id'    => $appointmentsData['service_id'],
+            'category_id'   => $appointmentsData['category_id'],
+            'status'        => Appointment::BOOKED,
+        ];
+
+        return Appointment::where($findArr)->whereRaw("date(start_date) = '{$appointmentsData['current_date']}'")->first();
+    }
+
+    /**
+     * Method getEvents
+     *
+     * @param Request $request [explicite description]
+     *
+     * @return mixed
+     */
+    public function getEvents(Request $request)
+    {
+        $events   = Appointment::select()
+        ->with([
+            'services',
+            'clients'
+        ]);
+
+        if ($request->start_date) {
+            $events->whereRaw("date(start_date) = '{$request->start_date}'");
+        }
+
+        $events = $events->get();
+        $data   = [];
+        if($events)
+        {
+            foreach ($events as $value) {
+                $extedendprop = [
+                    'client_name'   => $value['clients']['firstname'].' '.$value['clients']['lastname'],
+                    'client_id'     => $value['client_id'],
+                    'service_id'    => $value['service_id'],
+                    'category_id'   => $value['category_id']
+                ];
+                $data[] = [
+                    'id'            => $value['id'],
+                    'resourceId'    => $value['staff_id'],
+                    'title'         => $value['services']['service_name'],
+                    'start'         => $value['start_date'],
+                    'end'           => $value['end_date'],
+                    'extendedProps' => $extedendprop
+                ];
+            }
+        }
         return response()->json($data);
     }
 }

@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Appointment extends Model
@@ -25,5 +27,42 @@ class Appointment extends Model
         'client_id',
         'category_id',
         'service_id',
+        'staff_id',
+        'start_date',
+        'end_date',
+        'duration',
+        'status'
     ];
+
+    const BOOKED        = 1;
+    const CONFIRMED     = 2;
+    const STARTED       = 3;
+    const COMPLETED     = 4;
+    const NO_ANSWER     = 5;
+    const LEFT_MESSAGE  = 6;
+    const PENCILIED_IN  = 7;
+    const TURNED_UP     = 8;
+    const NO_SHOW       = 9;
+    const CANCELLED     = 10;
+
+    /**
+     * Get all of the services for the Category
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\belongsTo
+     */
+    public function services(): belongsTo
+    {
+        return $this->belongsTo(Services::class, 'service_id', 'id');
+    }
+
+    /**
+     * Get the clients that owns the Appointment
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function clients(): BelongsTo
+    {
+        return $this->belongsTo(Clients::class, 'client_id', 'id');
+    }
+
 }

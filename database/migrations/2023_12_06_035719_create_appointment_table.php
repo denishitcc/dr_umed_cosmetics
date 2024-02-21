@@ -28,8 +28,8 @@ return new class extends Migration
                     ->references('id')
                     ->on('services')
                     ->onDelete('cascade');
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

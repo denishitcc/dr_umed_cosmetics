@@ -17,9 +17,11 @@ var DU = {};
             context.changeServices();
             context.selecedServices();
             context.removeSelectedServices();
-            context.searchClient();
-            context.searchClientModal();
+            // context.searchClient();
+            // context.searchClientModal();
             context.appointmentSaveBtn();
+            context.staffList();
+            context.eventsList();
 
             $('#clientmodal').hide();
             $('#service_error').hide();
@@ -31,15 +33,22 @@ var DU = {};
                 Draggable   = FullCalendar.Draggable;
                 containerEl = document.getElementById('external-events');
 
-            new Draggable(containerEl, {
-                itemSelector: '.fc-event',
-                eventData: function (eventEl) {
-                    console.log(eventEl.innerText);
+                new Draggable(containerEl, {
+                    itemSelector: '.fc-event',
+                    eventData: function (eventEl) {
+                    var dataset = eventEl.dataset;
                     return {
-                        title: eventEl.innerText
+                        title: eventEl.innerText,
+                        extendedProps:{
+                            client_name :dataset.client_name,
+                            service_id  :dataset.service_id,
+                            client_id   :dataset.client_id,
+                            category_id :dataset.category_id
+                        }
                     };
                 }
             });
+
             // Calender
             var calendarEl = document.getElementById('calendar');
                 context.calendar = new FullCalendar.Calendar(calendarEl, {
@@ -47,6 +56,8 @@ var DU = {};
                 editable: true,
                 droppable: true,
                 aspectRatio: 1.8,
+                defaultAllDayEventDuration: "01:00",
+                forceEventDuration: true,
                 initialView: 'resourceTimeGridDay',
                 buttonText: {
                     today: 'Today',
@@ -59,6 +70,22 @@ var DU = {};
                     left: 'prev,next today',
                     center: 'title',
                     right: 'resourceTimeGridDay,resourceTimeGridWeek,dayGridMonth,resourceTimelineYear'
+                },
+                viewDidMount: function(info){
+                    if (info.view.type === 'dayGridMonth') {
+                        var currentMonthStart = info.view.currentStart.toISOString(),
+                            currentMonthEnd = info.view.currentEnd.toISOString();
+                        console.log(currentMonthEnd);
+                        //TODO: add ajxa call for particular month
+                    }
+
+                    if (info.view.type === 'resourceTimeGridWeek') {
+                        console.log('week');
+                        var currentMonthStart = info.view.currentStart.toISOString(),
+                            currentMonthEnd = info.view.currentEnd.toISOString();
+                        console.log(currentMonthEnd);
+                        //TODO: add ajxa call for particular month
+                    }
                 },
                 resources: [],
                 resourceAreaHeaderContent: 'Name of Dr',
@@ -97,11 +124,84 @@ var DU = {};
                     //     "title": "Birthday Party",
                     //     "start": "2024-02-08T07:00:00+00:00"
                     // }
+                    // {
+                    //     title: 'BCH237',
+                    //     start: '2024-08-12T10:30:00',
+                    //     end: '2024-08-12T11:30:00',
+                    //     extendedProps: {
+                    //       department: 'BioChemistry'
+                    //     },
+                    //     description: 'Lecture'
+                    // }
                 ],
                 drop: function(info) {
-                    //remove draggable event
                     info.draggedEl.parentNode.removeChild(info.draggedEl);
-                    $("#external-events").remove();
+                    // $("#external-events").remove();
+                },
+                eventReceive: function (info) {
+
+                    var resourceId          = info.event._def.resourceIds[0],
+                        start_date          = moment(info.event.startStr).format('YYYY-MM-DD'),
+                        start_time          = moment(info.event.startStr).format('YYYY-MM-DDTHH:mm:ss'),
+                        end_time            = moment(info.event.endStr).format('YYYY-MM-DDTHH:mm:ss'),
+                        client_id           = info.event.extendedProps.client_id,
+                        service_id          = info.event.extendedProps.service_id;
+                        category_id         = info.event.extendedProps.category_id;
+
+                    // For difference between two dates -> duration
+                    var start_time_diff     = moment(info.event.startStr);
+                        end_time_diff       = moment(info.event.endStr),
+                        durationInMinutes   = end_time_diff.diff(start_time_diff, 'minutes');
+
+                        context.createAppointmentDetails(resourceId,start_date,start_time,end_time,durationInMinutes,client_id,service_id,category_id);
+                },
+                eventDrop: function (events) {
+                    var resourceId          = events.event._def.resourceIds[0],
+                        start_date          = moment(events.event.startStr).format('YYYY-MM-DD'),
+                        start_time          = moment(events.event.startStr).format('YYYY-MM-DDTHH:mm:ss'),
+                        end_time            = moment(events.event.endStr).format('YYYY-MM-DDTHH:mm:ss'),
+                        client_id           = events.event.extendedProps.client_id,
+                        service_id          = events.event.extendedProps.service_id;
+                        category_id         = events.event.extendedProps.category_id;
+
+                    // For difference between two dates -> duration
+                    var start_time_diff     = moment(events.event.startStr),
+                        end_time_diff       = moment(events.event.endStr),
+                        durationInMinutes   = end_time_diff.diff(start_time_diff, 'minutes');
+
+                        context.createAppointmentDetails(resourceId,start_date,start_time,end_time,durationInMinutes,client_id,service_id,category_id);
+                },
+                eventResize: function(events) {
+                    var resourceId          = events.event._def.resourceIds[0],
+                        start_date          = moment(events.event.startStr).format('YYYY-MM-DD'),
+                        start_time          = moment(events.event.startStr).format('YYYY-MM-DDTHH:mm:ss'),
+                        end_time            = moment(events.event.endStr).format('YYYY-MM-DDTHH:mm:ss'),
+                        client_id           = events.event.extendedProps.client_id,
+                        service_id          = events.event.extendedProps.service_id;
+                        category_id         = events.event.extendedProps.category_id;
+
+                    // For difference between two dates -> duration
+                    var start_time_diff     = moment(events.event.startStr),
+                        end_time_diff       = moment(events.event.endStr),
+                        durationInMinutes   = end_time_diff.diff(start_time_diff, 'minutes');
+
+                        context.createAppointmentDetails(resourceId,start_date,start_time,end_time,durationInMinutes,client_id,service_id,category_id);
+                },
+                eventDidMount: function(info)
+                {
+                    //info.el.innerHTML += info.event.extendedProps.description;
+                },
+                eventContent: function (info)
+                {
+                    let italicEl = document.createElement('i');
+
+                    italicEl.innerHTML = `<i>${info.timeText}</i>&nbsp;&nbsp;&nbsp;
+                    <label>${info.event.extendedProps.client_name}</label><br><label>${info.event.title}</label>`;
+
+                    let arrayOfDomNodes = [italicEl]
+					return {
+                        domNodes: arrayOfDomNodes
+                    }
                 },
                 dayMaxEvents: true,
                 select: function(start, end, allDays){
@@ -110,12 +210,62 @@ var DU = {};
                     $('#saveBtn').click(function(){
                         // var timeline = getCurrentTimeline(calendar);
                         var time = moment().format("HH:mm:ss");
-                        console.log(calendar.startStr);
                     })
                 },
             });
+
+            context.calendar.render();
+
+            jQuery( "#mycalendar" ).datepicker({
+                dateFormat: 'yy-mm-dd' // Customize the date format as needed
+            });
+
+            $(".fc-today-button").click(function() {
+                var todayDt = moment(context.calendar.currentData.dateProfile.currentDate).format('YYYY-MM-DD');
+                $('#mycalendar').datepicker().datepicker('setDate', new Date(todayDt));
+            });
+
+            // Change calendar view based on user input
+            $('#mycalendar').change(function (e) {
+                e.preventDefault();
+                var inputValue = $(this).val();
+
+                // Change the calendar view to the selected date
+                context.calendar.gotoDate(inputValue);
+            });
+        },
+
+        // For events list
+        eventsList: function(){
+            var context = this;
+            var todayDt = moment(context.calendar.currentData.dateProfile.currentDate).format('YYYY-MM-DD');
+
             $.ajax({
-                url: moduleConfig.doctorAppointments, // Replace with your actual API endpoint
+                url: moduleConfig.getEvents,
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    'start_date'  : todayDt,
+                },
+                success: function (data) {
+                    // Update the FullCalendar resources with the retrieved data
+                    context.calendar.setOption('events', data);
+                    context.calendar.refetchEvents(); // Refresh events if needed
+                },
+                error: function (error) {
+                    console.error('Error fetching events:', error);
+                }
+            });
+        },
+
+        // For fetch staff list and append in calendar header
+        staffList: function(){
+            var context = this;
+
+            $.ajax({
+                url: moduleConfig.getStaffList,
                 type: 'GET',
                 headers: {
                     'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
@@ -129,26 +279,44 @@ var DU = {};
                     console.error('Error fetching resources:', error);
                 }
             });
+        },
 
-            context.calendar.render();
-
-            jQuery( "#mycalendar" ).datepicker({
-                dateFormat: 'yy-mm-dd' // Customize the date format as needed
-            });
-
-            $(".fc-today-button").click(function() {
-                // calendar.today();
-                var todayDt = moment(context.calendar.currentData.dateProfile.currentDate).format('YYYY-MM-DD');
-                $('#mycalendar').datepicker().datepicker('setDate', new Date(todayDt));
-            });
-
-            // Change calendar view based on user input
-            $('#mycalendar').change(function (e) {
-                e.preventDefault();
-                var inputValue = $(this).val();
-
-                // Change the calendar view to the selected date
-                context.calendar.gotoDate(inputValue);
+        // For create appointment
+        createAppointmentDetails: function(resourceId,start_date,start_time,end_time,durationInMinutes,client_id,service_id,category_id){
+            $.ajax({
+                url: moduleConfig.createAppointment,
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    'staff_id'    : resourceId,
+                    'start_date'  : start_date,
+                    'start_time'  : start_time,
+                    'end_time'    : end_time,
+                    'duration'    : durationInMinutes,
+                    'client_id'   : client_id,
+                    'service_id'  : service_id,
+                    'category_id' : category_id
+                },
+                success: function (data) {
+                    if (data.success) {
+                        Swal.fire({
+                            title: "Appointment!",
+                            text: data.message,
+                            type: "success",
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Error!",
+                            text: data.message,
+                            type: "error",
+                        });
+                    }
+                },
+                error: function (error) {
+                    console.error('Error fetching resources:', error);
+                }
             });
         },
 
@@ -183,7 +351,7 @@ var DU = {};
                         $('#subcategory_text').text(categoryTitle);
                         $('#sub_services').empty();
                         $.each(data, function(index, item) {
-                            $("#sub_services").append("<li><a href='javascript:void(0);' class='services' data-services_id="+ item.id +">" + item.service_name + "</a></li>");
+                            $("#sub_services").append(`<li><a href='javascript:void(0);' class='services' data-services_id=${item.id} data-category_id=${item.parent_category} >${item.service_name}</a></li>`);
                         });
                     },
                     error: function (error) {
@@ -198,13 +366,14 @@ var DU = {};
             $(document).ready(function() {
                 $('#sub_services').on('click', '.services', function(e) {
                   e.preventDefault();
-                  var $this = $(this),
-                    serviceId = $this.data('services_id'),
-                    serviceTitle = $this.text();
+                  var $this         = $(this),
+                    serviceId       = $this.data('services_id'),
+                    categoryId      = $this.data('category_id'),
+                    serviceTitle    = $this.text();
               
                   $("#selected_services").append("<li class='selected remove' data-services_id=" + serviceId + "><a href='javascript:void(0);' data-services_id=" + serviceId + ">" + serviceTitle + "</a><span class='btn btn-cross cross-red remove_services'><i class='ico-close'></i></span></li>");
                 });
-            });   
+            });
             // jQuery('#sub_services').on('click',".services", function(e) {
             //     e.preventDefault();
             //     var $this           = $(this),
@@ -224,66 +393,50 @@ var DU = {};
             });
         },
 
-        searchClient: function(){
-            var context = this;
-            $('.search_client').autocomplete({
-                source: function (request, response) {
-                    $.ajax({
-                        url: moduleConfig.getClients, // Replace with your actual API endpoint
-                        type: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
-                        },
-                        data: {
-                            'name' : request.term
-                        },
-                        success: function (data) {
-                            context.displayResults(data);
-                        },
-                        error: function (error) {
-                            console.error('Error fetching resources:', error);
-                        }
-                    });
-                },
-                minLength: 2, // minimum characters before triggering autocomplete
-                select: function (event, ui) {
-                    console.log(ui);
-                    // Handle the selection event
-                    context.addSelectedProduct(ui.item.value);
-                    // Clear the input after selection if needed
-                    $(this).val('');
-                    return false; // Prevent the input value from being updated with the selected value
-                }
-            });
-            // Handling the change event of the input field
-            $('.search_client').on('input', function() {
-                if ($(this).val().trim() === '') {
-                    context.clearResults();
-                }
-            });
-        },
+        // searchClient: function(){
+        //     var context = this;
+        //     $('.search_client').autocomplete({
+        //         source: function (request, response) {
+        //             $.ajax({
+        //                 url: moduleConfig.getClients, // Replace with your actual API endpoint
+        //                 type: 'POST',
+        //                 headers: {
+        //                     'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+        //                 },
+        //                 data: {
+        //                     'name' : request.term
+        //                 },
+        //                 success: function (data) {
+        //                     context.displayResults(data);
+        //                 },
+        //                 error: function (error) {
+        //                     console.error('Error fetching resources:', error);
+        //                 }
+        //             });
+        //         },
+        //         minLength: 2, // minimum characters before triggering autocomplete
+        //         select: function (event, ui) {
+        //             console.log(ui);
+        //             // Handle the selection event
+        //             context.addSelectedProduct(ui.item.value);
+        //             // Clear the input after selection if needed
+        //             $(this).val('');
+        //             return false; // Prevent the input value from being updated with the selected value
+        //         }
+        //     });
+        //     // Handling the change event of the input field
+        //     $('.search_client').on('input', function() {
+        //         if ($(this).val().trim() === '') {
+        //             context.clearResults();
+        //         }
+        //     });
+        // },
+
         clearResults: function() {
             var resultElement = document.getElementById("result");
             resultElement.innerHTML = '';
         },
 
-        displayResults: function(data){
-            var resultElement = document.getElementById("result");
-            resultElement.innerHTML = '';
-
-            if (data.length === 0) {
-                resultElement.append('<p>No results found</p>');
-            } else {
-                $.each(data, function(index, item) {
-                    var title_details = "Results <label class='blue-bold'> (" + data.length + ")</label>";
-                    data.forEach(function (item) {
-
-                        var details = "<div class='client-invo-notice'>" + item.first_name + "<br>" + item.email + " | " + item.mobile_no + "</div>";
-                        resultElement.innerHTML += title_details + details ;
-                    });
-                });
-            }
-        },
 
         searchClientModal: function(){
             var context = this;
@@ -308,8 +461,6 @@ var DU = {};
                 },
                 minLength: 2, // minimum characters before triggering autocomplete
                 onSelect: function (event, ui,data) {
-                    console.log(ui);
-                    console.log(data);
                     // Handle the selection event
                     context.addSelectedProduct(ui.item.value);
                     // Clear the input after selection if needed
@@ -325,30 +476,13 @@ var DU = {};
                 }
             });
         },
+
         clearResultsModal: function() {
             var resultElement = document.getElementById("search_client_modal");
             resultElement.innerHTML = '';
         },
 
-        displayResultsmodal: function(data){
-            var resultElement = document.getElementById("search_client_modal");
-            resultElement.innerHTML = '';
-
-            if (data.length === 0) {
-                resultElement.append('<p>No results found</p>');
-            } else {
-                $.each(data, function(index, item) {
-                    data.forEach(function (item) {
-                        var title_details = "Results <label class='blue-bold'> (" + data.length + ")</label>";
-                        var details = "<div class='client-invo-notice'>" + item.first_name + "<br>" + item.email + " | " + item.mobile_no + "</div>";
-                        resultElement.innerHTML += title_details + details ;
-                    });
-                });
-            }
-        },
-
         addSelectedProduct: function(product){
-            console.log(product);
             var selectedProductsDiv = $('#selectedProducts');
             var newProductDiv = $('<div class="selected-product">');
             newProductDiv.text(product);
@@ -401,22 +535,28 @@ var DU = {};
             });
 
             
-            $('#appointmentSaveBtn').on('click' ,function(e){debugger;
+            $('#appointmentSaveBtn').on('click' ,function(e){
                 var clientselectedServicesCount = $('#selected_services').children("li").length;
 
-                if ($("#create_client").valid()) {
-                    var data = $('#create_client').serialize();
-                    SubmitCreateClient(data);
-                } else {
-                    // Prevent the form from being submitted if it's not valid
-                    e.preventDefault();
+                if($('#check_client').val() == 'new_client')
+                {
+                    if ($("#create_client").valid()) {
+                        var data = $('#create_client').serialize();
+                        SubmitCreateClient(data);
+                    } else {
+                        // Prevent the form from being submitted if it's not valid
+                        e.preventDefault();
+                    }
                 }
+
                 if(clientselectedServicesCount == 0)
                 {
                     $('#service_error').show();
                 }
                 else{
                     $('#service_error').hide();
+                    // Check if the form is valid or not
+
                     var resultElement = document.getElementById("clientDetails"),
                         details =  "<div>";
                         details += "<label>appointment summary</label><br><label>Drag and drop on to a day on the appointment book</label>";
@@ -424,8 +564,23 @@ var DU = {};
                     resultElement.innerHTML += details;
 
                     $("#selected_services > li").each(function(){
-                        $('#external-events').append("<div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'><div class='fc-event-main'>"+$(this).text()+"</div></div>");
+                        var $this           = $(this),
+                        eventName           = $(this).text(),
+                        eventId             = $(this).data('services_id');
+                        categoryId          = $(this).data('category_id');
+                        clientName          = $('#clientDetails').find('input:hidden[name=client_name]').val();
+                        clientId            = $('#clientDetails').find('input:hidden[name=client_id]').val();
+
+                        // $('#mycalendar').remove();
+                        $('#external-events').removeAttr('style');
+                        $('#external-events').append(`
+                        <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event' data-service_id="${eventId}" data-client_name="${clientName}" data-client_id="${clientId}" data-category_id="${categoryId}"> ${eventName}
+                        </div>`);
                     });
+
+                    // var selectedServices = $("#selected_services").find('li').map(function(){
+                    //     return $(this).data('services_id');
+                    // }).get();
 
                     // $('#external-events').draggable();
 
@@ -435,7 +590,8 @@ var DU = {};
                     $("#selected_services").empty();
                 }
             });
-        }
+        },
+
     }
 
     $('.add_new_client').click(function(){
