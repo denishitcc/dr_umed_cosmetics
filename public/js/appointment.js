@@ -398,7 +398,7 @@ var DU = {};
             });
 
             
-            $('#appointmentSaveBtn').on('click' ,function(e){
+            $('#appointmentSaveBtn').on('click' ,function(e){debugger;
                 var clientselectedServicesCount = $('#selected_services').children("li").length;
 
                 if ($("#create_client").valid()) {
@@ -427,6 +427,9 @@ var DU = {};
                     // $('#external-events').draggable();
 
                     context.selectors.appointmentModal.modal('hide');
+                    //for reload all services & selected services
+                    $("#all_ser").load(location.href+" #all_ser>*","");
+                    $("#selected_services").empty();
                 }
             });
         }
