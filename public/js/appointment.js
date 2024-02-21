@@ -371,7 +371,7 @@ var DU = {};
                     categoryId      = $this.data('category_id'),
                     serviceTitle    = $this.text();
               
-                  $("#selected_services").append("<li class='selected remove' data-services_id=" + serviceId + "><a href='javascript:void(0);' data-services_id=" + serviceId + ">" + serviceTitle + "</a><span class='btn btn-cross cross-red remove_services'><i class='ico-close'></i></span></li>");
+                  $("#selected_services").append("<li class='selected remove' data-services_id=" + serviceId + " data-category_id=" + categoryId + "><a href='javascript:void(0);' data-services_id=" + serviceId + ">" + serviceTitle + "</a><span class='btn btn-cross cross-red remove_services'><i class='ico-close'></i></span></li>");
                 });
             });
             // jQuery('#sub_services').on('click',".services", function(e) {
