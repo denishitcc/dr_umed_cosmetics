@@ -350,7 +350,8 @@ $(document).ready(function() {
         $(this).parent().addClass('blue-active'); 
         $(this).parent().addClass('active');
         $('.service_name').text($(this).find('a').text());
-        alert('hi');return false;
+        // alert('hi');
+        return false;
         //get services from category
         var categories = 'All Services & Tasks';
         $.ajax({
