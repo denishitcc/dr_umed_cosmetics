@@ -399,26 +399,21 @@ var DU = {};
 
             
             $('#appointmentSaveBtn').on('click' ,function(e){
-
                 var clientselectedServicesCount = $('#selected_services').children("li").length;
 
+                if ($("#create_client").valid()) {
+                    var data = $('#create_client').serialize();
+                    SubmitCreateClient(data);
+                } else {
+                    // Prevent the form from being submitted if it's not valid
+                    e.preventDefault();
+                }
                 if(clientselectedServicesCount == 0)
                 {
                     $('#service_error').show();
                 }
                 else{
                     $('#service_error').hide();
-                    // Check if the form is valid or not
-                    if($('#check_client').val() == 'new_client')
-                    {
-                        if ($("#create_client").valid()) {
-                            var data = $('#create_client').serialize();
-                            SubmitCreateClient(data);
-                        } else {
-                            // Prevent the form from being submitted if it's not valid
-                            e.preventDefault();
-                        }
-                    }
                     var resultElement = document.getElementById("clientDetails"),
                         details =  "<div>";
                         details += "<label>appointment summary</label><br><label>Drag and drop on to a day on the appointment book</label>";
