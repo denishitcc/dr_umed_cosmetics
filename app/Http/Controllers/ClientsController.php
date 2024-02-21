@@ -70,9 +70,9 @@ class ClientsController extends Controller
             'email' => $request['email'],
             'date_of_birth' => $request['date_of_birth'],
             'gender' => $request['gender'],
-            'mobile_number' => $request['mobile_number'],
-            'home_phone' => $request['home_phone'],
-            'work_phone' => $request['work_phone'],
+            'mobile_number' => $request->phone_type == 'Mobile' ? $request->phone : $request['mobile_number'],
+            'home_phone' => $request->phone_type == 'Home' ? $request->phone : $request['home_phone'],
+            'work_phone' => $request->phone_type == 'Work' ? $request->phone : $request['work_phone'],
             'contact_method' => $request['contact_method'],
             'send_promotions' => $request['send_promotions'],
             'street_address' => $request['street_address'],
@@ -125,6 +125,7 @@ class ClientsController extends Controller
             'success' => true,
             'message' => 'Client Created successfully!',
             'type' => 'success',
+            'data' => $newUser
         ];
         return response()->json($response);
     }

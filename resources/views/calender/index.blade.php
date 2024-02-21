@@ -36,12 +36,15 @@
     <div class="modal fade" id="New_appointment" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-xxl">
             <div class="modal-content">
+            <div id="clientCreate" data-url="{{ route('clients.store') }}"></div>
+            <form id="create_client" name="create_client" class="form" method="post">
+                @csrf
+                <input type="hidden" name="check_client" id="check_client" value="selected_client">
                 <div class="modal-header">
                     <h4 class="modal-title">Please add new appointment here</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form>
                     <div class="clientCreateModal">
                         <div class="one-inline align-items-center mb-5 client_detail">
                             <div class="form-group icon mb-0 me-3">
@@ -59,28 +62,28 @@
                                 <div class="col-lg-3">
                                     <div class="form-group">
                                         <label class="form-label">First Name</label>
-                                        <input type="text" class="form-control">
+                                        <input type="text" class="form-control" name="firstname" id="firstname_client" maxlength="50">
                                         </div>
                                 </div>
                                 <div class="col-lg-3">
                                     <div class="form-group">
                                         <label class="form-label">Last Name</label>
-                                        <input type="text" class="form-control">
+                                        <input type="text" class="form-control" name="lastname" id="lastname_client" maxlength="50">
                                         </div>
                                 </div>
                                 <div class="col-lg-3">
                                     <div class="form-group">
                                         <label class="form-label">Email</label>
-                                        <input type="text" class="form-control">
+                                        <input type="text" class="form-control" name="email" id="email_client" maxlength="100">
                                         </div>
                                 </div>
                                 <div class="col-lg-3">
                                     <label class="form-label">Gender</label>
                                     <div class="toggle form-group">
-                                        <input type="radio" name="t-gender" value="" id="t-male" checked="checked">
-                                        <label for="t-male">Male <i class="ico-tick"></i></label>
-                                        <input type="radio" name="t-gender" value="" id="t-female">
-                                        <label for="t-female">Female <i class="ico-tick"></i></label>
+                                        <input type="radio" name="gender" value="Male" id="male" checked="checked" />
+                                        <label for="male">Male <i class="ico-tick"></i></label>
+                                        <input type="radio" name="gender" value="Female" id="female" />
+                                        <label for="female">Female <i class="ico-tick"></i></label>
                                     </div>
                                 </div>
                             </div>
@@ -88,13 +91,13 @@
                                 <div class="col-lg-3">
                                     <div class="form-group">
                                         <label class="form-label">Phone </label>
-                                        <input type="text" class="form-control">
+                                        <input type="text" class="form-control" name="phone" id="phone_client" maxlength="15">
                                         </div>
                                 </div>
                                 <div class="col-lg-3">
                                     <div class="form-group">
                                         <label class="form-label">Phone type</label>
-                                        <select class="form-select form-control">
+                                        <select class="form-select form-control" name="phone_type" id="phone_type_client">
                                             <option selected="" value=""> -- select an option -- </option>
                                             <option>Mobile</option>
                                             <option>Home</option>
@@ -105,24 +108,24 @@
                                 <div class="col-lg-3">
                                     <label class="form-label">Send Promotions</label>
                                     <div class="toggle form-group">
-                                        <input type="radio" name="s-promo" value="" id="pro-yes" checked="checked">
-                                        <label for="pro-yes">No <i class="ico-tick"></i></label>
-                                        <input type="radio" name="s-promo" value="" id="pro-no">
-                                        <label for="pro-no">Yes <i class="ico-tick"></i></label>
+                                        <input type="radio" name="send_promotions" value="1" id="yes" checked="checked">
+                                        <label for="yes">Yes <i class="ico-tick"></i></label>
+                                        <input type="radio" name="send_promotions" value="0" id="no">
+                                        <label for="no">No <i class="ico-tick"></i></label>
                                     </div>
                                 </div>
                                 <div class="col-lg-3">
                                     <div class="form-group">
                                         <label class="form-label">Preferred contact method</label>
-                                        <select class="form-select form-control">
-                                            <option selected="" value=""> -- select an option -- </option>
-                                            <option>Text message (SMS)</option>
-                                            <option>Email</option>
-                                            <option>Phone call</option>
-                                            <option>Post</option>
-                                            <option>No preference</option>
-                                            <option>Don't send reminders</option>
-                                        </select>
+                                            <select class="form-select form-control" name="contact_method" id="contact_method_client">
+                                                <option selected="" value=""> -- select an option -- </option>
+                                                <option>Text message (SMS)</option>
+                                                <option>Email</option>
+                                                <option>Phone call</option>
+                                                <option>Post</option>
+                                                <option>No preference</option>
+                                                <option>Don't send reminders</option>
+                                            </select>
                                         </div>
                                 </div>
                             </div>
@@ -169,7 +172,7 @@
                         </div>
                         <div class="col">
                             <h6>Services</h6>
-                            <div class="service-list-box p-2">
+                            <div class="service-list-box p-2" id="all_ser">
                                 <ul class="ctg-tree ps-0 pe-1">
                                     <li class="pt-title">
                                         <div class="disflex">
@@ -188,7 +191,7 @@
                         </div>
                         <div class="col">
                             <h6>Selected Services</h6>
-                            <div class="service-list-box p-2">
+                            <div class="service-list-box p-2" id="all_selected_ser">
                                 <ul class="ctg-tree ps-0 pe-1">
                                     <li class="pt-title">
                                         <div class="disflex">
@@ -216,7 +219,7 @@
         <div class="modal-dialog modal-dialog-centered modal-xxl">
             <div class="modal-content">
                 <div class="modal-header">
-                <h4 class="modal-title">Client card</h4>
+                <h4 class="modal-title modal-title-client">Client card</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-0">
@@ -1394,9 +1397,9 @@
 
         // Update the modal with the client details
         if (client) {
-            $('.modal-title').text('Client card - ' + client.name + ' ' + client.lastname);
+            $('.modal-title-client').text('Client card - ' + client.name + ' ' + client.lastname);
             $('.client-name .blue-bold').text(client.name + ' ' + client.lastname);
-            $('.client-info a:eq(0)').text(client.mobile_number).attr('href', 'tel:' + client.mobile_number);
+            $('.client-info a:eq(0)').text(client.mobile_number ?? '').attr('href', 'tel:' + client.mobile_number ?? '');
             $('.client-info a:eq(1)').text(client.email).attr('href', 'mailto:' + client.email);
             $('.drop-cap').text(client.name.charAt(0));
             // You can add more fields as needed

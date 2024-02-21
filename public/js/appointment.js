@@ -195,15 +195,21 @@ var DU = {};
 
         selecedServices: function(){
             var context = this;
-
-            jQuery('#sub_services').on('click',".services", function(e) {
+            $(document).on('click', '#sub_services', function (e) {
                 e.preventDefault();
                 var $this           = $(this),
                     serviceId      = $this.data('services_id'),
-                    serviceTitle   = $this.text();
-
+                    serviceTitle   = $this.text();        
                 $("#selected_services").append("<li class='selected remove' data-services_id="+ serviceId +"><a href='javascript:void(0);' data-services_id="+ serviceId +">" + serviceTitle + "</a><span class='btn btn-cross cross-red remove_services'><i class='ico-close'></i></span></li>");
-            });
+            });     
+            // jQuery('#sub_services').on('click',".services", function(e) {
+            //     e.preventDefault();
+            //     var $this           = $(this),
+            //         serviceId      = $this.data('services_id'),
+            //         serviceTitle   = $this.text();
+
+            //     $("#selected_services").append("<li class='selected remove' data-services_id="+ serviceId +"><a href='javascript:void(0);' data-services_id="+ serviceId +">" + serviceTitle + "</a><span class='btn btn-cross cross-red remove_services'><i class='ico-close'></i></span></li>");
+            // });
         },
 
         removeSelectedServices: function(){
@@ -346,11 +352,54 @@ var DU = {};
             selectedProductsDiv.append(newProductDiv);
         },
 
+        //appointment save
         appointmentSaveBtn: function(){
             var context = this;
+            // Validate the client form
+            $("#create_client").validate({
+                rules: {
+                    firstname: {
+                        required: true,
+                    },
+                    lastname:{
+                        required:true,
+                    },
+                    email: {
+                        required: true,
+                        email: true,
+                        remote: {
+                            url: "../clients/checkClientEmail", // Replace with the actual URL to check email uniqueness
+                            type: "post", // Use "post" method for the AJAX request
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            data: {
+                                email: function () {
+                                    return $("#email_client").val(); // Pass the value of the email field to the server
+                                }
+                            },
+                            dataFilter: function (data) {
+                                var json = $.parseJSON(data);
+                                var chk = json.exists ? '"Email already exist!"' : '"true"';
+                                return chk;
+                            }
+                        }
+                    },
+                    phone:{
+                        required: true,
+                    },
+                    phone_type:{
+                        required: true,
+                    },
+                    contact_method:{
+                        required: true,
+                    },
+                },
+            });
 
+            
             $('#appointmentSaveBtn').on('click' ,function(e){
-                e.preventDefault();
+
                 var clientselectedServicesCount = $('#selected_services').children("li").length;
 
                 if(clientselectedServicesCount == 0)
@@ -359,7 +408,17 @@ var DU = {};
                 }
                 else{
                     $('#service_error').hide();
-
+                    // Check if the form is valid or not
+                    if($('#check_client').val() == 'new_client')
+                    {
+                        if ($("#create_client").valid()) {
+                            var data = $('#create_client').serialize();
+                            SubmitCreateClient(data);
+                        } else {
+                            // Prevent the form from being submitted if it's not valid
+                            e.preventDefault();
+                        }
+                    }
                     var resultElement = document.getElementById("clientDetails"),
                         details =  "<div>";
                         details += "<label>appointment summary</label><br><label>Drag and drop on to a day on the appointment book</label>";
@@ -379,12 +438,14 @@ var DU = {};
     }
 
     $('.add_new_client').click(function(){
+        $('#check_client').val('new_client');
         $('.client_detail').hide();
         $('.new_client_head').show();
         $('.client_form').show();
     })
 
     $('.cancel_client').click(function(){
+        $('#check_client').val('selected_client');
         $('.new_client_head').hide();
         $('.client_form').hide();
         $('.client_detail').show();
@@ -394,4 +455,81 @@ var DU = {};
         $('.clientCreateModal').show();
         $('#clientmodal').hide();
     })
+    //submit create client form
+    function SubmitCreateClient(data){
+        var url = $("#clientCreate").data("url");
+		$.ajax({
+			headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            url: url,
+			type: "post",
+			data: data,
+			success: function(response) {
+				
+				// Show a Sweet Alert message after the form is submitted.
+				if (response.success) {
+                    $('.photos_count').text(0);
+                    $('.documents_count').text(0);
+                    // Push client details to the client_details array
+                    client_details.push({
+                        id: response.data.id,
+                        name: response.data.firstname,
+                        lastname: response.data.lastname,
+                        email: response.data.email,
+                        mobile_number: response.data.mobile_number,
+                        date_of_birth: response.data.date_of_birth,
+                        gender: response.data.gender,
+                        home_phone: response.data.home_phone,
+                        work_phone: response.data.work_phone,
+                        contact_method: response.data.contact_method,
+                        send_promotions: response.data.send_promotions,
+                        street_address: response.data.street_address,
+                        suburb: response.data.suburb,
+                        city: response.data.city,
+                        postcode: response.data.postcode,
+                    });
+                    $('#clientDetails').html(
+                        "<div class='client-name'><div class='drop-cap' style='background: #D0D0D0; color: #000;'>" +
+                        response.data.firstname.charAt(0).toUpperCase() +
+                        "</div></div>" +
+                        "<p>" +
+                        response.data.firstname + "<br>" +
+                        (response.data.email ? response.data.email : '') + 
+                        (response.data.mobile_number ? " | "  +response.data.mobile_number : '') +                    
+                        "</p>" +
+                        "<button class='btn btn-primary btn-sm me-2 open-client-card-btn' data-client-id='"+ response.data.id+"'>Client Card</button>" +
+                        "<button class='btn btn-primary btn-sm me-2' data-client-id='"+ response.data.id+"'>History</button>" +
+                        "<button class='btn btn-primary btn-sm me-2' data-client-id='"+ response.data.id+"'>Upcoming</button>"+
+                        "<div>"+
+                        "<label>appointment summary</label><br><label>Drag and drop on to a day on the appointment book</label>"+
+                        "</div>"
+                    );
+
+					Swal.fire({
+						title: "Client!",
+						text: "Client & Appointment created successfully.",
+						type: "success",
+					}).then((result) => {
+                        $("#create_client").trigger("reset");
+                        $('#check_client').val('selected_client');
+                        $('.new_client_head').hide();
+                        $('.client_form').hide();
+                        $('.client_detail').show();
+                        //for reload all services & selected services
+                        $("#all_ser").load(location.href+" #all_ser>*","");
+                        $("#selected_services").empty();
+                        console.log(result);
+                        // window.location = redirct_url;
+                    });
+					
+				} else {
+					
+					Swal.fire({
+						title: "Error!",
+						text: response.message,
+						type: "error",
+					});
+				}
+			},
+		});
+	}
 })();
