@@ -216,15 +216,15 @@ class CalenderController extends Controller
         ];
 
         try {
-            $findAppointment = $this->updateAppointment($appointmentsData);
+            // $findAppointment = $this->updateAppointment($appointmentsData);
 
-            if( isset($findAppointment->id) ){
-                $findAppointment->update($appointmentsData);
-            }
-            else
-            {
-                Appointment::create($appointmentsData);
-            }
+            // if( isset($findAppointment->id) ){
+            //     $findAppointment->update($appointmentsData);
+            // }
+            // else
+            // {
+            Appointment::create($appointmentsData);
+            // }
 
             DB::commit();
             $data = [
