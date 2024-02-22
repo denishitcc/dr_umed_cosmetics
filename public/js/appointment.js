@@ -71,24 +71,27 @@ var DU = {};
                     center: 'title',
                     right: 'resourceTimeGridDay,resourceTimeGridWeek,dayGridMonth,resourceTimelineYear'
                 },
-                viewDidMount: function(info){
-                    if (info.view.type === 'dayGridMonth') {
-                        var currentMonthStart = info.view.currentStart.toISOString(),
-                            currentMonthEnd = info.view.currentEnd.toISOString();
-                        console.log(currentMonthEnd);
-                        //TODO: add ajxa call for particular month
-                    }
 
-                    if (info.view.type === 'resourceTimeGridWeek') {
-                        console.log('week');
-                        var currentMonthStart = info.view.currentStart.toISOString(),
-                            currentMonthEnd = info.view.currentEnd.toISOString();
-                        console.log(currentMonthEnd);
-                        //TODO: add ajxa call for particular month
-                    }
+                datesSet: function (info) {
+                    // info.start and info.end represent the new date range
+                    var start_date  = moment(info.startStr).format('YYYY-MM-DD'),
+                        end_date    = moment(info.endStr).format('YYYY-MM-DD');
+
+                    // Make an AJAX call to fetch events for the new date range
+                    context.eventsList(start_date, end_date);
+                },
+                loading: function (isLoading) {
+                    console.log(isLoading);
+                    // if (isLoading) {
+                    //   // Show loader
+                    //   $('#loader').show();
+                    // } else {
+                    //   // Hide loader
+                    //   $('#loader').hide();
+                    // }
                 },
                 resources: [],
-                resourceAreaHeaderContent: 'Name of Dr',
+                resourceAreaHeaderContent: 'Staff Name',
                 events: [
                     // {
                     //     resourceId: 22,
@@ -145,11 +148,11 @@ var DU = {};
                         start_time          = moment(info.event.startStr).format('YYYY-MM-DDTHH:mm:ss'),
                         end_time            = moment(info.event.endStr).format('YYYY-MM-DDTHH:mm:ss'),
                         client_id           = info.event.extendedProps.client_id,
-                        service_id          = info.event.extendedProps.service_id;
+                        service_id          = info.event.extendedProps.service_id,
                         category_id         = info.event.extendedProps.category_id;
 
                     // For difference between two dates -> duration
-                    var start_time_diff     = moment(info.event.startStr);
+                    var start_time_diff     = moment(info.event.startStr),
                         end_time_diff       = moment(info.event.endStr),
                         durationInMinutes   = end_time_diff.diff(start_time_diff, 'minutes');
 
@@ -157,11 +160,12 @@ var DU = {};
                 },
                 eventDrop: function (events) {
                     var resourceId          = events.event._def.resourceIds[0],
+                        eventId             = events.event._def.publicId,
                         start_date          = moment(events.event.startStr).format('YYYY-MM-DD'),
                         start_time          = moment(events.event.startStr).format('YYYY-MM-DDTHH:mm:ss'),
                         end_time            = moment(events.event.endStr).format('YYYY-MM-DDTHH:mm:ss'),
                         client_id           = events.event.extendedProps.client_id,
-                        service_id          = events.event.extendedProps.service_id;
+                        service_id          = events.event.extendedProps.service_id,
                         category_id         = events.event.extendedProps.category_id;
 
                     // For difference between two dates -> duration
@@ -169,11 +173,12 @@ var DU = {};
                         end_time_diff       = moment(events.event.endStr),
                         durationInMinutes   = end_time_diff.diff(start_time_diff, 'minutes');
 
-                        context.createAppointmentDetails(resourceId,start_date,start_time,end_time,durationInMinutes,client_id,service_id,category_id);
+                        context.updateAppointmentDetails(resourceId,start_date,start_time,end_time,durationInMinutes,client_id,service_id,category_id,eventId);
                 },
                 eventResize: function(events) {
                     var resourceId          = events.event._def.resourceIds[0],
                         start_date          = moment(events.event.startStr).format('YYYY-MM-DD'),
+                        eventId             = events.event._def.publicId,
                         start_time          = moment(events.event.startStr).format('YYYY-MM-DDTHH:mm:ss'),
                         end_time            = moment(events.event.endStr).format('YYYY-MM-DDTHH:mm:ss'),
                         client_id           = events.event.extendedProps.client_id,
@@ -185,7 +190,7 @@ var DU = {};
                         end_time_diff       = moment(events.event.endStr),
                         durationInMinutes   = end_time_diff.diff(start_time_diff, 'minutes');
 
-                        context.createAppointmentDetails(resourceId,start_date,start_time,end_time,durationInMinutes,client_id,service_id,category_id);
+                        context.updateAppointmentDetails(resourceId,start_date,start_time,end_time,durationInMinutes,client_id,service_id,category_id,eventId);
                 },
                 eventDidMount: function(info)
                 {
@@ -236,7 +241,7 @@ var DU = {};
         },
 
         // For events list
-        eventsList: function(){
+        eventsList: function(start_date, end_date){
             var context = this;
             var todayDt = moment(context.calendar.currentData.dateProfile.currentDate).format('YYYY-MM-DD');
 
@@ -247,7 +252,8 @@ var DU = {};
                     'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
                 },
                 data: {
-                    'start_date'  : todayDt,
+                    'start_date'  : start_date,
+                    'end_date'    : end_date
                 },
                 success: function (data) {
                     // Update the FullCalendar resources with the retrieved data
@@ -304,13 +310,53 @@ var DU = {};
                         Swal.fire({
                             title: "Appointment!",
                             text: data.message,
-                            type: "success",
+                            info: "success",
                         });
                     } else {
                         Swal.fire({
                             title: "Error!",
                             text: data.message,
-                            type: "error",
+                            info: "error",
+                        });
+                    }
+                },
+                error: function (error) {
+                    console.error('Error fetching resources:', error);
+                }
+            });
+        },
+
+        // For update appointment
+        updateAppointmentDetails: function(resourceId,start_date,start_time,end_time,durationInMinutes,client_id,service_id,category_id,eventId){
+            $.ajax({
+                url: moduleConfig.updateAppointment,
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    'staff_id'    : resourceId,
+                    'start_date'  : start_date,
+                    'start_time'  : start_time,
+                    'end_time'    : end_time,
+                    'duration'    : durationInMinutes,
+                    'client_id'   : client_id,
+                    'service_id'  : service_id,
+                    'category_id' : category_id,
+                    'event_id'    : eventId
+                },
+                success: function (data) {
+                    if (data.success) {
+                        Swal.fire({
+                            title: "Appointment!",
+                            text: data.message,
+                            info: "success",
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Error!",
+                            text: data.message,
+                            info: "error",
                         });
                     }
                 },
@@ -664,7 +710,7 @@ var DU = {};
 					Swal.fire({
 						title: "Client!",
 						text: "Client & Appointment created successfully.",
-						type: "success",
+						info: "success",
 					}).then((result) => {
                         $("#create_client").trigger("reset");
                         $('#check_client').val('selected_client');
@@ -683,7 +729,7 @@ var DU = {};
 					Swal.fire({
 						title: "Error!",
 						text: response.message,
-						type: "error",
+						info: "error",
 					});
 				}
 			},

@@ -142,6 +142,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('calender/get-category-services', [CalenderController::class,'getCategoryServices'])->name('calender.get-category-services');
     Route::post('calender/get-all-clients',[CalenderController::class, 'getAllClients'])->name('calendar.get-all-clients');
     Route::post('calender/create-appointments',[CalenderController::class, 'createAppointments'])->name('calendar.create-appointments');
+    Route::post('calender/update-appointments',[CalenderController::class, 'updateAppointments'])->name('calendar.update-appointments');
     Route::post('calender/get-events',[CalenderController::class, 'getEvents'])->name('calendar.get-events');
 });
 Route::get('/get-staff-list', [CalenderController::class,'getStaffList'])->name('get-staff-list');

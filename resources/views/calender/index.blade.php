@@ -938,6 +938,7 @@
         getClients:         "{!! route('calendar.get-all-clients') !!}",
         createAppointment:  "{!! route('calendar.create-appointments') !!}",
         getEvents:          "{!! route('calendar.get-events') !!}",
+        updateAppointment:  "{!! route('calendar.update-appointments') !!}",
     };
 
     $(document).ready(function()
