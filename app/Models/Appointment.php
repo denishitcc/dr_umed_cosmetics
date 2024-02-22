@@ -45,6 +45,29 @@ class Appointment extends Model
     const NO_SHOW       = 9;
     const CANCELLED     = 10;
 
+    const APPOINTMENT_STATUS = [
+        self::BOOKED        => 'Booked',
+        self::CONFIRMED     => 'Confirmed',
+        self::STARTED       => 'Started',
+        self::COMPLETED     => 'Completed',
+        self::NO_ANSWER     => 'No answer',
+        self::LEFT_MESSAGE  => 'Left Message',
+        self::PENCILIED_IN  => 'Pencilied In',
+        self::TURNED_UP     => 'Turned Up',
+        self::NO_SHOW       => 'No Show',
+        self::CANCELLED     => 'Cancelled',
+    ];
+
+    /**
+     * Method getAppointmentStatusAttribute
+     *
+     * @return string
+    */
+    public function getAppointmentStatusAttribute(): string
+    {
+        return self::APPOINTMENT_STATUS[$this->status];
+    }
+
     /**
      * Get all of the services for the Category
      *
