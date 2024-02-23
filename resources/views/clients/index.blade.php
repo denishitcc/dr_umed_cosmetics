@@ -38,7 +38,7 @@
                     <b class="text-danger">InActive Clients</b>
                 </li>
                 <li>
-                    <div class="font-24 mb-1">0</div>
+                    <div class="font-24 mb-1">{{count($count_today_appointments)}}</div>
                     <b class="text-warning">Client's Appointment Today</b>
                 </li>
             </ul>
@@ -46,11 +46,11 @@
         <div class="card-head py-3">
             <div class="toolbar">
                 <div class="tool-left d-flex align-items-center ">
-                    <div class="cst-drop-select me-3"><select class="location" multiple="multiple"></select></div>
+                    <div class="cst-drop-select me-3"><select class="location" multiple="multiple" id="MultiSelect_DefaultValues"></select></div>
                     <label class="cst-check"><input type="checkbox" class="checkbox" value="" id="exclude" name="" checked=""><span class="checkmark me-2"></span>Exclude Inactive Clients</label>
                 </div>
                 <div class="tool-right">
-                    <div class="cst-drop-select drop-right"><select class="filter_by" multiple="multiple"></select></div>
+                    <div class="cst-drop-select drop-right"><select class="filter_by" multiple="multiple" id="DayFilter"></select></div>
                 </div>
             </div>
         </div>
@@ -64,7 +64,8 @@
                     <th>Email</th>
                     <th>Phone</th>
                     <th>Next Appointments</th>
-                    <th>Date and Time</th>
+                    <th>Appointment Status</th>
+                    <!-- <th>Date and Time</th> -->
                     <th>Status</th> 
                     <th>Location</th>
                     <!--<th>status</th>-->
@@ -166,9 +167,77 @@ $(document).ready(function() {
             },
             {data: 'email', name: 'email'},
             {data: 'mobile_number', name: 'mobile_number'},
-            {"defaultContent": ""},//{data: 'id', name: 'id',"defaultContent": ""},//next appointment details
-            {"defaultContent": ""},//{data: 'id', name: 'id'},//appointment date
-            // {data: 'status', name: 'status'},
+            {
+                data: 'appointment_dates',
+                name: 'appointment_dates',
+                render: function (data, type, row, meta) {
+                    if (data === null) {
+                    return '';
+                    } else {
+                    var datesArray = data.split(',');
+                    var html_app = '<table class="user-appnt">';
+                    
+                    datesArray.forEach(function(app) {
+                        var formattedDate = app;
+                        // Add a line break after AM or PM
+                        formattedDate = formattedDate.replace(/(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}\s)(AM|PM)/g, '<strong>$1$2</strong><br>');
+                        html_app += '<tr><td>' + formattedDate + '</td></tr>';
+                    });
+                    
+                    html_app += '</table>';
+                    return html_app;
+                    }
+                }
+                },
+
+
+            {data: 'app_status', name: 'app_status',
+                render: function (data, type, row, meta) {
+                    if (data === null) {
+                        return '';
+                    } else {
+                        var statusArray = data.split(',');
+                        var html_status = '<table class="user-appnt">';
+
+                        statusArray.forEach(function(status) {
+                            if(status=='Booked')
+                            {
+                                data = '<span class="badge text-bg-yellow badge-md mb-1">' + status+ '</span>';
+                                html_status += '<tr><td>' + data + '</td></tr>';
+                            }else if(status=='Confirmed'){
+                                data = '<span class="badge text-bg-cyan badge-md mb-1">' + status+ '</span>';
+                                html_status += '<tr><td>' + data + '</td></tr>';
+                            }else if(status=='Started'){
+                                data = '<span class="badge text-bg-orange badge-md mb-1">' + status+ '</span>';
+                                html_status += '<tr><td>' + data + '</td></tr>';
+                            }else if(status=='Completed'){
+                                data = '<span class="badge text-bg-blue badge-md mb-1">' + status+ '</span>';
+                                html_status += '<tr><td>' + data + '</td></tr>';
+                            }else if(status=='No answer'){
+                                data = '<span class="badge text-bg-light-red badge-md mb-1">' + status+ '</span>';
+                                html_status += '<tr><td>' + data + '</td></tr>';
+                            }else if(status=='Left message'){
+                                data = '<span class="badge text-bg-green badge-md mb-1">' + status+ '</span>';
+                                html_status += '<tr><td>' + data + '</td></tr>';
+                            }else if(status=='Pencilied in'){
+                                data = '<span class="badge text-bg-grey badge-md mb-1">' + status+ '</span>';
+                                html_status += '<tr><td>' + data + '</td></tr>';
+                            }else if(status=='Turned up'){
+                                data = '<span class="badge text-bg-purple badge-md mb-1" style="background-color:#B7EDED;">' + status+ '</span>';
+                                html_status += '<tr><td>' + data + '</td></tr>';
+                            }else if(status=='No show'){
+                                data = '<span class="badge text-bg-light-red badge-md mb-1">' + status+ '</span>';
+                                html_status += '<tr><td>' + data + '</td></tr>';
+                            }else if(status=='Cancelled'){
+                                data = '<span class="badge text-bg-red badge-md mb-1">' + status+ '</span>';
+                                html_status += '<tr><td>' + data + '</td></tr>';
+                            }
+                        });
+                        html_status += '</table>';
+                        return html_status;
+                    }
+                }
+            },
             { data: 'status_bar', name: 'status_bar',
                 render: function( data, type, full, meta ) {
                     if(data==null)
@@ -178,7 +247,27 @@ $(document).ready(function() {
                     return "<span style='display:none;'>"+data +"</span><div class='form-check form-switch green'><input class='form-check-input flexSwitchCheckDefault' id='flexSwitchCheckDefault' type='checkbox' ids='"+full.id+"' value='"+data +"' "+data +"></div>"
                 }
             },
-            {"defaultContent": ""},//{data: 'id', name: 'id'},//appointment location
+            {
+                data: 'staff_location',
+                name: 'staff_location',
+                render: function(data, type, full, meta) {
+                    if (data == null) {
+                        return '';
+                    } else {
+                        var statusArray = data.split(',');
+                        var html_status = '<table class="user-appnt">';
+                        
+                        statusArray.forEach(function(status) {
+                            html_status += '<tr><td>' + status+',' + '</td></tr>'; // Corrected this line
+                        });
+                        html_status += '</table>'; // Uncommented this line
+                        return html_status;
+                    }
+                }
+
+            }
+
+
             // {data: 'action', name: 'action', orderable: false, searchable: false},
         ],
         "dom": 'Blrftip',
@@ -204,8 +293,17 @@ $(document).ready(function() {
                                     if (column === 1) {
                                         return node.textContent;
                                     }
+                                    else if(column === 4) {
+                                        return node.textContent;
+                                    }
+                                    else if(column === 5) {
+                                        return node.textContent;
+                                    }
                                     else if (column === 6) {
                                         return node.textContent === 'checked' ? 'Active' : 'Deactive';
+                                    }
+                                    else if(column === 7) {
+                                        return node.textContent;
                                     }
                                     return data;
                                 }
@@ -223,8 +321,17 @@ $(document).ready(function() {
                                     if (column === 1) {
                                         return node.textContent;
                                     }
+                                    else if(column === 4) {
+                                        return node.textContent;
+                                    }
+                                    else if(column === 5) {
+                                        return node.textContent;
+                                    }
                                     else if (column === 6) {
                                         return node.textContent === 'checked' ? 'Active' : 'Deactive';
+                                    }
+                                    else if(column === 7) {
+                                        return node.textContent;
                                     }
                                     return data;
                                 }
@@ -242,8 +349,17 @@ $(document).ready(function() {
                                     if (column === 1) {
                                         return node.textContent;
                                     }
+                                    else if(column === 4) {
+                                        return node.textContent;
+                                    }
+                                    else if(column === 5) {
+                                        return node.textContent;
+                                    }
                                     else if (column === 6) {
                                         return node.textContent === 'checked' ? 'Active' : 'Deactive';
+                                    }
+                                    else if(column === 7) {
+                                        return node.textContent;
                                     }
                                     return data;
                                 }
@@ -261,8 +377,17 @@ $(document).ready(function() {
                                     if (column === 1) {
                                         return node.textContent;
                                     }
+                                    else if(column === 4) {
+                                        return node.textContent;
+                                    }
+                                    else if(column === 5) {
+                                        return node.textContent;
+                                    }
                                     else if (column === 6) {
                                         return node.textContent === 'checked' ? 'Active' : 'Deactive';
+                                    }
+                                    else if(column === 7) {
+                                        return node.textContent;
                                     }
                                     return data;
                                 }
@@ -370,6 +495,65 @@ $(document).ready(function() {
             table.column(6).search('checked').draw();
         }
     })
+    $(document).on('change', '#MultiSelect_DefaultValues', function() {
+        var vals = $(this).find(':selected').map(function(index, element) {
+            return $.fn.dataTable.util.escapeRegex($(element).val());
+        }).toArray().join('|').replace("&", "\\&").replace(/\s/g, "\\s");
+        // vals += '|';
+        if(vals=="")//vals=="|"
+        {
+            vals=null;
+        }
+        table.columns(7).search(vals, true).draw();
+    });
+    $(document).on('change', '#DayFilter', function() {
+        // Get the selected values from the dropdown
+        var selectedValues = $(this).val();
+
+        // Define a date filter to get the data for today, tomorrow, or a future date
+        var dateFilter = [];
+
+        // Loop through each selected value
+        if(selectedValues != null){
+            
+            selectedValues.forEach(function(selectedValue) {
+                switch (selectedValue) {
+                    case 'Today':
+                        dateFilter.push(new Date().toISOString().slice(0, 10)); // Get today's date in ISO format
+                        break;
+                    case 'Tomorrow':
+                        var Tomorrow = new Date();
+                        Tomorrow.setDate(Tomorrow.getDate() + 1); // Get Tomorrow's date
+                        dateFilter.push(Tomorrow.toISOString().slice(0, 10)); // Get Tomorrow's date in ISO format
+                        break;
+                    case 'Feature Appointments':
+                        var Future = new Date();
+                        Future.setDate(Future.getDate() + 1); // Get Next day's date
+                        dateFilter.push(Future.toISOString().slice(0, 10)); // Get Next day's date in ISO format
+                        // Assuming 'feature' is a placeholder for the actual date of the last feature appointment,
+                        // use the actual date instead of 'feature' in the future.
+                        break;
+                }
+            });
+        
+        }
+        
+        // If no value is selected, remove the filter
+        if (selectedValues === null || selectedValues.length === 0) {
+            selectedValues = null;
+            table.column(4).search(selectedValues).draw(); // Clear the filter
+            return; // Exit the function early
+        }
+
+        // Join the elements of dateFilter with the | pipe sign
+        var dateFilterString = dateFilter.join('|');
+
+        // Apply the filter to the DataTable column 4 (assuming column 4 contains the date)
+        // table.column(4).search(dateFilterString).draw();
+        table.column(4).search(dateFilterString, true, false).draw();
+    });
+
+
 });
 $(document).on('click', '.dt-edit', function(e) {
     e.preventDefault();

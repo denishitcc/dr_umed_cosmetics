@@ -7,6 +7,10 @@ use DataTables;
 use App\Models\Clients;
 use App\Models\ClientsPhotos;
 use App\Models\ClientsDocuments;
+use App\Models\Locations;
+use App\Models\Appointment;
+use DB;
+use Carbon\Carbon;
 
 class ClientsController extends Controller
 {
@@ -17,7 +21,55 @@ class ClientsController extends Controller
     {
         $clients = Clients::all();
         if ($request->ajax()) {
-            $data = Clients::select('*');
+            $currentDateTime = now()->timezone('Asia/Kolkata')->format('Y-m-d H:i:s');
+            
+            $data = Clients::leftJoin('appointment', function($join) use ($currentDateTime) {
+                $join->on('clients.id', '=', 'appointment.client_id')
+                    ->where('appointment.start_date', '>=', $currentDateTime);
+            })
+            
+            ->leftJoin('services', 'appointment.service_id', '=', 'services.id')
+            ->leftJoin('users', 'appointment.staff_id', '=', 'users.id')
+            ->leftJoin('locations', 'users.staff_member_location', '=', 'locations.id')
+            ->select('clients.id', 
+                'clients.firstname', 
+                'clients.lastname', 
+                'clients.email', 
+                'clients.mobile_number', 
+                'clients.status', 
+                DB::raw('GROUP_CONCAT(DISTINCT CONCAT(DATE_FORMAT(appointment.start_date, "%Y-%m-%d %h:%i %p"), "", services.service_name, " with ", CONCAT(users.first_name, " ", users.last_name))) as appointment_dates'),
+                DB::raw('GROUP_CONCAT(CASE appointment.status 
+                    WHEN 1 THEN "Booked" 
+                    WHEN 2 THEN "Confirmed"
+                    WHEN 3 THEN "Started" 
+                    WHEN 4 THEN "Completed"
+                    WHEN 5 THEN "No answer" 
+                    WHEN 6 THEN "Left message"
+                    WHEN 7 THEN "Pencilied in" 
+                    WHEN 8 THEN "Turned up"
+                    WHEN 9 THEN "No show" 
+                    WHEN 10 THEN "Cancelled"
+                END) as app_status'),
+                DB::raw('GROUP_CONCAT(users.staff_member_location) as staff_member_location')
+            )
+            ->groupBy('clients.id', 
+                'clients.firstname', 
+                'clients.lastname', 
+                'clients.email', 
+                'clients.mobile_number', 
+                'clients.status'
+            )
+            ->get();
+            // dd($data);
+            foreach($data as $datas){
+                $loc= explode(',',$datas->staff_member_location);
+                $locationsArray = [];
+                foreach($loc as $locs){
+                    $locations = Locations::where('id', $locs)->pluck('location_name')->toArray();
+                    $locationsArray[] = implode(", ", $locations);
+                }
+                $datas->staff_location = implode(", ", $locationsArray);
+            }
             return Datatables::of($data)
 
                 ->addIndexColumn()
@@ -38,6 +90,12 @@ class ClientsController extends Controller
                 ->addColumn('addresses', function ($row) {
                     return $row->street_address.', '.$row->suburb. ', '.$row->city.', '.$row->postcode;
                 })
+                // ->addColumn('staff_location', function ($row) {
+                //     $loc_id = explode(',', $row->staff_member_location);
+                //     $locations = Locations::whereIn('id', $loc_id)->pluck('location_name')->toArray();
+                //     return implode(',', $locations);
+                // })
+                
                 ->addColumn('status_bar', function($row){
                     if($row->status == 'active')
                     {
@@ -48,7 +106,14 @@ class ClientsController extends Controller
                 ->make(true);
 
         }
-        return view('clients.index', compact('clients'));
+        $today = Carbon::today()->toDateString(); // Get today's date in 'Y-m-d' format
+
+        //count today appointment 
+        $count_today_appointments = Appointment::whereDate('start_date', $today)
+        ->join('clients', 'clients.id', '=', 'appointment.client_id')
+        ->select('clients.id', 'clients.firstname', 'clients.lastname', 'appointment.start_date', 'appointment.end_date')
+        ->get();
+        return view('clients.index', compact('clients','count_today_appointments'));
     }
 
     /**
