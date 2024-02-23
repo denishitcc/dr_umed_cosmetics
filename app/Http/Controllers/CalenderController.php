@@ -216,7 +216,7 @@ class CalenderController extends Controller
         ];
 
         try {
-            // $findAppointment = $this->updateAppointment($appointmentsData);
+            // $findAppointment = $this->checkAppointment($appointmentsData);
 
             // if( isset($findAppointment->id) ){
             //     $findAppointment->update($appointmentsData);
@@ -247,13 +247,13 @@ class CalenderController extends Controller
     }
 
     /**
-     * Method updateAppointment
+     * Method checkAppointment
      *
      * @param Array $appointmentsData [explicite description]
      *
      * @return mixed
      */
-    public function updateAppointment(Array $appointmentsData)
+    public function checkAppointment(Array $appointmentsData)
     {
         $findArr = [
             'client_id'     => $appointmentsData['client_id'],
@@ -281,7 +281,7 @@ class CalenderController extends Controller
         ]);
 
         if ($request->start_date) {
-            $events->whereRaw("date(start_date) = '{$request->start_date}'");
+            $events->whereBetween(DB::raw('DATE(start_date)'), array($request->start_date, $request->end_date));
         }
 
         $events = $events->get();
@@ -305,6 +305,55 @@ class CalenderController extends Controller
                 ];
             }
         }
+        return response()->json($data);
+    }
+
+    /**
+     * Method updateAppointment
+     *
+     * @param Request $request [explicite description]
+     *
+     * @return mixed
+     */
+    public function updateAppointments(Request $request)
+    {
+        DB::beginTransaction();
+        $appointmentsData = [
+            'client_id'     => $request->client_id,
+            'service_id'    => $request->service_id,
+            'category_id'   => $request->category_id,
+            'staff_id'      => $request->staff_id,
+            'start_date'    => $request->start_time,
+            'end_date'      => $request->end_time,
+            'duration'      => $request->duration,
+            'status'        => Appointment::BOOKED,
+            'current_date'  => $request->start_date,
+        ];
+
+        try {
+            $findAppointment = Appointment::find($request->event_id);
+
+            if( isset($findAppointment->id) ){
+                $findAppointment->update($appointmentsData);
+            }
+
+            DB::commit();
+            $data = [
+                'success' => true,
+                'message' => 'Appointment updated successfully!',
+                'type'    => 'success',
+            ];
+
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollback();
+            $data = [
+                'success' => false,
+                'message' => 'something went wrong!',
+                'type'    => 'fail',
+            ];
+        }
+
         return response()->json($data);
     }
 }
