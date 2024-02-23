@@ -175,16 +175,16 @@ $(document).ready(function() {
                     return '';
                     } else {
                     var datesArray = data.split(',');
-                    var html_app = '<table class="user-appnt">';
+                    var html_app = '';
                     
                     datesArray.forEach(function(app) {
                         var formattedDate = app;
                         // Add a line break after AM or PM
-                        formattedDate = formattedDate.replace(/(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}\s)(AM|PM)/g, '<strong>$1$2</strong><br>');
-                        html_app += '<tr><td>' + formattedDate + '</td></tr>';
+                        formattedDate = formattedDate.replace(/(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}\s)(AM|PM)/g, '<b>$1$2</b><br>');
+                        html_app += '<div class="user-appnt">' + formattedDate + '</div>';
                     });
                     
-                    html_app += '</table>';
+                    html_app += '';
                     return html_app;
                     }
                 }
@@ -197,43 +197,43 @@ $(document).ready(function() {
                         return '';
                     } else {
                         var statusArray = data.split(',');
-                        var html_status = '<table class="user-appnt">';
+                        var html_status = '';
 
                         statusArray.forEach(function(status) {
                             if(status=='Booked')
                             {
                                 data = '<span class="badge text-bg-yellow badge-md mb-1">' + status+ '</span>';
-                                html_status += '<tr><td>' + data + '</td></tr>';
+                                html_status += '<div class="user-appnt">' + data + '</div>';
                             }else if(status=='Confirmed'){
                                 data = '<span class="badge text-bg-cyan badge-md mb-1">' + status+ '</span>';
-                                html_status += '<tr><td>' + data + '</td></tr>';
+                                html_status += '<div class="user-appnt">' + data + '</div>';
                             }else if(status=='Started'){
                                 data = '<span class="badge text-bg-orange badge-md mb-1">' + status+ '</span>';
-                                html_status += '<tr><td>' + data + '</td></tr>';
+                                html_status += '<div class="user-appnt">' + data + '</div>';
                             }else if(status=='Completed'){
                                 data = '<span class="badge text-bg-blue badge-md mb-1">' + status+ '</span>';
-                                html_status += '<tr><td>' + data + '</td></tr>';
+                                html_status += '<div class="user-appnt">' + data + '</div>';
                             }else if(status=='No answer'){
                                 data = '<span class="badge text-bg-light-red badge-md mb-1">' + status+ '</span>';
-                                html_status += '<tr><td>' + data + '</td></tr>';
+                                html_status += '<div class="user-appnt">' + data + '</div>';
                             }else if(status=='Left message'){
                                 data = '<span class="badge text-bg-green badge-md mb-1">' + status+ '</span>';
-                                html_status += '<tr><td>' + data + '</td></tr>';
+                                html_status += '<div class="user-appnt">' + data + '</div>';
                             }else if(status=='Pencilied in'){
                                 data = '<span class="badge text-bg-grey badge-md mb-1">' + status+ '</span>';
-                                html_status += '<tr><td>' + data + '</td></tr>';
+                                html_status += '<div class="user-appnt">' + data + '</div>';
                             }else if(status=='Turned up'){
                                 data = '<span class="badge text-bg-purple badge-md mb-1" style="background-color:#B7EDED;">' + status+ '</span>';
-                                html_status += '<tr><td>' + data + '</td></tr>';
+                                html_status += '<div class="user-appnt">' + data + '</div>';
                             }else if(status=='No show'){
                                 data = '<span class="badge text-bg-light-red badge-md mb-1">' + status+ '</span>';
-                                html_status += '<tr><td>' + data + '</td></tr>';
+                                html_status += '<div class="user-appnt">' + data + '</div>';
                             }else if(status=='Cancelled'){
                                 data = '<span class="badge text-bg-red badge-md mb-1">' + status+ '</span>';
-                                html_status += '<tr><td>' + data + '</td></tr>';
+                                html_status += '<div class="user-appnt">' + data + '</div>';
                             }
                         });
-                        html_status += '</table>';
+                        html_status += '';
                         return html_status;
                     }
                 }
@@ -255,12 +255,12 @@ $(document).ready(function() {
                         return '';
                     } else {
                         var statusArray = data.split(',');
-                        var html_status = '<table class="user-appnt">';
+                        var html_status = '';
                         
                         statusArray.forEach(function(status) {
-                            html_status += '<tr><td>' + status+',' + '</td></tr>'; // Corrected this line
+                            html_status += '<div class="user-appnt">' + status+',' + '</div>'; // Corrected this line
                         });
-                        html_status += '</table>'; // Uncommented this line
+                        html_status += ''; // Uncommented this line
                         return html_status;
                     }
                 }
