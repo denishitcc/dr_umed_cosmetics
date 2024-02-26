@@ -64,10 +64,10 @@
                     <th>Email</th>
                     <th>Phone</th>
                     <th>Next Appointments</th>
-                    <th>Appointment Status</th>
+                    <!-- <th>Appointment Status</th> -->
                     <!-- <th>Date and Time</th> -->
                     <th>Status</th> 
-                    <th>Location</th>
+                    <!-- <th>Location</th> -->
                     <!--<th>status</th>-->
                     </tr>
                 </thead>
@@ -172,69 +172,55 @@ $(document).ready(function() {
                 name: 'appointment_dates',
                 render: function (data, type, row, meta) {
                     if (data === null) {
-                    return '';
-                    } else {
-                    var datesArray = data.split(',');
-                    var html_app = '';
-                    
-                    datesArray.forEach(function(app) {
-                        var formattedDate = app;
-                        // Add a line break after AM or PM
-                        formattedDate = formattedDate.replace(/(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}\s)(AM|PM)/g, '<b>$1$2</b><br>');
-                        html_app += '<div class="user-appnt">' + formattedDate + '</div>';
-                    });
-                    
-                    html_app += '';
-                    return html_app;
-                    }
-                }
-                },
-
-
-            {data: 'app_status', name: 'app_status',
-                render: function (data, type, row, meta) {
-                    if (data === null) {
                         return '';
                     } else {
-                        var statusArray = data.split(',');
-                        var html_status = '';
+                        var datesArray = data.split(',');
+                        var statusArray = row.app_status.split(',');
+                        var locationArray = row.staff_location.split(',');
 
-                        statusArray.forEach(function(status) {
-                            if(status=='Booked')
-                            {
-                                data = '<span class="badge text-bg-yellow badge-md mb-1">' + status+ '</span>';
-                                html_status += '<div class="user-appnt">' + data + '</div>';
-                            }else if(status=='Confirmed'){
-                                data = '<span class="badge text-bg-cyan badge-md mb-1">' + status+ '</span>';
-                                html_status += '<div class="user-appnt">' + data + '</div>';
-                            }else if(status=='Started'){
-                                data = '<span class="badge text-bg-orange badge-md mb-1">' + status+ '</span>';
-                                html_status += '<div class="user-appnt">' + data + '</div>';
-                            }else if(status=='Completed'){
-                                data = '<span class="badge text-bg-blue badge-md mb-1">' + status+ '</span>';
-                                html_status += '<div class="user-appnt">' + data + '</div>';
-                            }else if(status=='No answer'){
-                                data = '<span class="badge text-bg-light-red badge-md mb-1">' + status+ '</span>';
-                                html_status += '<div class="user-appnt">' + data + '</div>';
-                            }else if(status=='Left message'){
-                                data = '<span class="badge text-bg-green badge-md mb-1">' + status+ '</span>';
-                                html_status += '<div class="user-appnt">' + data + '</div>';
-                            }else if(status=='Pencilied in'){
-                                data = '<span class="badge text-bg-grey badge-md mb-1">' + status+ '</span>';
-                                html_status += '<div class="user-appnt">' + data + '</div>';
-                            }else if(status=='Turned up'){
-                                data = '<span class="badge text-bg-purple badge-md mb-1" style="background-color:#B7EDED;">' + status+ '</span>';
-                                html_status += '<div class="user-appnt">' + data + '</div>';
-                            }else if(status=='No show'){
-                                data = '<span class="badge text-bg-light-red badge-md mb-1">' + status+ '</span>';
-                                html_status += '<div class="user-appnt">' + data + '</div>';
-                            }else if(status=='Cancelled'){
-                                data = '<span class="badge text-bg-red badge-md mb-1">' + status+ '</span>';
-                                html_status += '<div class="user-appnt">' + data + '</div>';
+                        var html_app = '';
+
+                        datesArray.forEach(function (app, index) {
+                            var formattedDate = app;
+                            var formattedStatus = '';
+                            var formattedLocation = '';
+                            // Add location
+                            if (locationArray[index]) {
+                                formattedLocation = '<div class="user-appnt">' + locationArray[index] + '</div>';
                             }
+
+                            // Add a line break after AM or PM
+                            formattedDate = formattedDate.replace(/(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}\s)(AM|PM)/g, '<b>$1$2</b> (' + formattedLocation + ')');
+                            
+                            // Add status badge
+                            if (statusArray[index]) {
+                                if (statusArray[index] == 'Booked') {
+                                    formattedStatus = '<span class="badge text-bg-yellow badge-md mb-1">' + statusArray[index] + '</span>';
+                                } else if (statusArray[index] == 'Confirmed') {
+                                    formattedStatus = '<span class="badge text-bg-cyan badge-md mb-1">' + statusArray[index] + '</span>';
+                                } else if (statusArray[index] == 'Started') {
+                                    formattedStatus = '<span class="badge text-bg-orange badge-md mb-1">' + statusArray[index] + '</span>';
+                                } else if (statusArray[index] == 'Completed') {
+                                    formattedStatus = '<span class="badge text-bg-blue badge-md mb-1">' + statusArray[index] + '</span>';
+                                } else if (statusArray[index] == 'No answer') {
+                                    formattedStatus = '<span class="badge text-bg-light-red badge-md mb-1">' + statusArray[index] + '</span>';
+                                } else if (statusArray[index] == 'Left message') {
+                                    formattedStatus = '<span class="badge text-bg-green badge-md mb-1">' + statusArray[index] + '</span>';
+                                } else if (statusArray[index] == 'Pencilied in') {
+                                    formattedStatus = '<span class="badge text-bg-grey badge-md mb-1">' + statusArray[index] + '</span>';
+                                } else if (statusArray[index] == 'Turned up') {
+                                    formattedStatus = '<span class="badge text-bg-purple badge-md mb-1" style="background-color:#B7EDED;">' + statusArray[index] + '</span>';
+                                } else if (statusArray[index] == 'No show') {
+                                    formattedStatus = '<span class="badge text-bg-light-red badge-md mb-1">' + statusArray[index] + '</span>';
+                                } else if (statusArray[index] == 'Cancelled') {
+                                    formattedStatus = '<span class="badge text-bg-red badge-md mb-1">' + statusArray[index] + '</span>';
+                                }
+                            }
+                            html_app += '<div class="user-appnt">' + formattedDate + formattedStatus + '</div>';
                         });
-                        html_status += '';
-                        return html_status;
+
+                        html_app += '';
+                        return html_app;
                     }
                 }
             },
@@ -247,28 +233,6 @@ $(document).ready(function() {
                     return "<span style='display:none;'>"+data +"</span><div class='form-check form-switch green'><input class='form-check-input flexSwitchCheckDefault' id='flexSwitchCheckDefault' type='checkbox' ids='"+full.id+"' value='"+data +"' "+data +"></div>"
                 }
             },
-            {
-                data: 'staff_location',
-                name: 'staff_location',
-                render: function(data, type, full, meta) {
-                    if (data == null) {
-                        return '';
-                    } else {
-                        var statusArray = data.split(',');
-                        var html_status = '';
-                        
-                        statusArray.forEach(function(status) {
-                            html_status += '<div class="user-appnt">' + status+',' + '</div>'; // Corrected this line
-                        });
-                        html_status += ''; // Uncommented this line
-                        return html_status;
-                    }
-                }
-
-            }
-
-
-            // {data: 'action', name: 'action', orderable: false, searchable: false},
         ],
         "dom": 'Blrftip',
         "paging": true,
@@ -286,7 +250,7 @@ $(document).ready(function() {
                     { 
                         text: "Excel",
                         exportOptions: { 
-                            columns: [0,1,2,3,4,5,6,7],
+                            columns: [0,1,2,3,4,5],
                             format: {
                                 body: function (data, row, column, node) {
                                     // For the 7th column, replace 'checked' with 'Active' and 'unchecked' with 'Deactive'
@@ -296,14 +260,8 @@ $(document).ready(function() {
                                     else if(column === 4) {
                                         return node.textContent;
                                     }
-                                    else if(column === 5) {
-                                        return node.textContent;
-                                    }
-                                    else if (column === 6) {
+                                    else if (column === 5) {
                                         return node.textContent === 'checked' ? 'Active' : 'Deactive';
-                                    }
-                                    else if(column === 7) {
-                                        return node.textContent;
                                     }
                                     return data;
                                 }
@@ -314,7 +272,7 @@ $(document).ready(function() {
                     { 
                         text: "CSV",
                         exportOptions: { 
-                            columns: [0,1,2,3,4,5,6,7],
+                            columns: [0,1,2,3,4,5],
                             format: {
                                 body: function (data, row, column, node) {
                                     // For the 7th column, replace 'checked' with 'Active' and 'unchecked' with 'Deactive'
@@ -324,14 +282,8 @@ $(document).ready(function() {
                                     else if(column === 4) {
                                         return node.textContent;
                                     }
-                                    else if(column === 5) {
-                                        return node.textContent;
-                                    }
-                                    else if (column === 6) {
+                                    else if (column === 5) {
                                         return node.textContent === 'checked' ? 'Active' : 'Deactive';
-                                    }
-                                    else if(column === 7) {
-                                        return node.textContent;
                                     }
                                     return data;
                                 }
@@ -342,7 +294,7 @@ $(document).ready(function() {
                     { 
                         text: "PDF",
                         exportOptions: { 
-                            columns: [0,1,2,3,4,5,6,7],
+                            columns: [0,1,2,3,4,5],
                             format: {
                                 body: function (data, row, column, node) {
                                     // For the 7th column, replace 'checked' with 'Active' and 'unchecked' with 'Deactive'
@@ -352,14 +304,8 @@ $(document).ready(function() {
                                     else if(column === 4) {
                                         return node.textContent;
                                     }
-                                    else if(column === 5) {
-                                        return node.textContent;
-                                    }
-                                    else if (column === 6) {
+                                    else if (column === 5) {
                                         return node.textContent === 'checked' ? 'Active' : 'Deactive';
-                                    }
-                                    else if(column === 7) {
-                                        return node.textContent;
                                     }
                                     return data;
                                 }
@@ -473,7 +419,7 @@ $(document).ready(function() {
             $('#pagelist').val(page_info.page);
         }
     });
-    table.column(6).search('checked', true, false).draw();
+    table.column(5).search('checked', true, false).draw();
     $(document).on('keyup', '.dt-search', function()
     {
         table.search($(this).val()).draw() ;
@@ -488,23 +434,23 @@ $(document).ready(function() {
         var ts = $('#exclude').prop('checked');
         if(ts==false)
         {
-            table.column(6).search('checked|', true, false).draw();
+            table.column(5).search('checked|', true, false).draw();
         }
         else
         {
-            table.column(6).search('checked').draw();
+            table.column(5).search('checked').draw();
         }
     })
     $(document).on('change', '#MultiSelect_DefaultValues', function() {
-        var vals = $(this).find(':selected').map(function(index, element) {
-            return $.fn.dataTable.util.escapeRegex($(element).val());
-        }).toArray().join('|').replace("&", "\\&").replace(/\s/g, "\\s");
-        // vals += '|';
-        if(vals=="")//vals=="|"
-        {
-            vals=null;
+        var vals = [];
+        $(this).find(':selected').each(function(index, element) {
+            vals.push($.fn.dataTable.util.escapeRegex($(element).val()));
+        });
+        var regex = vals.join('|');
+        if (regex == "") {
+            regex = null;
         }
-        table.columns(7).search(vals, true).draw();
+        table.columns(4).search(regex, true, false).draw();
     });
     $(document).on('change', '#DayFilter', function() {
         // Get the selected values from the dropdown
