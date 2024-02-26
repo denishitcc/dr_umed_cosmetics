@@ -97,7 +97,8 @@ class SettingsController extends Controller
             }
             else
             {
-                $img=$user->image;
+                // $img=$user->image;
+                $img = '';
             }
         // }
         $user->image = $img;

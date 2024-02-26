@@ -353,6 +353,7 @@ headers: {
             }
         });
         $('.remove_image').click(function(e){
+            document.getElementById('imgInput').value = '';
             $('#imgPreview').attr('src', "{{ asset('/storage/images/banner_image/no-image.jpg') }}");
             $('#imgremove').val('1');
             e.preventDefault();
