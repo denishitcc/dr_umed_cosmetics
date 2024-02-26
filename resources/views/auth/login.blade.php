@@ -45,7 +45,7 @@
                         </div> 
 
                         @if(session()->has('message'))
-                            <div class="alert alert-danger">
+                            <div class="alert alert-danger" style="margin-top: 5px;">
                                 {{ session()->get('message') }}
                             </div>
                         @endif

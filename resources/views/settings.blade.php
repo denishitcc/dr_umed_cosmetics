@@ -84,7 +84,7 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-12 text-lg-end mt-4">
-                                    <button type="button" class="btn btn-light me-2">Discard</button>
+                                    <!-- <button type="button" class="btn btn-light me-2">Discard</button> -->
                                     <button type="submit" class="btn btn-primary">Submit</button>
                                 </div>
                                 </form>
@@ -178,7 +178,7 @@
                                             
                                             
                                             <div class="col-lg-12 text-lg-end mt-4">
-                                                <button type="button" class="btn btn-light me-2">Discard</button>
+                                                <!-- <button type="button" class="btn btn-light me-2">Discard</button> -->
                                                 <button type="submit" class="btn btn-primary">Save Changes</button>
                                             </div>
                                         </div>
@@ -216,7 +216,7 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-12 text-lg-end mt-4">
-                                        <button type="button" class="btn btn-light me-2">Discard</button>
+                                        <!-- <button type="button" class="btn btn-light me-2">Discard</button> -->
                                         <button type="submit" class="btn btn-primary">Save Changes</button>
                                     </div>
                                     
@@ -363,6 +363,7 @@ headers: {
             e.preventDefault();
         });
         $(".custom-close").on('click', function() {
+            $('label.error').remove();
             $('#change_pass').modal('hide');
         });
 		$("#change_passwords").validate({

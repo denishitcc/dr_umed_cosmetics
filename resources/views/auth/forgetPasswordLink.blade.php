@@ -21,13 +21,13 @@
                         <input type="hidden" name="token" value="{{ $token }}">
                         <div class="auth-logo text-center"><a href="{{URL::to('/')}}"><img alt="Logo" src="../img/logo.svg"> </a></div>
                         <h3 class="text-center">Reset Password?</h3>
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <label for="InputEmail1">Enter Email Address</label>
                             <input type="text" id="email_address" class="form-control" name="email" autofocus>
                                   @if ($errors->has('email'))
                                       <span class="text-danger">{{ $errors->first('email') }}</span>
                                   @endif
-                          </div>
+                          </div> -->
                           <div class="form-group">
                             <label for="InputPassword1">Enter New Password</label>
                             <input type="password" id="password" class="form-control" name="password" autofocus>
@@ -51,7 +51,7 @@
                             </button>
                         </div> 
                         @if(session()->has('message'))
-                            <div class="alert alert-danger">
+                            <div class="alert alert-danger" style="margin-top: 5px;">
                                 {{ session()->get('message') }}
                             </div>
                         @endif

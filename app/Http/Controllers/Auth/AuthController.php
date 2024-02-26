@@ -190,14 +190,14 @@ class AuthController extends Controller
       public function submitResetPasswordForm(Request $request): RedirectResponse
       {
           $request->validate([
-              'email' => 'required|email|exists:users',
+            //   'email' => 'required|email|exists:users',
               'password' => 'required|string|min:6|confirmed',
               'password_confirmation' => 'required'
           ]);
   
           $updatePassword = DB::table('password_resets')
                               ->where([
-                                'email' => $request->email, 
+                                // 'email' => $request->email, 
                                 'token' => $request->token
                               ])
                               ->first();
@@ -205,11 +205,10 @@ class AuthController extends Controller
           if(!$updatePassword){
               return back()->withInput()->with('error', 'Invalid token!');
           }
-  
-          $user = User::where('email', $request->email)
+          $user = User::where('email', $updatePassword->email)
                       ->update(['password' => Hash::make($request->password)]);
  
-          DB::table('password_resets')->where(['email'=> $request->email])->delete();
+          DB::table('password_resets')->where(['email'=> $updatePassword->email])->delete();
   
           return redirect('/login')->with('message', 'Your password has been changed!');
       }
