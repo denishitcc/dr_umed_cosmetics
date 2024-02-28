@@ -577,6 +577,76 @@
     //change input event
     function changeInput(val) {
         $('#clientDetails').empty();
+            $.ajax({
+            type: "POST",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: "{{route('calendar.get-all-clients')}}",
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content'),
+                name: $('#search').val(),
+            },
+            dataType: "json",
+            success: function(res) {
+                if (res.length > 0) {
+                    for (var i = 0; i < res.length; ++i) {
+                        // Check if the record with the same id already exists in the array
+                        var existingRecordIndex = client_details.findIndex(record => record.id === res[i].id);
+                        
+                        // If the record doesn't exist in the array, add it
+                        if (existingRecordIndex === -1) {
+                            // Push client details to the client_details array
+                            client_details.push({
+                                id: res[i].id,
+                                name: res[i].first_name,
+                                lastname: res[i].last_name,
+                                email: res[i].email,
+                                mobile_number: res[i].mobile_no,
+                                date_of_birth: res[i].date_of_birth,
+                                gender: res[i].gender,
+                                home_phone: res[i].home_phone,
+                                work_phone: res[i].work_phone,
+                                contact_method: res[i].contact_method,
+                                send_promotions: res[i].send_promotions,
+                                street_address: res[i].street_address,
+                                suburb: res[i].suburb,
+                                city: res[i].city,
+                                postcode: res[i].postcode,
+                                client_photos:res[i].client_photos,
+                                client_documents: [], // Initialize an empty array for client documents
+                                service_name: res[i].last_appointment.service_name,
+                                staff_name: res[i].last_appointment.staff_name,
+                                start_date: res[i].last_appointment.start_date,
+                                status: res[i].last_appointment.status,
+                                location_name: res[i].last_appointment.location_name
+                            });
+                        }
+                        // Iterate over client documents and push only doc_name and created_at
+                        for (var j = 0; j < res[i].client_documents.length; j++) {
+                            // If the record with the same doc_id already exists in the array, skip
+                            if (existingRecordIndex !== -1 && client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].client_documents[j].doc_id)) {
+                                continue;
+                            }
+                            // If the record doesn't exist in the array or the doc_id doesn't exist in the client_documents array, add it
+                            if (existingRecordIndex === -1 || !client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].client_documents[j].doc_id)) {
+                                client_details[existingRecordIndex !== -1 ? existingRecordIndex : i].client_documents.push({
+                                    doc_id: res[i].client_documents[j].doc_id,
+                                    doc_name: res[i].client_documents[j].doc_name,
+                                    created_at: res[i].client_documents[j].created_at
+                                });
+                            }
+                        }
+                    }
+                } else {
+                    $('.table-responsive').empty();
+                }
+            },
+            error: function(jqXHR, exception) {
+                // Handle error
+            }
+        });
+
         var autoCompleteResult = matchClient(val);
         var resultElement = document.getElementById("result");
         if (val.trim() === "") {
@@ -599,11 +669,82 @@
 
     //change input modal
     function changeInputModal(val) {
-        $('#clientDetailsModal').empty();
-        var autoCompleteResult = matchClient(val);
-        var resultElement = document.getElementById("resultmodal");
-        if (val.trim() === "") {
-            resultElement.innerHTML = ""; // Clear the result if search box is empty
+        $('#clientDetails').empty();
+            $.ajax({
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: "{{route('calendar.get-all-clients')}}",
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    name: $('#searchmodel').val(),
+                },
+                dataType: "json",
+                success: function(res) {
+                    if (res.length > 0) {
+                        for (var i = 0; i < res.length; ++i) {
+                            // Check if the record with the same id already exists in the array
+                            var existingRecordIndex = client_details.findIndex(record => record.id === res[i].id);
+                            
+                            // If the record doesn't exist in the array, add it
+                            if (existingRecordIndex === -1) {
+                                // Push client details to the client_details array
+                                client_details.push({
+                                    id: res[i].id,
+                                    name: res[i].first_name,
+                                    lastname: res[i].last_name,
+                                    email: res[i].email,
+                                    mobile_number: res[i].mobile_no,
+                                    date_of_birth: res[i].date_of_birth,
+                                    gender: res[i].gender,
+                                    home_phone: res[i].home_phone,
+                                    work_phone: res[i].work_phone,
+                                    contact_method: res[i].contact_method,
+                                    send_promotions: res[i].send_promotions,
+                                    street_address: res[i].street_address,
+                                    suburb: res[i].suburb,
+                                    city: res[i].city,
+                                    postcode: res[i].postcode,
+                                    client_photos:res[i].client_photos,
+                                    client_documents: [], // Initialize an empty array for client documents
+                                    service_name: res[i].last_appointment.service_name,
+                                    staff_name: res[i].last_appointment.staff_name,
+                                    start_date: res[i].last_appointment.start_date,
+                                    status: res[i].last_appointment.status,
+                                    location_name: res[i].last_appointment.location_name
+                                });
+                            }
+                            // Iterate over client documents and push only doc_name and created_at
+                            for (var j = 0; j < res[i].client_documents.length; j++) {
+                                // If the record with the same doc_id already exists in the array, skip
+                                if (existingRecordIndex !== -1 && client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].client_documents[j].doc_id)) {
+                                    continue;
+                                }
+                                // If the record doesn't exist in the array or the doc_id doesn't exist in the client_documents array, add it
+                                if (existingRecordIndex === -1 || !client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].client_documents[j].doc_id)) {
+                                    client_details[existingRecordIndex !== -1 ? existingRecordIndex : i].client_documents.push({
+                                        doc_id: res[i].client_documents[j].doc_id,
+                                        doc_name: res[i].client_documents[j].doc_name,
+                                        created_at: res[i].client_documents[j].created_at
+                                    });
+                                }
+                            }
+                        }
+                    } else {
+                        $('.table-responsive').empty();
+                    }
+                },
+                error: function(jqXHR, exception) {
+                    // Handle error
+                }
+            });
+            
+            // $('#clientDetails').empty();
+            var autoCompleteResult = matchClient(val);
+            var resultElement = document.getElementById("resultmodal");
+            if (val.trim() === "") {
+                resultElement.innerHTML = ""; // Clear the result if search box is empty
         } else {
             if (autoCompleteResult.length === 0) {
                 resultElement.innerHTML = "<p>No records found</p>";
