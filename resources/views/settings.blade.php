@@ -329,6 +329,7 @@ headers: {
             }
         });
         $("#imgInput").change(function() {
+            $('#imgremove').val('');
             if (this.files && this.files[0]) {
 
                 var reader = new FileReader();

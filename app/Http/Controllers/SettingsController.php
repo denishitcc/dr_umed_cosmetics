@@ -83,12 +83,12 @@ class SettingsController extends Controller
         $user->first_name = $request->first_name;
         $user->last_name = $request->last_name;
         $file = $request->file('image');
-        // if($request->imgremove=='1')
-        // {
-        //     $img='';
-        // }
-        // else
-        // {
+        if($request->imgremove=='1')
+        {
+            $img='';
+        }
+        else
+        {
             if($file != null)
             {
                 $destinationPath = storage_path('app/public/images/user_image');
@@ -97,10 +97,10 @@ class SettingsController extends Controller
             }
             else
             {
-                // $img=$user->image;
-                $img = '';
+                $img=$user->image;
+                // $img = '';
             }
-        // }
+        }
         $user->image = $img;
         $user->save();
         if($user){
