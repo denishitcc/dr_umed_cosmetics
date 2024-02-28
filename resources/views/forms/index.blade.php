@@ -303,7 +303,7 @@ $(document).ready(function() {
             $('.form_live').hide();
         }
     });
-    $(document).on('keyup', '.dt-search', function()
+    $(document).on('input', '.dt-search', function()
     {
         table.search($(this).val()).draw() ;
     });

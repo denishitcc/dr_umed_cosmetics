@@ -553,7 +553,7 @@ $(document).ready(function() {
     //        }
     //    });
     // })
-    $(document).on('keyup', '#search_services', function(e) {
+    $(document).on('input', '#search_services', function(e) {
         
         // blue-active
         $('.ctg-tree').find('.blue-active').removeClass('blue-active');

@@ -316,7 +316,7 @@ $(document).ready(function() {
                     { 
                         text: "PRINT",
                         exportOptions: { 
-                            columns: [0,1,2,3,4,5,6,7],
+                            columns: [0,1,2,3,4,5],
                             format: {
                                 body: function (data, row, column, node) {
                                     // For the 7th column, replace 'checked' with 'Active' and 'unchecked' with 'Deactive'
@@ -420,7 +420,7 @@ $(document).ready(function() {
         }
     });
     table.column(5).search('checked', true, false).draw();
-    $(document).on('keyup', '.dt-search', function()
+    $(document).on('input', '.dt-search', function()
     {
         table.search($(this).val()).draw() ;
     });

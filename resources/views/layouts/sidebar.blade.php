@@ -116,34 +116,31 @@
                     </li>
                 </ul>
             </div>
+            @php
+                $currentDateTime = now()->timezone('Asia/Kolkata')->format('Y-m-d H:i:s');
+                $data = \App\Models\Clients::join('appointment', function($join) use ($currentDateTime) {
+                $join->on('clients.id', '=', 'appointment.client_id')
+                    ->where('appointment.start_date', '>=', $currentDateTime);
+                })
+                ->join('services', 'services.id', '=', 'appointment.service_id') // Join the service table
+                ->select('clients.firstname','clients.lastname','appointment.start_date', 'services.service_name') // Select the name column from the clients table and the service_name column from the service table
+                ->take(5)
+                ->get();
+            @endphp
             <div class="next-appointment mt-3">
-                            <h5 class="mb-3">Next 5 Appointments</h5>
-                            <a href="#" class="apnt-box">
-                                <h6 class="blue-bold">Narelle Nixon</h6>
-                                <span class="font-14 d-grey">VIP Skin Treatment</span><br>
-                                <time><i class="ico-clock me-1"></i> 11.00 AM</time>
-                            </a>
-                            <a href="#" class="apnt-box">
-                                <h6 class="blue-bold">Miya Mackenzie</h6>
-                                <span class="font-14 d-grey">Vital 2 Beauty Booster</span><br>
-                                <time><i class="ico-clock me-1"></i> 11.00 AM</time>
-                            </a>
-                            <a href="#" class="apnt-box">
-                                <h6 class="blue-bold">Donna Smillie</h6>
-                                <span class="font-14 d-grey">Lips & 3 Areas</span><br>
-                                <time><i class="ico-clock me-1"></i> 11.00 AM</time>
-                            </a>
-                            <a href="#" class="apnt-box">
-                                <h6 class="blue-bold">Katie Deeble</h6>
-                                <span class="font-14 d-grey">Cheek Filler</span><br>
-                                <time><i class="ico-clock me-1"></i> 11.00 AM</time>
-                            </a>
-                            <a href="#" class="apnt-box">
-                                <h6 class="blue-bold">Narelle Nixon</h6>
-                                <span class="font-14 d-grey">VIP Skin Treatment</span><br>
-                                <time><i class="ico-clock me-1"></i> 11.00 AM</time>
-                            </a>
-                        </div>
+                <h5 class="mb-3">Next 5 Appointments</h5>
+                @if(count($data)>0)
+                    @foreach($data as $app_data)
+                        <a href="#" class="apnt-box">
+                            <h6 class="blue-bold">{{$app_data->firstname.' '.$app_data->lastname}}</h6>
+                            <span class="font-14 d-grey">{{$app_data->service_name}}</span><br>
+                            <time><i class="ico-clock me-1"></i> {{ date('Y-m-d h:i A', strtotime($app_data->start_date)) }}</time>
+                        </a>
+                    @endforeach
+                @else
+                    <div>No appointment found</div>
+                @endif
+            </div>
         </div>
         <!-- Page content wrapper-->
         <div id="page-content-wrapper">
@@ -197,7 +194,7 @@
                                     </ul>
                                 </li> -->
                                 <li>
-                                    <a href="#" class="profile" id="dropdownMenuClickableInside" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">Hi, <span>{{Auth::user()->first_name.' '.Auth::user()->last_name}}</span> 
+                                    <a href="#" class="profile" id="dropdownMenuClickableInside" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">Hi, <span>{{substr(Auth::user()->first_name.' '.Auth::user()->last_name, 0, 20)}}</span> 
                                     @if(Auth::user()->image=='')
                                     <figure><img src="{{ asset('/storage/images/banner_image/no-image.jpg') }}" alt=""></figure>
                                     @else
@@ -208,7 +205,7 @@
                                         <div class="client-name">
                                             <div class="drop-cap" style="background: #0747A6; color: #fff;">{{substr(Auth::user()->first_name, 0, 1)}}</div>
                                             <div class="client-info">
-                                                <h6 class="mb-0">{{Auth::user()->first_name.' '.Auth::user()->last_name}} <small>{{Auth::user()->role_type}}</small> </h6>
+                                                <h6 class="mb-0">{{substr(Auth::user()->first_name.' '.Auth::user()->last_name, 0, 20)}} <small>{{Auth::user()->role_type}}</small> </h6>
                                                 
                                             </div>
                                         </div>

@@ -286,7 +286,7 @@ $(document).on('change', '#MultiSelect_DefaultValues', function() {
   }
   table.columns(7).search(vals, true).draw();
 });
-$(document).on('keyup', '.dt-search', function()
+$(document).on('input', '.dt-search', function()
 {
     table.search($(this).val()).draw() ;
 });

@@ -162,7 +162,7 @@ $(document).ready(function() {
         }
     });
 
-    $(document).on('keyup', '.dt-search', function()
+    $(document).on('input', '.dt-search', function()
     {
         // table.ajax.reload();//for server side
         table.search($(this).val()).draw() ;
