@@ -194,7 +194,7 @@
                                     </ul>
                                 </li> -->
                                 <li>
-                                    <a href="#" class="profile" id="dropdownMenuClickableInside" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">Hi, <span>{{substr(Auth::user()->first_name.' '.Auth::user()->last_name, 0, 20)}}</span> 
+                                    <a href="#" class="profile" id="dropdownMenuClickableInside" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">Hi, <span>{{substr(Auth::user()->first_name.' '.Auth::user()->last_name, 0, 15)}}</span> 
                                     @if(Auth::user()->image=='')
                                     <figure><img src="{{ asset('/storage/images/banner_image/no-image.jpg') }}" alt=""></figure>
                                     @else
@@ -205,7 +205,7 @@
                                         <div class="client-name">
                                             <div class="drop-cap" style="background: #0747A6; color: #fff;">{{substr(Auth::user()->first_name, 0, 1)}}</div>
                                             <div class="client-info">
-                                                <h6 class="mb-0">{{substr(Auth::user()->first_name.' '.Auth::user()->last_name, 0, 20)}} <small>{{Auth::user()->role_type}}</small> </h6>
+                                                <h6 class="mb-0">{{substr(Auth::user()->first_name.' '.Auth::user()->last_name, 0, 15)}} <small>{{Auth::user()->role_type}}</small> </h6>
                                                 
                                             </div>
                                         </div>
