@@ -145,5 +145,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('calender/update-appointments',[CalenderController::class, 'updateAppointments'])->name('calendar.update-appointments');
     Route::post('calender/get-events',[CalenderController::class, 'getEvents'])->name('calendar.get-events');
     Route::get('calender/get-client-card-data/{id}',[CalenderController::class, 'getClientCardData'])->name('calendar.get-client-card-data');
+    Route::post('calender/add-appointment-notes',[CalenderController::class, 'addAppointmentNotes'])->name('calendar.add-appointment-notes');
 });
 Route::get('/get-staff-list', [CalenderController::class,'getStaffList'])->name('get-staff-list');

@@ -401,4 +401,14 @@ class CalenderController extends Controller
             'client'                => $client
         ], 200);
     }
+
+    /**
+     * Method addAppointmentNotes
+     *
+     * @return mixed
+     */
+    public function addAppointmentNotes(Request $request)
+    {
+        dd($request);
+    }
 }
