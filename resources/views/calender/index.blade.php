@@ -484,64 +484,6 @@
 
     var client_details = [];
 
-    // $.ajaxvar client_details = [];
-
-    $.ajax({
-        type: "POST",
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        url: "{{route('calendar.get-all-clients')}}",
-        data: {
-            _token: $('meta[name="csrf-token"]').attr('content'),
-        },
-        dataType: "json",
-        success: function(res) {
-            if (res.length > 0) {
-                for (var i = 0; i < res.length; ++i) {
-                    // Push client details to the client_details array
-                    client_details.push({
-                        id: res[i].id,
-                        name: res[i].first_name,
-                        lastname: res[i].last_name,
-                        email: res[i].email,
-                        mobile_number: res[i].mobile_no,
-                        date_of_birth: res[i].date_of_birth,
-                        gender: res[i].gender,
-                        home_phone: res[i].home_phone,
-                        work_phone: res[i].work_phone,
-                        contact_method: res[i].contact_method,
-                        send_promotions: res[i].send_promotions,
-                        street_address: res[i].street_address,
-                        suburb: res[i].suburb,
-                        city: res[i].city,
-                        postcode: res[i].postcode,
-                        client_photos:res[i].client_photos,
-                        client_documents: [], // Initialize an empty array for client documents,
-                        service_name: res[i].last_appointment.service_name,
-                        staff_name: res[i].last_appointment.staff_name,
-                        start_date: res[i].last_appointment.start_date,
-                        status: res[i].last_appointment.status,
-                        location_name: res[i].last_appointment.location_name
-                   });
-                    // Iterate over client documents and push only doc_name and created_at
-                    for (var j = 0; j < res[i].client_documents.length; j++) {
-                        client_details[i].client_documents.push({
-                            doc_id: res[i].client_documents[j].doc_id,
-                            doc_name: res[i].client_documents[j].doc_name,
-                            created_at: res[i].client_documents[j].created_at
-                        });
-                    }
-                }
-            } else {
-                $('.table-responsive').empty();
-            }
-        },
-        error: function(jqXHR, exception) {
-            // Handle error
-        }
-    });
-
     // Assuming you have a function to trigger opening the modal with a specific client id
     // For example, if you have a button or link to open the modal, you can attach a click event handler to it
     // $(document).on('click','.open-client-card-btn',function(e){
