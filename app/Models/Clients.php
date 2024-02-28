@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Clients extends Model
@@ -38,4 +40,47 @@ class Clients extends Model
         'postcode',
         'status'
     ];
+
+    /**
+     * Get the last_appointment associated with the Clients
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function last_appointment(): HasOne
+    {
+        return $this->hasOne(Appointment::class, 'client_id', 'id')->latest();
+    }
+
+
+    /**
+     * Method getNameAttribute
+     *
+     * @return string
+    */
+    public function getNameAttribute(): string
+    {
+        $name = '';
+
+        if( $this->firstname )
+        {
+            $name = $this->firstname;
+        }
+
+        if( $this->lastname )
+        {
+            $name .= " ".$this->lastname;
+        }
+
+        return $name;
+    }
+
+    /**
+     * Get all of the allAppointments for the Clients
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function allAppointments(): HasMany
+    {
+        return $this->hasMany(Appointment::class, 'client_id', 'id');
+    }
 }

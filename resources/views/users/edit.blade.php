@@ -118,6 +118,12 @@
                         </select>
                     </div>
                 </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label class="form-label">Calendar Color</label>
+                        <input type="color" class="form-control" name="calendar_color" id="calendar_color" value="{{ $users->calendar_color }}">
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="col-lg-7">

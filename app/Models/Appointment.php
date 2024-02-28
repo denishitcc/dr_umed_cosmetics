@@ -88,4 +88,24 @@ class Appointment extends Model
         return $this->belongsTo(Clients::class, 'client_id', 'id');
     }
 
+    /**
+     * Get the staff that owns the Appointment
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function staff(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'staff_id', 'id');
+    }
+
+    /**
+     * Get the notes that owns the Appointment
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\hasOne
+     */
+    public function notes(): hasOne
+    {
+        return $this->hasOne(AppointmentNotes::class, 'appointment_id', 'id');
+    }
+
 }

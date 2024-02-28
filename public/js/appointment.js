@@ -4,6 +4,7 @@ var DU = {};
         calendar: null,
         selectors: {
             appointmentModal: jQuery('#New_appointment'),
+            clientCardModal:  jQuery('#Client_card'),
         },
         init: function (){
             this.addHandler();
@@ -22,6 +23,7 @@ var DU = {};
             context.appointmentSaveBtn();
             context.staffList();
             context.eventsList();
+            context.openClientCardModal();
 
             $('#clientmodal').hide();
             $('#service_error').hide();
@@ -29,6 +31,7 @@ var DU = {};
         },
 
         initialCalender: function(){
+            const draggableElements = document.querySelectorAll('.fc-event');
             var context     = this,
                 Draggable   = FullCalendar.Draggable;
                 containerEl = document.getElementById('external-events');
@@ -36,6 +39,7 @@ var DU = {};
                 new Draggable(containerEl, {
                     itemSelector: '.fc-event',
                     eventData: function (eventEl) {
+                        console.log(eventEl);
                     var dataset = eventEl.dataset;
                     return {
                         title: eventEl.innerText,
@@ -67,7 +71,7 @@ var DU = {};
                     year: 'Year',
                 },
                 headerToolbar: {
-                    left: 'prev,next today',
+                    left: 'prev,today,next',
                     center: 'title',
                     right: 'resourceTimeGridDay,resourceTimeGridWeek,dayGridMonth,resourceTimelineYear'
                 },
@@ -99,7 +103,7 @@ var DU = {};
                     //     start: "2024-02-07",
                     //     end: "2024-02-10"
                     // },
-                    // { resourceTimelineMonth
+                    // {
                     //     "groupId": 23,
                     //     "resourceId": "a",
                     //     "title": "Repeating Event",
@@ -211,11 +215,6 @@ var DU = {};
                 dayMaxEvents: true,
                 select: function(start, end, allDays){
                     $('#New_appointment').modal('toggle');
-
-                    $('#saveBtn').click(function(){
-                        // var timeline = getCurrentTimeline(calendar);
-                        var time = moment().format("HH:mm:ss");
-                    })
                 },
             });
 
@@ -375,6 +374,39 @@ var DU = {};
             });
         },
 
+        openClientCardModal: function(){
+            var context = this;
+
+            $(document).on('click','.open-client-card-btn', function(e){
+                var clientId = $(this).data('client-id'); // Use data('client-id') to access the attribute
+
+                // openClientCard(clientId);
+                $.ajax({
+                    url: moduleConfig.getClientCardData.replace(':ID', clientId), // Replace with your actual API endpoint
+                    type: 'GET',
+                    headers: {
+                        'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function (response) {
+                        // remove client info with first div
+                        $('#client_info').find('#client-invo-notice').remove();
+                        $('#client_info').prepend(response.data);
+
+                        $('#client_info').find('#appointmentsData').remove();
+                        $('#appointmentTab').prepend(response.appointmenthtml);
+
+                        $('#client_info').find('#ClientNotesData').remove();
+                        $('#clientNotes').prepend(response.clientnoteshtml);
+
+                    },
+                    error: function (error) {
+                        console.error('Error fetching resources:', error);
+                    }
+                });
+                context.selectors.clientCardModal.modal('show');
+            });
+        },
+
         changeServices: function(){
             var context = this;
             jQuery('.parent_category_id').on('click', function(e) {
@@ -411,13 +443,13 @@ var DU = {};
             var context = this;
             $(document).ready(function() {
                 $('#sub_services').on('click', '.services', function(e) {
-                  e.preventDefault();
-                  var $this         = $(this),
+                    e.preventDefault();
+                    var $this         = $(this),
                     serviceId       = $this.data('services_id'),
                     categoryId      = $this.data('category_id'),
                     serviceTitle    = $this.text();
-              
-                  $("#selected_services").append("<li class='selected remove' data-services_id=" + serviceId + " data-category_id=" + categoryId + "><a href='javascript:void(0);' data-services_id=" + serviceId + ">" + serviceTitle + "</a><span class='btn btn-cross cross-red remove_services'><i class='ico-close'></i></span></li>");
+
+                    $("#selected_services").append("<li class='selected remove' data-services_id=" + serviceId + " data-category_id=" + categoryId + "><a href='javascript:void(0);' data-services_id=" + serviceId + ">" + serviceTitle + "</a><span class='btn btn-cross cross-red remove_services'><i class='ico-close'></i></span></li>");
                 });
             });
             // jQuery('#sub_services').on('click',".services", function(e) {
@@ -513,7 +545,6 @@ var DU = {};
                     $(this).val('');
                     return false; // Prevent the input value from being updated with the selected value
                 }
-                // .appendTo($('.test ul'))
             })
             // Handling the change event of the input field
             $('.search_client_modal').on('input', function() {
@@ -580,7 +611,6 @@ var DU = {};
                 },
             });
 
-            
             $('#appointmentSaveBtn').on('click' ,function(e){
                 var clientselectedServicesCount = $('#selected_services').children("li").length;
 
@@ -604,9 +634,9 @@ var DU = {};
                     // Check if the form is valid or not
 
                     var resultElement = document.getElementById("clientDetails"),
-                        details =  "<div>";
-                        details += "<label>appointment summary</label><br><label>Drag and drop on to a day on the appointment book</label>";
-                        details += "</div>";
+                        details =  `<div>
+                        <label>appointment summary</label><br><label>Drag and drop on to a day on the appointment book</label>
+                        </div>`;
                     resultElement.innerHTML += details;
 
                     $("#selected_services > li").each(function(){
@@ -624,12 +654,6 @@ var DU = {};
                         </div>`);
                     });
 
-                    // var selectedServices = $("#selected_services").find('li').map(function(){
-                    //     return $(this).data('services_id');
-                    // }).get();
-
-                    // $('#external-events').draggable();
-
                     context.selectors.appointmentModal.modal('hide');
                     //for reload all services & selected services
                     $("#all_ser").load(location.href+" #all_ser>*","");
@@ -639,6 +663,10 @@ var DU = {};
         },
 
     }
+
+    // $(document).on('click','#add_notes', function(e){
+    //     $('#common_notes').show();
+    // });
 
     $('.add_new_client').click(function(){
         $('#check_client').val('new_client');
@@ -667,7 +695,6 @@ var DU = {};
 			type: "post",
 			data: data,
 			success: function(response) {
-				
 				// Show a Sweet Alert message after the form is submitted.
 				if (response.success) {
                     $('.photos_count').text(0);
@@ -696,8 +723,8 @@ var DU = {};
                         "</div></div>" +
                         "<p>" +
                         response.data.firstname + "<br>" +
-                        (response.data.email ? response.data.email : '') + 
-                        (response.data.mobile_number ? " | "  +response.data.mobile_number : '') +                    
+                        (response.data.email ? response.data.email : '') +
+                        (response.data.mobile_number ? " | "  +response.data.mobile_number : '') +
                         "</p>" +
                         "<button class='btn btn-primary btn-sm me-2 open-client-card-btn' data-client-id='"+ response.data.id+"'>Client Card</button>" +
                         "<button class='btn btn-primary btn-sm me-2' data-client-id='"+ response.data.id+"'>History</button>" +
@@ -723,9 +750,7 @@ var DU = {};
                         console.log(result);
                         // window.location = redirct_url;
                     });
-					
 				} else {
-					
 					Swal.fire({
 						title: "Error!",
 						text: response.message,

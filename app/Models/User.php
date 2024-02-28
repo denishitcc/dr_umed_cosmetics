@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -42,7 +43,8 @@ class User extends Authenticatable
         'is_staff_memeber',
         'staff_member_location',
         'last_login',
-        'available_in_online_booking'
+        'available_in_online_booking',
+        'calendar_color'
     ];
 
     /**
@@ -66,4 +68,36 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+     /**
+     * Method getNameAttribute
+     *
+     * @return string
+     */
+    public function getNameAttribute(): string
+    {
+        $name = '';
+
+        if( $this->first_name )
+        {
+            $name = $this->first_name;
+        }
+
+        if( $this->last_name )
+        {
+            $name .= " ".$this->last_name;
+        }
+
+        return $name;
+    }
+
+    /**
+     * Get the staff_location that owns the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function staff_location(): BelongsTo
+    {
+        return $this->belongsTo(Locations::class, 'staff_member_location', 'id');
+    }
 }

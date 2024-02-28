@@ -49,7 +49,7 @@
                     <div class="form-group">
                         <label class="form-label">Phone</label>
                         <input type="text" class="form-control" name="phone" id="phone" maxlength="15">
-                        </div>
+                    </div>
                 </div>
                 <div class="col-lg-3">
                     <label class="form-label">Available in Online Booking</label>
@@ -111,6 +111,12 @@
                         </select>
                     </div>
                 </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label class="form-label">Calendar Color</label>
+                        <input type="color" class="form-control" name="calendar_color" id="calendar_color">
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="col-lg-7">
@@ -129,7 +135,6 @@
                     <button type="button" class="btn btn-sm black-btn round-6 dt-delete remove_image">
                         <i class="ico-trash"></i>
                         </button>
-                    
                 </div>
             </div>
 
@@ -139,7 +144,6 @@
             </div>
         </div>
         </form>
-        
     </div>
 <!-- </main> -->
 @stop

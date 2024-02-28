@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use App\Models\Clients;
 use App\Models\ClientsPhotos;
 use App\Models\ClientsDocuments;
+use Carbon\Carbon;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
 
 class CalenderController extends Controller
@@ -53,8 +55,9 @@ class CalenderController extends Controller
         $data = [];
         foreach ($user as $value) {
             $data[] = [
-                'id'        => $value['id'],
-                'title'      => $value['first_name'].' '.$value['last_name']
+                'id'                => $value['id'],
+                'title'             => $value['first_name'].' '.$value['last_name'],
+                'backgroundColor'   => $value['calendar_color']
             ];
         }
         return response()->json($data);
@@ -154,23 +157,30 @@ class CalenderController extends Controller
         
         foreach ($clients as $client) {
             $clientData = [
-                'id'              => $client->id,
-                'first_name'      => $client->firstname,
-                'last_name'       => $client->lastname,
-                'email'           => $client->email,
-                'mobile_no'       => $client->mobile_number,
-                'date_of_birth'   => $client->date_of_birth,
-                'gender'          => $client->gender,
-                'home_phone'      => $client->home_phone,
-                'work_phone'      => $client->work_phone,
-                'contact_method'  => $client->contact_method,
-                'send_promotions' => $client->send_promotions,
-                'street_address'  => $client->street_address,
-                'suburb'          => $client->suburb,
-                'city'            => $client->city,
-                'postcode'        => $client->postcode,
-                'client_photos'   => [],
-                'client_documents'   => []
+                'id'                    => $client->id,
+                'first_name'            => $client->firstname,
+                'last_name'             => $client->lastname,
+                'email'                 => $client->email,
+                'mobile_no'             => $client->mobile_number,
+                'date_of_birth'         => $client->date_of_birth,
+                'gender'                => $client->gender,
+                'home_phone'            => $client->home_phone,
+                'work_phone'            => $client->work_phone,
+                'contact_method'        => $client->contact_method,
+                'send_promotions'       => $client->send_promotions,
+                'street_address'        => $client->street_address,
+                'suburb'                => $client->suburb,
+                'city'                  => $client->city,
+                'postcode'              => $client->postcode,
+                'client_photos'         => [],
+                'client_documents'      => [],
+                'last_appointment'      => [
+                    'service_name'      => isset($client->last_appointment) ? $client->last_appointment->services->service_name : '',
+                    'start_date'        => isset($client->last_appointment) ? $client->last_appointment->start_date : '',
+                    'staff_name'        => isset($client->last_appointment) ? $client->last_appointment->staff->name : '',
+                    'location_name'     => isset($client->last_appointment) ? $client->last_appointment->staff->staff_location->location_name : '',
+                    'status'            => isset($client->last_appointment) ? $client->last_appointment->appointment_status : '',
+                ],
             ];
 
             // Fetch client photos for the current client
@@ -355,5 +365,35 @@ class CalenderController extends Controller
         }
 
         return response()->json($data);
+    }
+
+    /**
+     * Method getClientCardData
+     *
+     * @return mixed
+     */
+    public function getClientCardData($clientId)
+    {
+        $client             = Clients::findOrFail($clientId);
+        $todayDate          = Carbon::today()->toDateTimeString();
+
+        $futureappointments = $client->allappointments()->where('created_at','>=', $todayDate)->orderby('created_at','desc')->get();
+        $pastappointments   = $client->allappointments()->where('created_at','<=', $todayDate)->orderby('created_at','desc')->get();
+        // dd($client->last_appointment->notes);
+        $html               = view('calender.partials.client_card', [ 'client' => $client ])->render();
+        $appointmenthtml    = view('calender.partials.client-appointment-card', [
+                                    'futureappointments'  => $futureappointments,
+                                    'pastappointments'    => $pastappointments,
+                            ])->render();
+        $clientnoteshtml    = view('calender.partials.client-notes' , [ 'client' => $client ])->render();
+
+        return response()->json([
+            'status'                => true,
+            'message'               => 'Details found.',
+            'data'                  => $html,
+            'appointmenthtml'       => $appointmenthtml,
+            'clientnoteshtml'       => $clientnoteshtml,
+            'client'                => $client
+        ], 200);
     }
 }

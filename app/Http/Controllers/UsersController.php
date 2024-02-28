@@ -82,7 +82,7 @@ class UsersController extends Controller
         {
             $destinationPath = storage_path('app/public/images/user_image');
             $file->move($destinationPath,$file->getClientOriginalName());
-            $img = $file->getClientOriginalName();
+            $img    = $file->getClientOriginalName();
         }
         else
         {
@@ -96,18 +96,19 @@ class UsersController extends Controller
             }
         }
         $newUser = User::create([
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'phone' => $request->phone,
-            'email'=> $request->email,
-            'password'=>Hash::make($password),
-            'gender'=>$request->gender,
-            'role_type'=>$request->role_type,
-            'access_level'=>$request->access_level,
-            'image'=>$img,
-            'is_staff_memeber'=>$request->is_staff_memeber,
-            'staff_member_location'=>$request->staff_member_location,
-            'available_in_online_booking'=>$request->available_in_online_booking
+            'first_name'                    => $request->first_name,
+            'last_name'                     => $request->last_name,
+            'phone'                         => $request->phone,
+            'email'                         => $request->email,
+            'password'                      => Hash::make($password),
+            'gender'                        => $request->gender,
+            'role_type'                     => $request->role_type,
+            'access_level'                  => $request->access_level,
+            'image'                         => $img,
+            'is_staff_memeber'              => $request->is_staff_memeber,
+            'staff_member_location'         => $request->staff_member_location,
+            'available_in_online_booking'   => $request->available_in_online_booking,
+            'calendar_color'                => $request->calendar_color
         ]);
         
         if($newUser){
@@ -126,9 +127,9 @@ class UsersController extends Controller
                     $templateContent
                 );
                 $data = ([
-                    'from_email'=>'support@itcc.net.au',
-                    'emailbody' => $parsedContent,
-                    'subject'=>$_data['subject']
+                    'from_email'    => 'support@itcc.net.au',
+                    'emailbody'     => $parsedContent,
+                    'subject'       => $_data['subject']
                 ]);
                 $sub = $data['subject'];
 
@@ -142,16 +143,16 @@ class UsersController extends Controller
             
             
             $response = [
-                'success' => true,
-                'message' => 'User Created successfully!',
-                'type' => 'success',
-                'data_id' => $newUser->id
+                'success'   => true,
+                'message'   => 'User Created successfully!',
+                'type'      => 'success',
+                'data_id'   => $newUser->id
             ];
         }else{
             $response = [
-                'error' => true,
-                'message' => 'Error !',
-                'type' => 'error',
+                'error'     => true,
+                'message'   => 'Error !',
+                'type'      => 'error',
             ];
         }
         return response()->json($response);
@@ -162,9 +163,9 @@ class UsersController extends Controller
      */
     public function show(string $id)
     {
-        $users = User::find($id);
-        $userRole = UserRoles::get();
-        $locations = Locations::all();
+        $users      = User::find($id);
+        $userRole   = UserRoles::get();
+        $locations  = Locations::all();
         return view('users.edit', compact('users','userRole','locations'));
     }
 
@@ -198,37 +199,38 @@ class UsersController extends Controller
             }
             else
             {
-                $getImg =User::where('id',$request->id)->first();
-                $img = $getImg['image'];
+                $getImg = User::where('id',$request->id)->first();
+                $img    = $getImg['image'];
             }
         }
         $newUser = User::updateOrCreate(['id' => $request->id],[
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'phone' => $request->phone,
-            // 'email'=> $request->email,
-            'password'=>Hash::make($password),
-            'gender'=>$request->gender,
-            'role_type'=>$request->role_type,
-            'access_level'=>$request->access_level,
-            'is_staff_memeber'=>$request->is_staff_memeber,
-            'staff_member_location'=>$request->is_staff_memeber!='0'?$request->staff_member_location:null,
-            'image'=>$img,
-            'available_in_online_booking'=>$request->available_in_online_booking
+            'first_name'                    => $request->first_name,
+            'last_name'                     => $request->last_name,
+            'phone'                         => $request->phone,
+            // 'email'                      => $request->email,
+            'password'                      => Hash::make($password),
+            'gender'                        => $request->gender,
+            'role_type'                     => $request->role_type,
+            'access_level'                  => $request->access_level,
+            'is_staff_memeber'              => $request->is_staff_memeber,
+            'staff_member_location'         => $request->is_staff_memeber!='0'?$request->staff_member_location:null,
+            'image'                         => $img,
+            'available_in_online_booking'   => $request->available_in_online_booking,
+            'calendar_color'                => $request->calendar_color
         ]);
         
         if($newUser){
             $response = [
-                'success' => true,
-                'message' => 'User Updated successfully!',
-                'type' => 'success',
-                'data_id' => $newUser->id
+                'success'   => true,
+                'message'   => 'User Updated successfully!',
+                'type'      => 'success',
+                'data_id'   => $newUser->id
             ];
         }else{
             $response = [
-                'error' => true,
-                'message' => 'Error !',
-                'type' => 'error',
+                'error'     => true,
+                'message'   => 'Error !',
+                'type'      => 'error',
             ];
         }
         return response()->json($response);
