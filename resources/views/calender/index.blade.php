@@ -1193,59 +1193,6 @@
 
     var client_details = [];
 
-    // $.ajaxvar client_details = [];
-
-    $.ajax({
-        type: "POST",
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        url: "{{route('calendar.get-all-clients')}}",
-        data: {
-            _token: $('meta[name="csrf-token"]').attr('content'),
-        },
-        dataType: "json",
-        success: function(res) {
-            if (res.length > 0) {
-                for (var i = 0; i < res.length; ++i) {
-                    // Push client details to the client_details array
-                    client_details.push({
-                        id: res[i].id,
-                        name: res[i].first_name,
-                        lastname: res[i].last_name,
-                        email: res[i].email,
-                        mobile_number: res[i].mobile_no,
-                        date_of_birth: res[i].date_of_birth,
-                        gender: res[i].gender,
-                        home_phone: res[i].home_phone,
-                        work_phone: res[i].work_phone,
-                        contact_method: res[i].contact_method,
-                        send_promotions: res[i].send_promotions,
-                        street_address: res[i].street_address,
-                        suburb: res[i].suburb,
-                        city: res[i].city,
-                        postcode: res[i].postcode,
-                        client_photos:res[i].client_photos,
-                        client_documents: [], // Initialize an empty array for client documents
-                    });
-                    // Iterate over client documents and push only doc_name and created_at
-                    for (var j = 0; j < res[i].client_documents.length; j++) {
-                        client_details[i].client_documents.push({
-                            doc_id: res[i].client_documents[j].doc_id,
-                            doc_name: res[i].client_documents[j].doc_name,
-                            created_at: res[i].client_documents[j].created_at
-                        });
-                    }
-                }
-            } else {
-                $('.table-responsive').empty();
-            }
-        },
-        error: function(jqXHR, exception) {
-            // Handle error
-        }
-    });
-
     // Assuming you have a function to trigger opening the modal with a specific client id
     // For example, if you have a button or link to open the modal, you can attach a click event handler to it
     $(document).on('click','.open-client-card-btn',function(e){
@@ -1280,7 +1227,75 @@
 
     //change input event
     function changeInput(val) {
-        $('#clientDetails').empty();
+            $('#clientDetails').empty();
+            $.ajax({
+            type: "POST",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: "{{route('calendar.get-all-clients')}}",
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content'),
+                name: $('#search').val(),
+            },
+            dataType: "json",
+            success: function(res) {
+                if (res.length > 0) {
+                    for (var i = 0; i < res.length; ++i) {
+                        // Check if the record with the same id already exists in the array
+                        var existingRecordIndex = client_details.findIndex(record => record.id === res[i].id);
+                        
+                        // If the record doesn't exist in the array, add it
+                        if (existingRecordIndex === -1) {
+                            // Push client details to the client_details array
+                            client_details.push({
+                                id: res[i].id,
+                                name: res[i].first_name,
+                                lastname: res[i].last_name,
+                                email: res[i].email,
+                                mobile_number: res[i].mobile_no,
+                                date_of_birth: res[i].date_of_birth,
+                                gender: res[i].gender,
+                                home_phone: res[i].home_phone,
+                                work_phone: res[i].work_phone,
+                                contact_method: res[i].contact_method,
+                                send_promotions: res[i].send_promotions,
+                                street_address: res[i].street_address,
+                                suburb: res[i].suburb,
+                                city: res[i].city,
+                                postcode: res[i].postcode,
+                                client_photos:res[i].client_photos,
+                                client_documents: [], // Initialize an empty array for client documents
+                            });
+                        }
+
+                        // Iterate over client documents and push only doc_name and created_at
+                        for (var j = 0; j < res[i].client_documents.length; j++) {
+                            // If the record with the same doc_id already exists in the array, skip
+                            if (existingRecordIndex !== -1 && client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].client_documents[j].doc_id)) {
+                                continue;
+                            }
+
+                            // If the record doesn't exist in the array or the doc_id doesn't exist in the client_documents array, add it
+                            if (existingRecordIndex === -1 || !client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].client_documents[j].doc_id)) {
+                                client_details[existingRecordIndex !== -1 ? existingRecordIndex : i].client_documents.push({
+                                    doc_id: res[i].client_documents[j].doc_id,
+                                    doc_name: res[i].client_documents[j].doc_name,
+                                    created_at: res[i].client_documents[j].created_at
+                                });
+                            }
+                        }
+                    }
+                } else {
+                    $('.table-responsive').empty();
+                }
+            },
+            error: function(jqXHR, exception) {
+                // Handle error
+            }
+        });
+
+        // $('#clientDetails').empty();
         var autoCompleteResult = matchClient(val);
         var resultElement = document.getElementById("result");
         if (val.trim() === "") {
@@ -1302,24 +1317,92 @@
 
     //change input modal
     function changeInputModal(val) {
-        $('#clientDetailsModal').empty();
-        var autoCompleteResult = matchClient(val);
-        var resultElement = document.getElementById("resultmodal");
-        if (val.trim() === "") {
-            resultElement.innerHTML = ""; // Clear the result if search box is empty
-        } else {
-            if (autoCompleteResult.length === 0) {
-                resultElement.innerHTML = "<p>No records found</p>";
+        $('#clientDetails').empty();
+            $.ajax({
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: "{{route('calendar.get-all-clients')}}",
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    name: $('#searchmodel').val(),
+                },
+                dataType: "json",
+                success: function(res) {
+                    if (res.length > 0) {
+                        for (var i = 0; i < res.length; ++i) {
+                            // Check if the record with the same id already exists in the array
+                            var existingRecordIndex = client_details.findIndex(record => record.id === res[i].id);
+                            
+                            // If the record doesn't exist in the array, add it
+                            if (existingRecordIndex === -1) {
+                                // Push client details to the client_details array
+                                client_details.push({
+                                    id: res[i].id,
+                                    name: res[i].first_name,
+                                    lastname: res[i].last_name,
+                                    email: res[i].email,
+                                    mobile_number: res[i].mobile_no,
+                                    date_of_birth: res[i].date_of_birth,
+                                    gender: res[i].gender,
+                                    home_phone: res[i].home_phone,
+                                    work_phone: res[i].work_phone,
+                                    contact_method: res[i].contact_method,
+                                    send_promotions: res[i].send_promotions,
+                                    street_address: res[i].street_address,
+                                    suburb: res[i].suburb,
+                                    city: res[i].city,
+                                    postcode: res[i].postcode,
+                                    client_photos:res[i].client_photos,
+                                    client_documents: [], // Initialize an empty array for client documents
+                                });
+                            }
+
+                            // Iterate over client documents and push only doc_name and created_at
+                            for (var j = 0; j < res[i].client_documents.length; j++) {
+                                // If the record with the same doc_id already exists in the array, skip
+                                if (existingRecordIndex !== -1 && client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].client_documents[j].doc_id)) {
+                                    continue;
+                                }
+
+                                // If the record doesn't exist in the array or the doc_id doesn't exist in the client_documents array, add it
+                                if (existingRecordIndex === -1 || !client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].client_documents[j].doc_id)) {
+                                    client_details[existingRecordIndex !== -1 ? existingRecordIndex : i].client_documents.push({
+                                        doc_id: res[i].client_documents[j].doc_id,
+                                        doc_name: res[i].client_documents[j].doc_name,
+                                        created_at: res[i].client_documents[j].created_at
+                                    });
+                                }
+                            }
+                        }
+                    } else {
+                        $('.table-responsive').empty();
+                    }
+                },
+                error: function(jqXHR, exception) {
+                    // Handle error
+                }
+            });
+            
+            // $('#clientDetails').empty();
+            var autoCompleteResult = matchClient(val);
+            var resultElement = document.getElementById("resultmodal");
+            if (val.trim() === "") {
+                resultElement.innerHTML = ""; // Clear the result if search box is empty
             } else {
-                resultElement.innerHTML = ""; // Clear previous message if records are found
-                for (var i = 0, limit = 10, len = autoCompleteResult.length; i < len && i < limit; i++) {
-                    var person = autoCompleteResult[i];
-                    var firstCharacter = person.name.charAt(0).toUpperCase();
-                    var details = "<div class='client-name'><div class='drop-cap' style='background: #D0D0D0; color: #000;'>" + firstCharacter + "</div></div>" + "<p>" + person.name + "<br>" + person.email + " | " + person.mobile_number + "</p>";
-                    resultElement.innerHTML += "<a class='list-group-item list-group-item-action' href='javascript:void(0);' onclick='setSearchModal(\"" + person.name + "\")'>" + details + "</a>";
+                if (autoCompleteResult.length === 0) {
+                    resultElement.innerHTML = "<p>No records found</p>";
+                } else {
+                    resultElement.innerHTML = ""; // Clear previous message if records are found
+                    for (var i = 0, limit = 10, len = autoCompleteResult.length; i < len && i < limit; i++) {
+                        var person = autoCompleteResult[i];
+                        var firstCharacter = person.name.charAt(0).toUpperCase();
+                        var details = "<div class='client-name'><div class='drop-cap' style='background: #D0D0D0; color: #000;'>" + firstCharacter + "</div></div>" + "<p>" + person.name + "<br>" + person.email + " | " + person.mobile_number + "</p>";
+                        resultElement.innerHTML += "<a class='list-group-item list-group-item-action' href='javascript:void(0);' onclick='setSearchModal(\"" + person.name + "\")'>" + details + "</a>";
+                    }
                 }
             }
-        }
     }
 
     //search and set clients
@@ -1364,15 +1447,13 @@
 
         // Iterate over client_details to find a matching value
         for (const key in client_details) {
+            console.log(client_details);
             if (client_details.hasOwnProperty(key)) {
                 const client = client_details[key];
                 // Check if value matches any field in the client object
                 if (client.email === value || client.mobile_number === value || client.name === value) {
+                    console.log(client);
                     // If a match is found, dynamically bind HTML to clientDetails element
-                    $('#clientmodal').show();
-                    $('.clientCreateModal').hide();
-                    $("#clientDetailsModal").html(
-                        "<i class='ico-user2 me-2 fs-6'></i> "+ client.name +' '+ client.lastname);
                     $('#clientDetails').html(
                         `<div class='client-name'><div class='drop-cap' style='background: #D0D0D0; color: #000;'>
                         ${client.name.charAt(0).toUpperCase() }
