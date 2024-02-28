@@ -517,8 +517,13 @@
                         city: res[i].city,
                         postcode: res[i].postcode,
                         client_photos:res[i].client_photos,
-                        client_documents: [], // Initialize an empty array for client documents
-                    });
+                        client_documents: [], // Initialize an empty array for client documents,
+                        service_name: res[i].last_appointment.service_name,
+                        staff_name: res[i].last_appointment.staff_name,
+                        start_date: res[i].last_appointment.start_date,
+                        status: res[i].last_appointment.status,
+                        location_name: res[i].last_appointment.location_name
+                   });
                     // Iterate over client documents and push only doc_name and created_at
                     for (var j = 0; j < res[i].client_documents.length; j++) {
                         client_details[i].client_documents.push({
@@ -539,10 +544,10 @@
 
     // Assuming you have a function to trigger opening the modal with a specific client id
     // For example, if you have a button or link to open the modal, you can attach a click event handler to it
-    $(document).on('click','.open-client-card-btn',function(e){
-        var clientId = $(this).data('client-id'); // Use data('client-id') to access the attribute
-        openClientCard(clientId);
-    });
+    // $(document).on('click','.open-client-card-btn',function(e){
+    //     var clientId = $(this).data('client-id'); // Use data('client-id') to access the attribute
+    //     openClientCard(clientId);
+    // });
 
     //for match clients
     function matchClient(input) {
@@ -607,9 +612,10 @@
                 for (var i = 0, limit = 10, len = autoCompleteResult.length; i < len && i < limit; i++) {
                     var person = autoCompleteResult[i];
                     var firstCharacter = person.name.charAt(0).toUpperCase();
-                    var details = "<div class='client-name'><div class='drop-cap' style='background: #D0D0D0; color: #000;'>" + firstCharacter + "</div></div>" + "<p>" + person.name + "<br>" + person.email + " | " + person.mobile_number + "</p>";
-                    resultElement.innerHTML += "<a class='list-group-item list-group-item-action' href='javascript:void(0);' onclick='setSearchModal(\"" + person.name + "\")'>" + details + "</a>";
-                }
+                    var details = `<div class='client-name'><div class='drop-cap' style='background: #D0D0D0; color: #000;'>${firstCharacter}</div></div><p> ${person.name} <br> ${person.email}  |  ${person.mobile_number} </p>
+                    last appointment at ${person.location_name} on ${person.start_date} ${person.service_name} with ${person.staff_name}(${person.status})`;
+                    resultElement.innerHTML += `<a class='list-group-item list-group-item-action' href='javascript:void(0);' onclick='setSearchModal("${person.name}")'>${details}</a>`;
+               }
             }
         }
     }
@@ -663,6 +669,10 @@
                 if (client.email === value || client.mobile_number === value || client.name === value) {
                     console.log(client);
                     // If a match is found, dynamically bind HTML to clientDetails element
+                    $('#clientmodal').show();
+                    $('.clientCreateModal').hide();
+                    $("#clientDetailsModal").html(
+                        "<i class='ico-user2 me-2 fs-6'></i> "+ client.name +' '+ client.lastname);
                     $('#clientDetails').html(
                         `<div class='client-name'><div class='drop-cap' style='background: #D0D0D0; color: #000;'>
                         ${client.name.charAt(0).toUpperCase() }
