@@ -152,9 +152,9 @@ class CalenderController extends Controller
      */
     public function getAllClients(Request $request)
     {
-        $clients = Clients::where('firstname', 'like', '%' . $request->name . '%')->get();
+        $clients = Clients::where('firstname', 'like', '%' .$request->name. '%')->get();
         $data = [];
-        
+
         foreach ($clients as $client) {
             $clientData = [
                 'id'                    => $client->id,
@@ -173,15 +173,20 @@ class CalenderController extends Controller
                 'city'                  => $client->city,
                 'postcode'              => $client->postcode,
                 'client_photos'         => [],
-                'client_documents'      => [],
-                'last_appointment'      => [
+                'client_documents'      => []
+            ];
+
+            $clientData['last_appointment'] = [];
+            if(isset($client->last_appointment))
+            {
+                $clientData['last_appointment'] = [
                     'service_name'      => isset($client->last_appointment) ? $client->last_appointment->services->service_name : '',
                     'start_date'        => isset($client->last_appointment) ? $client->last_appointment->start_date : '',
                     'staff_name'        => isset($client->last_appointment) ? $client->last_appointment->staff->name : '',
                     'location_name'     => isset($client->last_appointment) ? $client->last_appointment->staff->staff_location->location_name : '',
                     'status'            => isset($client->last_appointment) ? $client->last_appointment->appointment_status : '',
-                ],
-            ];
+                ];
+            }
 
             // Fetch client photos for the current client
             $clientPhotos = ClientsPhotos::where('client_id', $client->id)->get();

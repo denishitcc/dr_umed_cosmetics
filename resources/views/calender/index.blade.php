@@ -245,16 +245,16 @@
         We want to preview images, so we need to register the Image Preview plugin
         */
         FilePond.registerPlugin(
-            
+
             // encodes the file as base64 data
             FilePondPluginFileEncode,
-            
+
             // validates the size of the file
             FilePondPluginFileValidateSize,
-            
+
             // corrects mobile image orientation
             FilePondPluginImageExifOrientation,
-            
+
             // previews dropped images
             FilePondPluginImagePreview
         );
@@ -299,7 +299,6 @@
 
         // client photo updates
         $("#client_photos").change(function () {
-            
             var inputElement = document.getElementById('client_photos');
             var data = new FormData();
             var id=$('#id').val();
@@ -312,7 +311,7 @@
                     return function (e) {
                         var fileName = file.name;
                         var fileContents = e.target.result;
-                        
+
                         $('.client-phbox').append('<input type="hidden" name="hdn_img" value="' + file + '">' +
                         '<figure imgname="' + fileName + '" id="remove_image" class="remove_image">' +
                         '<a href='+ fileContents +' data-fancybox="mygallery">' +
@@ -347,7 +346,6 @@
                             // window.location = "{{url('clients')}}"//'/player_detail?username=' + name;
                         });
                     } else {
-                        
                         Swal.fire({
                             title: "Error!",
                             text: response.message,
@@ -415,7 +413,6 @@
                             }
                         });
                     } else {
-                        
                         Swal.fire({
                             title: "Error!",
                             text: response.message,
@@ -457,7 +454,6 @@
                             // window.location = "{{url('clients')}}/" + id
                         });
                     } else {
-                        
                         Swal.fire({
                             title: "Error!",
                             text: response.message,
@@ -535,7 +531,7 @@
                     for (var i = 0; i < res.length; ++i) {
                         // Check if the record with the same id already exists in the array
                         var existingRecordIndex = client_details.findIndex(record => record.id === res[i].id);
-                        
+
                         // If the record doesn't exist in the array, add it
                         if (existingRecordIndex === -1) {
                             // Push client details to the client_details array
@@ -628,7 +624,7 @@
                         for (var i = 0; i < res.length; ++i) {
                             // Check if the record with the same id already exists in the array
                             var existingRecordIndex = client_details.findIndex(record => record.id === res[i].id);
-                            
+
                             // If the record doesn't exist in the array, add it
                             if (existingRecordIndex === -1) {
                                 // Push client details to the client_details array
@@ -681,7 +677,7 @@
                     // Handle error
                 }
             });
-            
+
             // $('#clientDetails').empty();
             var autoCompleteResult = matchClient(val);
             var resultElement = document.getElementById("resultmodal");
@@ -695,9 +691,21 @@
                 for (var i = 0, limit = 10, len = autoCompleteResult.length; i < len && i < limit; i++) {
                     var person = autoCompleteResult[i];
                     var firstCharacter = person.name.charAt(0).toUpperCase();
-                    var details = `<div class='client-name'><div class='drop-cap' style='background: #D0D0D0; color: #000;'>${firstCharacter}</div></div><p> ${person.name} <br> ${person.email}  |  ${person.mobile_number} </p>
-                    last appointment at ${person.location_name} on ${person.start_date} ${person.service_name} with ${person.staff_name}(${person.status})`;
-                    resultElement.innerHTML += `<a class='list-group-item list-group-item-action' href='javascript:void(0);' onclick='setSearchModal("${person.name}")'>${details}</a>`;
+                    var details = `<div class='client-name'>
+                                    <div class='drop-cap' style='background: #D0D0D0; color: #000;'>${firstCharacter}
+                                    </div>
+                                    </div><p> ${person.name} <br> ${person.email}  |  ${person.mobile_number} </p>`;
+                                    console.log(person.service_name);
+                    if(person.service_name == null)
+                    {
+                        var appointment = `No Visit history`;
+                    }
+                    else
+                    {
+                        var appointment = `last appointment at ${person.location_name} on ${person.start_date} ${person.service_name} with ${person.staff_name}(${person.status})`;
+                    }
+
+                    resultElement.innerHTML += `<a class='list-group-item list-group-item-action' href='javascript:void(0);' onclick='setSearchModal("${person.name}")'>${details} ${appointment}</a>`;
                }
             }
         }
@@ -791,7 +799,7 @@
             $('.client-info a:eq(1)').text(client.email).attr('href', 'mailto:' + client.email);
             $('.drop-cap').text(client.name.charAt(0));
             // You can add more fields as needed
-            
+
             // clien details bind
             $('#id').val(client.id);
             $('#firstname').val(client.name);
@@ -835,7 +843,7 @@
                     // Assuming each document object has a property called 'created_at' representing its creation date
                     var createdDate = new Date(doc.created_at);
                     var formattedDate = formatDate(createdDate); // Assuming formatDate function formats the date appropriately
-                    
+
                     var link = $('<a>').addClass('btn tag icon-btn-left skyblue mb-2').html('<span><i class="ico-pdf me-2 fs-2 align-middle"></i>' + doc.doc_name + '</span><span class="file-date">' + formattedDate + '</span><i class="del ico-trash remove_doc" ids = "'+ doc.doc_id+ '"></i>');
                     var listItem = $('<span>').append(link);
                     documentListContainer.append(listItem);
@@ -874,10 +882,8 @@
 			type: "PUT",
 			data: data,
             success: function(response) {
-				
 				// Show a Sweet Alert message after the form is submitted.
 				if (response.success) {
-					
 					Swal.fire({
 						title: "Client!",
 						text: "Client Updated successfully.",
@@ -885,9 +891,7 @@
 					}).then((result) => {
                         // window.location = "{{url('calender')}}/"
                     });
-					
 				} else {
-					
 					Swal.fire({
 						title: "Error!",
 						text: response.message,
