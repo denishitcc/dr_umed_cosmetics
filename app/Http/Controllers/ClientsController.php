@@ -152,10 +152,8 @@ class ClientsController extends Controller
         {
             foreach($request->pics as $pics)
             {
-                // dd($pics);
                 $folderPath = storage_path('app/public/images/clients_photos/');
                 $image_parts = explode(";base64,", $pics);
-                // dd($image_parts);
                 $image_type_aux = explode("image/", $image_parts[0]);
                 $image_type = $image_type_aux[1];
                 $image_base64 = base64_decode($image_parts[1]);
@@ -174,7 +172,6 @@ class ClientsController extends Controller
             {
                 $folderPath = storage_path('app/public/images/clients_documents/');
                 $image_parts = explode(";base64,", $docs);
-                // dd($image_parts);
                 $image_type_aux = explode("image/", $image_parts[0]);
                 $image_type = $image_type_aux[1];
                 $image_base64 = base64_decode($image_parts[1]);
@@ -202,12 +199,14 @@ class ClientsController extends Controller
      */
     public function show(string $id)
     {
-        $client = Clients::where('id',$id)->first();
-        // dd($client);
-        $client_photos = ClientsPhotos::where('client_id',$client->id)->get();
-        $client_documents = ClientsDocuments::where('client_id',$client->id)->get();
-        // dd($client_photos);
-        return view('clients.edit',compact('client','client_photos','client_documents'));
+        $client             = Clients::where('id',$id)->first();
+        $client_photos      = ClientsPhotos::where('client_id',$client->id)->get();
+        $client_documents   = ClientsDocuments::where('client_id',$client->id)->get();
+        $todayDate          = Carbon::today()->toDateTimeString();
+
+        $futureappointments = $client->allappointments()->where('created_at','>=', $todayDate)->orderby('created_at','desc')->get();
+        $pastappointments   = $client->allappointments()->where('created_at','<=', $todayDate)->orderby('created_at','desc')->get();
+        return view('clients.edit',compact('client','client_photos','client_documents','futureappointments','pastappointments'));
     }
 
     /**
@@ -335,18 +334,17 @@ class ClientsController extends Controller
             }
         }
         $response = [
-            'success' => true,
-            'message' => 'Client Documents Updated successfully!',
-            'type' => 'success',
+            'success'   => true,
+            'message'   => 'Client Documents Updated successfully!',
+            'type'      => 'success',
             'client_id' => $insertedIds // Include the client ID in the response
         ];
         return response()->json($response);
     }
     public function removeDocuments(Request $request)
     {
-        // dd($request->all());
         ClientsDocuments::where('id',$request->doc_id)->where('client_id',$request->id)->delete();
-        
+
         $response = [
             'success' => true,
             'message' => 'Location deleted successfully!',
@@ -357,9 +355,8 @@ class ClientsController extends Controller
     }
     public function removePhotos(Request $request)
     {
-        // dd($request->all());
         ClientsPhotos::where('id',$request->photo_id)->where('client_id',$request->id)->delete();
-        
+
         $response = [
             'success' => true,
             'message' => 'Client deleted successfully!',

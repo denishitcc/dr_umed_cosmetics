@@ -23,4 +23,28 @@ class AppointmentNotes extends Model
         'common_notes',
         'treatment_notes',
     ];
+
+
+    /**
+     * Method getNotesCountAttribute
+     *
+     * @return int
+     */
+    public function getNotesCountAttribute()
+    {
+        if(isset($this->common_notes) && isset($this->treatment_notes) )
+        {
+            return 2;
+        }
+        else if ($this->treatment_notes)
+        {
+            return 1;
+        }
+        else
+        {
+            return 1;
+        }
+
+        return 0;
+    }
 }
