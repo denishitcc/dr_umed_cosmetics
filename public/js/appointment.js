@@ -653,7 +653,7 @@ var DU = {};
                         $('#client_info').find('#ClientNotesData').remove();
                         $('#clientNotes').prepend(response.clientnoteshtml);
 
-                        $(".common_notes").css({"display":"none"});
+                        // $(".common_notes").css({"display":"none"});
                     },
                     error: function (error) {
                         console.error('Error fetching resources:', error);
@@ -661,34 +661,37 @@ var DU = {};
                 });
                 context.selectors.clientCardModal.modal('show');
 
+                $(document).on('click','#add_notes', function(e){
+                    $(".viewnotes").remove();
+                    $(".common").remove();
+                    $(".common_notes").append($('.common').clone()).html();
+                    var appointment_id = $('#add_notes').data('appointment_id');
+                    $('.common_notes').find('input:hidden[name=appointment_id]').val(appointment_id);
+                    $('.common_notes').removeAttr('style');
+                });
+
                 $(document).on('click','#add_common_notes', function(e){
                     e.preventDefault();
-                    alert('hi');
+                    // $('form').serialize()
+                    var appointmentId = $('.common_notes').find('input:hidden[name=appointment_id]').val(),
+                        commonNotes   = $('#common_notes').val();
                     $.ajax({
-                        url: moduleConfig.getEvents,
+                        url: moduleConfig.addNotes,
                         type: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
                         },
                         data: {
-                            'start_date'  : start_date,
-                            'end_date'    : end_date
+                            'appointmentId'  : appointmentId,
+                            'commonNotes'    : commonNotes
                         },
                         success: function (data) {
-                            // Update the FullCalendar resources with the retrieved data
-                            context.calendar.setOption('events', data);
-                            context.calendar.refetchEvents(); // Refresh events if needed
+                            location.reload();
                         },
                         error: function (error) {
                             console.error('Error fetching events:', error);
                         }
                     });
-                });
-
-                $(document).on('click','#add_notes', function(e){
-                    var appointment_id = $('#add_notes').data('appointment_id');
-                    $('.common_notes').find('input:hidden[name=appointment_id]').val(appointment_id);
-                    $('.common_notes').removeAttr('style');
                 });
             });
         },

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Appointment;
+use App\Models\AppointmentNotes;
 use App\Models\Category;
 use App\Models\Services;
 use App\Models\User;
@@ -394,6 +395,7 @@ class CalenderController extends Controller
         $appointmenthtml    = view('calender.partials.client-appointment-card', [
                                     'futureappointments'  => $futureappointments,
                                     'pastappointments'    => $pastappointments,
+                                    'client' => $client
                             ])->render();
         $clientnoteshtml    = view('calender.partials.client-notes' , [ 'client' => $client ])->render();
 
@@ -414,6 +416,21 @@ class CalenderController extends Controller
      */
     public function addAppointmentNotes(Request $request)
     {
-        dd($request);
+        DB::beginTransaction();
+        try {
+            if(isset($request->commonNotes))
+            {
+                $notes = AppointmentNotes::updateOrCreate(['appointment_id' => $request->appointmentId],['common_notes' => $request->commonNotes]);
+            }
+            else
+            {
+                $notes = AppointmentNotes::updateOrCreate(['appointment_id' => $request->appointmentId],['treatment_notes' => $request->treatmentNotes]);
+            }
+            DB::commit();
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
     }
 }

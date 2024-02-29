@@ -9,12 +9,12 @@
                     </div>
                     <div class="appt-details">
                         <div class="his-detaiils">
-                            <h5 class="black">{{ $appointment->services->service_name }}</h5>
+                            <h5 class="black">{{ $appointment->services->service_name }} </h5>
                             <p>{{ $appointment->duration }}m with {{ $appointment->staff->name }}<br>
                                 {{-- <span class="font-13">(Uninvoiced) : $0.00</span> --}}
                             </p>
                             <div class="add-note-btn-box">
-                                <a href="#" class="btn btn-primary font-13 me-2">Add
+                                <a href="#" class="btn btn-primary font-13 me-2"> Add
                                     Notes</a>
                                 <a href="#" class="btn btn-primary font-13 alter">
                                     Add treatment notes </a>
@@ -45,13 +45,14 @@
                         <p>{{ $appointment->duration }}m with {{ $appointment->staff->name }}<br>
                             {{-- <span class="font-13">(Uninvoiced) : $0.00</span> --}}
                         </p>
-                        <div class="add-note-btn-box">
-                            <a href="javascript:void(0);" class="btn btn-primary font-13 me-2" id="add_notes" data-appointment_id="{{ $appointment->id }}"> Add Notes </a>
-                            <a href="javascript:void(0);" class="btn btn-primary font-13 alter" id="add_treatment_notes" data-appointment_id="{{ $appointment->id }}"> Add treatment notes </a>
-                        </div>
-                        {{-- <a href="#" class="badge badge-alter badge-icon badge-note my-2"><i
-                                class="ico-file-text me-2 fs-4 align-middle"></i> 0
-                            Notes</a> --}}
+                        @if (isset($appointment->notes->notescount))
+                            <a href="#" class="badge badge-alter badge-icon badge-note my-2"><i class="ico-file-text me-2 fs-4 align-middle"></i> {{ $appointment->notes->notescount }} Notes </a>
+                        @else
+                            <div class="add-note-btn-box">
+                                <a href="javascript:void(0);" class="btn btn-primary font-13 me-2" id="add_notes" data-appointment_id="{{ $appointment->id }}"> Add Notes </a>
+                                <a href="javascript:void(0);" class="btn btn-primary font-13 alter" id="add_treatment_notes" data-appointment_id="{{ $appointment->id }}"> Add treatment notes </a>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </li>

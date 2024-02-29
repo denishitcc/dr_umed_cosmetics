@@ -3,20 +3,25 @@
     <div class="yellow-note-box common_notes">
         <strong>Common Notes:</strong>
         @if (isset($client->last_appointment->notes))
+        <div class="viewnotes">
             <p> <br>
                 {{ $client->last_appointment->notes->common_notes }}
             </p>
             <div class="add-note-btn-box">
                 <a href="#" class="btn btn-primary font-13 alter"> Edit Notes</a>
             </div>
+        </div>
         @else
-            <form method="post">
-                <input type="hidden" name="appointment_id">
-                <textarea name="common_notes" id="" cols="80" rows="5" class="form=control"></textarea>
-            </form>
-            <div class="add-note-btn-box">
-                <br>
-                <button type="button" class="btn btn-primary font-13 me-2" id="add_common_notes">Add Notes</button>
+            <div class="common">
+                <form method="post" >
+                    <input type="hidden" name="appointment_id">
+                    <textarea name="common_notes" id="common_notes" cols="80" rows="5" class="form=control"></textarea>
+
+                    <div class="add-note-btn-box">
+                        <br>
+                        <button type="button" class="btn btn-primary font-13 me-2" id="add_common_notes">Add Notes</button>
+                    </div>
+                </form>
             </div>
         @endif
     </div>

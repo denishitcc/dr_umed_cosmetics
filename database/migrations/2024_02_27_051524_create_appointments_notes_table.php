@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('appointments_notes', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('appointment_id');
-            $table->text('common_notes');
-            $table->text('treatment_notes');
+            $table->text('common_notes')->nullable();
+            $table->text('treatment_notes')->nullable();
             $table->timestamps();
 
             $table->foreign('appointment_id')->references('id')->on('appointment');
