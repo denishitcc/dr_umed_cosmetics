@@ -653,9 +653,17 @@
                 for (var i = 0, limit = 10, len = autoCompleteResult.length; i < len && i < limit; i++) {
                     var person = autoCompleteResult[i];
                     var firstCharacter = person.name.charAt(0).toUpperCase();
-                    var details = `<div class='client-name'><div class='drop-cap' style='background: #D0D0D0; color: #000;'>${firstCharacter}</div></div><p> ${person.name} <br> ${person.email}  |  ${person.mobile_number} </p>
-                    last appointment at ${person.location_name} on ${person.start_date} ${person.service_name} with ${person.staff_name}(${person.status})`;
-                    resultElement.innerHTML += `<a class='list-group-item list-group-item-action' href='javascript:void(0);' onclick='setSearch("${person.name}")'>${details}</a>`;
+                    var details = `<div class='client-name'><div class='drop-cap' style='background: #D0D0D0; color: #000;'>${firstCharacter}</div></div><p> ${person.name} <br> ${person.email}  |  ${person.mobile_number} </p>`;
+
+                    if(person.service_name == null)
+                    {
+                        var appointment = `No Visit history`;
+                    }
+                    else
+                    {
+                        var appointment = `last appointment at ${person.location_name} on ${person.start_date} ${person.service_name} with ${person.staff_name}(${person.status})`;
+                    }
+                    resultElement.innerHTML += `<a class='list-group-item list-group-item-action' href='javascript:void(0);' onclick='setSearch("${person.name}")'>${details} ${appointment}</a>`;
                 }
             }
         }
@@ -751,7 +759,7 @@
                                     <div class='drop-cap' style='background: #D0D0D0; color: #000;'>${firstCharacter}
                                     </div>
                                     </div><p> ${person.name} <br> ${person.email}  |  ${person.mobile_number} </p>`;
-                                    console.log(person.service_name);
+
                     if(person.service_name == null)
                     {
                         var appointment = `No Visit history`;
