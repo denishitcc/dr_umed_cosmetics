@@ -11,11 +11,12 @@
             </div>
         @else
             <form method="post">
-                <input type="text" name="common_notes" >
+                <input type="hidden" name="appointment_id">
+                <textarea name="common_notes" id="" cols="80" rows="5" class="form=control"></textarea>
             </form>
             <div class="add-note-btn-box">
                 <br>
-                <a href="#" class="btn btn-primary font-13 me-2">Add Notes</a>
+                <button type="button" class="btn btn-primary font-13 me-2" id="add_common_notes">Add Notes</button>
             </div>
         @endif
     </div>

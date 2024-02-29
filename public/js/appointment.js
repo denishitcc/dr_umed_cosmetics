@@ -374,39 +374,6 @@ var DU = {};
             });
         },
 
-        openClientCardModal: function(){
-            var context = this;
-
-            $(document).on('click','.open-client-card-btn', function(e){
-                var clientId = $(this).data('client-id'); // Use data('client-id') to access the attribute
-
-                // openClientCard(clientId);
-                $.ajax({
-                    url: moduleConfig.getClientCardData.replace(':ID', clientId), // Replace with your actual API endpoint
-                    type: 'GET',
-                    headers: {
-                        'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
-                    },
-                    success: function (response) {
-                        // remove client info with first div
-                        $('#client_info').find('#client-invo-notice').remove();
-                        $('#client_info').prepend(response.data);
-
-                        $('#client_info').find('#appointmentsData').remove();
-                        $('#appointmentTab').prepend(response.appointmenthtml);
-
-                        $('#client_info').find('#ClientNotesData').remove();
-                        $('#clientNotes').prepend(response.clientnoteshtml);
-
-                    },
-                    error: function (error) {
-                        console.error('Error fetching resources:', error);
-                    }
-                });
-                context.selectors.clientCardModal.modal('show');
-            });
-        },
-
         changeServices: function(){
             var context = this;
             jQuery('.parent_category_id').on('click', function(e) {
@@ -662,11 +629,71 @@ var DU = {};
             });
         },
 
-    }
+        openClientCardModal: function(){
+            var context = this;
 
-    // $(document).on('click','#add_notes', function(e){
-    //     $('#common_notes').show();
-    // });
+            $(document).on('click','.open-client-card-btn', function(e){
+                var clientId = $(this).data('client-id'); // Use data('client-id') to access the attribute
+
+                // openClientCard(clientId);
+                $.ajax({
+                    url: moduleConfig.getClientCardData.replace(':ID', clientId), // Replace with your actual API endpoint
+                    type: 'GET',
+                    headers: {
+                        'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function (response) {
+                        // remove client info with first div
+                        $('#client_info').find('#client-invo-notice').remove();
+                        $('#client_info').prepend(response.data);
+
+                        $('#client_info').find('#appointmentsData').remove();
+                        $('#appointmentTab').prepend(response.appointmenthtml);
+
+                        $('#client_info').find('#ClientNotesData').remove();
+                        $('#clientNotes').prepend(response.clientnoteshtml);
+
+                        $(".common_notes").css({"display":"none"});
+                    },
+                    error: function (error) {
+                        console.error('Error fetching resources:', error);
+                    }
+                });
+                context.selectors.clientCardModal.modal('show');
+
+                $(document).on('click','#add_common_notes', function(e){
+                    e.preventDefault();
+                    alert('hi');
+                    $.ajax({
+                        url: moduleConfig.getEvents,
+                        type: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: {
+                            'start_date'  : start_date,
+                            'end_date'    : end_date
+                        },
+                        success: function (data) {
+                            // Update the FullCalendar resources with the retrieved data
+                            context.calendar.setOption('events', data);
+                            context.calendar.refetchEvents(); // Refresh events if needed
+                        },
+                        error: function (error) {
+                            console.error('Error fetching events:', error);
+                        }
+                    });
+                });
+
+                $(document).on('click','#add_notes', function(e){
+                    var appointment_id = $('#add_notes').data('appointment_id');
+                    $('.common_notes').find('input:hidden[name=appointment_id]').val(appointment_id);
+                    $('.common_notes').removeAttr('style');
+                });
+            });
+        },
+
+    }
 
     $('.add_new_client').click(function(){
         $('#check_client').val('new_client');
