@@ -211,6 +211,7 @@
                         <form id="update_client_photos" name="update_client_photos" class="form" method="post"
                             enctype="multipart/form-data">
                             @csrf
+                            <input type="hidden" name="id" id="id" value="">
                             <div class="card-body">
                                 <div class="form-group">
                                     <label class="gl-upload">

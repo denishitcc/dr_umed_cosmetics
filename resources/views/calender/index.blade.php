@@ -299,9 +299,10 @@
 
         // client photo updates
         $("#client_photos").change(function () {
+            var fileCount = this.files.length;
             var inputElement = document.getElementById('client_photos');
             var data = new FormData();
-            var id=$('#id').val();
+            var id = $('#client_id').val();
             for (var i = 0; i < this.files.length; i++) {
                 var reader = new FileReader();
                 var files = this.files[i].name;
@@ -312,11 +313,13 @@
                         var fileName = file.name;
                         var fileContents = e.target.result;
 
-                        $('.client-phbox').append('<input type="hidden" name="hdn_img" value="' + file + '">' +
-                        '<figure imgname="' + fileName + '" id="remove_image" class="remove_image">' +
-                        '<a href='+ fileContents +' data-fancybox="mygallery">' +
-                        '<img src=' + fileContents + ' class="img-fluid">' +
-                        '</a></figure>');
+                        $('.client-phbox').append(
+                            '<input type="hidden" name="hdn_img" value="' + file + '">' +
+                            '<figure imgname="' + fileName + '" id="remove_image" class="remove_image">' +
+                            '<a href='+ fileContents +' data-fancybox="mygallery">' +
+                            '<img src=' + fileContents + ' class="img-fluid">' +
+                            '</a></figure>'
+                        );
                     };
                 })(currFile);
                 reader.readAsDataURL(this.files[i]);
@@ -339,11 +342,22 @@
                             text: "Client Photos Updated successfully.",
                             type: "success",
                         }).then((result) => {
+                            // Update the photos count after success
                             var photosCount = parseInt($('.photos_count').text());
-                            var resultdoc = photosCount + 1;
+                            var resultdoc = photosCount + fileCount;
                             $('.photos_count').text(resultdoc);
-                            // window.location = "{{url('calender')}}/"
-                            // window.location = "{{url('clients')}}"//'/player_detail?username=' + name;
+
+                            var deleteButton = $('<button>')
+                                .attr('ids', response.id)
+                                .addClass('btn black-btn round-6 dt-delete remove_image')
+                                .html('<i class="ico-trash"></i>')
+                                .click(function() {
+                                    var photoId = $(this).data('id');
+                                    // You can call a function here to delete the photo using AJAX
+                                    // For example, deletePhoto(photoId);
+                                });
+
+                            $('.remove_image').append(deleteButton);
                         });
                     } else {
                         Swal.fire({
@@ -353,11 +367,13 @@
                         });
                     }
                 }
+
             });
         });
 
         //update client documents
         $("#client_documents").change(function() {
+            var fileCount = this.files.length;
             var inputElement = document.getElementById('client_documents');
             var data = new FormData();
             var id=$('#id').val();
@@ -398,7 +414,7 @@
                             type: "success",
                         }).then((result) => {
                             var documentsCount = parseInt($('.documents_count').text());
-                            var resultdoc = documentsCount + 1;
+                            var resultdoc = documentsCount + fileCount;
                             $('.documents_count').text(resultdoc);
                             // Bind links for each uploaded file
                             var files = inputElement.files; // Get selected files
@@ -482,11 +498,50 @@
 
     // Assuming you have a function to trigger opening the modal with a specific client id
     // For example, if you have a button or link to open the modal, you can attach a click event handler to it
-    // $(document).on('click','.open-client-card-btn',function(e){
-    //     var clientId = $(this).data('client-id'); // Use data('client-id') to access the attribute
-    //     openClientCard(clientId);
-    // });
-
+    $(document).on('click','.open-client-card-btn',function(e){
+        var clientId = $(this).data('client-id'); // Use data('client-id') to access the attribute
+        openClientCard(clientId);
+    });
+    $(document).on('click', '.remove_image', function (e) {
+        e.preventDefault();
+        $(this).parent().remove();
+        var data = new FormData();
+        var id = $('#id').val();
+        var photo_id = $(this).attr('ids');
+        data.append('id',id);
+        data.append('photo_id',photo_id);
+        jQuery.ajax({
+            headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            url: "{{route('clients-photos-remove')}}",
+            data: data,
+            method: 'POST',
+            type: 'POST', // For jQuery < 1.9
+            data: data,
+            contentType: false, // The content type used when sending data to the server. Default is: "application/x-www-form-urlencoded"
+            processData: false,
+            success: function (response) {
+                if (response.success) {
+                    Swal.fire({
+                        title: "Client!",
+                        text: "Client Photo Deleted successfully.",
+                        type: "success",
+                    }).then((result) => {
+                        var phtcnt = parseInt($('.photos_count').text());
+                        var resultdoc = phtcnt - 1;
+                        $('.photos_count').text(resultdoc);
+                        // window.location = "{{url('clients')}}/" + id
+                    });
+                } else {
+                    
+                    Swal.fire({
+                        title: "Error!",
+                        text: response.message,
+                        type: "error",
+                    });
+                }
+            }
+        });
+    });
     //for match clients
     function matchClient(input) {
         var reg = new RegExp(input.trim(), "i");
@@ -729,7 +784,7 @@
                         `<div class='client-name'><div class='drop-cap' style='background: #D0D0D0; color: #000;'>
                         ${client.name.charAt(0).toUpperCase() }
                         </div></div>
-                        <p><input type='hidden' name='client_name' value='${client.name} ${client.lastname}'><input type='hidden' name='client_id' value='${client.id}'>
+                        <p><input type='hidden' name='client_name' value='${client.name} ${client.lastname}'><input type='hidden' id="client_id" name='client_id' value='${client.id}'>
                         ${client.name} <br>
                         ${client.email} |
                         ${client.mobile_number}
@@ -824,12 +879,28 @@
                 var photoContainer = $('.client-phbox'); // Assuming you have a container for client photos in your modal
                 photoContainer.empty(); // Clear previous photos
                 client.client_photos.forEach(function(photoUrl) {
-                    var img = $('<img>').attr('src', '{{ asset('storage/images/clients_photos/') }}' + '/' + photoUrl).addClass('img-fluid');
+                    var img = $('<img>').attr('src', '{{ asset('storage/images/clients_photos/') }}' + '/' + photoUrl.photo_name).addClass('img-fluid');
                     var anchor = $('<a>').attr({
-                        'href': '{{ asset('storage/images/clients_photos/') }}' + '/' + photoUrl,
+                        'href': '{{ asset('storage/images/clients_photos/') }}' + '/' + photoUrl.photo_name,
                         'data-fancybox': 'mygallery' // Add data-fancybox attribute
                     }).append(img);
                     var figure = $('<figure>').append(anchor);
+
+                    // Create the delete button with a dynamic ID based on the photo index
+                    var deleteButton = $('<button>')
+                    .addClass('btn black-btn round-6 dt-delete remove_image')
+                    .attr('type', 'button')
+                    .attr('ids', photoUrl.id)
+                    .click(function() {
+                        // Functionality to delete the photo based on its ID
+                        var photoId = $(this).attr('photos-id');
+                        deletePhoto(photoId);
+                    })
+                    .append($('<i>').addClass('ico-trash'));
+
+                    // Append the delete button to the figure element
+                    figure.append(deleteButton);
+                    
                     photoContainer.append(figure);
                 });
             }

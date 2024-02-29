@@ -191,7 +191,12 @@ class CalenderController extends Controller
             // Fetch client photos for the current client
             $clientPhotos = ClientsPhotos::where('client_id', $client->id)->get();
             foreach ($clientPhotos as $photo) {
-                $clientData['client_photos'][] = $photo->client_photos;
+                $clientData['client_photos'][] = 
+                [
+                    'id'     => $photo->id,
+                    'photo_name'   => $photo->client_photos,  // Assuming the field name is 'doc_name'
+                ];
+                //$photo->client_photos;
             }
             // Fetch client documents for the current client
             $clientDocuments = ClientsDocuments::where('client_id', $client->id)->get();

@@ -426,7 +426,7 @@
                     @foreach($client_photos as $photos)
                     <figure>
                         <a href="{{asset('storage/images/clients_photos/').'/'.$photos->client_photos}}" data-fancybox="mygallery"><img src="{{asset('storage/images/clients_photos/').'/'.$photos->client_photos}}" alt=""></a>
-                        <!-- <button type="button" photos ids="{{$photos->id}}"class="btn black-btn round-6 dt-delete remove_image"><i class="ico-trash"></i></button> -->
+                        <button type="button" photos ids="{{$photos->id}}"class="btn black-btn round-6 dt-delete remove_image"><i class="ico-trash"></i></button>
                     </figure>
                     @endforeach
                 </div>
@@ -899,7 +899,7 @@
                         var fileName = file.name;
                         var fileContents = e.target.result;
                         $('.docs').append('<a href="#" class="btn tag icon-btn-left skyblue mb-2"><span><i class="ico-pdf me-2 fs-2 align-middle"></i> ' + fileName + '</span> <span class="file-date">' + fulldate + '</span><i class="del ico-trash"></i></a>');
-                        // $('.docs').append('<a href="#" class="btn tag icon-btn-left skyblue remove_doc mb-2"><i class="ico-pdf me-2 fs-2"></i> ' + fileName + ' <i class="del ico-trash"></i></a><figure style="display:none"; imgname='+ fileName +' id="remove_image" class="remove_image"><img src=' + fileContents + '><button type="button" class="btn black-btn round-6 dt-delete"><i class="ico-trash"></i></button></figure>');
+                        $('.docs').append('<a href="#" class="btn tag icon-btn-left skyblue remove_doc mb-2"><i class="ico-pdf me-2 fs-2"></i> ' + fileName + ' <i class="del ico-trash"></i></a><figure style="display:none"; imgname='+ fileName +' id="remove_image" class="remove_image"><img src=' + fileContents + '><button type="button" class="btn black-btn round-6 dt-delete"><i class="ico-trash"></i></button></figure>');
                     };
                 })(currFile);
                 reader.readAsDataURL(this.files[i]);

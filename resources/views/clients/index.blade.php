@@ -177,13 +177,21 @@ $(document).ready(function() {
                         var datesArray = data.split(',');
                         var statusArray = row.app_status.split(',');
                         var locationArray = row.staff_location.split(',');
-
+                        if (row.common_notes != null) {
+                            var commonNotesArray = row.common_notes.split('<br>');
+                        }
+                        if (row.treatment_notes != null) {
+                            var treatmentNotesArray = row.treatment_notes.split('<br>');
+                        }
                         var html_app = '';
 
                         datesArray.forEach(function (app, index) {
                             var formattedDate = app;
                             var formattedStatus = '';
                             var formattedLocation = '';
+                            var formattedCommonNotes = '';
+                            var formattedTreatmentNotes = '';
+
                             // Add location
                             if (locationArray[index]) {
                                 formattedLocation = '<div class="user-appnt">' + locationArray[index] + '</div>';
@@ -216,7 +224,21 @@ $(document).ready(function() {
                                     formattedStatus = '<span class="badge text-bg-red badge-md mb-1">' + statusArray[index] + '</span>';
                                 }
                             }
-                            html_app += '<div class="user-appnt">' + formattedDate + formattedStatus + '</div>';
+
+                            // Add common notes
+                            if (commonNotesArray && commonNotesArray.length > 0) {
+                                if (commonNotesArray[index]) {
+                                    formattedCommonNotes = '<br><div class="yellow-note-box"><p> <strong>Common Notes:</strong><br> '+ commonNotesArray[index] +' </p></div>';
+                                }
+                            }
+                            // Add treatment notes
+                            if (treatmentNotesArray && treatmentNotesArray.length > 0) {
+                                if (treatmentNotesArray[index]) {
+                                    formattedTreatmentNotes = '<div class="yellow-note-box"><p> <strong>Treatment Notes:</strong><br> '+ treatmentNotesArray[index] +' </p></div>';
+                                }
+                            }
+
+                            html_app += '<div class="user-appnt">' + formattedDate + formattedStatus + formattedCommonNotes + formattedTreatmentNotes + '</div>';
                         });
 
                         html_app += '';

@@ -24,43 +24,45 @@ class ClientsController extends Controller
             $currentDateTime = now()->timezone('Asia/Kolkata')->format('Y-m-d H:i:s');
             
             $data = Clients::leftJoin('appointment', function($join) use ($currentDateTime) {
-                $join->on('clients.id', '=', 'appointment.client_id')
-                    ->where('appointment.start_date', '>=', $currentDateTime);
-            })
-            
-            ->leftJoin('services', 'appointment.service_id', '=', 'services.id')
-            ->leftJoin('users', 'appointment.staff_id', '=', 'users.id')
-            ->leftJoin('locations', 'users.staff_member_location', '=', 'locations.id')
-            ->select('clients.id', 
-                'clients.firstname', 
-                'clients.lastname', 
-                'clients.email', 
-                'clients.mobile_number', 
-                'clients.status', 
-                DB::raw('GROUP_CONCAT(DISTINCT CONCAT(DATE_FORMAT(appointment.start_date, "%Y-%m-%d %h:%i %p"), "", services.service_name, " with ", CONCAT(users.first_name, " ", users.last_name))) as appointment_dates'),
-                DB::raw('GROUP_CONCAT(CASE appointment.status 
-                    WHEN 1 THEN "Booked" 
-                    WHEN 2 THEN "Confirmed"
-                    WHEN 3 THEN "Started" 
-                    WHEN 4 THEN "Completed"
-                    WHEN 5 THEN "No answer" 
-                    WHEN 6 THEN "Left message"
-                    WHEN 7 THEN "Pencilied in" 
-                    WHEN 8 THEN "Turned up"
-                    WHEN 9 THEN "No show" 
-                    WHEN 10 THEN "Cancelled"
-                END) as app_status'),
-                DB::raw('GROUP_CONCAT(users.staff_member_location) as staff_member_location')
-            )
-            ->groupBy('clients.id', 
-                'clients.firstname', 
-                'clients.lastname', 
-                'clients.email', 
-                'clients.mobile_number', 
-                'clients.status'
-            )
-            ->get();
-            // dd($data);
+                    $join->on('clients.id', '=', 'appointment.client_id')
+                        ->where('appointment.start_date', '>=', $currentDateTime);
+                })
+                ->leftJoin('services', 'appointment.service_id', '=', 'services.id')
+                ->leftJoin('users', 'appointment.staff_id', '=', 'users.id')
+                ->leftJoin('locations', 'users.staff_member_location', '=', 'locations.id')
+                ->leftJoin('appointments_notes', 'appointments_notes.appointment_id', '=', 'appointment.id')
+                ->select('clients.id', 
+                        'clients.firstname', 
+                        'clients.lastname', 
+                        'clients.email', 
+                        'clients.mobile_number', 
+                        'clients.status', 
+                        DB::raw('GROUP_CONCAT(DISTINCT CONCAT(DATE_FORMAT(appointment.start_date, "%Y-%m-%d %h:%i %p"), "", services.service_name, " with ", CONCAT(users.first_name, " ", users.last_name))) as appointment_dates'),
+                        DB::raw('GROUP_CONCAT(CASE appointment.status 
+                            WHEN 1 THEN "Booked" 
+                            WHEN 2 THEN "Confirmed"
+                            WHEN 3 THEN "Started" 
+                            WHEN 4 THEN "Completed"
+                            WHEN 5 THEN "No answer" 
+                            WHEN 6 THEN "Left message"
+                            WHEN 7 THEN "Pencilied in" 
+                            WHEN 8 THEN "Turned up"
+                            WHEN 9 THEN "No show" 
+                            WHEN 10 THEN "Cancelled"
+                        END) as app_status'),
+                        DB::raw('GROUP_CONCAT(users.staff_member_location) as staff_member_location'),
+                        DB::raw('GROUP_CONCAT(DISTINCT appointments_notes.common_notes SEPARATOR "<br>") as common_notes'),
+                        DB::raw('GROUP_CONCAT(DISTINCT appointments_notes.treatment_notes SEPARATOR "<br>") as treatment_notes')
+                )
+                ->groupBy('clients.id', 
+                        'clients.firstname', 
+                        'clients.lastname', 
+                        'clients.email', 
+                        'clients.mobile_number', 
+                        'clients.status'
+                )
+                ->get();
+                
             foreach($data as $datas){
                 $loc= explode(',',$datas->staff_member_location);
                 $locationsArray = [];
@@ -310,6 +312,7 @@ class ClientsController extends Controller
             'success' => true,
             'message' => 'Client Photos Updated successfully!',
             'type' => 'success',
+            'id' => $photo->id
         ];
         return response()->json($response);
     }
