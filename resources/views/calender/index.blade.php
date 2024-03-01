@@ -235,6 +235,57 @@
 
     $(document).ready(function()
     {
+        $("#update_client_photos").validate({
+            rules: {
+                filepond: {
+                    validImageExtension: true // Remove the depends option
+                }
+            },
+            errorPlacement: function (error, element) {
+                if (element.attr("name") === "filepond") {
+                    error.insertAfter(".photo_img");
+                } else {
+                    error.insertAfter(element);
+                }
+            },
+            submitHandler: function (form) {
+                // The form is already valid at this point
+                // file_cnt++;
+                $(form).trigger('submit');
+            }
+        });
+
+        $("#update_client_documents").validate({
+            rules: {
+                client_documents: {
+                    validDocumentExtension: true // Remove the depends option
+                }
+            },
+            errorPlacement: function (error, element) {
+                if (element.attr("name") === "client_documents") {
+                    error.insertAfter(".doc_img");
+                } else {
+                    error.insertAfter(element);
+                }
+            },
+            submitHandler: function (form) {
+                // The form is already valid at this point
+                $(form).trigger('submit');
+            }
+        });
+        // Custom validation methods
+        $.validator.addMethod("validImageExtension", function (value, element) {
+            var fileExt = value.split('.').pop().toLowerCase();
+            return $.inArray(fileExt, ['png', 'jpeg', 'jpg']) !== -1;
+            
+        }, "Only PNG, JPEG, or JPG images are allowed for photos.");
+
+        $.validator.addMethod("validDocumentExtension", function (value, element) {
+            var fileExt = value.split('.').pop().toLowerCase();
+            return $.inArray(fileExt, ['png', 'jpeg', 'jpg', 'xlsx', 'doc', 'pdf']) !== -1;
+            
+        }, "Only PNG, JPEG, XLS, Word, PDF or JPG images are allowed for documents.");
+
         DU.appointment.init();
         $('#external-events').draggable();
 
@@ -304,72 +355,96 @@
             var inputElement = document.getElementById('client_photos');
             var data = new FormData();
             var id = $('#client_id').val();
+            var uploadedImageIds = []; // Array to hold IDs of uploaded images
             for (var i = 0; i < this.files.length; i++) {
                 var reader = new FileReader();
                 var files = this.files[i].name;
                 var currFile = this.files[i];
+                var fileExt = files.split('.').pop().toLowerCase(); // file extension
+                // Check if the file is an image and has a valid extension and size
+                if ($.inArray(fileExt, ['png', 'jpeg', 'jpg']) !== -1) { // 2MB in bytes  && fileSize <= 2097152
+                    var reader = new FileReader();
 
-                reader.onload = (function (file) {
+                    reader.onload = (function (file) {
                     return function (e) {
                         var fileName = file.name;
                         var fileContents = e.target.result;
 
                         $('.client-phbox').append(
                             '<input type="hidden" name="hdn_img" value="' + file + '">' +
-                            '<figure imgname="' + fileName + '" id="remove_image" class="remove_image">' +
+                            '<figure imgname="' + fileName + '" class="remove_image">' +
                             '<a href='+ fileContents +' data-fancybox="mygallery">' +
                             '<img src=' + fileContents + ' class="img-fluid">' +
                             '</a></figure>'
                         );
+
+                        // Add delete button
+                        var deleteButton = $('<button>')
+                            .addClass('btn black-btn round-6 dt-delete remove_image')
+                            .html('<i class="ico-trash"></i>')
+                            .click(function () {
+                                // You can call a function here to delete the photo using AJAX
+                                // For example, deletePhoto(photoId);
+                            });
+
+                        $('.remove_image:last').append(deleteButton);
                     };
                 })(currFile);
                 reader.readAsDataURL(this.files[i]);
                 data.append('pics[]', currFile);
                 data.append('id',id);
-            }
-            jQuery.ajax({
-                headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                url: "{{route('clients-photos')}}",
-                data: data,
-                cache: false,
-                contentType: false,
-                processData: false,
-                method: 'POST',
-                type: 'POST', // For jQuery < 1.9
-                success: function (response) {
-                    if (response.success) {
-                        Swal.fire({
-                            title: "Client!",
-                            text: "Client Photos Updated successfully.",
-                            type: "success",
-                        }).then((result) => {
-                            // Update the photos count after success
-                            var photosCount = parseInt($('.photos_count').text());
-                            var resultdoc = photosCount + fileCount;
-                            $('.photos_count').text(resultdoc);
-
-                            var deleteButton = $('<button>')
-                                .attr('ids', response.id)
-                                .addClass('btn black-btn round-6 dt-delete remove_image')
-                                .html('<i class="ico-trash"></i>')
-                                .click(function() {
-                                    var photoId = $(this).data('id');
-                                    // You can call a function here to delete the photo using AJAX
-                                    // For example, deletePhoto(photoId);
-                                });
-
-                            $('.remove_image').append(deleteButton);
-                        });
-                    } else {
-                        Swal.fire({
-                            title: "Error!",
-                            text: response.message,
-                            type: "error",
-                        });
-                    }
+                } else {
+                    
+                    // if(file_cnt != ''){alert('11');
+                    //     $('.photos_count').text(file_cnt);
+                    // }else{alert('22');
+                    //     $('.photos_count').text('');
+                    // }
+                    
+                    // Reset the file input and display an error message
+                    // $('#imgPreview').attr('src', "{{ asset('/storage/images/banner_image/no-image.jpg') }}");
+                    // $('.error').remove();
+                    // $('.photo_img').after('<label class="error">Only PNG, JPEG, or JPG images are allowed for photos.</label>');
                 }
+            }
+            if(data.has('pics[]')) {
+                jQuery.ajax({
+                    headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    url: "{{route('clients-photos')}}",
+                    data: data,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    method: 'POST',
+                    type: 'POST', // For jQuery < 1.9
+                    success: function (response) {
+                        if (response.success) {
+                            uploadedImageIds = response.id;
+                            Swal.fire({
+                                title: "Client!",
+                                text: "Client Photos Updated successfully.",
+                                type: "success",
+                            }).then((result) => {
+                                // Update the photos count after success 01-03-2023
+                                var photosCount = parseInt($('.photos_count').text());
+                                var resultdoc = photosCount + fileCount;
+                                $('.photos_count').text(resultdoc);
+                                // Loop through each .remove_image element and set the ids attribute
+                                $('.remove_image').each(function(index, element) {
+                                    $(this).attr('ids', uploadedImageIds[index]);
+                                });
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Error!",
+                                text: response.message,
+                                type: "error",
+                            });
+                        }
+                    }
 
-            });
+                });
+            }
         });
 
         //update client documents
@@ -382,62 +457,82 @@
                 var reader = new FileReader();
                 var files = this.files[i].name;
                 var currFile = this.files[i];
+                var fileExt = files.split('.').pop().toLowerCase(); // file extension
+                // Check if the file is an image and has a valid extension and size
+                if ($.inArray(fileExt, ['png', 'jpeg', 'jpg', 'xlsx', 'doc', 'pdf']) !== -1) { // 2MB in bytes  && fileSize <= 2097152
+                    var reader = new FileReader();
 
-                reader.onload = (function (file) {
-                    return function (e) {
-                        var d = new Date();
-                        const month = d.toLocaleString('default', { month: 'long' });
-                        var fulldate = d.getDate()+' '+ month + ' ' + d.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
-                        var fileName = file.name;
-                        var fileContents = e.target.result;
-                        $('.docs').append('<a href="#" class="btn tag icon-btn-left skyblue mb-2"><span><i class="ico-pdf me-2 fs-2 align-middle"></i> ' + fileName + '</span> <span class="file-date">' + fulldate + '</span><i class="del ico-trash"></i></a>');
-                        // $('.docs').append('<a href="#" class="btn tag icon-btn-left skyblue remove_doc mb-2"><i class="ico-pdf me-2 fs-2"></i> ' + fileName + ' <i class="del ico-trash"></i></a><figure style="display:none"; imgname='+ fileName +' id="remove_image" class="remove_image"><img src=' + fileContents + '><button type="button" class="btn black-btn round-6 dt-delete"><i class="ico-trash"></i></button></figure>');
-                    };
-                })(currFile);
-                reader.readAsDataURL(this.files[i]);
-                data.append('pics[]', currFile);
-                data.append('id',id);
-            }
-            jQuery.ajax({
-                headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                url: "{{route('clients-documents')}}",
-                data: data,
-                cache: false,
-                contentType: false,
-                processData: false,
-                method: 'POST',
-                type: 'POST', // For jQuery < 1.9
-                success: function (response) {
-                    if (response.success) {
-                        Swal.fire({
-                            title: "Client!",
-                            text: "Client Documents Updated successfully.",
-                            type: "success",
-                        }).then((result) => {
-                            var documentsCount = parseInt($('.documents_count').text());
-                            var resultdoc = documentsCount + fileCount;
-                            $('.documents_count').text(resultdoc);
-                            // Bind links for each uploaded file
-                            var files = inputElement.files; // Get selected files
-                            for (var i = 0; i < files.length; i++) {
-                                var file = files[i];
-                                var fileName = file.name; // Get file name
-                                var formattedDate = formatDate(new Date()); // Format date (you may adjust this as needed)
-                                var clientId = response.client_id[i];
-                                // Create link element for the file
-                                var link = $('<a>').addClass('btn tag icon-btn-left skyblue mb-2').html('<span><i class="ico-pdf me-2 fs-2 align-middle"></i>' + fileName + '</span><span class="file-date">' + formattedDate + '</span><i class="del ico-trash remove_doc" ids="'+clientId+'"></i>');
-                                $('.client_docs').append(link);
-                            }
-                        });
-                    } else {
-                        Swal.fire({
-                            title: "Error!",
-                            text: response.message,
-                            type: "error",
-                        });
-                    }
+                    reader.onload = (function (file) {
+                        return function (e) {
+                            var d = new Date();
+                            const month = d.toLocaleString('default', { month: 'long' });
+                            var fulldate = d.getDate()+' '+ month + ' ' + d.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+                            var fileName = file.name;
+                            var fileContents = e.target.result;
+                            $('.docs').append('<a href="#" class="btn tag icon-btn-left skyblue mb-2"><span><i class="ico-pdf me-2 fs-2 align-middle"></i> ' + fileName + '</span> <span class="file-date">' + fulldate + '</span><i class="del ico-trash"></i></a>');
+                            // $('.docs').append('<a href="#" class="btn tag icon-btn-left skyblue remove_doc mb-2"><i class="ico-pdf me-2 fs-2"></i> ' + fileName + ' <i class="del ico-trash"></i></a><figure style="display:none"; imgname='+ fileName +' id="remove_image" class="remove_image"><img src=' + fileContents + '><button type="button" class="btn black-btn round-6 dt-delete"><i class="ico-trash"></i></button></figure>');
+                        };
+                    })(currFile);
+                    reader.readAsDataURL(this.files[i]);
+                    data.append('pics[]', currFile);
+                    data.append('id',id);
+                } else {
+                    
+                    // if(file_cnt != ''){
+                    //     $('.photos_cnt').text(file_cnt);
+                    // }else{
+                    //     $('.photos_cnt').text('');
+                    // }
+                    
+                    // Reset the file input and display an error message
+                    // $('#imgPreview').attr('src', "{{ asset('/storage/images/banner_image/no-image.jpg') }}");
+                    // $('.error').remove();
+                    // $('.photo_img').after('<label class="error">Only PNG, JPEG, or JPG images are allowed for photos.</label>');
                 }
-            });
+                
+            }
+            if(data.has('pics[]')) {
+                jQuery.ajax({
+                    headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    url: "{{route('clients-documents')}}",
+                    data: data,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    method: 'POST',
+                    type: 'POST', // For jQuery < 1.9
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                title: "Client!",
+                                text: "Client Documents Updated successfully.",
+                                type: "success",
+                            }).then((result) => {
+                                var documentsCount = parseInt($('.documents_count').text());
+                                var resultdoc = documentsCount + fileCount;
+                                $('.documents_count').text(resultdoc);
+                                // Bind links for each uploaded file
+                                var files = inputElement.files; // Get selected files
+                                for (var i = 0; i < files.length; i++) {
+                                    var file = files[i];
+                                    var fileName = file.name; // Get file name
+                                    var formattedDate = formatDate(new Date()); // Format date (you may adjust this as needed)
+                                    var clientId = response.client_id[i];
+                                    // Create link element for the file
+                                    var link = $('<a>').addClass('btn tag icon-btn-left skyblue mb-2').html('<span><i class="ico-pdf me-2 fs-2 align-middle"></i>' + fileName + '</span><span class="file-date">' + formattedDate + '</span><i class="del ico-trash remove_doc" ids="'+clientId+'"></i>');
+                                    $('.client_docs').append(link);
+                                }
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Error!",
+                                text: response.message,
+                                type: "error",
+                            });
+                        }
+                    }
+                });
+            }
         });
 
         //remove document
@@ -504,6 +599,7 @@
         openClientCard(clientId);
     });
     $(document).on('click', '.remove_image', function (e) {
+        
         e.preventDefault();
         $(this).parent().remove();
         var data = new FormData();
@@ -511,10 +607,10 @@
         var photo_id = $(this).attr('ids');
         data.append('id',id);
         data.append('photo_id',photo_id);
+
         jQuery.ajax({
             headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             url: "{{route('clients-photos-remove')}}",
-            data: data,
             method: 'POST',
             type: 'POST', // For jQuery < 1.9
             data: data,
@@ -542,6 +638,7 @@
                 }
             }
         });
+        return false;
     });
     //for match clients
     function matchClient(input) {

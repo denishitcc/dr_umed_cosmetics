@@ -154,13 +154,13 @@
         </div>
         <div class="card-body">
             <!-- <input type="file" class="filepond" name="filepond" id="client_photos" multiple/> -->
-            <div class="row">
+            <div class="row form-group">
                 <div class="col-lg-7">
-                    <label class="gl-upload">
+                    <label class="gl-upload photo_img">
                         <div class="icon-box">
                             <img src="{{ asset('img/upload-icon.png') }}" alt="" class="up-icon">
                             <span class="txt-up">Choose a File or drag them here</span>
-                            <input type="file" class="filepond form-control" name="filepond" id="client_photos" accept="image/png, image/jpeg" multiple/>
+                            <input type="file" class="filepond form-control" name="photos" id="client_photos" accept="image/png, image/jpeg" multiple/>
                             
                         </div>
                     </label>
@@ -182,14 +182,14 @@
 
         <div class="card-body">
 
-            <div class="row">
+            <div class="row form-group">
                 <div class="col-lg-7">
-                    <label class="gl-upload">
+                    <label class="gl-upload doc_img">
                         <div class="icon-box">
                             <img src="{{ asset('img/upload-icon.png') }}" alt="" class="up-icon">
                             <span class="txt-up">Choose a File or drag them here</span>
                             <span class="txt-up" style="opacity: .5;">.xls, Word, PNG, JPG or PDF</span>
-                            <input type="file" class="filepond form-control" name="filepond" id="client_documents" accept="application/pdf, applucation/vnd.ms-excel,application/msword,image/png, image/jpeg" multiple/>
+                            <input type="file" class="filepond form-control" name="documents" id="client_documents" accept="application/pdf, applucation/vnd.ms-excel,application/msword,image/png, image/jpeg" multiple/>
                         </div>
                     </label>
                     <div class="mt-2 d-grey font-13"><em>Documents you add here will be visible to this client in Online Booking.</em></div>
@@ -269,55 +269,92 @@
                     required: true,
                 },
                 lastname:{
-                    required:true,
+                    required: true
                 },
                 email: {
                     required: true,
                     email: true,
                     remote: {
-                        url: "../clients/checkClientEmail", // Replace with the actual URL to check email uniqueness
-                        type: "post", // Use "post" method for the AJAX request
+                        url: "../clients/checkClientEmail",
+                        type: "post",
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
                         data: {
                             email: function () {
-                                return $("#email").val(); // Pass the value of the email field to the server
+                                return $("#email").val();
                             }
                         },
                         dataFilter: function (data) {
                             var json = $.parseJSON(data);
-                            var chk = json.exists ? '"Email already exist!"' : '"true"';
-                            return chk;
+                            return json.exists ? '"Email already exists!"' : '"true"';
                         }
                     }
                 },
-                mobile_number:{
-                    required: true,
+                mobile_number: {
+                    required: true
                 },
-                date_of_birth:{
-                    required: true,
+                date_of_birth: {
+                    required: true
                 },
-                contact_method:{
-                    required: true,
+                contact_method: {
+                    required: true
                 },
-                street_address:{
-                    required: true,
+                street_address: {
+                    required: true
                 },
-                suburb:{
-                    required: true,
+                suburb: {
+                    required: true
                 },
-                city:{
-                    required: true,
+                city: {
+                    required: true
                 },
-                postcode:{
-                    required: true,
+                postcode: {
+                    required: true
                 },
-                client_photos:{
-                    required: true,
+                photos: {
+                    validImageExtension: true // Remove the depends option
+                },
+                documents: {
+                    validDocumentExtension: true // Remove the depends option
                 }
             },
+            errorPlacement: function (error, element) {
+                if (element.attr("name") === "photos") {
+                    error.insertAfter(".photo_img");
+                } else if (element.attr("name") === "documents") {
+                    error.insertAfter(".doc_img");
+                } else {
+                    error.insertAfter(element);
+                }
+            },
+            submitHandler: function (form) {
+                // The form is already valid at this point
+                $(form).trigger('submit');
+            }
         });
+
+        // Custom validation methods
+        $.validator.addMethod("validImageExtension", function (value, element) {
+            var fileExt = value.split('.').pop().toLowerCase();
+            return $.inArray(fileExt, ['png', 'jpeg', 'jpg']) !== -1;
+            if(file_cnt != ''){
+                $('.photos_cnt').text(file_cnt);
+            }else{
+                $('.photos_cnt').text('');
+            }
+        }, "Only PNG, JPEG, or JPG images are allowed for photos.");
+
+        $.validator.addMethod("validDocumentExtension", function (value, element) {
+            var fileExt = value.split('.').pop().toLowerCase();
+            return $.inArray(fileExt, ['png', 'jpeg', 'jpg', 'xlsx', 'doc', 'pdf']) !== -1;
+            if(doc_cnt != ''){
+                $('.docs_cnt').text(doc_cnt);
+            }else{
+                $('.docs_cnt').text('');
+            }
+        }, "Only PNG, JPEG, XLS, Word, PDF or JPG images are allowed for documents.");
+
         
         $("#client_photos").change(function() {
             var inputElement = document.getElementById('client_photos');
@@ -326,16 +363,34 @@
                 var reader = new FileReader();
                 var files = this.files[i].name;
                 var currFile = this.files[i];
+                var fileExt = files.split('.').pop().toLowerCase(); // file extension
 
-                reader.onload = (function (file) {
-                    return function (e) {
-                        var fileName = file.name;
-                        var fileContents = e.target.result;
-                        $('.client-phbox').append('<input type="hidden" name="hdn_img" value='+file+'><figure imgname='+ fileName +' id="remove_image" class="remove_image"><img src=' + fileContents + '><button type="button" class="btn black-btn round-6 dt-delete"><i class="ico-trash"></i></button></figure>');
-                    };
-                })(currFile);
-                reader.readAsDataURL(this.files[i]);
-                file_cnt++;
+                // Check if the file is an image and has a valid extension and size
+                if ($.inArray(fileExt, ['png', 'jpeg', 'jpg']) !== -1) { // 2MB in bytes  && fileSize <= 2097152
+                    var reader = new FileReader();
+
+                    reader.onload = (function (file) {
+                        return function (e) {
+                            var files = file.name;
+                            var fileContents = e.target.result;
+                            $('.client-phbox').append('<input type="hidden" name="hdn_img" value='+file+'><figure imgname='+ files +' id="remove_image" class="remove_image"><img src=' + fileContents + '><button type="button" class="btn black-btn round-6 dt-delete"><i class="ico-trash"></i></button></figure>');
+                        };
+                    })(currFile);
+                    reader.readAsDataURL(this.files[i]);
+                    file_cnt++;
+                } else {
+                    
+                    if(file_cnt != ''){
+                        $('.photos_cnt').text(file_cnt);
+                    }else{
+                        $('.photos_cnt').text('');
+                    }
+                    
+                    // Reset the file input and display an error message
+                    // $('#imgPreview').attr('src', "{{ asset('/storage/images/banner_image/no-image.jpg') }}");
+                    // $('.error').remove();
+                    // $('.photo_img').after('<label class="error">Only PNG, JPEG, or JPG images are allowed for photos.</label>');
+                }
             }
         });
         $("#client_documents").change(function() {
@@ -345,16 +400,34 @@
                 var reader = new FileReader();
                 var files = this.files[i].name;
                 var currFile = this.files[i];
+                var fileExt = files.split('.').pop().toLowerCase(); // file extension
 
-                reader.onload = (function (file) {
-                    return function (e) {
-                        var fileName = file.name;
-                        var fileContents = e.target.result;
-                        $('.file-hoder').append('<a href="#" class="btn tag icon-btn-left skyblue remove_doc"><i class="ico-pdf me-2 fs-2"></i> ' + fileName + ' <i class="del ico-trash"></i></a><figure style="display:none"; imgname='+ fileName +' id="remove_image" class="remove_image"><img src=' + fileContents + '><button type="button" class="btn black-btn round-6 dt-delete"><i class="ico-trash"></i></button></figure>');
-                    };
-                })(currFile);
-                reader.readAsDataURL(this.files[i]);
-                doc_cnt++;
+                // Check if the file is an image and has a valid extension and size
+                if ($.inArray(fileExt, ['png', 'jpeg', 'jpg', 'xlsx', 'doc', 'pdf']) !== -1) {
+                    var reader = new FileReader();
+
+                    reader.onload = (function (file) {
+                        return function (e) {
+                            var fileName = file.name;
+                            var fileContents = e.target.result;
+                            $('.file-hoder').append('<a href="#" class="btn tag icon-btn-left skyblue remove_doc"><i class="ico-pdf me-2 fs-2"></i> ' + files + ' <i class="del ico-trash"></i></a><figure style="display:none"; imgname='+ fileName +' id="remove_image" class="remove_image"><img src=' + fileContents + '><button type="button" class="btn black-btn round-6 dt-delete"><i class="ico-trash"></i></button></figure>');
+                        };
+                    })(currFile);
+                    reader.readAsDataURL(this.files[i]);
+                    doc_cnt++;
+                } else {
+                    
+                    if(doc_cnt != ''){
+                        $('.docs_cnt').text(doc_cnt);
+                    }else{
+                        $('.docs_cnt').text('');
+                    }
+                    
+                    // Reset the file input and display an error message
+                    // $('#imgPreview').attr('src', "{{ asset('/storage/images/banner_image/no-image.jpg') }}");
+                    // $('.doc_img').after('<label class="error">Only PNG, JPEG, XLS, Word, PDF or JPG images are allowed for documents.</label>');
+                }
+                
             }
         });
         

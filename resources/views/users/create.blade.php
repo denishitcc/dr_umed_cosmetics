@@ -118,7 +118,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row form-group">
                 <div class="col-lg-7">
                     <label class="gl-upload">
                         <div class="icon-box">
@@ -149,6 +149,11 @@
 @stop
 @section('script')
 <script>
+    $.validator.addMethod("validImageExtension", function(value, element) {
+        // Check if the file extension is one of the allowed extensions
+        return this.optional(element) || /^(png|jpe?g)$/i.test(value.split('.').pop());
+    }, "Only PNG, JPEG, or JPG images are allowed.");
+
     $(document).ready(function() {
         $('input[type=radio][name=is_staff_memeber]').change(function() {
             if (this.value == '1') {
@@ -165,6 +170,14 @@
                 },
                 last_name: {
                     required: true,
+                },
+                image: {
+                    validImageExtension: {
+                        depends: function(element) {
+                            // Only validate if the file input has a value
+                            return $(element).val() !== "";
+                        }
+                    }
                 },
                 email: {
                     required: true,
@@ -190,9 +203,6 @@
                 phone: {
                     required: true,
                 },
-                last_name: {
-                    required: true,
-                },
                 role_type: {
                     required: true
                 },
@@ -203,18 +213,52 @@
                     required: true
                 }
             },
+            errorPlacement: function (error, element) {
+                if (element.attr("name") === "image") {
+                    error.insertAfter(".gl-upload");
+                } else {
+                    error.insertAfter(element);
+                }
+            },
+            submitHandler: function(form) {
+                // Check the image extension
+                var fileName = $('#imgInput').val();
+                var fileExt = fileName.split('.').pop().toLowerCase();
+                if(fileName != ''){
+                    // Check if the file is an image and has a valid extension
+                    if ($.inArray(fileExt, ['png', 'jpeg', 'jpg']) !== -1) {
+                        // If valid, submit the form
+                        $(form).trigger('submit');
+                    } else {
+                        // Display an error message
+                        // $('.gl-upload').after('<label class="error">Only PNG, JPEG, or JPG images are allowed.</label>');
+                    }
+                }else{
+                    $(form).trigger('submit');
+                }
+            }
         });
 
         $("#imgInput").change(function() {
             if (this.files && this.files[0]) {
+                var fileName = this.files[0].name;
+                var fileSize = this.files[0].size; // in bytes
+                var fileExt = fileName.split('.').pop().toLowerCase(); // file extension
 
-                var reader = new FileReader();
+                // Check if the file is an image and has a valid extension and size
+                if ($.inArray(fileExt, ['png', 'jpeg', 'jpg']) !== -1) { // 2MB in bytes  && fileSize <= 2097152
+                    var reader = new FileReader();
 
-                reader.onload = function(e) {
-                    $('#imgPreview').attr('src', e.target.result);
+                    reader.onload = function(e) {
+                        $('#imgPreview').attr('src', e.target.result);
+                    }
+
+                    reader.readAsDataURL(this.files[0]);
+                } else {
+                    // Reset the file input and display an error message
+                    $('#imgPreview').attr('src', "{{ asset('/storage/images/banner_image/no-image.jpg') }}");
+                    // $('.gl-upload').after('<label class="error">Only PNG, JPEG, or JPG images are allowed.</label>');
                 }
-
-                reader.readAsDataURL(this.files[0]);
             }
         });
 

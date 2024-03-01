@@ -479,7 +479,7 @@
             @csrf
             <div class="card-body">
                 <div class="form-group">
-                    <label class="gl-upload">
+                    <label class="gl-upload photo_img">
                         <div class="icon-box">
                             <img src="../img/upload-icon.png" alt="" class="up-icon">
                             <span class="txt-up">Choose a File or drag them here</span>
@@ -506,7 +506,7 @@
             @csrf
             <div class="card-body">
                 <div class="form-group">
-                    <label class="gl-upload">
+                    <label class="gl-upload doc_img">
                         <div class="icon-box">
                             <img src="../img/upload-icon.png" alt="" class="up-icon">
                             <span class="txt-up">Choose a File or drag them here</span>
@@ -833,6 +833,67 @@
     var file_cnt=0;
     var doc_cnt=0;
     $(document).ready(function(){
+
+        $("#update_client_photos").validate({
+            rules: {
+                filepond: {
+                    validImageExtension: true // Remove the depends option
+                }
+            },
+            errorPlacement: function (error, element) {
+                if (element.attr("name") === "filepond") {
+                    error.insertAfter(".photo_img");
+                } else {
+                    error.insertAfter(element);
+                }
+            },
+            submitHandler: function (form) {
+                // The form is already valid at this point
+                $(form).trigger('submit');
+            }
+        });
+
+        $("#update_client_documents").validate({
+            rules: {
+                client_documents: {
+                    validDocumentExtension: true // Remove the depends option
+                }
+            },
+            errorPlacement: function (error, element) {
+                if (element.attr("name") === "client_documents") {
+                    error.insertAfter(".doc_img");
+                } else {
+                    error.insertAfter(element);
+                }
+            },
+            submitHandler: function (form) {
+                // The form is already valid at this point
+                $(form).trigger('submit');
+            }
+        });
+
+        // Custom validation methods
+        $.validator.addMethod("validImageExtension", function (value, element) {
+            var fileExt = value.split('.').pop().toLowerCase();
+            return $.inArray(fileExt, ['png', 'jpeg', 'jpg']) !== -1;
+            if(file_cnt != ''){
+                $('.photos_cnt').text(file_cnt);
+            }else{
+                $('.photos_cnt').text('');
+            }
+        }, "Only PNG, JPEG, or JPG images are allowed for photos.");
+
+        $.validator.addMethod("validDocumentExtension", function (value, element) {
+            var fileExt = value.split('.').pop().toLowerCase();
+            return $.inArray(fileExt, ['png', 'jpeg', 'jpg', 'xlsx', 'doc', 'pdf']) !== -1;
+            if(doc_cnt != ''){
+                $('.docs_cnt').text(doc_cnt);
+            }else{
+                $('.docs_cnt').text('');
+            }
+        }, "Only PNG, JPEG, XLS, Word, PDF or JPG images are allowed for documents.");
+
+
         $(".list-group ul li.dropdown").click(function(){
             $(this).toggleClass("show");
         });
@@ -907,47 +968,67 @@
                 var reader = new FileReader();
                 var files = this.files[i].name;
                 var currFile = this.files[i];
+                var fileExt = files.split('.').pop().toLowerCase(); // file extension
+                // Check if the file is an image and has a valid extension and size
+                if ($.inArray(fileExt, ['png', 'jpeg', 'jpg']) !== -1) { // 2MB in bytes  && fileSize <= 2097152
+                    var reader = new FileReader();
 
-                reader.onload = (function (file) {
-                    return function (e) {
-                        var fileName = file.name;
-                        var fileContents = e.target.result;
-                        $('.client-phbox').append('<input type="hidden" name="hdn_img" value=' + file + '><figure imgname=' + fileName + ' id="remove_image" class="remove_image"><img src=' + fileContents + '></figure>');
-                    };
-                })(currFile);
-                reader.readAsDataURL(this.files[i]);
-                data.append('pics[]', currFile);
-                data.append('id',id);
-            }
-            jQuery.ajax({
-                headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                url: "{{route('clients-photos')}}",
-                data: data,
-                cache: false,
-                contentType: false,
-                processData: false,
-                method: 'POST',
-                type: 'POST', // For jQuery < 1.9
-                success: function (response) {
-                    if (response.success) {
-                        Swal.fire({
-                            title: "Client!",
-                            text: "Client Photos Updated successfully.",
-                            type: "success",
-                        }).then((result) => {
-                            window.location = "{{url('clients')}}/" + id
-                            // window.location = "{{url('clients')}}"//'/player_detail?username=' + name;
-                        });
-                    } else {
-                        
-                        Swal.fire({
-                            title: "Error!",
-                            text: response.message,
-                            type: "error",
-                        });
+                    reader.onload = (function (file) {
+                        return function (e) {
+                            var fileName = file.name;
+                            var fileContents = e.target.result;
+                            $('.client-phbox').append('<input type="hidden" name="hdn_img" value=' + file + '><figure imgname=' + fileName + ' id="remove_image" class="remove_image"><img src=' + fileContents + '></figure>');
+                        };
+                    })(currFile);
+                    reader.readAsDataURL(this.files[i]);
+                    data.append('pics[]', currFile);
+                    data.append('id',id);
+                } else {
+                    
+                    if(file_cnt != ''){
+                        $('.photos_cnt').text(file_cnt);
+                    }else{
+                        $('.photos_cnt').text('');
                     }
+                    
+                    // Reset the file input and display an error message
+                    // $('#imgPreview').attr('src', "{{ asset('/storage/images/banner_image/no-image.jpg') }}");
+                    // $('.error').remove();
+                    // $('.photo_img').after('<label class="error">Only PNG, JPEG, or JPG images are allowed for photos.</label>');
                 }
-            });
+                
+            }
+            if(data.has('pics[]')) {
+                jQuery.ajax({
+                    headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    url: "{{route('clients-photos')}}",
+                    data: data,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    method: 'POST',
+                    type: 'POST', // For jQuery < 1.9
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                title: "Client!",
+                                text: "Client Photos Updated successfully.",
+                                type: "success",
+                            }).then((result) => {
+                                window.location = "{{url('clients')}}/" + id
+                                // window.location = "{{url('clients')}}"//'/player_detail?username=' + name;
+                            });
+                        } else {
+                            
+                            Swal.fire({
+                                title: "Error!",
+                                text: response.message,
+                                type: "error",
+                            });
+                        }
+                    }
+                });
+            }
         });
         $("#client_documents").change(function() {
             var inputElement = document.getElementById('client_documents');
@@ -957,51 +1038,71 @@
                 var reader = new FileReader();
                 var files = this.files[i].name;
                 var currFile = this.files[i];
+                var fileExt = files.split('.').pop().toLowerCase(); // file extension
+                // Check if the file is an image and has a valid extension and size
+                if ($.inArray(fileExt, ['png', 'jpeg', 'jpg', 'xlsx', 'doc', 'pdf']) !== -1) { // 2MB in bytes  && fileSize <= 2097152
+                    var reader = new FileReader();
 
-                reader.onload = (function (file) {
-                    return function (e) {
-                        var d = new Date();
-                        const month = d.toLocaleString('default', { month: 'long' });
-                        var fulldate = d.getDate()+' '+ month + ' ' + d.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
-                        var fileName = file.name;
-                        var fileContents = e.target.result;
-                        $('.docs').append('<a href="#" class="btn tag icon-btn-left skyblue mb-2"><span><i class="ico-pdf me-2 fs-2 align-middle"></i> ' + fileName + '</span> <span class="file-date">' + fulldate + '</span><i class="del ico-trash"></i></a>');
-                        $('.docs').append('<a href="#" class="btn tag icon-btn-left skyblue remove_doc mb-2"><i class="ico-pdf me-2 fs-2"></i> ' + fileName + ' <i class="del ico-trash"></i></a><figure style="display:none"; imgname='+ fileName +' id="remove_image" class="remove_image"><img src=' + fileContents + '><button type="button" class="btn black-btn round-6 dt-delete"><i class="ico-trash"></i></button></figure>');
-                    };
-                })(currFile);
-                reader.readAsDataURL(this.files[i]);
-                data.append('pics[]', currFile);
-                data.append('id',id);
-            }
-            jQuery.ajax({
-                headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                url: "{{route('clients-documents')}}",
-                data: data,
-                cache: false,
-                contentType: false,
-                processData: false,
-                method: 'POST',
-                type: 'POST', // For jQuery < 1.9
-                success: function (response) {
-                    if (response.success) {
-                        Swal.fire({
-                            title: "Client!",
-                            text: "Client Documents Updated successfully.",
-                            type: "success",
-                        }).then((result) => {
-                            window.location = "{{url('clients')}}/" + id
-                            // window.location = "{{url('clients')}}"//'/player_detail?username=' + name;
-                        });
-                    } else {
-                        
-                        Swal.fire({
-                            title: "Error!",
-                            text: response.message,
-                            type: "error",
-                        });
+                    reader.onload = (function (file) {
+                        return function (e) {
+                            var d = new Date();
+                            const month = d.toLocaleString('default', { month: 'long' });
+                            var fulldate = d.getDate()+' '+ month + ' ' + d.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+                            var fileName = file.name;
+                            var fileContents = e.target.result;
+                            $('.docs').append('<a href="#" class="btn tag icon-btn-left skyblue mb-2"><span><i class="ico-pdf me-2 fs-2 align-middle"></i> ' + fileName + '</span> <span class="file-date">' + fulldate + '</span><i class="del ico-trash"></i></a>');
+                            $('.docs').append('<a href="#" class="btn tag icon-btn-left skyblue remove_doc mb-2"><i class="ico-pdf me-2 fs-2"></i> ' + fileName + ' <i class="del ico-trash"></i></a><figure style="display:none"; imgname='+ fileName +' id="remove_image" class="remove_image"><img src=' + fileContents + '><button type="button" class="btn black-btn round-6 dt-delete"><i class="ico-trash"></i></button></figure>');
+                        };
+                    })(currFile);
+                    reader.readAsDataURL(this.files[i]);
+                    data.append('pics[]', currFile);
+                    data.append('id',id);
+                } else {
+                    
+                    if(file_cnt != ''){
+                        $('.photos_cnt').text(file_cnt);
+                    }else{
+                        $('.photos_cnt').text('');
                     }
+                    
+                    // Reset the file input and display an error message
+                    // $('#imgPreview').attr('src', "{{ asset('/storage/images/banner_image/no-image.jpg') }}");
+                    // $('.error').remove();
+                    // $('.photo_img').after('<label class="error">Only PNG, JPEG, or JPG images are allowed for photos.</label>');
                 }
-            });
+                
+            }
+            if(data.has('pics[]')) {
+                jQuery.ajax({
+                    headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    url: "{{route('clients-documents')}}",
+                    data: data,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    method: 'POST',
+                    type: 'POST', // For jQuery < 1.9
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                title: "Client!",
+                                text: "Client Documents Updated successfully.",
+                                type: "success",
+                            }).then((result) => {
+                                window.location = "{{url('clients')}}/" + id
+                                // window.location = "{{url('clients')}}"//'/player_detail?username=' + name;
+                            });
+                        } else {
+                            
+                            Swal.fire({
+                                title: "Error!",
+                                text: response.message,
+                                type: "error",
+                            });
+                        }
+                    }
+                });
+            }
         });
         
     });

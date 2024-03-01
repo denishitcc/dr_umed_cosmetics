@@ -201,9 +201,9 @@
                                 <div class="form-group"><img src="{{ asset('/storage/images/banner_image/no-image.jpg') }}" alt="" id="imgBannerPreview"></div>
                                 @endif
                                 
-                                <div class="row">
+                                <div class="row form-group">
                                     <div class="col-lg-7">
-                                        <label class="gl-upload">
+                                        <label class="gl-upload brand_img">
                                             <div class="icon-box">
                                                 <img src="img/upload-icon.png" alt="" class="up-icon">
                                                 <span class="txt-up">Upload File</span>
@@ -278,6 +278,11 @@
     @stop
 @section('script')
 <script>
+$.validator.addMethod("validImageExtension", function(value, element) {
+    // Check if the file extension is one of the allowed extensions
+    return this.optional(element) || /^(png|jpe?g)$/i.test(value.split('.').pop());
+}, "Only PNG, JPEG, or JPG images are allowed.");
+
 $.ajaxSetup({
 headers: {
     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -332,25 +337,63 @@ headers: {
             $('#imgremove').val('');
             if (this.files && this.files[0]) {
 
-                var reader = new FileReader();
+                // var reader = new FileReader();
 
-                reader.onload = function(e) {
-                    $('#imgPreview').attr('src', e.target.result);
+                // reader.onload = function(e) {
+                //     $('#imgPreview').attr('src', e.target.result);
+                // }
+
+                // reader.readAsDataURL(this.files[0]);
+                var fileName = this.files[0].name;
+                var fileSize = this.files[0].size; // in bytes
+                var fileExt = fileName.split('.').pop().toLowerCase(); // file extension
+
+                // Check if the file is an image and has a valid extension and size
+                if ($.inArray(fileExt, ['png', 'jpeg', 'jpg']) !== -1) { // 2MB in bytes  && fileSize <= 2097152
+                    var reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        $('#imgPreview').attr('src', e.target.result);
+                    }
+
+                    reader.readAsDataURL(this.files[0]);
+                } else {
+                    // Reset the file input and display an error message
+                    $('#imgPreview').attr('src', "{{ asset('/storage/images/banner_image/no-image.jpg') }}");
+                    // $('.gl-upload').after('<label class="error">Only PNG, JPEG, or JPG images are allowed.</label>');
                 }
-
-                reader.readAsDataURL(this.files[0]);
             }
         });
         $('#brandInput').change(function() {
+            // if (this.files && this.files[0]) {
+
+            //     var reader = new FileReader();
+
+            //     reader.onload = function(e) {
+            //         $('#imgBannerPreview').attr('src', e.target.result);
+            //     }
+
+            //     reader.readAsDataURL(this.files[0]);
+            // }
             if (this.files && this.files[0]) {
+                var fileName = this.files[0].name;
+                var fileSize = this.files[0].size; // in bytes
+                var fileExt = fileName.split('.').pop().toLowerCase(); // file extension
 
-                var reader = new FileReader();
+                // Check if the file is an image and has a valid extension and size
+                if ($.inArray(fileExt, ['png', 'jpeg', 'jpg']) !== -1) { // 2MB in bytes && fileSize <= 2097152
+                    var reader = new FileReader();
 
-                reader.onload = function(e) {
-                    $('#imgBannerPreview').attr('src', e.target.result);
+                    reader.onload = function(e) {
+                        $('#imgBannerPreview').attr('src', e.target.result);
+                    }
+
+                    reader.readAsDataURL(this.files[0]);
+                } else {
+                    // Reset the file input and display an error message
+                    $('#imgBannerPreview').attr('src', "{{ asset('/storage/images/banner_image/no-image.jpg') }}");
+                    // $('.brand_img').after('<label class="error">Only PNG, JPEG, or JPG images are allowed.</label>');
                 }
-
-                reader.readAsDataURL(this.files[0]);
             }
         });
         $('.remove_image').click(function(e){
@@ -391,6 +434,74 @@ headers: {
                 },
                 last_name:{
                     required: true,
+                },
+                image: {
+                    validImageExtension: {
+                        depends: function(element) {
+                            // Only validate if the file input has a value
+                            return $(element).val() !== "";
+                        }
+                    }
+                },
+            },
+            errorPlacement: function (error, element) {
+                if (element.attr("name") === "image") {
+                    error.insertAfter(".gl-upload");
+                } else {
+                    error.insertAfter(element);
+                }
+            },
+            submitHandler: function(form) {
+                // Check the image extension
+                var fileName = $('#imgInput').val();
+                var fileExt = fileName.split('.').pop().toLowerCase();
+                if(fileName != ''){
+                    // Check if the file is an image and has a valid extension
+                    if ($.inArray(fileExt, ['png', 'jpeg', 'jpg']) !== -1) {
+                        // If valid, submit the form
+                        $(form).trigger('submit');
+                    } else {
+                        // Display an error message
+                        // $('.gl-upload').after('<label class="error">Only PNG, JPEG, or JPG images are allowed.</label>');
+                    }
+                }else{
+                    $(form).trigger('submit');
+                }
+            }
+        });
+        $('#update_brand_image').validate({
+            rules: {
+                banner_image: {
+                    validImageExtension: {
+                        depends: function(element) {
+                            // Only validate if the file input has a value
+                            return $(element).val() !== "";
+                        }
+                    }
+                },
+            },
+            errorPlacement: function (error, element) {
+                if (element.attr("name") === "banner_image") {
+                    error.insertAfter(".brand_img");
+                } else {
+                    error.insertAfter(element);
+                }
+            },
+            submitHandler: function(form) {
+                // Check the image extension
+                var fileName = $('#brandInput').val();
+                var fileExt = fileName.split('.').pop().toLowerCase();
+                if(fileName != ''){
+                    // Check if the file is an image and has a valid extension
+                    if ($.inArray(fileExt, ['png', 'jpeg', 'jpg']) !== -1) {
+                        // If valid, submit the form
+                        $(form).trigger('submit');
+                    } else {
+                        // Display an error message
+                        // $('.brand_img').after('<label class="error">Only PNG, JPEG, or JPG images are allowed.</label>');
+                    }
+                }else{
+                    $(form).trigger('submit');
                 }
             }
         });

@@ -166,14 +166,25 @@ class ClientsController extends Controller
                 ]);
             }
         }
-        if(isset($request->docs))
-        {
-            foreach($request->docs as $docs)
-            {
+        if (isset($request->docs)) {
+            foreach ($request->docs as $docs) {
                 $folderPath = storage_path('app/public/images/clients_documents/');
                 $image_parts = explode(";base64,", $docs);
-                $image_type_aux = explode("image/", $image_parts[0]);
-                $image_type = $image_type_aux[1];
+                $image_type_aux = explode("/", $image_parts[0]);
+                // Determine file extension based on MIME type
+                if ($image_type_aux[0] === "data:image") {
+                    $image_type = $image_type_aux[1];
+                } else if ($image_type_aux[0] === "data:application" && $image_type_aux[1] === "pdf") {
+                    $image_type = "pdf";
+                } else if ($image_type_aux[0] === "data:application" && $image_type_aux[1] === "vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+                    $image_type = "xlsx";
+                } else if ($image_type_aux[0] === "data:application" && $image_type_aux[1] === "msword") {
+                    $image_type = "doc";
+                } else {
+                    // Unsupported file type
+                    continue;
+                }
+            
                 $image_base64 = base64_decode($image_parts[1]);
                 $uniqid = uniqid();
                 $file = $folderPath . $uniqid . '.' . $image_type;
@@ -182,7 +193,7 @@ class ClientsController extends Controller
                     'client_id' => $newUser->id,
                     'client_documents' => $uniqid . '.' . $image_type
                 ]);
-            }
+            }            
         }
         
         $response = [
@@ -294,6 +305,7 @@ class ClientsController extends Controller
     }
     public function updatePhotos(Request $request)
     {
+        $ids = array();
         if(isset($request->pics))
         {
             foreach($request->pics as $pics)
@@ -305,13 +317,14 @@ class ClientsController extends Controller
                     'client_id' => $request->id,
                     'client_photos' => $file->getClientOriginalName(),
                 ]);
+                $ids[] = $photo->id;
             }
         }
         $response = [
             'success' => true,
             'message' => 'Client Photos Updated successfully!',
             'type' => 'success',
-            'id' => $photo->id
+            'id' => $ids
         ];
         return response()->json($response);
     }

@@ -20,12 +20,12 @@
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="tab" href="#ptab_3" aria-selected="false" tabindex="-1"
                             role="tab"><i class="ico-photo"></i> Photos <span
-                                class="badge badge-circle ms-2 photos_count">10</span></a>
+                                class="badge badge-circle ms-2 photos_count">0</span></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="tab" href="#ptab_4" aria-selected="false" tabindex="-1"
                             role="tab"><i class="ico-folder"></i> Documents <span
-                                class="badge badge-circle ms-2 documents_count">10</span></a>
+                                class="badge badge-circle ms-2 documents_count">0</span></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="tab" href="#ptab_5" aria-selected="false" tabindex="-1"
@@ -214,7 +214,7 @@
                             <input type="hidden" name="id" id="id" value="">
                             <div class="card-body">
                                 <div class="form-group">
-                                    <label class="gl-upload">
+                                    <label class="gl-upload photo_img">
                                         <div class="icon-box">
                                             <img src="../img/upload-icon.png" alt="" class="up-icon">
                                             <span class="txt-up">Choose a File or drag them here</span>
@@ -236,7 +236,7 @@
                             @csrf
                             <div class="card-body">
                                 <div class="form-group">
-                                    <label class="gl-upload">
+                                    <label class="gl-upload doc_img">
                                         <div class="icon-box">
                                             <img src="../img/upload-icon.png" alt="" class="up-icon">
                                             <span class="txt-up">Choose a File or drag them here</span>
