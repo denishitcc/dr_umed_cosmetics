@@ -370,9 +370,17 @@
                         var fileName = file.name;
                         var fileContents = e.target.result;
 
-                        $('.client-phbox').append(
+                        // $('.gallery.client-phbox').append(
+                        //     '<input type="hidden" name="hdn_img" value="' + file + '">' +
+                        //     '<figure imgname="' + fileName + '" class="remove_image latest">' +
+                        //     '<a href='+ fileContents +' data-fancybox="mygallery">' +
+                        //     '<img src=' + fileContents + ' class="img-fluid">' +
+                        //     '</a></figure>'
+                        // );
+
+                        $('.gallery.abc').append(
                             '<input type="hidden" name="hdn_img" value="' + file + '">' +
-                            '<figure imgname="' + fileName + '" class="remove_image">' +
+                            '<figure imgname="' + fileName + '" class="remove_image latest">' +
                             '<a href='+ fileContents +' data-fancybox="mygallery">' +
                             '<img src=' + fileContents + ' class="img-fluid">' +
                             '</a></figure>'
@@ -380,7 +388,7 @@
 
                         // Add delete button
                         var deleteButton = $('<button>')
-                            .addClass('btn black-btn round-6 dt-delete remove_image')
+                            .addClass('btn black-btn round-6 remove_image dt-delete')
                             .html('<i class="ico-trash"></i>')
                             .click(function () {
                                 // You can call a function here to delete the photo using AJAX
@@ -430,8 +438,8 @@
                                 var resultdoc = photosCount + fileCount;
                                 $('.photos_count').text(resultdoc);
                                 // Loop through each .remove_image element and set the ids attribute
-                                $('.remove_image').each(function(index, element) {
-                                    $(this).attr('ids', uploadedImageIds[index]);
+                                $('.latest').each(function(index, element) {
+                                    $(this).find('.dt-delete').attr('ids', uploadedImageIds[index]);
                                 });
                             });
                         } else {
@@ -982,7 +990,7 @@
             if (client.client_photos && client.client_photos.length > 0) {
                 $('.photos_count').text(client.client_photos.length);
 
-                var photoContainer = $('.client-phbox'); // Assuming you have a container for client photos in your modal
+                var photoContainer = $('.gallery.client-phbox'); // Assuming you have a container for client photos in your modal
                 photoContainer.empty(); // Clear previous photos
                 client.client_photos.forEach(function(photoUrl) {
                     var img = $('<img>').attr('src', '{{ asset('storage/images/clients_photos/') }}' + '/' + photoUrl.photo_name).addClass('img-fluid');
