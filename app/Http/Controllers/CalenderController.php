@@ -390,21 +390,21 @@ class CalenderController extends Controller
 
         $futureappointments = $client->allappointments()->where('created_at','>=', $todayDate)->orderby('created_at','desc')->get();
         $pastappointments   = $client->allappointments()->where('created_at','<=', $todayDate)->orderby('created_at','desc')->get();
-        // dd($client->last_appointment->notes);
+        dd($pastappointments);
         $html               = view('calender.partials.client_card', [ 'client' => $client ])->render();
         $appointmenthtml    = view('calender.partials.client-appointment-card', [
                                     'futureappointments'  => $futureappointments,
                                     'pastappointments'    => $pastappointments,
                                     'client' => $client
                             ])->render();
-        $clientnoteshtml    = view('calender.partials.client-notes' , [ 'client' => $client ])->render();
+        // $clientnoteshtml    = view('calender.partials.client-notes' , [ 'client' => $client ])->render();
 
         return response()->json([
             'status'                => true,
             'message'               => 'Details found.',
             'data'                  => $html,
             'appointmenthtml'       => $appointmenthtml,
-            'clientnoteshtml'       => $clientnoteshtml,
+            // 'clientnoteshtml'       => $clientnoteshtml,
             'client'                => $client
         ], 200);
     }
@@ -420,17 +420,44 @@ class CalenderController extends Controller
         try {
             if(isset($request->commonNotes))
             {
-                $notes = AppointmentNotes::updateOrCreate(['appointment_id' => $request->appointmentId],['common_notes' => $request->commonNotes]);
+                $appointmentNotes = AppointmentNotes::updateOrCreate(['appointment_id' => $request->appointmentId],['common_notes' => $request->commonNotes]);
             }
             else
             {
-                $notes = AppointmentNotes::updateOrCreate(['appointment_id' => $request->appointmentId],['treatment_notes' => $request->treatmentNotes]);
+                $appointmentNotes = AppointmentNotes::updateOrCreate(['appointment_id' => $request->appointmentId],['treatment_notes' => $request->treatmentNotes]);
             }
             DB::commit();
+            $clientnoteshtml    = view('calender.partials.client-notes' , [ 'appointmentNotes' => $appointmentNotes ])->render();
+
+            return response()->json([
+                'status'        => true,
+                'message'       => 'Notes found.',
+                'client_notes'  => $clientnoteshtml,
+            ], 200);
 
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;
         }
+    }
+
+    /**
+     * Method viewAppointmentNotes
+     *
+     * @param Request $request [explicite description]
+     *
+     * @return mixed
+     */
+    public function viewAppointmentNotes(Request $request)
+    {
+        $appointmentNotes   = AppointmentNotes::where(['appointment_id' => $request->appointment_id])->first();
+
+        $clientnoteshtml    = view('calender.partials.client-notes' , [ 'appointmentNotes' => $appointmentNotes ])->render();
+
+        return response()->json([
+            'status'        => true,
+            'message'       => 'Notes found.',
+            'client_notes'  => $clientnoteshtml,
+        ], 200);
     }
 }

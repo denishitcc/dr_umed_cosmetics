@@ -99,11 +99,11 @@ class Appointment extends Model
     }
 
     /**
-     * Get the notes that owns the Appointment
+     * Get the note that owns the Appointment
      *
-     * @return \Illuminate\Database\Eloquent\Relations\hasOne
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function notes(): hasOne
+    public function note(): HasOne
     {
         return $this->hasOne(AppointmentNotes::class, 'appointment_id', 'id');
     }

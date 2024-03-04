@@ -2,49 +2,51 @@
     <h4 class="d-grey mb-4">Notes</h4>
     <div class="yellow-note-box common_notes">
         <strong>Common Notes:</strong>
-        @if (isset($client->last_appointment->notes))
+        @if (isset($appointmentNotes))
         <div class="viewnotes">
             <p> <br>
-                {{ $client->last_appointment->notes->common_notes }}
+                {{ $appointmentNotes->common_notes }}
             </p>
             <div class="add-note-btn-box">
-                <a href="#" class="btn btn-primary font-13 alter"> Edit Notes</a>
+                <button type="button" class="btn btn-primary font-13 alter" id="edit_common_notes">Edit Notes </button>
             </div>
         </div>
-        @else
-            <div class="common">
-                <form method="post" >
-                    <input type="hidden" name="appointment_id">
-                    <textarea name="common_notes" id="common_notes" cols="80" rows="5" class="form=control"></textarea>
+        @endif
+        <div class="common d-none">
+            <form method="post" >
+                <input type="hidden" name="appointment_id" value=" {{ $appointmentNotes->appointment_id }}">
+                <textarea name="common_notes" id="common_notes" cols="80" rows="5" class="form=control" >  {{ $appointmentNotes->common_notes }} </textarea>
 
-                    <div class="add-note-btn-box">
-                        <br>
-                        <button type="button" class="btn btn-primary font-13 me-2" id="add_common_notes">Add Notes</button>
-                    </div>
-                </form>
+                <div class="add-note-btn-box">
+                    <br>
+                    <button type="button" class="btn btn-primary font-13 me-2" id="add_common_notes">Add Notes </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="yellow-note-box treatment_notes">
+        <strong>Treatment Notes:</strong><br>
+        @if (isset($appointmentNotes))
+            <div class="treatmentviewnotes">
+                <p>
+                    {{ $appointmentNotes->treatment_notes }}
+                </p>
+                <div class="add-note-btn-box">
+                    <button type="button" class="btn btn-primary font-13 alter" id="edit_treatment_notes">Edit Notes </button>
+                    {{-- <a href="#" class="btn btn-primary font-13 alter"> Edit Notes </a> --}}
+                </div>
             </div>
         @endif
-    </div>
-    <div class="yellow-note-box">
-        <strong>Treatment Notes:</strong><br>
-        @if (isset($client->last_appointment->notes))
-        <p>
-            {{ $client->last_appointment->notes->treatment_notes }}
-        </p>
-        <div class="add-note-btn-box">
-            {{-- <a href="#" class="btn btn-primary font-13 me-2">Add Notes</a> --}}
-            <a href="#" class="btn btn-primary font-13 alter"> Edit
-                Notes</a>
-        </div>
-        @else
+        <div class="treatment_common d-none">
             <form method="post">
-                <input type="text" name="treatment_notes" >
+                <input type="hidden" name="appointment_id" value=" {{ $appointmentNotes->appointment_id }}">
+                <textarea name="treatment_notes" id="treatment_notes" cols="80" rows="5" class="form=control"> {{ $appointmentNotes->treatment_notes }}  </textarea>
             </form>
             <div class="add-note-btn-box">
                 <br>
-                <a href="#" class="btn btn-primary font-13 me-2">Add Notes</a>
+                <button type="button" class="btn btn-primary font-13 me-2" id="submit_treatment_notes">Add Notes </button>
             </div>
-        @endif
+        </div>
     </div>
     <h4 class="d-grey mb-3 mt-5">Photos</h4>
     <div class="gallery client-phbox grid-4">

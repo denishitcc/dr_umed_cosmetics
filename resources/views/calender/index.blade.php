@@ -230,7 +230,8 @@
         getEvents:          "{!! route('calendar.get-events') !!}",
         updateAppointment:  "{!! route('calendar.update-appointments') !!}",
         getClientCardData:  "{!! route('calendar.get-client-card-data', ':ID') !!}",
-        addNotes:           "{!! route('calendar.add-appointment-notes',) !!}",
+        addNotes:           "{!! route('calendar.add-appointment-notes') !!}",
+        viewNotes:          "{!! route('calendar.view-appointment-notes') !!}",
     };
 
     $(document).ready(function()

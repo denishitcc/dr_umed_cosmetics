@@ -24,6 +24,7 @@ var DU = {};
             context.staffList();
             context.eventsList();
             context.openClientCardModal();
+            context.closeClientCardModal();
 
             $('#clientmodal').hide();
             $('#service_error').hide();
@@ -649,11 +650,6 @@ var DU = {};
 
                         $('#client_info').find('#appointmentsData').remove();
                         $('#appointmentTab').prepend(response.appointmenthtml);
-
-                        $('#client_info').find('#ClientNotesData').remove();
-                        $('#clientNotes').prepend(response.clientnoteshtml);
-
-                        // $(".common_notes").css({"display":"none"});
                     },
                     error: function (error) {
                         console.error('Error fetching resources:', error);
@@ -661,38 +657,139 @@ var DU = {};
                 });
                 context.selectors.clientCardModal.modal('show');
 
+                // Open form on add notes button
                 $(document).on('click','#add_notes', function(e){
-                    $(".viewnotes").remove();
-                    $(".common").remove();
-                    $(".common_notes").append($('.common').clone()).html();
-                    var appointment_id = $('#add_notes').data('appointment_id');
+                    var $this           = $(this),
+                        appointment_id  = $this.data('appointment_id');
+
                     $('.common_notes').find('input:hidden[name=appointment_id]').val(appointment_id);
-                    $('.common_notes').removeAttr('style');
+                    $(".viewnotes").remove();
+                    $(".common").removeClass('d-none');
                 });
 
+                // Open form on add treatment notes button
+                $(document).on('click','#add_treatment_notes', function(e){
+                    var $this           = $(this),
+                        appointment_id  = $this.data('appointment_id');
+
+                    $('.treatment_notes').find('input:hidden[name=appointment_id]').val(appointment_id);
+                    $(".treatmentviewnotes").remove();
+                    $(".treatment_common").removeClass('d-none');
+                });
+
+                // Open form on edit custom notes button
+                $(document).on('click','#edit_common_notes', function(e){
+                    $(".common").removeClass('d-none');
+                    $(".viewnotes").remove();
+                });
+
+                // Open form on edit treatment notes button
+                $(document).on('click','#edit_treatment_notes', function(e){
+                    $(".treatment_common").removeClass('d-none');
+                    $(".treatmentviewnotes").remove();
+                });
+
+                // add common note ajax
                 $(document).on('click','#add_common_notes', function(e){
                     e.preventDefault();
-                    // $('form').serialize()
                     var appointmentId = $('.common_notes').find('input:hidden[name=appointment_id]').val(),
                         commonNotes   = $('#common_notes').val();
-                    $.ajax({
-                        url: moduleConfig.addNotes,
-                        type: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
-                        },
-                        data: {
-                            'appointmentId'  : appointmentId,
-                            'commonNotes'    : commonNotes
-                        },
-                        success: function (data) {
-                            location.reload();
-                        },
-                        error: function (error) {
-                            console.error('Error fetching events:', error);
-                        }
-                    });
+
+                    context.commonNoteAddUpdateAjax(appointmentId,commonNotes);
                 });
+
+                // add treatment note ajax
+                $(document).on('click','#submit_treatment_notes', function(e){
+                    e.preventDefault();
+                    var appointmentId    = $('.treatment_notes').find('input:hidden[name=appointment_id]').val(),
+                        treatmentNotes   = $('#treatment_notes').val();
+
+                    context.treatmentNoteAddUpdateAjax(appointmentId,treatmentNotes);
+                });
+
+                // view notes
+                $(document).on('click','.show_notes', function(e){
+                    var appointment_id = $(this).data('appointment_id');
+                    context.viewNotes(appointment_id);
+                });
+            });
+        },
+
+        viewNotes: function(appointment_id){
+            $.ajax({
+                url: moduleConfig.viewNotes,
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    'appointment_id'  : appointment_id,
+                },
+                success: function (data) {
+                    $('#client_info').find('#ClientNotesData').remove();
+                    $('#clientNotes').prepend(data.client_notes);
+                },
+                error: function (error) {
+                    console.error('Error fetching events:', error);
+                }
+            });
+        },
+
+        commonNoteAddUpdateAjax: function(appointmentId,commonNotes){
+            $.ajax({
+                url: moduleConfig.addNotes,
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    'appointmentId'  : appointmentId,
+                    'commonNotes'    : commonNotes
+                },
+                success: function (data) {
+                    // location.reload();
+                    $('#client_info').find('#ClientNotesData').remove();
+                    $('#clientNotes').prepend(data.client_notes);
+                },
+                error: function (error) {
+                    console.error('Error fetching events:', error);
+                }
+            });
+        },
+
+        treatmentNoteAddUpdateAjax: function(appointmentId,treatmentNotes){
+            $.ajax({
+                url: moduleConfig.addNotes,
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    'appointmentId'  : appointmentId,
+                    'treatmentNotes' : treatmentNotes
+                },
+                success: function (data) {
+                    // location.reload();
+                    $('#client_info').find('#ClientNotesData').remove();
+                    $('#clientNotes').prepend(data.client_notes);
+                },
+                error: function (error) {
+                    console.error('Error fetching events:', error);
+                }
+            });
+        },
+
+        closeClientCardModal: function(){
+            var context = this;
+            jQuery('#Client_card').on('hide.bs.modal', function()
+            {
+                var $this = $(this);
+                // console.log($this.find('#ClientNotesData'));
+                $this.find('#ClientNotesData').remove();
+                $this.find('.show_notes').remove();
+
+                // $('#ClientNotesData').remove();
+                // $('#appointmentsData').remove();
             });
         },
 

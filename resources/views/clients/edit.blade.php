@@ -106,8 +106,8 @@
                                                 <p>{{ $appointment->duration }}m with {{ $appointment->staff->name }}<br>
                                                     {{-- <span class="font-13">(Uninvoiced) : $0.00</span> --}}
                                                 </p>
-                                                @if (isset($appointment->notes->notescount))
-                                                    <a href="#" class="badge badge-alter badge-icon badge-note my-2"><i class="ico-file-text me-2 fs-4 align-middle"></i> {{ $appointment->notes->notescount }} Notes </a>
+                                                @if (isset($appointment->note->notescount))
+                                                    <a href="#" class="badge badge-alter badge-icon badge-note my-2"><i class="ico-file-text me-2 fs-4 align-middle"></i> {{ $appointment->note->notescount }} Notes </a>
                                                 @else
                                                     <div class="add-note-btn-box">
                                                         <a href="javascript:void(0);" class="btn btn-primary font-13 me-2" id="add_notes" data-appointment_id="{{ $appointment->id }}"> Add Notes </a>
