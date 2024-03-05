@@ -963,7 +963,8 @@
         $(document).on('click','#add_common_notes', function(e){
             e.preventDefault();
             var appointmentId = $('.common_notes').find('input:hidden[name=appointment_id]').val(),
-                commonNotes   = $('#common_notes').val();
+                commonNotes   = $('#common_notes').val(),
+                clientId      = $('#clientcardid').data('client_id');
 
                 $.ajax({
                 url: "{!! route('calendar.add-appointment-notes') !!}",
@@ -973,7 +974,8 @@
                 },
                 data: {
                     'appointmentId'  : appointmentId,
-                    'commonNotes'    : commonNotes
+                    'commonNotes'    : commonNotes,
+                    'client_id'      : clientId
                 },
                 success: function (data) {debugger;
                     // location.reload();
@@ -993,24 +995,25 @@
             $('.treatment_notes').find('input:hidden[name=appointment_id]').val(appointment_id);
             $(".treatmentviewnotes").remove();
             $(".treatment_common").removeClass('d-none');
+            $("#treatment_notes").val('');
 
-            var commonNotesDiv = '<h4 class="d-grey mb-4">Notes</h4><div class="yellow-note-box treatment_notes">' +
-                '<strong>Treatment Notes:</strong><br>' +
-                '<div class="treatment_common">' +
-                '<form method="post">' +
-                '<input type="hidden" name="appointment_id" value="' + appointment_id + '">' +
-                '<textarea name="treatment_notes" id="treatment_notes" cols="80" rows="5" class="form-control"></textarea>' +
-                '</form>' +
-                '<div class="add-note-btn-box">' +
-                '<br>' +
-                '<button type="button" class="btn btn-primary font-13 me-2" id="submit_treatment_notes" fdprocessedid="1nvl6f">Add Notes</button>' +
-                '</div>' +
-                '</div>' +
-                '</div>';
+            // var commonNotesDiv = '<h4 class="d-grey mb-4">Notes</h4><div class="yellow-note-box treatment_notes">' +
+            //     '<strong>Treatment Notes:</strong><br>' +
+            //     '<div class="treatment_common">' +
+            //     '<form method="post">' +
+            //     '<input type="hidden" name="appointment_id" value="' + appointment_id + '">' +
+            //     '<textarea name="treatment_notes" id="treatment_notes" cols="80" rows="5" class="form-control"></textarea>' +
+            //     '</form>' +
+            //     '<div class="add-note-btn-box">' +
+            //     '<br>' +
+            //     '<button type="button" class="btn btn-primary font-13 me-2" id="submit_treatment_notes" fdprocessedid="1nvl6f">Add Notes</button>' +
+            //     '</div>' +
+            //     '</div>' +
+            //     '</div>';
 
 
-            // Append the common_notes div
-            $('#clientNotes').html(commonNotesDiv);
+            // // Append the common_notes div
+            // $('#clientNotes').html(commonNotesDiv);
         });
         // Open form on edit treatment notes button
         $(document).on('click','#edit_treatment_notes', function(e){
@@ -1021,7 +1024,8 @@
         $(document).on('click','#submit_treatment_notes', function(e){
             e.preventDefault();
             var appointmentId    = $('.treatment_notes').find('input:hidden[name=appointment_id]').val(),
-                treatmentNotes   = $('#treatment_notes').val();
+                treatmentNotes   = $('#treatment_notes').val(),
+                clientId      = $('#clientcardid').data('client_id');
 
                 $.ajax({
                 url: "{!! route('calendar.add-appointment-notes') !!}",
@@ -1031,7 +1035,8 @@
                 },
                 data: {
                     'appointmentId'  : appointmentId,
-                    'treatmentNotes' : treatmentNotes
+                    'treatmentNotes' : treatmentNotes,
+                    'client_id'      : clientId
                 },
                 success: function (data) {
                     // location.reload();
