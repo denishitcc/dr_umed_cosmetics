@@ -58,7 +58,7 @@
         <div class="tab-pane fade show active" id="tab_1" role="tabpanel">
             <div class="card-body">
                 <div class="scaffold-layout-outr">
-                <div class="scaffold-layout-list-details">
+                <div class="scaffold-layout-list-details" id="appointmentTab">
                     <div class="scaffold-layout-list">
                         @if ($futureappointments->count())
                             <ul class="scaffold-layout-list-container">
@@ -107,12 +107,21 @@
                                                     {{-- <span class="font-13">(Uninvoiced) : $0.00</span> --}}
                                                 </p>
                                                 @if (isset($appointment->note->notescount))
-                                                    <a href="#" class="badge badge-alter badge-icon badge-note my-2"><i class="ico-file-text me-2 fs-4 align-middle"></i> {{ $appointment->note->notescount }} Notes </a>
-                                                @else
+                                                    <a href="javascript:void(0);" class="badge badge-alter badge-icon badge-note my-2 show_notes" data-appointment_id="{{ $appointment->id }}"><i class="ico-file-text me-2 fs-4 align-middle"></i> {{ $appointment->note->notescount }} Notes </a>
                                                     <div class="add-note-btn-box">
-                                                        <a href="javascript:void(0);" class="btn btn-primary font-13 me-2" id="add_notes" data-appointment_id="{{ $appointment->id }}"> Add Notes </a>
+                                                        @if($appointment->note->treatment_notes == null)
                                                         <a href="javascript:void(0);" class="btn btn-primary font-13 alter" id="add_treatment_notes" data-appointment_id="{{ $appointment->id }}"> Add treatment notes </a>
+                                                        @endif
+                                                        @if($appointment->note->common_notes == null)
+                                                        <a href="javascript:void(0);" class="btn btn-primary font-13 me-2" id="add_notes" data-appointment_id="{{ $appointment->id }}"> Add Notes </a>
+                                                        @endif
                                                     </div>
+                                                @else
+                                                <div class="add-note-btn-box">
+                                                    <a href="javascript:void(0);" class="btn btn-primary font-13 alter" id="add_treatment_notes" data-appointment_id="{{ $appointment->id }}"> Add treatment notes </a>
+
+                                                    <a href="javascript:void(0);" class="btn btn-primary font-13 me-2" id="add_notes" data-appointment_id="{{ $appointment->id }}"> Add Notes </a>
+                                                </div>
                                                 @endif
                                             </div>
                                         </div>
@@ -292,8 +301,8 @@
                             </li> --}}
                         {{-- </ul> --}}
                     </div>
-                    <div class="scaffold-layout-detail">
-                        <h4 class="d-grey mb-4">Notes</h4>
+                    <div class="scaffold-layout-detail" id="clientNotes">
+                        <!-- <h4 class="d-grey mb-4">Notes</h4>
                         <div class="yellow-note-box">
                             <p> <strong>Common Notes:</strong><br> Form incomplete. 400 (paid together with Moey $1150 eft).</p>
                             <div class="add-note-btn-box">
@@ -319,17 +328,19 @@
                                     <a href="#" class="btn btn-primary font-13 me-2">Add Notes</a>
                                     <a href="#" class="btn btn-primary font-13 alter"> Edit Notes</a>
                                 </div>
-                        </div>
-                        <h4 class="d-grey mb-3 mt-5">Photos</h4>
-                        @if(count($client_photos)>0)
+                        </div> -->
+                        <div class="clients_photos" style="display:none">
+                            <h4 class="d-grey mb-3 mt-5">Photos</h4>
+                            @if(count($client_photos)>0)
                             <div class="gallery client-phbox grid-4">
-                            @foreach($client_photos as $photos)
+                                @foreach($client_photos as $photos)
                                 <figure>
                                     <a href="{{asset('storage/images/clients_photos/').'/'.$photos->client_photos}}"><img src="{{asset('storage/images/clients_photos/').'/'.$photos->client_photos}}" alt=""></a>
                                 </figure>
-                            @endforeach
+                                @endforeach
+                            </div>
+                            @endif
                         </div>
-                        @endif
                     </div>
                 </div>
                 </div>
@@ -833,7 +844,141 @@
     var file_cnt=0;
     var doc_cnt=0;
     $(document).ready(function(){
+        $(document).on('click', '.show_notes', function(e) {
+            var appointment_id = $(this).data('appointment_id');
+            $.ajax({
+                url: "{{ route('calendar.view-appointment-notes') }}",
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    'appointment_id': appointment_id,
+                },
+                success: function(data) {
+                    $('#client_info').find('#ClientNotesData').remove();
+                    $('#clientNotes').html(data.client_notes);
+                    // $('.clients_photos').show();
+                },
+                error: function(error) {
+                    console.error('Error fetching events:', error);
+                }
+            });
+        });
+        $(document).on('click','#add_notes', function(e){debugger;
+            var $this           = $(this),
+                appointment_id  = $this.data('appointment_id');
 
+            $('.common_notes').find('input:hidden[name=appointment_id]').val(appointment_id);
+            $(".viewnotes").remove();
+            $(".common").removeClass('d-none');
+
+            var commonNotesDiv = '<h4 class="d-grey mb-4">Notes</h4><div class="yellow-note-box common_notes">' +
+                '<strong>Common Notes:</strong>' +
+                '<div class="common">' +
+                '<form method="post">' +
+                '<input type="hidden" name="appointment_id" value="' + appointment_id + '">' +
+                '<textarea name="common_notes" id="common_notes" cols="80" rows="5" class="form-control"></textarea>' +
+                '<div class="add-note-btn-box">' +
+                '<br>' +
+                '<button type="button" class="btn btn-primary font-13 me-2" id="add_common_notes" fdprocessedid="dz4weo">Add Notes</button>' +
+                '</div>' +
+                '</form>' +
+                '</div>' +
+                '</div>';
+
+            // Append the common_notes div
+            $('#clientNotes').html(commonNotesDiv);
+        });
+        // Open form on edit custom notes button
+        $(document).on('click','#edit_common_notes', function(e){debugger;
+            $(".common").removeClass('d-none');
+            $(".viewnotes").remove();
+        });
+        // add common note ajax
+        $(document).on('click','#add_common_notes', function(e){debugger;
+            e.preventDefault();
+            var appointmentId = $('.common_notes').find('input:hidden[name=appointment_id]').val(),
+                commonNotes   = $('#common_notes').val();
+
+                $.ajax({
+                url: "{!! route('calendar.add-appointment-notes') !!}",
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    'appointmentId'  : appointmentId,
+                    'commonNotes'    : commonNotes
+                },
+                success: function (data) {debugger;
+                    // location.reload();
+                    $('#client_info').find('#ClientNotesData').remove();
+                    $('#clientNotes').html(data.client_notes);
+                },
+                error: function (error) {
+                    console.error('Error fetching events:', error);
+                }
+            });
+        });
+        // Open form on add treatment notes button
+        $(document).on('click','#add_treatment_notes', function(e){debugger;
+            var $this           = $(this),
+                appointment_id  = $this.data('appointment_id');
+
+            $('.treatment_notes').find('input:hidden[name=appointment_id]').val(appointment_id);
+            $(".treatmentviewnotes").remove();
+            $(".treatment_common").removeClass('d-none');
+
+            var commonNotesDiv = '<h4 class="d-grey mb-4">Notes</h4><div class="yellow-note-box treatment_notes">' +
+                '<strong>Treatment Notes:</strong><br>' +
+                '<div class="treatment_common">' +
+                '<form method="post">' +
+                '<input type="hidden" name="appointment_id" value="' + appointment_id + '">' +
+                '<textarea name="treatment_notes" id="treatment_notes" cols="80" rows="5" class="form-control"></textarea>' +
+                '</form>' +
+                '<div class="add-note-btn-box">' +
+                '<br>' +
+                '<button type="button" class="btn btn-primary font-13 me-2" id="submit_treatment_notes" fdprocessedid="1nvl6f">Add Notes</button>' +
+                '</div>' +
+                '</div>' +
+                '</div>';
+
+
+            // Append the common_notes div
+            $('#clientNotes').html(commonNotesDiv);
+        });
+        // Open form on edit treatment notes button
+        $(document).on('click','#edit_treatment_notes', function(e){
+            $(".treatment_common").removeClass('d-none');
+            $(".treatmentviewnotes").remove();
+        });
+        // add treatment note ajax
+        $(document).on('click','#submit_treatment_notes', function(e){debugger;
+            e.preventDefault();
+            var appointmentId    = $('.treatment_notes').find('input:hidden[name=appointment_id]').val(),
+                treatmentNotes   = $('#treatment_notes').val();
+
+                $.ajax({
+                url: "{!! route('calendar.add-appointment-notes') !!}",
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    'appointmentId'  : appointmentId,
+                    'treatmentNotes' : treatmentNotes
+                },
+                success: function (data) {
+                    // location.reload();
+                    $('#client_info').find('#ClientNotesData').remove();
+                    $('#clientNotes').html(data.client_notes);
+                },
+                error: function (error) {
+                    console.error('Error fetching events:', error);
+                }
+            });
+        });
         $("#update_client_photos").validate({
             rules: {
                 filepond: {
