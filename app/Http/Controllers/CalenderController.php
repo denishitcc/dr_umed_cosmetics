@@ -390,7 +390,7 @@ class CalenderController extends Controller
 
         $futureappointments = $client->allappointments()->where('created_at','>=', $todayDate)->orderby('created_at','desc')->get();
         $pastappointments   = $client->allappointments()->where('created_at','<=', $todayDate)->orderby('created_at','desc')->get();
-        dd($pastappointments);
+        // dd($pastappointments);
         $html               = view('calender.partials.client_card', [ 'client' => $client ])->render();
         $appointmenthtml    = view('calender.partials.client-appointment-card', [
                                     'futureappointments'  => $futureappointments,
