@@ -47,25 +47,22 @@
                         </p>
                         @if (isset($appointment->note->notescount))
                             <a href="javascript:void(0);" class="badge badge-alter badge-icon badge-note my-2 show_notes" data-appointment_id="{{ $appointment->id }}"><i class="ico-file-text me-2 fs-4 align-middle"></i> {{ $appointment->note->notescount }} Notes </a>
-                        @endif
-
-                        @if (isset($appointment->note))
-                            @if ($appointment->common_note)
-                                <span>Common added</span>
-                            @elseif ($appointment->treatment_notes)
-                                <span>treatment_notes added</span>
-                            @else
-                                <span>no notes added</span>
-                            @endif
+                            <div class="add-note-btn-box">
+                                @if($appointment->note->treatment_notes == null)
+                                <a href="javascript:void(0);" class="btn btn-primary font-13 alter" id="add_treatment_notes" data-appointment_id="{{ $appointment->id }}"> Add treatment notes </a>
+                                @endif
+                                @if($appointment->note->common_notes == null)
+                                <a href="javascript:void(0);" class="btn btn-primary font-13 me-2" id="add_notes" data-appointment_id="{{ $appointment->id }}"> Add Notes </a>
+                                @endif
+                            </div>
                         @else
-                            
+                            <div class="add-note-btn-box">
+                                <a href="javascript:void(0);" class="btn btn-primary font-13 alter" id="add_treatment_notes" data-appointment_id="{{ $appointment->id }}"> Add treatment notes </a>
+
+                                <a href="javascript:void(0);" class="btn btn-primary font-13 me-2" id="add_notes" data-appointment_id="{{ $appointment->id }}"> Add Notes </a>
+                            </div>
                         @endif
 
-                        <div class="add-note-btn-box">
-                            <a href="javascript:void(0);" class="btn btn-primary font-13 alter" id="add_treatment_notes" data-appointment_id="{{ $appointment->id }}"> Add treatment notes </a>
-
-                            <a href="javascript:void(0);" class="btn btn-primary font-13 me-2" id="add_notes" data-appointment_id="{{ $appointment->id }}"> Add Notes </a>
-                        </div>
                     </div>
                 </div>
             </li>

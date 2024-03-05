@@ -650,6 +650,9 @@ var DU = {};
 
                         $('#client_info').find('#appointmentsData').remove();
                         $('#appointmentTab').prepend(response.appointmenthtml);
+
+                        $('#client_info').find('#ClientNotesData').remove();
+                        $('#clientNotes').prepend(response.clientnoteshtml);
                     },
                     error: function (error) {
                         console.error('Error fetching resources:', error);
@@ -662,9 +665,10 @@ var DU = {};
                     var $this           = $(this),
                         appointment_id  = $this.data('appointment_id');
 
-                    $('.common_notes').find('input:hidden[name=appointment_id]').val(appointment_id);
-                    $(".viewnotes").remove();
-                    $(".common").removeClass('d-none');
+                        $('.common_notes').find('input:hidden[name=appointment_id]').val(appointment_id);
+                        $(".viewnotes").remove();
+                        $(".common").removeClass('d-none');
+                        $("#common_notes").val('');
                 });
 
                 // Open form on add treatment notes button
@@ -675,6 +679,7 @@ var DU = {};
                     $('.treatment_notes').find('input:hidden[name=appointment_id]').val(appointment_id);
                     $(".treatmentviewnotes").remove();
                     $(".treatment_common").removeClass('d-none');
+                    $("#treatment_common").val('');
                 });
 
                 // Open form on edit custom notes button
@@ -693,29 +698,32 @@ var DU = {};
                 $(document).on('click','#add_common_notes', function(e){
                     e.preventDefault();
                     var appointmentId = $('.common_notes').find('input:hidden[name=appointment_id]').val(),
-                        commonNotes   = $('#common_notes').val();
+                        commonNotes   = $('#common_notes').val(),
+                        clientId      = $('#clientcardid').data('client_id');
 
-                    context.commonNoteAddUpdateAjax(appointmentId,commonNotes);
+                    context.commonNoteAddUpdateAjax(appointmentId,commonNotes,clientId);
                 });
 
                 // add treatment note ajax
                 $(document).on('click','#submit_treatment_notes', function(e){
                     e.preventDefault();
                     var appointmentId    = $('.treatment_notes').find('input:hidden[name=appointment_id]').val(),
-                        treatmentNotes   = $('#treatment_notes').val();
+                        treatmentNotes   = $('#treatment_notes').val(),
+                        clientId      = $('#clientcardid').data('client_id');
 
-                    context.treatmentNoteAddUpdateAjax(appointmentId,treatmentNotes);
+                    context.treatmentNoteAddUpdateAjax(appointmentId,treatmentNotes,clientId);
                 });
 
                 // view notes
                 $(document).on('click','.show_notes', function(e){
-                    var appointment_id = $(this).data('appointment_id');
-                    context.viewNotes(appointment_id);
+                    var appointmentId   = $(this).data('appointment_id'),
+                        clientId        = $('#clientcardid').data('client_id');
+                    context.viewNotes(appointmentId,clientId);
                 });
             });
         },
 
-        viewNotes: function(appointment_id){
+        viewNotes: function(appointmentId,clientId){
             $.ajax({
                 url: moduleConfig.viewNotes,
                 type: 'POST',
@@ -723,7 +731,8 @@ var DU = {};
                     'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
                 },
                 data: {
-                    'appointment_id'  : appointment_id,
+                    'appointment_id'  : appointmentId,
+                    'client_id'       : clientId
                 },
                 success: function (data) {
                     $('#client_info').find('#ClientNotesData').remove();
@@ -735,7 +744,7 @@ var DU = {};
             });
         },
 
-        commonNoteAddUpdateAjax: function(appointmentId,commonNotes){
+        commonNoteAddUpdateAjax: function(appointmentId,commonNotes,clientId){
             $.ajax({
                 url: moduleConfig.addNotes,
                 type: 'POST',
@@ -744,10 +753,10 @@ var DU = {};
                 },
                 data: {
                     'appointmentId'  : appointmentId,
-                    'commonNotes'    : commonNotes
+                    'commonNotes'    : commonNotes,
+                    'client_id'      : clientId
                 },
                 success: function (data) {
-                    // location.reload();
                     $('#client_info').find('#ClientNotesData').remove();
                     $('#clientNotes').prepend(data.client_notes);
                 },
@@ -757,7 +766,7 @@ var DU = {};
             });
         },
 
-        treatmentNoteAddUpdateAjax: function(appointmentId,treatmentNotes){
+        treatmentNoteAddUpdateAjax: function(appointmentId,treatmentNotes,clientId){
             $.ajax({
                 url: moduleConfig.addNotes,
                 type: 'POST',
@@ -766,10 +775,10 @@ var DU = {};
                 },
                 data: {
                     'appointmentId'  : appointmentId,
-                    'treatmentNotes' : treatmentNotes
+                    'treatmentNotes' : treatmentNotes,
+                    'client_id'      : clientId
                 },
                 success: function (data) {
-                    // location.reload();
                     $('#client_info').find('#ClientNotesData').remove();
                     $('#clientNotes').prepend(data.client_notes);
                 },
@@ -784,7 +793,6 @@ var DU = {};
             jQuery('#Client_card').on('hide.bs.modal', function()
             {
                 var $this = $(this);
-                // console.log($this.find('#ClientNotesData'));
                 $this.find('#ClientNotesData').remove();
                 $this.find('.show_notes').remove();
 

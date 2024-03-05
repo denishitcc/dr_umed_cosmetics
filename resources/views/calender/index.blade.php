@@ -371,13 +371,13 @@
                         var fileName = file.name;
                         var fileContents = e.target.result;
 
-                        // $('.gallery.client-phbox').append(
-                        //     '<input type="hidden" name="hdn_img" value="' + file + '">' +
-                        //     '<figure imgname="' + fileName + '" class="remove_image latest">' +
-                        //     '<a href='+ fileContents +' data-fancybox="mygallery">' +
-                        //     '<img src=' + fileContents + ' class="img-fluid">' +
-                        //     '</a></figure>'
-                        // );
+                        $('.gallery.client-phbox').append(
+                            '<input type="hidden" name="hdn_img" value="' + file + '">' +
+                            '<figure imgname="' + fileName + '" class="remove_image latest">' +
+                            '<a href='+ fileContents +' data-fancybox="mygallery">' +
+                            '<img src=' + fileContents + ' class="img-fluid">' +
+                            '</a></figure>'
+                        );
 
                         $('.gallery.abc').append(
                             '<input type="hidden" name="hdn_img" value="' + file + '">' +

@@ -385,26 +385,37 @@ class CalenderController extends Controller
      */
     public function getClientCardData($clientId)
     {
+        $appointmentNotes   = [];
         $client             = Clients::findOrFail($clientId);
         $todayDate          = Carbon::today()->toDateTimeString();
 
-        $futureappointments = $client->allappointments()->where('created_at','>=', $todayDate)->orderby('created_at','desc')->get();
-        $pastappointments   = $client->allappointments()->where('created_at','<=', $todayDate)->orderby('created_at','desc')->get();
-        // dd($pastappointments);
+        $futureappointments = $client->allappointments()->with(['note'])->where('created_at','>=', $todayDate)->orderby('created_at','desc')->get();
+        $pastappointments   = $client->allappointments()->with(['note'])->where('created_at','<=', $todayDate)->orderby('created_at','desc')->get();
+        $clientPhotos       = $client->photos;
+        // dd($pastappointments->note);
+
+        if($client->last_appointment->id)
+        {
+            $appointmentNotes   = AppointmentNotes::where(['appointment_id' => $client->last_appointment->id])->first();
+        }
         $html               = view('calender.partials.client_card', [ 'client' => $client ])->render();
         $appointmenthtml    = view('calender.partials.client-appointment-card', [
                                     'futureappointments'  => $futureappointments,
                                     'pastappointments'    => $pastappointments,
                                     'client' => $client
                             ])->render();
-        // $clientnoteshtml    = view('calender.partials.client-notes' , [ 'client' => $client ])->render();
+
+        $clientnoteshtml    = view('calender.partials.client-notes' , [
+                                    'appointmentNotes'  => $appointmentNotes,
+                                    'clientPhotos'      => $clientPhotos
+                            ])->render();
 
         return response()->json([
             'status'                => true,
             'message'               => 'Details found.',
             'data'                  => $html,
             'appointmenthtml'       => $appointmenthtml,
-            // 'clientnoteshtml'       => $clientnoteshtml,
+            'clientnoteshtml'       => $clientnoteshtml,
             'client'                => $client
         ], 200);
     }
@@ -427,7 +438,12 @@ class CalenderController extends Controller
                 $appointmentNotes = AppointmentNotes::updateOrCreate(['appointment_id' => $request->appointmentId],['treatment_notes' => $request->treatmentNotes]);
             }
             DB::commit();
-            $clientnoteshtml    = view('calender.partials.client-notes' , [ 'appointmentNotes' => $appointmentNotes ])->render();
+            $client             = Clients::findOrFail($request->client_id);
+            $clientPhotos       = $client->photos;
+            $clientnoteshtml    = view('calender.partials.client-notes' , [
+                                    'appointmentNotes'  => $appointmentNotes,
+                                    'clientPhotos'      => $clientPhotos
+                                ])->render();
 
             return response()->json([
                 'status'        => true,
@@ -451,8 +467,13 @@ class CalenderController extends Controller
     public function viewAppointmentNotes(Request $request)
     {
         $appointmentNotes   = AppointmentNotes::where(['appointment_id' => $request->appointment_id])->first();
+        $client             = Clients::findOrFail($request->client_id);
+        $clientPhotos       = $client->photos;
 
-        $clientnoteshtml    = view('calender.partials.client-notes' , [ 'appointmentNotes' => $appointmentNotes ])->render();
+        $clientnoteshtml    = view('calender.partials.client-notes' , [
+                                'appointmentNotes'  => $appointmentNotes,
+                                'clientPhotos'      => $clientPhotos
+                            ])->render();
 
         return response()->json([
             'status'        => true,

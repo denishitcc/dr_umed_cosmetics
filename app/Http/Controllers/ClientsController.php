@@ -184,7 +184,7 @@ class ClientsController extends Controller
                     // Unsupported file type
                     continue;
                 }
-            
+
                 $image_base64 = base64_decode($image_parts[1]);
                 $uniqid = uniqid();
                 $file = $folderPath . $uniqid . '.' . $image_type;
@@ -193,9 +193,9 @@ class ClientsController extends Controller
                     'client_id' => $newUser->id,
                     'client_documents' => $uniqid . '.' . $image_type
                 ]);
-            }            
+            }
         }
-        
+
         $response = [
             'success' => true,
             'message' => 'Client Created successfully!',
@@ -211,7 +211,7 @@ class ClientsController extends Controller
     public function show(string $id)
     {
         $client             = Clients::where('id',$id)->first();
-        $client_photos      = ClientsPhotos::where('client_id',$client->id)->get();
+        $client_photos      = $client->photos;
         $client_documents   = ClientsDocuments::where('client_id',$client->id)->get();
         $todayDate          = Carbon::today()->toDateTimeString();
 

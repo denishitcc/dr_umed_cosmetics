@@ -14,9 +14,13 @@
         @endif
         <div class="common d-none">
             <form method="post" >
-                <input type="hidden" name="appointment_id" value=" {{ $appointmentNotes->appointment_id }}">
-                <textarea name="common_notes" id="common_notes" cols="80" rows="5" class="form=control" >  {{ $appointmentNotes->common_notes }} </textarea>
-
+                @if(isset($appointmentNotes))
+                    <input type="hidden" name="appointment_id" value="{{ $appointmentNotes->appointment_id }}" >
+                    <textarea name="common_notes" id="common_notes" cols="80" rows="5" class="form=control" > {{ $appointmentNotes->common_notes }} </textarea>
+                @else
+                    <input type="hidden" name="appointment_id" >
+                    <textarea name="common_notes" id="common_notes" cols="80" rows="5" class="form=control" > </textarea>
+                @endif
                 <div class="add-note-btn-box">
                     <br>
                     <button type="button" class="btn btn-primary font-13 me-2" id="add_common_notes">Add Notes </button>
@@ -33,14 +37,18 @@
                 </p>
                 <div class="add-note-btn-box">
                     <button type="button" class="btn btn-primary font-13 alter" id="edit_treatment_notes">Edit Notes </button>
-                    {{-- <a href="#" class="btn btn-primary font-13 alter"> Edit Notes </a> --}}
                 </div>
             </div>
         @endif
         <div class="treatment_common d-none">
             <form method="post">
-                <input type="hidden" name="appointment_id" value=" {{ $appointmentNotes->appointment_id }}">
-                <textarea name="treatment_notes" id="treatment_notes" cols="80" rows="5" class="form=control"> {{ $appointmentNotes->treatment_notes }}  </textarea>
+                @if(isset($appointmentNotes))
+                    <input type="hidden" name="appointment_id" value="{{ $appointmentNotes->appointment_id }}">
+                    <textarea name="treatment_notes" id="treatment_notes" cols="80" rows="5" class="form=control">  {{ $appointmentNotes->treatment_notes }}  </textarea>
+                @else
+                    <input type="hidden" name="appointment_id" >
+                    <textarea name="treatment_notes" id="treatment_notes" cols="80" rows="5" class="form=control" > </textarea>
+                @endif
             </form>
             <div class="add-note-btn-box">
                 <br>
@@ -49,6 +57,15 @@
         </div>
     </div>
     <h4 class="d-grey mb-3 mt-5">Photos</h4>
-    <div class="gallery client-phbox grid-4">
-    </div>
+    @if ($clientPhotos->count())
+        <div class="gallery client-phbox grid-4">
+            @foreach ($clientPhotos as $photos)
+                <figure>
+                    <a href="{{ $photos->photourl }}" data-fancybox="mygallery">
+                        <img src="{{ $photos->photourl }}" alt="{{ $photos->client_photos }}">
+                    </a>
+                </figure>
+            @endforeach
+        </div>
+    @endif
 </div>

@@ -83,4 +83,14 @@ class Clients extends Model
     {
         return $this->hasMany(Appointment::class, 'client_id', 'id');
     }
+
+    /**
+     * Get all of the photos for the Clients
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function photos(): HasMany
+    {
+        return $this->hasMany(ClientsPhotos::class, 'client_id', 'id');
+    }
 }

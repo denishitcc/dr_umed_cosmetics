@@ -13,7 +13,7 @@
                 <div class="client-name">
                     <div class="drop-cap" style="background: #D0D0D0; color: #000;">{{ucfirst(substr($client->firstname, 0, 1))}}</div>
                     <div class="client-info">
-                        <h4 class="blue-bold">{{$client->firstname.' '.$client->lastname}}</h4>
+                        <h4 class="blue-bold" id="clientcardid" data-client_id="{{ $client->id }}">{{$client->firstname.' '.$client->lastname}}</h4>
                         <a href="#" class="river-bed"><b>{{$client->mobile_number}}</b></a><br>
                         <a href="#" class="river-bed"><b>{{$client->email}}</b></a>
                     </div>
@@ -329,14 +329,75 @@
                                     <a href="#" class="btn btn-primary font-13 alter"> Edit Notes</a>
                                 </div>
                         </div> -->
-                        <div class="clients_photos" style="display:none">
+                        <div id="ClientNotesData">
+                            <h4 class="d-grey mb-4">Notes</h4>
+                            <div class="yellow-note-box common_notes">
+                                <strong>Common Notes:</strong>
+                                @if (isset($appointmentNotes))
+                                <div class="viewnotes">
+                                    <p> <br>
+                                        {{ $appointmentNotes->common_notes }}
+                                    </p>
+                                    <div class="add-note-btn-box">
+                                        <button type="button" class="btn btn-primary font-13 alter" id="edit_common_notes">Edit Notes </button>
+                                    </div>
+                                </div>
+                                @endif
+                                <div class="common d-none">
+                                    <form method="post" >
+                                        @if(isset($appointmentNotes))
+                                            <input type="hidden" name="appointment_id" value="{{ $appointmentNotes->appointment_id }}" >
+                                            <textarea name="common_notes" id="common_notes" cols="80" rows="5" class="form=control" > {{ $appointmentNotes->common_notes }} </textarea>
+                                        @else
+                                            <input type="hidden" name="appointment_id" >
+                                            <textarea name="common_notes" id="common_notes" cols="80" rows="5" class="form=control" > </textarea>
+                                        @endif
+                                        <div class="add-note-btn-box">
+                                            <br>
+                                            <button type="button" class="btn btn-primary font-13 me-2" id="add_common_notes">Add Notes </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="yellow-note-box treatment_notes">
+                                <strong>Treatment Notes:</strong><br>
+                                @if (isset($appointmentNotes))
+                                    <div class="treatmentviewnotes">
+                                        <p>
+                                            {{ $appointmentNotes->treatment_notes }}
+                                        </p>
+                                        <div class="add-note-btn-box">
+                                            <button type="button" class="btn btn-primary font-13 alter" id="edit_treatment_notes">Edit Notes </button>
+                                        </div>
+                                    </div>
+                                @endif
+                                <div class="treatment_common d-none">
+                                    <form method="post">
+                                        @if(isset($appointmentNotes))
+                                            <input type="hidden" name="appointment_id" value="{{ $appointmentNotes->appointment_id }}">
+                                            <textarea name="treatment_notes" id="treatment_notes" cols="80" rows="5" class="form=control">  {{ $appointmentNotes->treatment_notes }}  </textarea>
+                                        @else
+                                            <input type="hidden" name="appointment_id" >
+                                            <textarea name="treatment_notes" id="treatment_notes" cols="80" rows="5" class="form=control" > </textarea>
+                                        @endif
+                                    </form>
+                                    <div class="add-note-btn-box">
+                                        <br>
+                                        <button type="button" class="btn btn-primary font-13 me-2" id="submit_treatment_notes">Add Notes </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clients_photos">
                             <h4 class="d-grey mb-3 mt-5">Photos</h4>
-                            @if(count($client_photos)>0)
+                            @if ($client_photos->count())
                             <div class="gallery client-phbox grid-4">
-                                @foreach($client_photos as $photos)
-                                <figure>
-                                    <a href="{{asset('storage/images/clients_photos/').'/'.$photos->client_photos}}"><img src="{{asset('storage/images/clients_photos/').'/'.$photos->client_photos}}" alt=""></a>
-                                </figure>
+                                @foreach ($client_photos as $photos)
+                                    <figure>
+                                        <a href="{{ $photos->photourl }}" data-fancybox="mygallery">
+                                            <img src="{{ $photos->photourl }}" alt="{{ $photos->client_photos }}">
+                                        </a>
+                                    </figure>
                                 @endforeach
                             </div>
                             @endif
@@ -346,7 +407,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="tab-pane fade" id="tab_2" role="tabpanel">
             <div class="card-head pb-4">
                 <h5 class="bright-gray mb-0">Client details </h5>
@@ -845,7 +906,8 @@
     var doc_cnt=0;
     $(document).ready(function(){
         $(document).on('click', '.show_notes', function(e) {
-            var appointment_id = $(this).data('appointment_id');
+            var appointment_id = $(this).data('appointment_id'),
+                clientId       = $('#clientcardid').data('client_id');
             $.ajax({
                 url: "{{ route('calendar.view-appointment-notes') }}",
                 type: 'POST',
@@ -854,6 +916,7 @@
                 },
                 data: {
                     'appointment_id': appointment_id,
+                    'client_id' :clientId
                 },
                 success: function(data) {
                     $('#client_info').find('#ClientNotesData').remove();
@@ -865,38 +928,39 @@
                 }
             });
         });
-        $(document).on('click','#add_notes', function(e){debugger;
+        $(document).on('click','#add_notes', function(e){
             var $this           = $(this),
                 appointment_id  = $this.data('appointment_id');
 
             $('.common_notes').find('input:hidden[name=appointment_id]').val(appointment_id);
             $(".viewnotes").remove();
             $(".common").removeClass('d-none');
+            $("#common_notes").val('');
 
-            var commonNotesDiv = '<h4 class="d-grey mb-4">Notes</h4><div class="yellow-note-box common_notes">' +
-                '<strong>Common Notes:</strong>' +
-                '<div class="common">' +
-                '<form method="post">' +
-                '<input type="hidden" name="appointment_id" value="' + appointment_id + '">' +
-                '<textarea name="common_notes" id="common_notes" cols="80" rows="5" class="form-control"></textarea>' +
-                '<div class="add-note-btn-box">' +
-                '<br>' +
-                '<button type="button" class="btn btn-primary font-13 me-2" id="add_common_notes" fdprocessedid="dz4weo">Add Notes</button>' +
-                '</div>' +
-                '</form>' +
-                '</div>' +
-                '</div>';
+            // var commonNotesDiv = '<h4 class="d-grey mb-4">Notes</h4><div class="yellow-note-box common_notes">' +
+            //     '<strong>Common Notes:</strong>' +
+            //     '<div class="common">' +
+            //     '<form method="post">' +
+            //     '<input type="hidden" name="appointment_id" value="' + appointment_id + '">' +
+            //     '<textarea name="common_notes" id="common_notes" cols="80" rows="5" class="form-control"></textarea>' +
+            //     '<div class="add-note-btn-box">' +
+            //     '<br>' +
+            //     '<button type="button" class="btn btn-primary font-13 me-2" id="add_common_notes" fdprocessedid="dz4weo">Add Notes</button>' +
+            //     '</div>' +
+            //     '</form>' +
+            //     '</div>' +
+            //     '</div>';
 
             // Append the common_notes div
-            $('#clientNotes').html(commonNotesDiv);
+            // $('#clientNotes').html(commonNotesDiv);
         });
         // Open form on edit custom notes button
-        $(document).on('click','#edit_common_notes', function(e){debugger;
+        $(document).on('click','#edit_common_notes', function(e){
             $(".common").removeClass('d-none');
             $(".viewnotes").remove();
         });
         // add common note ajax
-        $(document).on('click','#add_common_notes', function(e){debugger;
+        $(document).on('click','#add_common_notes', function(e){
             e.preventDefault();
             var appointmentId = $('.common_notes').find('input:hidden[name=appointment_id]').val(),
                 commonNotes   = $('#common_notes').val();
@@ -922,7 +986,7 @@
             });
         });
         // Open form on add treatment notes button
-        $(document).on('click','#add_treatment_notes', function(e){debugger;
+        $(document).on('click','#add_treatment_notes', function(e){
             var $this           = $(this),
                 appointment_id  = $this.data('appointment_id');
 
@@ -954,7 +1018,7 @@
             $(".treatmentviewnotes").remove();
         });
         // add treatment note ajax
-        $(document).on('click','#submit_treatment_notes', function(e){debugger;
+        $(document).on('click','#submit_treatment_notes', function(e){
             e.preventDefault();
             var appointmentId    = $('.treatment_notes').find('input:hidden[name=appointment_id]').val(),
                 treatmentNotes   = $('#treatment_notes').val();

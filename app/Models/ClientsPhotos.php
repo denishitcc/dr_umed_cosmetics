@@ -25,4 +25,20 @@ class ClientsPhotos extends Model
         'client_id',
         'client_photos'
     ];
+
+    /**
+     * Method getPhotoUrlAttribute
+     *
+     * @return string
+     */
+    public function getPhotoUrlAttribute()
+    {
+        $url = '';
+        if( $this->client_photos )
+        {
+            $url = asset('storage/images/clients_photos/'.$this->client_photos);
+        }
+
+        return $url;
+    }
 }
