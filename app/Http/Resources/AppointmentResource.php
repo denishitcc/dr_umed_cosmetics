@@ -19,7 +19,8 @@ class AppointmentResource extends JsonResource
             'date'              => $this->start_date,
             'status'            => $this->appointment_status,
             'services_name'     => $this->services->service_name,
-            'staff_name'        => $this->staff->name
+            'staff_name'        => $this->staff->name,
+            'client_data'       => isset($this->clients) ? new ClientResource($this->clients) : []
         ];
     }
 }

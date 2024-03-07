@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\AppointmentListResource;
 use App\Http\Resources\AppointmentResource;
 use App\Http\Resources\CategoryListResource;
-use App\Http\Resources\ClientListResource;
+use App\Http\Resources\ClientResource;
 use App\Http\Resources\StaffListResource;
 use App\Models\Appointment;
 use App\Models\AppointmentNotes;
@@ -139,7 +139,7 @@ class CalenderController extends Controller
     public function getAllClients(Request $request)
     {
         $clients = Clients::where('firstname', 'like', '%' .$request->name. '%')->get();
-        return response()->json(ClientListResource::collection($clients));
+        return response()->json(ClientResource::collection($clients));
     }
 
     /**
@@ -301,7 +301,7 @@ class CalenderController extends Controller
         $pastappointments   = $client->allappointments()->with(['note'])->where('created_at','<=', $todayDate)->orderby('created_at','desc')->get();
         $clientPhotos       = $client->photos;
 
-        if($client->last_appointment->id)
+        if($client->last_appointment)
         {
             $appointmentNotes   = AppointmentNotes::where(['appointment_id' => $client->last_appointment->id])->first();
         }
@@ -401,9 +401,9 @@ class CalenderController extends Controller
         $appointment   = Appointment::find($appointmentId);
 
         return response()->json([
-            'status'                => true,
-            'message'               => 'Details found.',
-            'data'                  => new AppointmentResource($appointment)
+            'status'     => true,
+            'message'    => 'Details found.',
+            'data'       => new AppointmentResource($appointment)
         ], 200);
     }
     
