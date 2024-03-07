@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Services extends Model
@@ -29,4 +30,14 @@ class Services extends Model
         'appear_on_calendar',
         'standard_price',
     ];
+
+    /**
+     * Get the appearoncalender that owns the Services
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function appearoncalender(): HasOne
+    {
+        return $this->hasOne(ServicesAppearOnCalendar::class, 'service_id', 'id');
+    }
 }

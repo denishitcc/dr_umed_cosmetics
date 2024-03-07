@@ -46,7 +46,8 @@ var DU = {};
                             client_name :dataset.client_name,
                             service_id  :dataset.service_id,
                             client_id   :dataset.client_id,
-                            category_id :dataset.category_id
+                            category_id :dataset.category_id,
+                            duration    :dataset.duration,
                         }
                     };
                 }
@@ -59,7 +60,6 @@ var DU = {};
                 editable: true,
                 droppable: true,
                 aspectRatio: 1.8,
-                defaultAllDayEventDuration: "01:00",
                 forceEventDuration: true,
                 initialView: 'resourceTimeGridDay',
                 buttonText: {
@@ -145,55 +145,42 @@ var DU = {};
                     // $("#external-events").remove();
                 },
                 eventReceive: function (info) {
-
                     var resourceId          = info.event._def.resourceIds[0],
                         start_date          = moment(info.event.startStr).format('YYYY-MM-DD'),
-                        start_time          = moment(info.event.startStr).format('YYYY-MM-DDTHH:mm:ss'),
-                        end_time            = moment(info.event.endStr).format('YYYY-MM-DDTHH:mm:ss'),
                         client_id           = info.event.extendedProps.client_id,
                         service_id          = info.event.extendedProps.service_id,
-                        category_id         = info.event.extendedProps.category_id;
+                        category_id         = info.event.extendedProps.category_id,
+                        duration            = info.event.extendedProps.duration,
+                        start_time          = moment(info.event.startStr).format('YYYY-MM-DDTHH:mm:ss'),
+                        end_time            = moment(start_time).add(duration,'minutes').format('YYYY-MM-DDTHH:mm:ss');
 
-                    // For difference between two dates -> duration
-                    var start_time_diff     = moment(info.event.startStr),
-                        end_time_diff       = moment(info.event.endStr),
-                        durationInMinutes   = end_time_diff.diff(start_time_diff, 'minutes');
-
-                        context.createAppointmentDetails(resourceId,start_date,start_time,end_time,durationInMinutes,client_id,service_id,category_id);
+                        context.createAppointmentDetails(resourceId,start_date,start_time,end_time,duration,client_id,service_id,category_id);
                 },
                 eventDrop: function (events) {
                     var resourceId          = events.event._def.resourceIds[0],
                         eventId             = events.event._def.publicId,
                         start_date          = moment(events.event.startStr).format('YYYY-MM-DD'),
-                        start_time          = moment(events.event.startStr).format('YYYY-MM-DDTHH:mm:ss'),
-                        end_time            = moment(events.event.endStr).format('YYYY-MM-DDTHH:mm:ss'),
+                        duration            = info.event.extendedProps.duration,
+                        start_time          = moment(info.event.startStr).format('YYYY-MM-DDTHH:mm:ss'),
+                        end_time            = moment(start_time).add(duration,'minutes').format('YYYY-MM-DDTHH:mm:ss');
                         client_id           = events.event.extendedProps.client_id,
                         service_id          = events.event.extendedProps.service_id,
                         category_id         = events.event.extendedProps.category_id;
 
-                    // For difference between two dates -> duration
-                    var start_time_diff     = moment(events.event.startStr),
-                        end_time_diff       = moment(events.event.endStr),
-                        durationInMinutes   = end_time_diff.diff(start_time_diff, 'minutes');
-
-                        context.updateAppointmentDetails(resourceId,start_date,start_time,end_time,durationInMinutes,client_id,service_id,category_id,eventId);
+                        context.updateAppointmentDetails(resourceId,start_date,start_time,end_time,duration,client_id,service_id,category_id,eventId);
                 },
                 eventResize: function(events) {
                     var resourceId          = events.event._def.resourceIds[0],
                         start_date          = moment(events.event.startStr).format('YYYY-MM-DD'),
                         eventId             = events.event._def.publicId,
-                        start_time          = moment(events.event.startStr).format('YYYY-MM-DDTHH:mm:ss'),
-                        end_time            = moment(events.event.endStr).format('YYYY-MM-DDTHH:mm:ss'),
+                        duration            = info.event.extendedProps.duration,
+                        start_time          = moment(info.event.startStr).format('YYYY-MM-DDTHH:mm:ss'),
+                        end_time            = moment(start_time).add(duration,'minutes').format('YYYY-MM-DDTHH:mm:ss');
                         client_id           = events.event.extendedProps.client_id,
                         service_id          = events.event.extendedProps.service_id;
                         category_id         = events.event.extendedProps.category_id;
 
-                    // For difference between two dates -> duration
-                    var start_time_diff     = moment(events.event.startStr),
-                        end_time_diff       = moment(events.event.endStr),
-                        durationInMinutes   = end_time_diff.diff(start_time_diff, 'minutes');
-
-                        context.updateAppointmentDetails(resourceId,start_date,start_time,end_time,durationInMinutes,client_id,service_id,category_id,eventId);
+                        context.updateAppointmentDetails(resourceId,start_date,start_time,end_time,duration,client_id,service_id,category_id,eventId);
                 },
                 eventDidMount: function(info)
                 {
@@ -250,10 +237,23 @@ var DU = {};
                     'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
                 },
                 success: function (data) {
-                    console.log(data);return false;
-                    // Update the FullCalendar resources with the retrieved data
-                    // context.calendar.setOption('events', data);
-                    // context.calendar.refetchEvents(); // Refresh events if needed
+                    // console.log(data);return false;
+                    $('#clientDetails').html(
+                        `<div class='client-name'><div class='drop-cap' style='background: #D0D0D0; color: #000;'>
+                        
+                        </div></div>
+                            <p>
+                        ${data.first_name} <br>
+                        ${(data.email ? data.email : '')}
+                        ${(data.mobile_no ? " | "  + data.mobile_no : '')}
+                        </p>
+                        <button class='btn btn-primary btn-sm me-2 open-client-card-btn' data-client-id=' ${data.id}'>Client Card</button>
+                        <button class='btn btn-primary btn-sm me-2' data-client-id='${data.id}'>History</button>
+                        <button class='btn btn-primary btn-sm me-2' data-client-id='${data.id}'>Upcoming</button>
+                        <div>
+                        <label>appointment summary</label><br><label>Drag and drop on to a day on the appointment book</label>
+                        </div>`
+                    );
                 },
                 error: function (error) {
                     console.error('Error fetching events:', error);
@@ -402,6 +402,7 @@ var DU = {};
                 e.preventDefault();
                 var $this           = $(this),
                     categoryId      = $this.data('category_id'),
+                    duration        = $this.data('duration'),
                     categoryTitle   = $this.text();
 
                 $.ajax({
@@ -418,7 +419,7 @@ var DU = {};
                         $('#subcategory_text').text(categoryTitle);
                         $('#sub_services').empty();
                         $.each(data, function(index, item) {
-                            $("#sub_services").append(`<li><a href='javascript:void(0);' class='services' data-services_id=${item.id} data-category_id=${item.parent_category} >${item.service_name}</a></li>`);
+                            $("#sub_services").append(`<li><a href='javascript:void(0);' class='services' data-services_id=${item.id} data-category_id=${item.parent_category} data-duration=${item.duration}>${item.service_name}</a></li>`);
                         });
                     },
                     error: function (error) {
@@ -433,12 +434,13 @@ var DU = {};
             $(document).ready(function() {
                 $('#sub_services').on('click', '.services', function(e) {
                     e.preventDefault();
-                    var $this         = $(this),
-                    serviceId       = $this.data('services_id'),
-                    categoryId      = $this.data('category_id'),
-                    serviceTitle    = $this.text();
+                    var $this           = $(this),
+                        serviceId       = $this.data('services_id'),
+                        categoryId      = $this.data('category_id'),
+                        duration        = $this.data('duration'),
+                        serviceTitle    = $this.text();
 
-                    $("#selected_services").append("<li class='selected remove' data-services_id=" + serviceId + " data-category_id=" + categoryId + "><a href='javascript:void(0);' data-services_id=" + serviceId + ">" + serviceTitle + "</a><span class='btn btn-cross cross-red remove_services'><i class='ico-close'></i></span></li>");
+                    $("#selected_services").append(`<li class='selected remove' data-services_id= ${serviceId}  data-category_id= ${categoryId}  data-duration='${duration}'><a href='javascript:void(0);' > ${serviceTitle} </a><span class='btn btn-cross cross-red remove_services'><i class='ico-close'></i></span></li>`);
                 });
             });
             // jQuery('#sub_services').on('click',".services", function(e) {
@@ -545,13 +547,14 @@ var DU = {};
                         eventName           = $(this).text(),
                         eventId             = $(this).data('services_id');
                         categoryId          = $(this).data('category_id');
+                        duration            = $(this).data('duration');
                         clientName          = $('#clientDetails').find('input:hidden[name=client_name]').val();
                         clientId            = $('#clientDetails').find('input:hidden[name=client_id]').val();
 
                         // $('#mycalendar').remove();
                         $('#external-events').removeAttr('style');
                         $('#external-events').append(`
-                        <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event' data-service_id="${eventId}" data-client_name="${clientName}" data-client_id="${clientId}" data-category_id="${categoryId}"> ${eventName}
+                        <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event' data-service_id="${eventId}" data-client_name="${clientName}" data-duration="${duration}" data-client_id="${clientId}" data-category_id="${categoryId}"> ${eventName}
                         </div>`);
                     });
 

@@ -41,7 +41,7 @@ class CalenderController extends Controller
                             'children'
                         ])->whereNull('parent_category')->get();
 
-        $services   = Services::get();
+        $services   = Services::with(['appearoncalender'])->get();
 
         return view('calender.index')->with(
             [

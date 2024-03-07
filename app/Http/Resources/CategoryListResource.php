@@ -17,7 +17,8 @@ class CategoryListResource extends JsonResource
         return [
             'id'                => $this->id,
             'service_name'      => $this->service_name,
-            'parent_category'   => $this->parent_category
+            'parent_category'   => $this->parent_category,
+            'duration'          => $this->appearoncalender->duration
         ];
     }
 }

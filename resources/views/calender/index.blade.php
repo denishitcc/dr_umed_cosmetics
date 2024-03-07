@@ -154,7 +154,7 @@
                                     @foreach ($categories as $category)
                                     <li>
                                         <div class="disflex">
-                                            <a href="javascript:void(0);" class="parent_category_id" data-category_id="{{$category->id}}">{{$category->category_name}}</a>
+                                            <a href="javascript:void(0);" class="parent_category_id" data-category_id="{{$category->id}}" data-duration="{{ $category->duration }}">{{$category->category_name}}</a>
                                         </div>
                                         @if ($category->children)
                                             <ul>
@@ -181,7 +181,7 @@
                                         <ul id="sub_services">
                                             @foreach ($services as $services)
                                                 <li>
-                                                    <a href="javascript:void(0);" class="services" data-services_id="{{$services->id}}" data-category_id="{{$services->parent_category}}">{{ $services->service_name }}</a>
+                                                    <a href="javascript:void(0);" class="services" data-services_id="{{$services->id}}" data-category_id="{{$services->parent_category}}" data-duration="{{ $services->appearoncalender->duration }}">{{ $services->service_name }}</a>
                                                 </li>
                                             @endforeach
                                         </ul>
