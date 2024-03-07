@@ -61,6 +61,7 @@ var DU = {};
                 droppable: true,
                 aspectRatio: 1.8,
                 forceEventDuration: true,
+                defaultAllDayEventDuration: "01:00",
                 initialView: 'resourceTimeGridDay',
                 buttonText: {
                     today: 'Today',
@@ -160,27 +161,36 @@ var DU = {};
                     var resourceId          = events.event._def.resourceIds[0],
                         eventId             = events.event._def.publicId,
                         start_date          = moment(events.event.startStr).format('YYYY-MM-DD'),
-                        duration            = events.event.extendedProps.duration,
+                        // duration            = events.event.extendedProps.duration,
                         start_time          = moment(events.event.startStr).format('YYYY-MM-DDTHH:mm:ss'),
-                        end_time            = moment(start_time).add(duration,'minutes').format('YYYY-MM-DDTHH:mm:ss');
+                        end_time            = moment(events.event.endStr).format('YYYY-MM-DDTHH:mm:ss'),
                         client_id           = events.event.extendedProps.client_id,
                         service_id          = events.event.extendedProps.service_id,
                         category_id         = events.event.extendedProps.category_id;
+                    // console.log(duration);
+                    // For difference between two dates -> duration
+                    var start_time_diff     = moment(events.event.startStr),
+                        end_time_diff       = moment(events.event.endStr),
+                        durationInMinutes   = end_time_diff.diff(start_time_diff, 'minutes');
 
-                        context.updateAppointmentDetails(resourceId,start_date,start_time,end_time,duration,client_id,service_id,category_id,eventId);
+                        context.updateAppointmentDetails(resourceId,start_date,start_time,end_time,durationInMinutes,client_id,service_id,category_id,eventId);
                 },
                 eventResize: function(events) {
                     var resourceId          = events.event._def.resourceIds[0],
                         start_date          = moment(events.event.startStr).format('YYYY-MM-DD'),
                         eventId             = events.event._def.publicId,
-                        duration            = events.event.extendedProps.duration,
+                        // duration            = events.event.extendedProps.duration,
                         start_time          = moment(events.event.startStr).format('YYYY-MM-DDTHH:mm:ss'),
-                        end_time            = moment(start_time).add(duration,'minutes').format('YYYY-MM-DDTHH:mm:ss');
+                        end_time            = moment(events.event.endStr).format('YYYY-MM-DDTHH:mm:ss'),
                         client_id           = events.event.extendedProps.client_id,
                         service_id          = events.event.extendedProps.service_id;
                         category_id         = events.event.extendedProps.category_id;
 
-                        context.updateAppointmentDetails(resourceId,start_date,start_time,end_time,duration,client_id,service_id,category_id,eventId);
+                    var start_time_diff     = moment(events.event.startStr),
+                        end_time_diff       = moment(events.event.endStr),
+                        durationInMinutes   = end_time_diff.diff(start_time_diff, 'minutes');
+
+                        context.updateAppointmentDetails(resourceId,start_date,start_time,end_time,durationInMinutes,client_id,service_id,category_id,eventId);
                 },
                 eventDidMount: function(info)
                 {
@@ -348,7 +358,7 @@ var DU = {};
         },
 
         // For update appointment
-        updateAppointmentDetails: function(resourceId,start_date,start_time,end_time,durationInMinutes,client_id,service_id,category_id,eventId){
+        updateAppointmentDetails: function(resourceId,start_date,start_time,end_time,duration,client_id,service_id,category_id,eventId){
             $.ajax({
                 url: moduleConfig.updateAppointment,
                 type: 'POST',
@@ -360,7 +370,7 @@ var DU = {};
                     'start_date'  : start_date,
                     'start_time'  : start_time,
                     'end_time'    : end_time,
-                    'duration'    : durationInMinutes,
+                    'duration'    : duration,
                     'client_id'   : client_id,
                     'service_id'  : service_id,
                     'category_id' : category_id,

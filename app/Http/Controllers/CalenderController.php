@@ -278,7 +278,7 @@ class CalenderController extends Controller
             DB::rollback();
             $data = [
                 'success' => false,
-                'message' => 'something went wrong!',
+                'message' => $th,
                 'type'    => 'fail',
             ];
         }
