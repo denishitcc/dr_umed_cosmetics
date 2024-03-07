@@ -1,4 +1,4 @@
-@extends('layouts/sidebar')
+@extends('layouts.sidebar')
 @section('content')
 <!-- Page content wrapper-->
 <meta name="csrf-token" content="{{ csrf_token() }}" />

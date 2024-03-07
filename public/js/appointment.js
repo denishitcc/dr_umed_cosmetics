@@ -22,7 +22,6 @@ var DU = {};
             // context.searchClientModal();
             context.appointmentSaveBtn();
             context.staffList();
-            context.eventsList();
             context.openClientCardModal();
             context.closeClientCardModal();
 
@@ -40,7 +39,6 @@ var DU = {};
                 new Draggable(containerEl, {
                     itemSelector: '.fc-event',
                     eventData: function (eventEl) {
-                        console.log(eventEl);
                     var dataset = eventEl.dataset;
                     return {
                         title: eventEl.innerText,
@@ -86,7 +84,7 @@ var DU = {};
                     context.eventsList(start_date, end_date);
                 },
                 loading: function (isLoading) {
-                    console.log(isLoading);
+                    // console.log(isLoading);
                     // if (isLoading) {
                     //   // Show loader
                     //   $('#loader').show();
@@ -213,6 +211,10 @@ var DU = {};
                         domNodes: arrayOfDomNodes
                     }
                 },
+                eventClick: function(info){
+                    var eventId = info.event._def.publicId;
+                    context.editEvent(eventId);
+                },
                 dayMaxEvents: true,
                 select: function(start, end, allDays){
                     $('#New_appointment').modal('toggle');
@@ -240,10 +242,29 @@ var DU = {};
             });
         },
 
+        editEvent:function (eventId){
+            $.ajax({
+                url: moduleConfig.EventById.replace(':ID', eventId),
+                type: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                },
+                success: function (data) {
+                    console.log(data);return false;
+                    // Update the FullCalendar resources with the retrieved data
+                    // context.calendar.setOption('events', data);
+                    // context.calendar.refetchEvents(); // Refresh events if needed
+                },
+                error: function (error) {
+                    console.error('Error fetching events:', error);
+                }
+            });
+        },
+
         // For events list
         eventsList: function(start_date, end_date){
-            var context = this;
-            var todayDt = moment(context.calendar.currentData.dateProfile.currentDate).format('YYYY-MM-DD');
+            var context = this,
+                todayDt = moment(context.calendar.currentData.dateProfile.currentDate).format('YYYY-MM-DD');
 
             $.ajax({
                 url: moduleConfig.getEvents,
@@ -437,94 +458,6 @@ var DU = {};
                 e.preventDefault();
                 $(this).closest('li').remove();
             });
-        },
-
-        // searchClient: function(){
-        //     var context = this;
-        //     $('.search_client').autocomplete({
-        //         source: function (request, response) {
-        //             $.ajax({
-        //                 url: moduleConfig.getClients, // Replace with your actual API endpoint
-        //                 type: 'POST',
-        //                 headers: {
-        //                     'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
-        //                 },
-        //                 data: {
-        //                     'name' : request.term
-        //                 },
-        //                 success: function (data) {
-        //                     context.displayResults(data);
-        //                 },
-        //                 error: function (error) {
-        //                     console.error('Error fetching resources:', error);
-        //                 }
-        //             });
-        //         },
-        //         minLength: 2, // minimum characters before triggering autocomplete
-        //         select: function (event, ui) {
-        //             console.log(ui);
-        //             // Handle the selection event
-        //             context.addSelectedProduct(ui.item.value);
-        //             // Clear the input after selection if needed
-        //             $(this).val('');
-        //             return false; // Prevent the input value from being updated with the selected value
-        //         }
-        //     });
-        //     // Handling the change event of the input field
-        //     $('.search_client').on('input', function() {
-        //         if ($(this).val().trim() === '') {
-        //             context.clearResults();
-        //         }
-        //     });
-        // },
-
-        clearResults: function() {
-            var resultElement = document.getElementById("result");
-            resultElement.innerHTML = '';
-        },
-
-
-        searchClientModal: function(){
-            var context = this;
-            $('.search_client_modal').autocomplete({
-                source: function (request, response) {
-                    $.ajax({
-                        url: moduleConfig.getClients, // Replace with your actual API endpoint
-                        type: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
-                        },
-                        data: {
-                            'name' : request.term
-                        },
-                        success: function (data) {
-                            context.displayResultsmodal(data);
-                        },
-                        error: function (error) {
-                            console.error('Error fetching resources:', error);
-                        }
-                    });
-                },
-                minLength: 2, // minimum characters before triggering autocomplete
-                onSelect: function (event, ui,data) {
-                    // Handle the selection event
-                    context.addSelectedProduct(ui.item.value);
-                    // Clear the input after selection if needed
-                    $(this).val('');
-                    return false; // Prevent the input value from being updated with the selected value
-                }
-            })
-            // Handling the change event of the input field
-            $('.search_client_modal').on('input', function() {
-                if ($(this).val().trim() === '') {
-                    context.clearResultsModal();
-                }
-            });
-        },
-
-        clearResultsModal: function() {
-            var resultElement = document.getElementById("search_client_modal");
-            resultElement.innerHTML = '';
         },
 
         addSelectedProduct: function(product){
@@ -882,7 +815,7 @@ var DU = {};
                         //for reload all services & selected services
                         $("#all_ser").load(location.href+" #all_ser>*","");
                         $("#selected_services").empty();
-                        console.log(result);
+                        // console.log(result);
                         // window.location = redirct_url;
                     });
 				} else {

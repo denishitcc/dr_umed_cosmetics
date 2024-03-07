@@ -97,7 +97,7 @@ img{ max-width: 100%;}
 .cross-red:hover{ background: transparent; color: #FF4858;}
 
 .form-group label{ color: #232323;}
-.form-group .form-control{border-radius: 5px; border: 1px solid #D1D1D1; color:#666; font-size: 15px; min-height: 43px; padding: .5rem 1.2rem; }
+.form-group .form-control{border-radius: 5px; border: 1px solid #D1D1D1; color:#666; font-size: 15px; min-height: 45px; padding: .5rem 1.2rem; }
 
 .btn-primary{background: #0747A6; border-color:#0747A6;}
 .btn-primary:hover{background: #232323; border-color:#232323;}
@@ -659,7 +659,7 @@ div.dataTables_filter { text-align: right; float: right;}
 .scaffold-layout-detail::-webkit-scrollbar-thumb { background:rgba(0, 0, 0, 0); border-radius:0px; }
 
 .scaffold-layout-list-item{ display: flex;}
-.scaffold-layout-list-item .appt-timeplace{ color: #282828; font-weight: 500; line-height: 20px; width: 152px; padding-right: 2rem; padding-left: 0.5em;}
+.scaffold-layout-list-item .appt-timeplace{ color: #282828; font-weight: 500; line-height: 20px; width: 135px; padding-right: 2rem; padding-left: 0.5em;}
 .scaffold-layout-list-item .appt-details{ flex: auto; border-left: 2px solid #E4E7EC; padding-left: 2rem; color: #667085; font-weight: 500; position: relative;}
 .scaffold-layout-list-item .appt-details:before{ content: ''; position: absolute; border-left:1px solid transparent; left: 0; top: 0; bottom: 0;}
 .scaffold-layout-list-item .appt-details .his-detaiils{ margin-bottom: 22px;}
@@ -836,22 +836,47 @@ div.dataTables_filter { text-align: right; float: right;}
 .btn-wait-list{ border-color:#EEF1F5; background: #EEF1F5; padding: 0.3em 0.6em 0 0.6em; font-size: 20px;}
 .btn-wait-list:hover{ background: #232323; border-color: #232323; color: #fff;}
 
-.ui-datepicker{ width: auto !important;}
 
- #external-events {
-  /*position: fixed;
-  z-index: 2;
-  top: 20px;
-  left: 20px;
-  width: 150px;
-  padding: 0 10px; */
-  background: #eee;
-  border: 1px solid #ccc;
-}
-#external-events .fc-event {
-  margin: 10px 0;
-  cursor: pointer;
-}
+.hasDatepicker .ui-widget{font-family: 'Roboto', sans-serif; font-size: inherit; }
+.hasDatepicker .ui-datepicker{ width: auto; padding: 0;}
+.hasDatepicker .ui-widget-header{ border: 0; background:transparent; color: inherit; font-weight: normal;}
+.hasDatepicker .ui-widget-header .ui-icon{background-image: url(https://code.jquery.com/ui/1.12.1/themes/ui-lightness/images/ui-icons_222222_256x240.png);}
+.hasDatepicker .ui-widget.ui-widget-content{border: none;}
+.hasDatepicker .ui-widget-content{background:transparent;}
+.hasDatepicker .ui-datepicker .ui-datepicker-title{ text-align: left;}
+.hasDatepicker .ui-datepicker th{font-weight: normal; color: #4B4F52; font-weight: 500;}
+
+.hasDatepicker .ui-state-default,
+.hasDatepicker .ui-widget-content .ui-state-default,
+.hasDatepicker .ui-widget-header .ui-state-default,
+.hasDatepicker .ui-button, html .hasDatepicker .ui-button.ui-state-disabled:hover,
+html .hasDatepicker .ui-button.ui-state-disabled:active{ border: 0; background: transparent; font-weight: normal; color: #4B4F52; border-radius: 50px; line-height: 35px; height: 40px;}
+
+.hasDatepicker .ui-datepicker td span, .hasDatepicker .ui-datepicker td a{ text-align: center;}
+
+.hasDatepicker .ui-state-highlight, .hasDatepicker .ui-widget-content .ui-state-highlight, .hasDatepicker .ui-widget-header .ui-state-highlight {  color: #fff; }
+
+.hasDatepicker .ui-datepicker-today { background-color: #1E76E8; color: #fff; border-radius: 50%;}
+.hasDatepicker .ui-datepicker .ui-datepicker-prev { right: 20px; left: auto; }
+.hasDatepicker .ui-datepicker .ui-datepicker-title{ margin-left: 12px;}
+
+.hasDatepicker .ui-datepicker-selected {background-color: #1E76E8; color: #fff; border-radius: 50%;}
+
+.hasDatepicker .ui-state-hover,
+.hasDatepicker .ui-widget-content .ui-state-hover,
+.hasDatepicker .ui-widget-header .ui-state-hover,
+.hasDatepicker .ui-state-focus,
+.hasDatepicker .ui-widget-content .ui-state-focus,
+.hasDatepicker .ui-widget-header .ui-state-focus,
+.hasDatepicker .ui-button:hover,
+.hasDatepicker .ui-button:focus{ border: 0; background: #1E76E8; color: #fff;}
+
+#calendar.fc .fc-timegrid-slot{height: 3em; background: #fff;}
+#calendar.fc .fc-daygrid-day.fc-day-today{ background: transparent;}
+
+#calendar .fc-v-event{background-color: #CFF1E6; border-right:0; border-top:0; border-bottom:0; border-left:  3px solid #10B981;}
+#calendar .fc-v-event .fc-event-main{ color: #282828;}
+
 /*  Responsive  */
 
 @media (min-width: 768px) {

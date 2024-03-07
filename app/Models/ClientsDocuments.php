@@ -25,4 +25,20 @@ class ClientsDocuments extends Model
         'client_id',
         'client_documents'
     ];
+
+    /**
+     * Method getDocumentUrlAttribute
+     *
+     * @return string
+     */
+    public function getDocumentUrlAttribute()
+    {
+        $url = '';
+        if( $this->client_documents )
+        {
+            $url = asset('storage/images/clients_documents/'.$this->client_documents);
+        }
+
+        return $url;
+    }
 }

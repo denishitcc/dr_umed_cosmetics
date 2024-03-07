@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\AppointmentListResource;
+use App\Http\Resources\AppointmentResource;
+use App\Http\Resources\CategoryListResource;
+use App\Http\Resources\ClientListResource;
+use App\Http\Resources\StaffListResource;
 use App\Models\Appointment;
 use App\Models\AppointmentNotes;
 use App\Models\Category;
@@ -53,15 +58,7 @@ class CalenderController extends Controller
     public function getStaffList()
     {
         $user = User::where('role_type','!=','admin')->get();
-        $data = [];
-        foreach ($user as $value) {
-            $data[] = [
-                'id'                => $value['id'],
-                'title'             => $value['first_name'].' '.$value['last_name'],
-                'backgroundColor'   => $value['calendar_color']
-            ];
-        }
-        return response()->json($data);
+        return response()->json(StaffListResource::collection($user));
     }
 
     /**
@@ -80,20 +77,7 @@ class CalenderController extends Controller
         }
 
         $services = $services->get();
-
-        $data       = [];
-        if($services)
-        {
-            foreach ($services as $value) {
-                $data[] = [
-                    'id'                => $value['id'],
-                    'service_name'      => $value['service_name'],
-                    'parent_category'   => $value['parent_category']
-                ];
-            }
-        }
-
-        return response()->json($data);
+        return response()->json(CategoryListResource::collection($services));
     }
 
     /**
@@ -154,64 +138,7 @@ class CalenderController extends Controller
     public function getAllClients(Request $request)
     {
         $clients = Clients::where('firstname', 'like', '%' .$request->name. '%')->get();
-        $data = [];
-
-        foreach ($clients as $client) {
-            $clientData = [
-                'id'                    => $client->id,
-                'first_name'            => $client->firstname,
-                'last_name'             => $client->lastname,
-                'email'                 => $client->email,
-                'mobile_no'             => $client->mobile_number,
-                'date_of_birth'         => $client->date_of_birth,
-                'gender'                => $client->gender,
-                'home_phone'            => $client->home_phone,
-                'work_phone'            => $client->work_phone,
-                'contact_method'        => $client->contact_method,
-                'send_promotions'       => $client->send_promotions,
-                'street_address'        => $client->street_address,
-                'suburb'                => $client->suburb,
-                'city'                  => $client->city,
-                'postcode'              => $client->postcode,
-                'client_photos'         => [],
-                'client_documents'      => []
-            ];
-
-            $clientData['last_appointment'] = [];
-            if(isset($client->last_appointment))
-            {
-                $clientData['last_appointment'] = [
-                    'service_name'      => isset($client->last_appointment) ? $client->last_appointment->services->service_name : '',
-                    'start_date'        => isset($client->last_appointment) ? $client->last_appointment->start_date : '',
-                    'staff_name'        => isset($client->last_appointment) ? $client->last_appointment->staff->name : '',
-                    'location_name'     => isset($client->last_appointment) ? $client->last_appointment->staff->staff_location->location_name : '',
-                    'status'            => isset($client->last_appointment) ? $client->last_appointment->appointment_status : '',
-                ];
-            }
-
-            // Fetch client photos for the current client
-            $clientPhotos = ClientsPhotos::where('client_id', $client->id)->get();
-            foreach ($clientPhotos as $photo) {
-                $clientData['client_photos'][] = 
-                [
-                    'id'     => $photo->id,
-                    'photo_name'   => $photo->client_photos,  // Assuming the field name is 'doc_name'
-                ];
-                //$photo->client_photos;
-            }
-            // Fetch client documents for the current client
-            $clientDocuments = ClientsDocuments::where('client_id', $client->id)->get();
-            foreach ($clientDocuments as $doc) {
-                $clientData['client_documents'][] = [
-                    'doc_id'     => $doc->id,
-                    'doc_name'   => $doc->client_documents,  // Assuming the field name is 'doc_name'
-                    'created_at' => $doc->created_at  // Assuming the field name is 'created_at'
-                ];
-            }
-            $data[] = $clientData;
-        }
-
-        return response()->json($data);
+        return response()->json(ClientListResource::collection($clients));
     }
 
     /**
@@ -296,37 +223,17 @@ class CalenderController extends Controller
     public function getEvents(Request $request)
     {
         $events   = Appointment::select()
-        ->with([
-            'services',
-            'clients'
-        ]);
+                    ->with([
+                        'services',
+                        'clients'
+                    ]);
 
         if ($request->start_date) {
             $events->whereBetween(DB::raw('DATE(start_date)'), array($request->start_date, $request->end_date));
         }
 
         $events = $events->get();
-        $data   = [];
-        if($events)
-        {
-            foreach ($events as $value) {
-                $extedendprop = [
-                    'client_name'   => $value['clients']['firstname'].' '.$value['clients']['lastname'],
-                    'client_id'     => $value['client_id'],
-                    'service_id'    => $value['service_id'],
-                    'category_id'   => $value['category_id']
-                ];
-                $data[] = [
-                    'id'            => $value['id'],
-                    'resourceId'    => $value['staff_id'],
-                    'title'         => $value['services']['service_name'],
-                    'start'         => $value['start_date'],
-                    'end'           => $value['end_date'],
-                    'extendedProps' => $extedendprop
-                ];
-            }
-        }
-        return response()->json($data);
+        return response()->json(AppointmentListResource::collection($events));
     }
 
     /**
@@ -392,7 +299,6 @@ class CalenderController extends Controller
         $futureappointments = $client->allappointments()->with(['note'])->where('created_at','>=', $todayDate)->orderby('created_at','desc')->get();
         $pastappointments   = $client->allappointments()->with(['note'])->where('created_at','<=', $todayDate)->orderby('created_at','desc')->get();
         $clientPhotos       = $client->photos;
-        // dd($pastappointments->note);
 
         if($client->last_appointment->id)
         {
@@ -479,6 +385,24 @@ class CalenderController extends Controller
             'status'        => true,
             'message'       => 'Notes found.',
             'client_notes'  => $clientnoteshtml,
+        ], 200);
+    }
+
+    /**
+     * Method getEventById
+     *
+     * @param int $appointmentId [explicite description]
+     *
+     * @return void
+     */
+    public function getEventById(int $appointmentId)
+    {
+        $appointment   = Appointment::find($appointmentId);
+
+        return response()->json([
+            'status'                => true,
+            'message'               => 'Details found.',
+            'data'                  => new AppointmentResource($appointment)
         ], 200);
     }
 }
