@@ -585,6 +585,80 @@
                 }
             });
         });
+        
+        //upcoming appointment
+        $(document).on('click', '.upcoming', function(e) {
+            var client_id = $(this).attr('data-client-id');
+            $.ajax({
+                headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                url: "{{ route('calendar.upcoming-appointment') }}",
+                type: "POST",
+                data: {'id': client_id},
+                success: function(response) {
+                // Show a Sweet Alert message after the form is submitted.
+                if (response.success) {
+                    // Remove existing div with class "user-appent"
+                    $('.upcoming_appointments').empty();
+                    $('.history_appointments').empty();
+                    var app_div = '<div class="upcoming_appointments"><b>Upcoming appointments</b>';
+                    if (response.appointments.length > 0) {
+                        // Append the new div after #clientDetails
+                        $.each(response.appointments, function(index, appointment) {
+                            var appointmentDetails = appointment.appointment_details.split(' ');
+                            var boldDateTime = '<b>' + appointmentDetails[0] + ' ' + appointmentDetails[1] + ' ' + appointmentDetails[2] + '</b>'; // Concatenate the date, time, and AM/PM together
+                            var restOfDetails = appointmentDetails.slice(3).join(' '); // Joining the rest of the details without modification
+                            
+                            // Adding buttons for rebook and go to
+                            app_div += '<div class="user-appnt">' + boldDateTime + ' ' + restOfDetails + '<div class="user-appnt">(' + appointment.staff_locations + ')</div>' + ' ' + '(' + appointment.durations + 'mins) - ' + '<span>' + appointment.app_status + '</span><br>' + '<button class="rebook-btn btn btn-primary btn-sm me-2">Rebook</button>' + '<button class="go-to-btn btn btn-primary btn-sm me-2">Go to</button></div>';
+                        });
+                    }else{
+                        app_div += '<div class="user-appnt">No upcoming appointment found</div>';
+                    }
+                    // Append abc to the DOM after the loop is complete
+                    $('#clientDetails').after(app_div);
+                } else {
+                    // Handle error case
+                }
+            },
+            });
+        });
+
+        //history appointment
+        $(document).on('click', '.history', function(e) {
+            var client_id = $(this).attr('data-client-id');
+            $.ajax({
+                headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                url: "{{ route('calendar.history-appointment') }}",
+                type: "POST",
+                data: {'id': client_id},
+                success: function(response) {
+                // Show a Sweet Alert message after the form is submitted.
+                if (response.success) {
+                    // Remove existing div with class "user-appent"
+                    $('.upcoming_appointments').empty();
+                    $('.history_appointments').empty();
+                    var app_div = '<div class="history_appointments"><b>Recent appointments</b>';
+                    if (response.appointments.length > 0) {
+                        // Append the new div after #clientDetails
+                        $.each(response.appointments, function(index, appointment) {
+                            var appointmentDetails = appointment.appointment_details.split(' ');
+                            var boldDateTime = '<b>' + appointmentDetails[0] + ' ' + appointmentDetails[1] + ' ' + appointmentDetails[2] + '</b>'; // Concatenate the date, time, and AM/PM together
+                            var restOfDetails = appointmentDetails.slice(3).join(' '); // Joining the rest of the details without modification
+                            
+                            // Adding buttons for rebook and go to
+                            app_div += '<div class="user-appnt">' + boldDateTime + ' ' + restOfDetails + '<div class="user-appnt">(' + appointment.staff_locations + ')</div>' + ' ' + '(' + appointment.durations + 'mins) - ' + '<span>' + appointment.app_status + '</span><br>' + '<button class="rebook-btn btn btn-primary btn-sm me-2">Rebook</button>' + '<button class="go-to-btn btn btn-primary btn-sm me-2">Go to</button></div>';
+                        });
+                    }else{
+                        app_div += '<div class="user-appnt">No history found</div>';
+                    }
+                    // Append abc to the DOM after the loop is complete
+                    $('#clientDetails').after(app_div);
+                } else {
+                    // Handle error case
+                }
+            },
+            });
+        });
     });
 
     //submit update client details form
@@ -678,6 +752,8 @@
     //change input event
     function changeInput(val) {
         $('#clientDetails').empty();
+        $('.upcoming_appointments').empty();
+        $('.history_appointments').empty();
             $.ajax({
             type: "POST",
             headers: {
@@ -724,18 +800,20 @@
                             });
                         }
                         // Iterate over client documents and push only doc_name and created_at
-                        for (var j = 0; j < res[i].client_documents.length; j++) {
-                            // If the record with the same doc_id already exists in the array, skip
-                            if (existingRecordIndex !== -1 && client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].client_documents[j].doc_id)) {
-                                continue;
-                            }
-                            // If the record doesn't exist in the array or the doc_id doesn't exist in the client_documents array, add it
-                            if (existingRecordIndex === -1 || !client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].client_documents[j].doc_id)) {
-                                client_details[existingRecordIndex !== -1 ? existingRecordIndex : i].client_documents.push({
-                                    doc_id: res[i].client_documents[j].doc_id,
-                                    doc_name: res[i].client_documents[j].doc_name,
-                                    created_at: res[i].client_documents[j].created_at
-                                });
+                        if (res[i].client_documents && res[i].client_documents.length > 0) {
+                            for (var j = 0; j < res[i].client_documents.length; j++) {
+                                // If the record with the same doc_id already exists in the array, skip
+                                if (existingRecordIndex !== -1 && client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].client_documents[j].doc_id)) {
+                                    continue;
+                                }
+                                // If the record doesn't exist in the array or the doc_id doesn't exist in the client_documents array, add it
+                                if (existingRecordIndex === -1 || !client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].client_documents[j].doc_id)) {
+                                    client_details[existingRecordIndex !== -1 ? existingRecordIndex : i].client_documents.push({
+                                        doc_id: res[i].client_documents[j].doc_id,
+                                        doc_name: res[i].client_documents[j].doc_name,
+                                        created_at: res[i].client_documents[j].created_at
+                                    });
+                                }
                             }
                         }
                     }
@@ -779,6 +857,8 @@
     //change input modal
     function changeInputModal(val) {
         $('#clientDetails').empty();
+        $('.upcoming_appointments').empty();
+        $('.history_appointments').empty();
             $.ajax({
                 type: "POST",
                 headers: {
@@ -906,11 +986,13 @@
                         ${client.mobile_number}
                         </p>
                         <button class='btn btn-primary btn-sm me-2 open-client-card-btn' data-client-id="${client.id}">Client Card</button>
-                        <button class='btn btn-primary btn-sm me-2' data-client-id="${client.id}">History</button>
-                        <button class='btn btn-primary btn-sm me-2' data-client-id="${client.id}">Upcoming</button>`
+                        <button class='btn btn-primary btn-sm me-2 history' data-client-id="${client.id}">History</button>
+                        <button class='btn btn-primary btn-sm me-2 upcoming' data-client-id="${client.id}">Upcoming</button>`
                     );
 
                     document.getElementById('search').value = '';
+                    // Trigger the click event of the history button
+                    $('.history').click();
                     break; // Stop iterating once a match is found
                 }
             }
@@ -945,10 +1027,12 @@
                         ${client.mobile_number}
                         </p>
                         <button class='btn btn-primary btn-sm me-2 open-client-card-btn' data-client-id="${client.id}">Client Card</button>
-                        <button class='btn btn-primary btn-sm me-2' data-client-id="${client.id}">History</button>
-                        <button class='btn btn-primary btn-sm me-2' data-client-id="${client.id}">Upcoming</button>`
+                        <button class='btn btn-primary btn-sm me-2 history' data-client-id="${client.id}">History</button>
+                        <button class='btn btn-primary btn-sm me-2 upcoming' data-client-id="${client.id}">Upcoming</button>`
                     );
                     document.getElementById('searchmodel').value = '';
+                    // Trigger the click event of the history button
+                    $('.history').click();
                     break; // Stop iterating once a match is found
                 }
             }

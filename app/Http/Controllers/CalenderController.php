@@ -20,6 +20,7 @@ use App\Models\ClientsDocuments;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
+use App\Models\Locations;
 
 class CalenderController extends Controller
 {
@@ -404,5 +405,172 @@ class CalenderController extends Controller
             'message'               => 'Details found.',
             'data'                  => new AppointmentResource($appointment)
         ], 200);
+    }
+    
+    public function UpcomingAppointment(Request $request)
+    {
+        $currentDateTime = now()->timezone('Asia/Kolkata')->format('Y-m-d H:i:s');
+
+        $data = Clients::leftJoin('appointment', function($join) use ($currentDateTime) {
+                $join->on('clients.id', '=', 'appointment.client_id')
+                    ->where('appointment.start_date', '>=', $currentDateTime);
+            })
+            ->leftJoin('services', 'appointment.service_id', '=', 'services.id')
+            ->leftJoin('users', 'appointment.staff_id', '=', 'users.id')
+            ->leftJoin('locations', 'users.staff_member_location', '=', 'locations.id')
+            ->leftJoin('appointments_notes', 'appointments_notes.appointment_id', '=', 'appointment.id')
+            ->select('clients.id', 
+                    'clients.firstname', 
+                    'clients.lastname', 
+                    'clients.email', 
+                    'clients.mobile_number', 
+                    'clients.status', 
+                    DB::raw('GROUP_CONCAT(DISTINCT CONCAT(DATE_FORMAT(appointment.start_date, "%Y-%m-%d %h:%i %p"), " ", services.service_name, " with ", CONCAT(users.first_name, " ", users.last_name))) as appointment_dates'),
+                    DB::raw('GROUP_CONCAT(CASE appointment.status 
+                        WHEN 1 THEN "Booked" 
+                        WHEN 2 THEN "Confirmed"
+                        WHEN 3 THEN "Started" 
+                        WHEN 4 THEN "Completed"
+                        WHEN 5 THEN "No answer" 
+                        WHEN 6 THEN "Left message"
+                        WHEN 7 THEN "Pencilied in" 
+                        WHEN 8 THEN "Turned up"
+                        WHEN 9 THEN "No show" 
+                        WHEN 10 THEN "Cancelled"
+                    END) as app_status'),
+                    DB::raw('GROUP_CONCAT(locations.location_name) as staff_locations'),
+                    DB::raw('GROUP_CONCAT(appointment.duration) as durations')
+            )
+            ->groupBy('clients.id', 
+                    'clients.firstname', 
+                    'clients.lastname', 
+                    'clients.email', 
+                    'clients.mobile_number', 
+                    'clients.status'
+            )
+            ->havingRaw('appointment_dates IS NOT NULL')
+            ->where('clients.id',$request->id)
+            ->get();
+        // Prepare response data
+        $app_details = [];
+        foreach ($data as $datas) {
+            $appointment_dates = explode(',', $datas->appointment_dates);
+            $app_status = explode(',', $datas->app_status);
+            $staff_locations = explode(',', $datas->staff_locations);
+            $durations = explode(',',$datas->durations);
+            // Ensure all arrays have the same length
+            $count = max(count($appointment_dates), count($app_status), count($staff_locations));
+            $appointment_dates = array_pad($appointment_dates, $count, '');
+            $app_status = array_pad($app_status, $count, '');
+            $staff_locations = array_pad($staff_locations, $count, '');
+            $durations = array_pad($durations, $count, '');
+
+            // Iterate through each appointment date and create separate entries
+            for ($i = 0; $i < $count; $i++) {
+                $app_details[] = [
+                    'id' => $datas->id,
+                    'firstname' => $datas->firstname,
+                    'lastname' => $datas->lastname,
+                    'email' => $datas->email,
+                    'mobile_number' => $datas->mobile_number,
+                    'status' => $datas->status,
+                    'appointment_details' => $appointment_dates[$i],
+                    'app_status' => $app_status[$i],
+                    'staff_locations' => $staff_locations[$i],
+                    'durations' => $durations[$i]
+                ];
+            }
+        }
+
+        $response = [
+            'success' => true,
+            'message' => 'Upcoming appointments fetched successfully!',
+            'type' => 'success',
+            'appointments' => $app_details
+        ];
+        return response()->json($response);
+    }
+    public function HistoryAppointment(Request $request)
+    {
+        $currentDateTime = now()->timezone('Asia/Kolkata')->format('Y-m-d H:i:s');
+
+        $data = Clients::leftJoin('appointment', function($join) use ($currentDateTime) {
+                $join->on('clients.id', '=', 'appointment.client_id')
+                    ->where('appointment.start_date', '<=', $currentDateTime);
+            })
+            ->leftJoin('services', 'appointment.service_id', '=', 'services.id')
+            ->leftJoin('users', 'appointment.staff_id', '=', 'users.id')
+            ->leftJoin('locations', 'users.staff_member_location', '=', 'locations.id')
+            ->leftJoin('appointments_notes', 'appointments_notes.appointment_id', '=', 'appointment.id')
+            ->select('clients.id', 
+                    'clients.firstname', 
+                    'clients.lastname', 
+                    'clients.email', 
+                    'clients.mobile_number', 
+                    'clients.status', 
+                    DB::raw('GROUP_CONCAT(DISTINCT CONCAT(DATE_FORMAT(appointment.start_date, "%Y-%m-%d %h:%i %p"), " ", services.service_name, " with ", CONCAT(users.first_name, " ", users.last_name))) as appointment_dates'),
+                    DB::raw('GROUP_CONCAT(CASE appointment.status 
+                        WHEN 1 THEN "Booked" 
+                        WHEN 2 THEN "Confirmed"
+                        WHEN 3 THEN "Started" 
+                        WHEN 4 THEN "Completed"
+                        WHEN 5 THEN "No answer" 
+                        WHEN 6 THEN "Left message"
+                        WHEN 7 THEN "Pencilied in" 
+                        WHEN 8 THEN "Turned up"
+                        WHEN 9 THEN "No show" 
+                        WHEN 10 THEN "Cancelled"
+                    END) as app_status'),
+                    DB::raw('GROUP_CONCAT(locations.location_name) as staff_locations'),
+                    DB::raw('GROUP_CONCAT(appointment.duration) as durations')
+            )
+            ->groupBy('clients.id', 
+                    'clients.firstname', 
+                    'clients.lastname', 
+                    'clients.email', 
+                    'clients.mobile_number', 
+                    'clients.status'
+            )
+            ->havingRaw('appointment_dates IS NOT NULL')
+            ->where('clients.id',$request->id)
+            ->get();
+        // Prepare response data
+        $app_details = [];
+        foreach ($data as $datas) {
+            $appointment_dates = explode(',', $datas->appointment_dates);
+            $app_status = explode(',', $datas->app_status);
+            $staff_locations = explode(',', $datas->staff_locations);
+            $durations = explode(',',$datas->durations);
+            // Ensure all arrays have the same length
+            $count = max(count($appointment_dates), count($app_status), count($staff_locations));
+            $appointment_dates = array_pad($appointment_dates, $count, '');
+            $app_status = array_pad($app_status, $count, '');
+            $staff_locations = array_pad($staff_locations, $count, '');
+            $durations = array_pad($durations, $count, '');
+
+            // Iterate through each appointment date and create separate entries
+            for ($i = 0; $i < $count; $i++) {
+                $app_details[] = [
+                    'id' => $datas->id,
+                    'firstname' => $datas->firstname,
+                    'lastname' => $datas->lastname,
+                    'email' => $datas->email,
+                    'mobile_number' => $datas->mobile_number,
+                    'status' => $datas->status,
+                    'appointment_details' => $appointment_dates[$i],
+                    'app_status' => $app_status[$i],
+                    'staff_locations' => $staff_locations[$i],
+                    'durations' => $durations[$i]
+                ];
+            }
+        }
+
+        $response = [
+            'success' => true,
+            'message' => 'History appointments fetched successfully!',
+            'type' => 'success',
+            'appointments' => $app_details
+        ];
+        return response()->json($response);
     }
 }
