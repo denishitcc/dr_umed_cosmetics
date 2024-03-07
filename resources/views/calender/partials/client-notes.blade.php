@@ -2,7 +2,7 @@
     <h4 class="d-grey mb-4">Notes</h4>
     <div class="yellow-note-box common_notes">
         <strong>Common Notes:</strong>
-        @if (isset($appointmentNotes))
+        @if ($appointmentNotes)
         <div class="viewnotes">
             <p> <br>
                 {{ $appointmentNotes->common_notes }}
@@ -14,7 +14,7 @@
         @endif
         <div class="common d-none">
             <form method="post" >
-                @if(isset($appointmentNotes))
+                @if($appointmentNotes)
                     <input type="hidden" name="appointment_id" value="{{ $appointmentNotes->appointment_id }}" >
                     <textarea name="common_notes" id="common_notes" cols="80" rows="5" class="form=control" > {{ $appointmentNotes->common_notes }} </textarea>
                 @else
@@ -30,7 +30,7 @@
     </div>
     <div class="yellow-note-box treatment_notes">
         <strong>Treatment Notes:</strong><br>
-        @if (isset($appointmentNotes))
+        @if ($appointmentNotes)
             <div class="treatmentviewnotes">
                 <p>
                     {{ $appointmentNotes->treatment_notes }}
@@ -42,7 +42,7 @@
         @endif
         <div class="treatment_common d-none">
             <form method="post">
-                @if(isset($appointmentNotes))
+                @if($appointmentNotes)
                     <input type="hidden" name="appointment_id" value="{{ $appointmentNotes->appointment_id }}">
                     <textarea name="treatment_notes" id="treatment_notes" cols="80" rows="5" class="form=control">  {{ $appointmentNotes->treatment_notes }}  </textarea>
                 @else
