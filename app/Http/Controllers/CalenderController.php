@@ -21,6 +21,7 @@ use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
 use App\Models\Locations;
+use DateTime;
 
 class CalenderController extends Controller
 {
@@ -481,13 +482,52 @@ class CalenderController extends Controller
                 ];
             }
         }
+        // Check if there are any conflicting appointments
+        $conflict = $request->conflict == '1';
+        if($conflict == true){
+            $conflicting_appointments = [];
 
+            // Convert appointment details to datetime objects for easier comparison
+            foreach ($app_details as $appointment) {
+                // Extract date and time from appointment_details
+                preg_match('/(\d{4}-\d{2}-\d{2} \d{2}:\d{2} [AP]M)/', $appointment['appointment_details'], $matches);
+                if (!empty($matches)) {
+                    $start_time = new DateTime($matches[0]);
+                    $end_time = (clone $start_time)->modify('+' . $appointment['durations'] . ' minutes');
+
+                    // Check for conflicts with other appointments
+                    foreach ($app_details as $comparison_appointment) {
+                        if ($appointment !== $comparison_appointment) { // Avoid self-comparison
+                            // Extract date and time from comparison appointment details
+                            preg_match('/(\d{4}-\d{2}-\d{2} \d{2}:\d{2} [AP]M)/', $comparison_appointment['appointment_details'], $comparison_matches);
+                            if (!empty($comparison_matches)) {
+                                $comparison_start_time = new DateTime($comparison_matches[0]);
+                                $comparison_end_time = (clone $comparison_start_time)->modify('+' . $comparison_appointment['durations'] . ' minutes');
+
+                                // Check for overlap
+                                if ($start_time < $comparison_end_time && $end_time > $comparison_start_time) {
+                                    // Conflicting appointments found
+                                    $conflicting_appointments[] = $appointment;
+                                    break; // Break the inner loop once a conflict is found
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            // Check if there are any conflicting appointments
+            $conflict = $request->conflict == '1';
+            if ($conflict == true) {
+                $app_details = $conflicting_appointments;
+            }
+        }
         $response = [
             'success' => true,
             'message' => 'Upcoming appointments fetched successfully!',
             'type' => 'success',
-            'appointments' => $app_details
-        ];
+            'appointments' => $app_details,
+            'conflict' => $conflict  // Send whether there is a conflict or not
+        ];  
         return response()->json($response);
     }
     public function HistoryAppointment(Request $request)
@@ -564,12 +604,51 @@ class CalenderController extends Controller
                 ];
             }
         }
+        // Check if there are any conflicting appointments
+        $conflict = $request->conflict == '1';
+        if($conflict == true){
+            $conflicting_appointments = [];
 
+            // Convert appointment details to datetime objects for easier comparison
+            foreach ($app_details as $appointment) {
+                // Extract date and time from appointment_details
+                preg_match('/(\d{4}-\d{2}-\d{2} \d{2}:\d{2} [AP]M)/', $appointment['appointment_details'], $matches);
+                if (!empty($matches)) {
+                    $start_time = new DateTime($matches[0]);
+                    $end_time = (clone $start_time)->modify('+' . $appointment['durations'] . ' minutes');
+
+                    // Check for conflicts with other appointments
+                    foreach ($app_details as $comparison_appointment) {
+                        if ($appointment !== $comparison_appointment) { // Avoid self-comparison
+                            // Extract date and time from comparison appointment details
+                            preg_match('/(\d{4}-\d{2}-\d{2} \d{2}:\d{2} [AP]M)/', $comparison_appointment['appointment_details'], $comparison_matches);
+                            if (!empty($comparison_matches)) {
+                                $comparison_start_time = new DateTime($comparison_matches[0]);
+                                $comparison_end_time = (clone $comparison_start_time)->modify('+' . $comparison_appointment['durations'] . ' minutes');
+
+                                // Check for overlap
+                                if ($start_time < $comparison_end_time && $end_time > $comparison_start_time) {
+                                    // Conflicting appointments found
+                                    $conflicting_appointments[] = $appointment;
+                                    break; // Break the inner loop once a conflict is found
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            // Check if there are any conflicting appointments
+            $conflict = $request->conflict == '1';
+            if ($conflict == true) {
+                $app_details = $conflicting_appointments;
+            }
+        }
         $response = [
             'success' => true,
             'message' => 'History appointments fetched successfully!',
             'type' => 'success',
-            'appointments' => $app_details
+            'appointments' => $app_details,
+            'conflict' => $conflict  // Send whether there is a conflict or not
         ];
         return response()->json($response);
     }

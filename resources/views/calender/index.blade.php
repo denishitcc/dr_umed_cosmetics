@@ -589,55 +589,64 @@
         //upcoming appointment
         $(document).on('click', '.upcoming', function(e) {
             var client_id = $(this).attr('data-client-id');
+            var clickedElement = $(this); // store a reference to the clicked element
+            var conflict = $('.conflict_upcoming_appointment').prop('checked') ? '1' : '0';
             $.ajax({
                 headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 url: "{{ route('calendar.upcoming-appointment') }}",
                 type: "POST",
-                data: {'id': client_id},
+                data: {'id': client_id, 'conflict': conflict},
                 success: function(response) {
-                // Show a Sweet Alert message after the form is submitted.
-                if (response.success) {
-                    // Remove existing div with class "user-appent"
-                    $('.upcoming_appointments').empty();
-                    $('.history_appointments').empty();
-                    var app_div = '<div class="upcoming_appointments"><b>Upcoming appointments</b>';
-                    if (response.appointments.length > 0) {
-                        // Append the new div after #clientDetails
-                        $.each(response.appointments, function(index, appointment) {
-                            var appointmentDetails = appointment.appointment_details.split(' ');
-                            var boldDateTime = '<b>' + appointmentDetails[0] + ' ' + appointmentDetails[1] + ' ' + appointmentDetails[2] + '</b>'; // Concatenate the date, time, and AM/PM together
-                            var restOfDetails = appointmentDetails.slice(3).join(' '); // Joining the rest of the details without modification
-                            
-                            // Adding buttons for rebook and go to
-                            app_div += '<div class="user-appnt">' + boldDateTime + ' ' + restOfDetails + '<div class="user-appnt">(' + appointment.staff_locations + ')</div>' + ' ' + '(' + appointment.durations + 'mins) - ' + '<span>' + appointment.app_status + '</span><br>' + '<button class="rebook-btn btn btn-primary btn-sm me-2">Rebook</button>' + '<button class="go-to-btn btn btn-primary btn-sm me-2">Go to</button></div>';
-                        });
-                    }else{
-                        app_div += '<div class="user-appnt">No upcoming appointment found</div>';
+                    // Show a Sweet Alert message after the form is submitted.
+                    if (response.success) {
+                        // Remove existing div with class "user-appent"
+                        $('.upcoming_appointments').empty();
+                        $('.history_appointments').empty();
+                        var app_div = '<div class="upcoming_appointments"><b>Upcoming appointments</b><br><input type="checkbox" data-client-id="' + client_id + '" class="conflict_upcoming_appointment">Only show appointments with conflicts';
+
+                        if (response.appointments.length > 0) {
+                            // Append the new div after #clientDetails
+                            $.each(response.appointments, function(index, appointment) {
+                                var appointmentDetails = appointment.appointment_details.split(' ');
+                                var boldDateTime = '<b>' + appointmentDetails[0] + ' ' + appointmentDetails[1] + ' ' + appointmentDetails[2] + '</b>'; // Concatenate the date, time, and AM/PM together
+                                var restOfDetails = appointmentDetails.slice(3).join(' '); // Joining the rest of the details without modification
+                                
+                                // Adding buttons for rebook and go to
+                                app_div += '<div class="user-appnt">' + boldDateTime + ' ' + restOfDetails + '<div class="user-appnt">(' + appointment.staff_locations + ')</div>' + ' ' + '(' + appointment.durations + 'mins) - ' + '<span>' + appointment.app_status + '</span><br>' + '<button class="rebook-btn btn btn-primary btn-sm me-2">Rebook</button>' + '<button class="go-to-btn btn btn-primary btn-sm me-2" date_time="'+ appointmentDetails[0] + ' ' + appointmentDetails[1] + ' ' + appointmentDetails[2] +'">Go to</button></div>';
+                            });
+                        } else {
+                            app_div += '<div class="user-appnt">No upcoming appointment found</div>';
+                        }
+                        // Append abc to the DOM after the loop is complete
+                        $('#clientDetails').after(app_div);
+
+                        // Set data-client-id attribute for the clicked element
+                        clickedElement.attr('data-client-id', client_id);
+                        $('.conflict_upcoming_appointment').prop('checked', response.conflict);
+                    } else {
+                        // Handle error case
                     }
-                    // Append abc to the DOM after the loop is complete
-                    $('#clientDetails').after(app_div);
-                } else {
-                    // Handle error case
-                }
-            },
+                },
             });
         });
 
         //history appointment
         $(document).on('click', '.history', function(e) {
             var client_id = $(this).attr('data-client-id');
+            var clickedElement = $(this); // store a reference to the clicked element
+            var conflict = $('.conflict_history_appointment').prop('checked') ? '1' : '0';
             $.ajax({
                 headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 url: "{{ route('calendar.history-appointment') }}",
                 type: "POST",
-                data: {'id': client_id},
+                data: {'id': client_id, 'conflict': conflict},
                 success: function(response) {
                 // Show a Sweet Alert message after the form is submitted.
                 if (response.success) {
                     // Remove existing div with class "user-appent"
                     $('.upcoming_appointments').empty();
                     $('.history_appointments').empty();
-                    var app_div = '<div class="history_appointments"><b>Recent appointments</b>';
+                    var app_div = '<div class="history_appointments"><b>Recent appointments</b><br><input type="checkbox" data-client-id="' + client_id + '" class="conflict_history_appointment">Only show appointments with conflicts';
                     if (response.appointments.length > 0) {
                         // Append the new div after #clientDetails
                         $.each(response.appointments, function(index, appointment) {
@@ -646,19 +655,33 @@
                             var restOfDetails = appointmentDetails.slice(3).join(' '); // Joining the rest of the details without modification
                             
                             // Adding buttons for rebook and go to
-                            app_div += '<div class="user-appnt">' + boldDateTime + ' ' + restOfDetails + '<div class="user-appnt">(' + appointment.staff_locations + ')</div>' + ' ' + '(' + appointment.durations + 'mins) - ' + '<span>' + appointment.app_status + '</span><br>' + '<button class="rebook-btn btn btn-primary btn-sm me-2">Rebook</button>' + '<button class="go-to-btn btn btn-primary btn-sm me-2">Go to</button></div>';
+                            app_div += '<div class="user-appnt">' + boldDateTime + ' ' + restOfDetails + '<div class="user-appnt">(' + appointment.staff_locations + ')</div>' + ' ' + '(' + appointment.durations + 'mins) - ' + '<span>' + appointment.app_status + '</span><br>' + '<button class="rebook-btn btn btn-primary btn-sm me-2">Rebook</button>' + '<button class="go-to-btn btn btn-primary btn-sm me-2 history_go_to" date_time="'+ appointmentDetails[0] + ' ' + appointmentDetails[1] + ' ' + appointmentDetails[2] +'">Go to</button></div>';
                         });
                     }else{
                         app_div += '<div class="user-appnt">No history found</div>';
                     }
                     // Append abc to the DOM after the loop is complete
                     $('#clientDetails').after(app_div);
+                    // Set data-client-id attribute for the clicked element
+                    clickedElement.attr('data-client-id', client_id);
+                    $('.conflict_history_appointment').prop('checked', response.conflict);
                 } else {
                     // Handle error case
                 }
             },
             });
         });
+        $(document).on('click','.conflict_upcoming_appointment',function(e){
+            var conflict = '1';
+            $('.upcoming').trigger('click', [conflict]);
+        })
+        $(document).on('click','.conflict_history_appointment',function(e){
+            var conflict = '1';
+            $('.history').trigger('click', [conflict]);
+        })
+        $(document).on('click','.history_go_to',function(e){
+            var date_time = $(this).attr('date_time');
+        })
     });
 
     //submit update client details form
