@@ -612,7 +612,7 @@
                                 var restOfDetails = appointmentDetails.slice(3).join(' '); // Joining the rest of the details without modification
                                 
                                 // Adding buttons for rebook and go to
-                                app_div += '<div class="user-appnt">' + boldDateTime + ' ' + restOfDetails + '<div class="user-appnt">(' + appointment.staff_locations + ')</div>' + ' ' + '(' + appointment.durations + 'mins) - ' + '<span>' + appointment.app_status + '</span><br>' + '<button class="rebook-btn btn btn-primary btn-sm me-2">Rebook</button>' + '<button class="go-to-btn btn btn-primary btn-sm me-2" date_time="'+ appointmentDetails[0] + ' ' + appointmentDetails[1] + ' ' + appointmentDetails[2] +'">Go to</button></div>';
+                                app_div += '<div class="user-appnt">' + boldDateTime + ' ' + restOfDetails + '<div class="user-appnt">(' + appointment.staff_locations + ')</div>' + ' ' + '(' + appointment.durations + 'mins) - ' + '<span>' + appointment.app_status + '</span><br>' + '<button class="rebook-btn btn btn-primary btn-sm me-2">Rebook</button>' + '<button class="go-to-btn btn btn-primary btn-sm me-2 upcoming_go_to" date_time="'+ appointmentDetails[0] + ' ' + appointmentDetails[1] + ' ' + appointmentDetails[2] +'">Go to</button></div>';
                             });
                         } else {
                             app_div += '<div class="user-appnt">No upcoming appointment found</div>';
@@ -678,9 +678,6 @@
         $(document).on('click','.conflict_history_appointment',function(e){
             var conflict = '1';
             $('.history').trigger('click', [conflict]);
-        })
-        $(document).on('click','.history_go_to',function(e){
-            var date_time = $(this).attr('date_time');
         })
     });
 

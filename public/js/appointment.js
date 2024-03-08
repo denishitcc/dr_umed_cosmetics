@@ -237,6 +237,46 @@ var DU = {};
                 // Change the calendar view to the selected date
                 context.calendar.gotoDate(inputValue);
             });
+
+            $(document).on('click', '.history_go_to', function(e) {
+                e.preventDefault();
+                var date_time = $(this).attr('date_time');
+                var dateTimeComponents = date_time.split(' ');
+                var date = dateTimeComponents[0];
+                var time = dateTimeComponents[1] + ' ' + dateTimeComponents[2];
+                
+                // Extracting the calendar object from the context
+                var calendar = context.calendar;
+            
+                // Parsing the date and time using Moment.js
+                var selectedDateTime = moment(date + ' ' + time, 'YYYY-MM-DD hh:mm A');
+                
+                // Reset time to midnight
+                selectedDateTime.startOf('day');
+                
+                // Navigating to the updated date and time
+                calendar.gotoDate(selectedDateTime.toDate());
+            }); 
+
+            $(document).on('click', '.upcoming_go_to', function(e) {
+                e.preventDefault();
+                var date_time = $(this).attr('date_time');
+                var dateTimeComponents = date_time.split(' ');
+                var date = dateTimeComponents[0];
+                var time = dateTimeComponents[1] + ' ' + dateTimeComponents[2];
+                
+                // Extracting the calendar object from the context
+                var calendar = context.calendar;
+            
+                // Parsing the date and time using Moment.js
+                var selectedDateTime = moment(date + ' ' + time, 'YYYY-MM-DD hh:mm A');
+                
+                // Reset time to midnight
+                selectedDateTime.startOf('day');
+                
+                // Navigating to the updated date and time
+                calendar.gotoDate(selectedDateTime.toDate());
+            });
         },
 
         editEvent:function (eventId){
