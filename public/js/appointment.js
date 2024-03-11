@@ -240,6 +240,9 @@ var DU = {};
 
             $(document).on('click', '.history_go_to', function(e) {
                 e.preventDefault();
+                // Scroll the page slightly bcs if time is 3:30 Go to and after that click 4:30 then not scroll
+                window.scrollBy(0, 1); // Adjust the amount to scroll as needed
+                // Extract date and time from the clicked element's attribute
                 var date_time = $(this).attr('date_time');
                 var dateTimeComponents = date_time.split(' ');
                 var date = dateTimeComponents[0];
@@ -247,19 +250,36 @@ var DU = {};
                 
                 // Extracting the calendar object from the context
                 var calendar = context.calendar;
-            
+                
                 // Parsing the date and time using Moment.js
                 var selectedDateTime = moment(date + ' ' + time, 'YYYY-MM-DD hh:mm A');
                 
-                // Reset time to midnight
-                selectedDateTime.startOf('day');
+                console.log('Selected date and time:', selectedDateTime.format());
                 
-                // Navigating to the updated date and time
+                // Navigating to the updated date
                 calendar.gotoDate(selectedDateTime.toDate());
-            }); 
+                console.log('Navigated to date:', selectedDateTime.format('YYYY-MM-DD'));
+                
+                // Scroll to the desired time slot after a short delay
+                setTimeout(function() {
+                    var timeSlot = selectedDateTime.format('HH:mm:ss');
+                    var slotSelector = '[data-time="' + timeSlot + '"]';
+                    var timeSlotElement = calendar.el.querySelector(slotSelector);
+                    if (timeSlotElement) {
+                        console.log('Time slot element found:', timeSlot);
+                        timeSlotElement.scrollIntoView();
+                        console.log('Scrolled to time slot:', timeSlot);
+                    } else {
+                        console.log('Time slot not found:', timeSlot);
+                    }
+                }, 100); // Adjust the delay as needed
+            });            
 
             $(document).on('click', '.upcoming_go_to', function(e) {
                 e.preventDefault();
+                // Scroll the page slightly bcs if time is 3:30 Go to and after that click 4:30 then not scroll
+                window.scrollBy(0, 1); // Adjust the amount to scroll as needed
+                // Extract date and time from the clicked element's attribute
                 var date_time = $(this).attr('date_time');
                 var dateTimeComponents = date_time.split(' ');
                 var date = dateTimeComponents[0];
@@ -267,16 +287,30 @@ var DU = {};
                 
                 // Extracting the calendar object from the context
                 var calendar = context.calendar;
-            
+                
                 // Parsing the date and time using Moment.js
                 var selectedDateTime = moment(date + ' ' + time, 'YYYY-MM-DD hh:mm A');
                 
-                // Reset time to midnight
-                selectedDateTime.startOf('day');
+                console.log('Selected date and time:', selectedDateTime.format());
                 
-                // Navigating to the updated date and time
+                // Navigating to the updated date
                 calendar.gotoDate(selectedDateTime.toDate());
-            });
+                console.log('Navigated to date:', selectedDateTime.format('YYYY-MM-DD'));
+                
+                // Scroll to the desired time slot after a short delay
+                setTimeout(function() {
+                    var timeSlot = selectedDateTime.format('HH:mm:ss');
+                    var slotSelector = '[data-time="' + timeSlot + '"]';
+                    var timeSlotElement = calendar.el.querySelector(slotSelector);
+                    if (timeSlotElement) {
+                        console.log('Time slot element found:', timeSlot);
+                        timeSlotElement.scrollIntoView();
+                        console.log('Scrolled to time slot:', timeSlot);
+                    } else {
+                        console.log('Time slot not found:', timeSlot);
+                    }
+                }, 100); // Adjust the delay as needed
+            });                         
         },
 
         editEvent:function (eventId){

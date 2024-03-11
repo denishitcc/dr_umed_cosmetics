@@ -604,6 +604,24 @@ class CalenderController extends Controller
                 ];
             }
         }
+        // Now $app_details is sorted by 'appointment_details' in descending order
+        usort($app_details, function($a, $b) {
+            // Extract date and time part up to AM/PM indicator
+            $dateA = preg_replace('/\s(?:AM|PM).*$/', '', $a['appointment_details']);
+            $dateB = preg_replace('/\s(?:AM|PM).*$/', '', $b['appointment_details']);
+        
+            // Convert to DateTime objects
+            $dateTimeA = new DateTime($dateA);
+            $dateTimeB = new DateTime($dateB);
+        
+            // Sort in descending order (latest first)
+            if ($dateTimeA == $dateTimeB) {
+                return 0;
+            }
+        
+            return ($dateTimeA < $dateTimeB) ? 1 : -1;
+        });
+
         // Check if there are any conflicting appointments
         $conflict = $request->conflict == '1';
         if($conflict == true){
