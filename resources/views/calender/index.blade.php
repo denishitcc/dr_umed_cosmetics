@@ -636,7 +636,7 @@
                                                 (${appointment.durations} mins) - ${appointment.app_status}
                                             </p>
                                             <a href="#" class="btn btn-primary font-13 alter slot-btn btn-sm me-2 rebook_histroy"> Rebook</a>
-                                            <a href="#" class="btn btn-primary font-13 alter slot-btn btn-sm upcoming_go_to" date_time= "${appointmentDetails[0]} ${appointmentDetails[1]}  ${appointmentDetails[2]}"> Go to</a>
+                                            <a href="#" class="btn btn-primary font-13 alter slot-btn btn-sm upcoming_go_to" date_time= "${appointmentDetails[0]} ${appointmentDetails[1]} ${appointmentDetails[2]}"> Go to</a>
                                         </div>`;
                             });
                         } else {
@@ -701,7 +701,7 @@
                                                 (${appointment.durations} mins) - ${appointment.app_status}
                                             </p>
                                             <a href="#" class="btn btn-primary font-13 alter slot-btn btn-sm me-2 rebook_histroy"> Rebook</a>
-                                            <a href="#" class="btn btn-primary font-13 alter slot-btn btn-sm history_go_to" date_time= "${appointmentDetails[0]} ${appointmentDetails[1]}  ${appointmentDetails[2]}"> Go to</a>
+                                            <a href="#" class="btn btn-primary font-13 alter slot-btn btn-sm history_go_to" date_time= "${appointmentDetails[0]} ${appointmentDetails[1]} ${appointmentDetails[2]}"> Go to</a>
                                         </div>`;
                         });
                     }else{
