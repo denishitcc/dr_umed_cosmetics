@@ -407,7 +407,44 @@ class CalenderController extends Controller
             'data'       => new AppointmentResource($appointment)
         ], 200);
     }
-    
+
+    /**
+     * Method UpdateAppointmentStatus
+     *
+     * @param Request $request [explicite description]
+     *
+     * @return void
+     */
+    public function UpdateAppointmentStatus(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $findAppointment            = Appointment::find($request->event_id);
+
+            if( isset($findAppointment->id) ){
+                $findAppointment['status']  = $request->status;
+                $findAppointment->update();
+            }
+
+            DB::commit();
+            $data = [
+                'success' => true,
+                'message' => 'Appointment updated successfully!',
+                'type'    => 'success',
+            ];
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollback();
+            $data = [
+                'success' => false,
+                'message' => $th,
+                'type'    => 'fail',
+            ];
+        }
+
+        return response()->json($data);
+    }
+
     public function UpcomingAppointment(Request $request)
     {
         $currentDateTime = now()->timezone('Asia/Kolkata')->format('Y-m-d H:i:s');

@@ -63,6 +63,16 @@ var DU = {};
                 forceEventDuration: true,
                 defaultAllDayEventDuration: "01:00",
                 initialView: 'resourceTimeGridDay',
+                // dayHeaderFormat: {
+                //     weekday: 'narrow', // Use 'narrow' for even shorter abbreviations.
+                //     month: 'numeric'
+                // },
+                views: {
+                    resourceTimeGridWeek: { // name of view
+                      titleFormat: { year: 'numeric', month: '2-digit', day: '2-digit' }
+                      // other view-specific options here
+                    }
+                },
                 buttonText: {
                     today: 'Today',
                     day: 'Daily',
@@ -167,13 +177,25 @@ var DU = {};
                         client_id           = events.event.extendedProps.client_id,
                         service_id          = events.event.extendedProps.service_id,
                         category_id         = events.event.extendedProps.category_id;
-                    // console.log(duration);
+
                     // For difference between two dates -> duration
                     var start_time_diff     = moment(events.event.startStr),
                         end_time_diff       = moment(events.event.endStr),
                         durationInMinutes   = end_time_diff.diff(start_time_diff, 'minutes');
 
-                        context.updateAppointmentDetails(resourceId,start_date,start_time,end_time,durationInMinutes,client_id,service_id,category_id,eventId);
+                    var data =  {
+                            'staff_id'    : resourceId,
+                            'start_date'  : start_date,
+                            'start_time'  : start_time,
+                            'end_time'    : end_time,
+                            'duration'    : durationInMinutes,
+                            'client_id'   : client_id,
+                            'service_id'  : service_id,
+                            'category_id' : category_id,
+                            'event_id'    : eventId,
+                        };
+
+                        context.updateAppointmentDetails(data);
                 },
                 eventResize: function(events) {
                     var resourceId          = events.event._def.resourceIds[0],
@@ -190,7 +212,19 @@ var DU = {};
                         end_time_diff       = moment(events.event.endStr),
                         durationInMinutes   = end_time_diff.diff(start_time_diff, 'minutes');
 
-                        context.updateAppointmentDetails(resourceId,start_date,start_time,end_time,durationInMinutes,client_id,service_id,category_id,eventId);
+                    var data =  {
+                            'staff_id'    : resourceId,
+                            'start_date'  : start_date,
+                            'start_time'  : start_time,
+                            'end_time'    : end_time,
+                            'duration'    : durationInMinutes,
+                            'client_id'   : client_id,
+                            'service_id'  : service_id,
+                            'category_id' : category_id,
+                            'event_id'    : eventId,
+                        };
+
+                        context.updateAppointmentDetails(data);
                 },
                 eventDidMount: function(info)
                 {
@@ -198,10 +232,10 @@ var DU = {};
                 },
                 eventContent: function (info)
                 {
-                    let italicEl = document.createElement('i');
+                    let italicEl = document.createElement('div');
 
-                    italicEl.innerHTML = `<i>${info.timeText}</i>&nbsp;&nbsp;&nbsp;
-                    <label>${info.event.extendedProps.client_name}</label><br><label>${info.event.title}</label>`;
+                    italicEl.innerHTML = `<time>${info.timeText}</time>
+                    <div>${info.event.extendedProps.client_name}</div><label>${info.event.title}</label>`;
 
                     let arrayOfDomNodes = [italicEl]
 					return {
@@ -424,34 +458,148 @@ var DU = {};
         },
 
         editEvent:function (eventId){
+            var context       = this;
             $.ajax({
                 url: moduleConfig.EventById.replace(':ID', eventId),
                 type: 'GET',
                 headers: {
                     'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
                 },
-                success: function (data) {
-                    // console.log(data);return false;
+                success: function (response) {
+                    // console.log(response.data.client_data.first_name);return false;
                     $('#clientDetails').html(
-                        `<div class='client-name'><div class='drop-cap' style='background: #D0D0D0; color: #000;'>
-                        
-                        </div></div>
-                            <p>
-                        ${data.first_name} <br>
-                        ${(data.email ? data.email : '')}
-                        ${(data.mobile_no ? " | "  + data.mobile_no : '')}
-                        </p>
-                        <button class='btn btn-primary btn-sm me-2 open-client-card-btn' data-client-id=' ${data.id}'>Client Card</button>
-                        <button class='btn btn-primary btn-sm me-2' data-client-id='${data.id}'>History</button>
-                        <button class='btn btn-primary btn-sm me-2' data-client-id='${data.id}'>Upcoming</button>
-                        <div>
-                        <label>appointment summary</label><br><label>Drag and drop on to a day on the appointment book</label>
-                        </div>`
+                        `
+                        <div class="client-name">
+                                <div class="drop-cap" style="background: #D0D0D0; color:#fff;">${response.data.client_data.first_name.charAt(0).toUpperCase()}
+                                </div>
+                                <div class="client-info">
+                                    <input type='hidden' name='client_name' value='${response.data.client_data.first_name} ${response.data.client_data.last_name}'>
+                                    <input type='hidden' id="client_id" name='client_id' value='${response.data.client_data.id}'>
+                                    <h4 class="blue-bold">${response.data.client_data.first_name} ${response.data.client_data.last_name}</h4>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <a href="#" class="river-bed"><b>${response.data.client_data.mobile_no}</b></a><br>
+                                <a href="#" class="river-bed"><b>${response.data.client_data.email}</b></a>
+                            </div>
+                            <hr>
+                            <div class="btns">
+                                <button class="btn btn-secondary btn-sm open-client-card-btn" data-client-id="${response.data.client_data.id}" >Client Card</button>
+                                <button class="btn btn-secondary btn-sm history" data-client-id="${response.data.client_data.id}" >History</button>
+                                <button class="btn btn-secondary btn-sm upcoming" data-client-id="${response.data.client_data.id}" >Upcoming</button>
+                            </div>
+                            <hr>
+                            <div class="summry-header"><span class="ico-clock me-2 fs-4"></span> Appointment Summary</div>
+                            <div class="river-bed mb-3">
+                                Date:<br>
+                                <b>${response.data.appointment_date}</b>
+                            </div>
+                            <div class="mb-3">
+                                <a href="#" class="btn btn-primary btn-md blue-alter">Move Appointment</a>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="form-label">Status </label>
+                                <input type="hidden" name="appointment_id" value=${response.data.id}>
+                                <select class="form-select form-control change_status" id="appointment_status">
+                                    <option value="1">Booked</option>
+                                    <option value="2">Confirmed</option>
+                                    <option value="3">Started</option>
+                                    <option value="4">Completed</option>
+                                    <option value="5">No Answer</option>
+                                    <option value="6">Left Message</option>
+                                    <option value="7">Pencilied In</option>
+                                    <option value="8">Turned Up</option>
+                                    <option value="9">No Show</option>
+                                    <option value="10">Cancelled</option>
+                                </select>
+                            </div>
+                            <div class="river-bed mb-3">
+                                Reminder<br>
+                                <div class="d-flex align-items-center mt-1"><span class="ico-clock me-1 fs-5"></span> SMS to be sent</div>
+                            </div>
+                            <div class="orange-box mb-3">
+                                <p><b>${response.data.services_name}</b>
+                                ${response.data.appointment_time} with ${response.data.staff_name}</p>
+                            </div>
+                            <div class="btns mb-3">
+                                <button class="btn btn-secondary btn-sm">Edit Appt</button>
+                                <button class="btn btn-secondary btn-sm">Edit Forms</button>
+                                <button class="btn btn-secondary btn-sm">Rebook</button>
+                                <button class="btn btn-secondary btn-sm">Repeat Appt</button>
+                                <button class="btn btn-secondary btn-sm">Messages</button>
+                                <button class="btn btn-secondary btn-sm">Edit Service</button>
+                            </div>
+                            <a href="#" class="btn btn-primary btn-md mb-2 d-block">Make Sale</a>
+
+                            <div class="text-end">
+                                <a href="#" class="btn btn-primary btn-md blue-alter">Delete</a>
+                            </div>
+                            <hr>
+                            <div class="form-group">
+                                <label class="form-label">Notes</label>
+                                <textarea rows="4" class="form-control" placeholder="Click to edit" id="commonNotes"></textarea>
+                                <label class="form-label">Treatment Notes</label>
+                                <textarea rows="4" class="form-control" placeholder="Click to edit" id="treatmentNotes"></textarea>
+                            </div>`
                     );
                 },
                 error: function (error) {
                     console.error('Error fetching events:', error);
                 }
+            });
+
+            $(document).on("keyup", '#commonNotes', function() {
+                var appointmentId       = $('#clientDetails').find('input:hidden[name=appointment_id]').val(),
+                        commonNotes     = $('#commonNotes').val();
+                        clientId        = $('.open-client-card-btn').data('client-id');
+
+                context.commonNoteAddUpdateAjax(appointmentId,commonNotes,clientId);
+            });
+
+            $(document).on("keyup", '#treatmentNotes', function() {
+                var appointmentId       = $('#clientDetails').find('input:hidden[name=appointment_id]').val(),
+                    treatmentNotes      = $('#treatmentNotes').val();
+                        clientId        = $('.open-client-card-btn').data('client-id');
+
+                context.treatmentNoteAddUpdateAjax(appointmentId,treatmentNotes,clientId);
+            });
+
+            // Update appointment status
+            $(document).on('change', '.change_status', function(e) {
+                var appointmentId = $('#clientDetails').find('input:hidden[name=appointment_id]').val(),
+                    status        = $('#appointment_status').val(),
+                    data          =  {
+                        'status'      : status,
+                        'event_id'    : appointmentId,
+                    };
+
+                $.ajax({
+                    url: moduleConfig.updateAppointmentStatus,
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: data,
+                    success: function (data) {
+                        if (data.success) {
+                            Swal.fire({
+                                title: "Appointment!",
+                                text: data.message,
+                                info: "success",
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Error!",
+                                text: data.message,
+                                info: "error",
+                            });
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Error fetching resources:', error);
+                    }
+                });
+
             });
         },
 
@@ -540,26 +688,17 @@ var DU = {};
                 }
             });
         },
+        // dharit:function(...$this)
 
         // For update appointment
-        updateAppointmentDetails: function(resourceId,start_date,start_time,end_time,duration,client_id,service_id,category_id,eventId){
+        updateAppointmentDetails: function(data){
             $.ajax({
                 url: moduleConfig.updateAppointment,
                 type: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                data: {
-                    'staff_id'    : resourceId,
-                    'start_date'  : start_date,
-                    'start_time'  : start_time,
-                    'end_time'    : end_time,
-                    'duration'    : duration,
-                    'client_id'   : client_id,
-                    'service_id'  : service_id,
-                    'category_id' : category_id,
-                    'event_id'    : eventId
-                },
+                data: data,
                 success: function (data) {
                     if (data.success) {
                         Swal.fire({
@@ -731,9 +870,13 @@ var DU = {};
                     // Check if the form is valid or not
 
                     var resultElement = document.getElementById("clientDetails"),
-                        details =  `<div>
-                        <label>appointment summary</label><br><label>Drag and drop on to a day on the appointment book</label>
-                        </div>`;
+                        details =  `<div class="drag-box mb-3">
+                        <div class="head mb-2"><b>Drag and drop on</b> to a day on the appointment book
+                            <i class="ico-noun-arrow"></i></div>
+                            <div class="treatment">
+                                60 min Skin Treatment-Intro <i class="ico-close"></i>
+                            </div>
+                    </div>`;
                     resultElement.innerHTML += details;
 
                     $("#selected_services > li").each(function(){

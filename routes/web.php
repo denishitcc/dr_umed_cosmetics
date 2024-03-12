@@ -150,5 +150,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('calender/get-event-by-id/{id}',[CalenderController::class, 'getEventById'])->name('calendar.get-event-by-id');
     Route::post('calender/upcoming-appointment',[CalenderController::class, 'UpcomingAppointment'])->name('calendar.upcoming-appointment');
     Route::post('calender/history-appointment',[CalenderController::class, 'HistoryAppointment'])->name('calendar.history-appointment');
+    Route::post('calender/update-appointment-status',[CalenderController::class, 'UpdateAppointmentStatus'])->name('calendar.update-appointment-status');
 });
 Route::get('/get-staff-list', [CalenderController::class,'getStaffList'])->name('get-staff-list');

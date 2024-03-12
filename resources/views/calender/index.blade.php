@@ -18,7 +18,7 @@
                     <input type="text" id="search" class="form-control " autocomplete="off" placeholder="Search for a client" onkeyup="changeInput(this.value)">
                     <i class="ico-search"></i>
                 </div>
-                <div id="clientDetails"></div>
+                <div id="clientDetails" class="detaild-theos pt-3"></div>
                 <div id='external-events'></div>
                 <div id="result" class="list-group"></div>
                 <div id="mycalendar"> </div>
@@ -225,16 +225,17 @@
 <script src="{{ asset('js/appointment.js') }}"></script>
 <script type="text/javascript">
     var moduleConfig = {
-        getStaffList:       "{!! route('get-staff-list') !!}",
-        categotyByservices: "{!! route('calender.get-category-services') !!}",
-        getClients:         "{!! route('calendar.get-all-clients') !!}",
-        createAppointment:  "{!! route('calendar.create-appointments') !!}",
-        getEvents:          "{!! route('calendar.get-events') !!}",
-        updateAppointment:  "{!! route('calendar.update-appointments') !!}",
-        getClientCardData:  "{!! route('calendar.get-client-card-data', ':ID') !!}",
-        addNotes:           "{!! route('calendar.add-appointment-notes') !!}",
-        viewNotes:          "{!! route('calendar.view-appointment-notes') !!}",
-        EventById:          "{!! route('calendar.get-event-by-id', ':ID') !!}",
+        getStaffList:                 "{!! route('get-staff-list') !!}",
+        categotyByservices:           "{!! route('calender.get-category-services') !!}",
+        getClients:                   "{!! route('calendar.get-all-clients') !!}",
+        createAppointment:            "{!! route('calendar.create-appointments') !!}",
+        getEvents:                    "{!! route('calendar.get-events') !!}",
+        updateAppointment:            "{!! route('calendar.update-appointments') !!}",
+        getClientCardData:            "{!! route('calendar.get-client-card-data', ':ID') !!}",
+        addNotes:                     "{!! route('calendar.add-appointment-notes') !!}",
+        viewNotes:                    "{!! route('calendar.view-appointment-notes') !!}",
+        EventById:                    "{!! route('calendar.get-event-by-id', ':ID') !!}",
+        updateAppointmentStatus:      "{!! route('calendar.update-appointment-status') !!}",
     };
 
     $(document).ready(function()
@@ -604,17 +605,39 @@
                         // Remove existing div with class "user-appent"
                         $('.upcoming_appointments').empty();
                         $('.history_appointments').empty();
-                        var app_div = '<div class="upcoming_appointments"><b>Upcoming appointments</b><br><input type="checkbox" data-client-id="' + client_id + '" class="conflict_upcoming_appointment">Only show appointments with conflicts';
+                        var app_div = `<div class="upcoming_appointments">
+                            <div class="summry-header"><span class="ico-clock me-2 fs-4"></span> Upcoming appointments</div>
+                            <div class="mb-3">
+                                <label class="cst-check d-flex align-items-center">
+                                    <input type="checkbox" class="conflict_upcoming_appointment" data-client-id= ${client_id} >
+                                    <span class="checkmark me-2"></span>Only show appointments with conflicts
+                                </label>
+                            </div>`;
 
                         if (response.appointments.length > 0) {
                             // Append the new div after #clientDetails
                             $.each(response.appointments, function(index, appointment) {
                                 var appointmentDetails = appointment.appointment_details.split(' ');
-                                var boldDateTime = '<input type="hidden" id="service_id" value="'+appointment.service_id+'"><input type="hidden" id="service_name" value="'+appointment.service_name+'"><input type="hidden" id="category_id" value="'+appointment.category_id+'"><input type="hidden" id="client_id" value="'+appointment.id+'"><input type="hidden" id="client_name" value="'+appointment.client_name+'"><input type="hidden" id="duration" value="'+appointment.durations+'"><b>' + appointmentDetails[0] + ' ' + appointmentDetails[1] + ' ' + appointmentDetails[2] + '</b>'; // Concatenate the date, time, and AM/PM together
+                                var boldDateTime = `<input type="hidden" id="service_id" value=${appointment.service_id}>
+                                <input type="hidden" id="service_name" value=${appointment.service_name}>
+                                <input type="hidden" id="category_id" value=${appointment.category_id}>
+                                <input type="hidden" id="client_id" value=${appointment.id}>
+                                <input type="hidden" id="client_name" value=${appointment.client_name}>
+                                <input type="hidden" id="duration" value=${appointment.durations}><b> ${appointmentDetails[0]}  ${appointmentDetails[1]} ${appointmentDetails[2]} </b>`; // Concatenate the date, time, and AM/PM together
                                 var restOfDetails = appointmentDetails.slice(3).join(' '); // Joining the rest of the details without modification
-                                
+
                                 // Adding buttons for rebook and go to
-                                app_div += '<div class="user-appnt">' + boldDateTime + ' ' + restOfDetails + '<div class="user-appnt">(' + appointment.staff_locations + ')</div>' + ' ' + '(' + appointment.durations + 'mins) - ' + '<span>' + appointment.app_status + '</span><br>' + '<button class="rebook-btn btn btn-primary btn-sm me-2 rebook_upcoming">Rebook</button>' + '<button class="go-to-btn btn btn-primary btn-sm me-2 upcoming_go_to" date_time="'+ appointmentDetails[0] + ' ' + appointmentDetails[1] + ' ' + appointmentDetails[2] +'">Go to</button></div>';
+                                app_div += `<div class="recent-slot">
+                                            <div class="status-check">
+                                                ${boldDateTime}  ${restOfDetails} <span class="ico-danger fs-5"></span>
+                                            </div>
+                                            <p>
+                                                <b> ${appointment.staff_locations} </b>
+                                                (${appointment.durations} mins) - ${appointment.app_status}
+                                            </p>
+                                            <a href="#" class="btn btn-primary font-13 alter slot-btn btn-sm me-2 rebook_histroy"> Rebook</a>
+                                            <a href="#" class="btn btn-primary font-13 alter slot-btn btn-sm upcoming_go_to" date_time= "${appointmentDetails[0]} ${appointmentDetails[1]}  ${appointmentDetails[2]}"> Go to</a>
+                                        </div>`;
                             });
                         } else {
                             app_div += '<div class="user-appnt">No upcoming appointment found</div>';
@@ -648,16 +671,38 @@
                     // Remove existing div with class "user-appent"
                     $('.upcoming_appointments').empty();
                     $('.history_appointments').empty();
-                    var app_div = '<div class="history_appointments"><b>Recent appointments</b><br><input type="checkbox" data-client-id="' + client_id + '" class="conflict_history_appointment">Only show appointments with conflicts';
+                    var app_div = `<div class="history_appointments">
+                        <div class="summry-header"><span class="ico-clock me-2 fs-4"></span> Recent appointments</div>
+                        <div class="mb-3">
+                            <label class="cst-check d-flex align-items-center">
+                                <input type="checkbox" class="conflict_history_appointment" data-client-id= ${client_id} >
+                                <span class="checkmark me-2"></span>Only show appointments with conflicts
+                            </label>
+                        </div>`;
                     if (response.appointments.length > 0) {
                         // Append the new div after #clientDetails
                         $.each(response.appointments, function(index, appointment) {
                             var appointmentDetails = appointment.appointment_details.split(' ');
-                            var boldDateTime = '<input type="hidden" id="service_id" value="'+appointment.service_id+'"><input type="hidden" id="service_name" value="'+appointment.service_name+'"><input type="hidden" id="category_id" value="'+appointment.category_id+'"><input type="hidden" id="client_id" value="'+appointment.id+'"><input type="hidden" id="client_name" value="'+appointment.client_name+'"><input type="hidden" id="duration" value="'+appointment.durations+'"><b>' + appointmentDetails[0] + ' ' + appointmentDetails[1] + ' ' + appointmentDetails[2] + '</b>'; // Concatenate the date, time, and AM/PM together
+                            var boldDateTime = `<input type="hidden" id="service_id" value=${appointment.service_id}>
+                            <input type="hidden" id="service_name" value=${appointment.service_name}>
+                            <input type="hidden" id="category_id" value=${appointment.category_id}>
+                            <input type="hidden" id="client_id" value=${appointment.id}>
+                            <input type="hidden" id="client_name" value=${appointment.client_name}>
+                            <input type="hidden" id="duration" value=${appointment.durations}><b> ${appointmentDetails[0]}  ${appointmentDetails[1]} ${appointmentDetails[2]} </b>`; // Concatenate the date, time, and AM/PM together
                             var restOfDetails = appointmentDetails.slice(3).join(' '); // Joining the rest of the details without modification
-                            
+
                             // Adding buttons for rebook and go to
-                            app_div += '<div class="user-appnt">' + boldDateTime + ' ' + restOfDetails + '<div class="user-appnt">(' + appointment.staff_locations + ')</div>' + ' ' + '(' + appointment.durations + 'mins) - ' + '<span>' + appointment.app_status + '</span><br>' + '<button class="rebook-btn btn btn-primary btn-sm me-2 rebook_histroy">Rebook</button>' + '<button class="go-to-btn btn btn-primary btn-sm me-2 history_go_to" date_time="'+ appointmentDetails[0] + ' ' + appointmentDetails[1] + ' ' + appointmentDetails[2] +'">Go to</button></div>';
+                            app_div += `<div class="recent-slot">
+                                            <div class="status-check">
+                                                ${boldDateTime}  ${restOfDetails} <span class="ico-danger fs-5"></span>
+                                            </div>
+                                            <p>
+                                                <b> ${appointment.staff_locations} </b>
+                                                (${appointment.durations} mins) - ${appointment.app_status}
+                                            </p>
+                                            <a href="#" class="btn btn-primary font-13 alter slot-btn btn-sm me-2 rebook_histroy"> Rebook</a>
+                                            <a href="#" class="btn btn-primary font-13 alter slot-btn btn-sm history_go_to" date_time= "${appointmentDetails[0]} ${appointmentDetails[1]}  ${appointmentDetails[2]}"> Go to</a>
+                                        </div>`;
                         });
                     }else{
                         app_div += '<div class="user-appnt">No history found</div>';
@@ -999,17 +1044,26 @@
                     console.log(client);
                     // If a match is found, dynamically bind HTML to clientDetails element
                     $('#clientDetails').html(
-                        `<div class='client-name'><div class='drop-cap' style='background: #D0D0D0; color: #000;'>
-                        ${client.name.charAt(0).toUpperCase() }
-                        </div></div>
-                        <p><input type='hidden' name='client_name' value='${client.name} ${client.lastname}'><input type='hidden' id="client_id" name='client_id' value='${client.id}'>
-                        ${client.name} <br>
-                        ${client.email} |
-                        ${client.mobile_number}
-                        </p>
-                        <button class='btn btn-primary btn-sm me-2 open-client-card-btn' data-client-id="${client.id}">Client Card</button>
-                        <button class='btn btn-primary btn-sm me-2 history' data-client-id="${client.id}">History</button>
-                        <button class='btn btn-primary btn-sm me-2 upcoming' data-client-id="${client.id}">Upcoming</button>`
+                            `<div class="client-name">
+                                <div class="drop-cap" style="background: #D0D0D0; color:#fff;">${client.name.charAt(0).toUpperCase()}
+                                </div>
+                                <div class="client-info">
+                                    <input type='hidden' name='client_name' value='${client.name} ${client.lastname}'>
+                                    <input type='hidden' id="client_id" name='client_id' value='${client.id}'>
+                                    <h4 class="blue-bold">${client.name}</h4>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <a href="#" class="river-bed"><b>${client.mobile_number}</b></a><br>
+                                <a href="#" class="river-bed"><b>${client.email}</b></a>
+                            </div>
+                            <hr>
+                            <div class="btns">
+                                <button class="btn btn-secondary btn-sm open-client-card-btn" data-client-id="${client.id}" >Client Card</button>
+                                <button class="btn btn-secondary btn-sm history" data-client-id="${client.id}" >History</button>
+                                <button class="btn btn-secondary btn-sm upcoming" data-client-id="${client.id}" >Upcoming</button>
+                            </div>
+                            <hr>`
                     );
 
                     document.getElementById('search').value = '';
@@ -1040,21 +1094,30 @@
                     $("#clientDetailsModal").html(
                         "<i class='ico-user2 me-2 fs-6'></i> "+ client.name +' '+ client.lastname);
                     $('#clientDetails').html(
-                        `<div class='client-name'><div class='drop-cap' style='background: #D0D0D0; color: #000;'>
-                        ${client.name.charAt(0).toUpperCase() }
-                        </div></div>
-                        <p><input type='hidden' name='client_name' value='${client.name} ${client.lastname}'><input type='hidden' name='client_id' value='${client.id}'>
-                        ${client.name} <br>
-                        ${client.email} |
-                        ${client.mobile_number}
-                        </p>
-                        <button class='btn btn-primary btn-sm me-2 open-client-card-btn' data-client-id="${client.id}">Client Card</button>
-                        <button class='btn btn-primary btn-sm me-2 history' data-client-id="${client.id}">History</button>
-                        <button class='btn btn-primary btn-sm me-2 upcoming' data-client-id="${client.id}">Upcoming</button>`
+                        `<div class="client-name">
+                                <div class="drop-cap" style="background: #D0D0D0; color:#fff;">${client.name.charAt(0).toUpperCase()}
+                                </div>
+                                <div class="client-info">
+                                    <input type='hidden' name='client_name' value='${client.name} ${client.lastname}'>
+                                    <input type='hidden' id="client_id" name='client_id' value='${client.id}'>
+                                    <h4 class="blue-bold">${client.name}</h4>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <a href="#" class="river-bed"><b>${client.mobile_number}</b></a><br>
+                                <a href="#" class="river-bed"><b>${client.email}</b></a>
+                            </div>
+                            <hr>
+                            <div class="btns">
+                                <button class="btn btn-secondary btn-sm open-client-card-btn" data-client-id="${client.id}" >Client Card</button>
+                                <button class="btn btn-secondary btn-sm history" data-client-id="${client.id}" >History</button>
+                                <button class="btn btn-secondary btn-sm upcoming" data-client-id="${client.id}" >Upcoming</button>
+                            </div>
+                            <hr>`
                     );
                     document.getElementById('searchmodel').value = '';
                     // Trigger the click event of the history button
-                    $('.history').click();
+                    // $('.history').click();
                     break; // Stop iterating once a match is found
                 }
             }
