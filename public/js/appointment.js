@@ -311,6 +311,116 @@ var DU = {};
                     }
                 }, 100); // Adjust the delay as needed
             });                         
+            $(document).on('click','.rebook_histroy',function(e){
+                //appointment rebook start
+
+                var resultElement = document.getElementById("clientDetails"),
+                details =  `<div>
+                <label>appointment summary</label><br><label>Drag and drop on to a day on the appointment book</label>
+                </div>`;
+                resultElement.innerHTML += details;
+
+                // $("#selected_services > li").each(function(){
+                    // var $this           = $(this),
+                    eventName           = $(this).parent().find('#service_name').val(),
+                    eventId             = $(this).parent().find('#service_id').val();
+                    categoryId          = $(this).parent().find('#category_id').val();
+                    duration            = $(this).parent().find('#duration').val();
+                    clientName          = $(this).parent().find('#client_name').val();
+                    clientId            = $(this).parent().find('#client_id').val();
+
+                    // $('#mycalendar').remove();
+                    $('#external-events').removeAttr('style');
+                    $('#external-events').append(`
+                    <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event' data-service_id="${eventId}" data-client_name="${clientName}" data-duration="${duration}" data-client_id="${clientId}" data-category_id="${categoryId}"> ${eventName}
+                    </div>`);
+                // });
+
+                context.selectors.appointmentModal.modal('hide');
+                //for reload all services & selected services
+                $("#all_ser").load(location.href+" #all_ser>*","");
+                $("#selected_services").empty();
+
+                //appointment rebook end
+
+                
+                // Prevent default behavior (e.g., form submission)
+                e.preventDefault();
+                // Initialize datepicker with options
+                $('#datepicker').datepicker({
+                numberOfMonths: 2, // Display two months
+                dateFormat: 'yy-mm-dd', // Set date format to "yyyy-mm-dd"
+                onSelect: function(selectedDate, inst) {
+                    // Display selected date in console
+                    console.log('Selected date:', selectedDate);
+                    // You can also use the selected date for further processing
+                    // For example, update a hidden input field with the selected date
+                    $('#selectedDateInput').val(selectedDate);
+                    // Change the calendar view to the selected date
+                    context.calendar.gotoDate(selectedDate);
+
+                    
+                  }
+                });
+                // Show datepicker
+                $('#datepicker').datepicker('show');
+            })
+
+            $(document).on('click','.rebook_upcoming',function(e){
+                //appointment rebook start
+
+                var resultElement = document.getElementById("clientDetails"),
+                details =  `<div>
+                <label>appointment summary</label><br><label>Drag and drop on to a day on the appointment book</label>
+                </div>`;
+                resultElement.innerHTML += details;
+
+                // $("#selected_services > li").each(function(){
+                    // var $this           = $(this),
+                    eventName           = $(this).parent().find('#service_name').val(),
+                    eventId             = $(this).parent().find('#service_id').val();
+                    categoryId          = $(this).parent().find('#category_id').val();
+                    duration            = $(this).parent().find('#duration').val();
+                    clientName          = $(this).parent().find('#client_name').val();
+                    clientId            = $(this).parent().find('#client_id').val();
+
+                    // $('#mycalendar').remove();
+                    $('#external-events').removeAttr('style');
+                    $('#external-events').append(`
+                    <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event' data-service_id="${eventId}" data-client_name="${clientName}" data-duration="${duration}" data-client_id="${clientId}" data-category_id="${categoryId}"> ${eventName}
+                    </div>`);
+                // });
+
+                context.selectors.appointmentModal.modal('hide');
+                //for reload all services & selected services
+                $("#all_ser").load(location.href+" #all_ser>*","");
+                $("#selected_services").empty();
+
+                //appointment rebook end
+
+                
+                // Prevent default behavior (e.g., form submission)
+                e.preventDefault();
+                // Initialize datepicker with options
+                $('#datepicker').datepicker({
+                numberOfMonths: 2, // Display two months
+                dateFormat: 'yy-mm-dd', // Set date format to "yyyy-mm-dd"
+                onSelect: function(selectedDate, inst) {
+                    // Display selected date in console
+                    console.log('Selected date:', selectedDate);
+                    // You can also use the selected date for further processing
+                    // For example, update a hidden input field with the selected date
+                    $('#selectedDateInput').val(selectedDate);
+                    // Change the calendar view to the selected date
+                    context.calendar.gotoDate(selectedDate);
+
+                    
+                  }
+                });
+                // Show datepicker
+                $('#datepicker').datepicker('show');
+            })
+            
         },
 
         editEvent:function (eventId){

@@ -440,14 +440,20 @@ class CalenderController extends Controller
                         WHEN 10 THEN "Cancelled"
                     END) as app_status'),
                     DB::raw('GROUP_CONCAT(locations.location_name) as staff_locations'),
-                    DB::raw('GROUP_CONCAT(appointment.duration) as durations')
+                    DB::raw('GROUP_CONCAT(appointment.duration) as durations'),
+                    'services.id as service_id',
+                    'services.service_name',
+                    'services.parent_category'
             )
             ->groupBy('clients.id', 
                     'clients.firstname', 
                     'clients.lastname', 
                     'clients.email', 
                     'clients.mobile_number', 
-                    'clients.status'
+                    'clients.status',
+                    'services.id',
+                    'services.service_name',
+                    'services.parent_category'
             )
             ->havingRaw('appointment_dates IS NOT NULL')
             ->where('clients.id',$request->id)
@@ -465,6 +471,10 @@ class CalenderController extends Controller
             $app_status = array_pad($app_status, $count, '');
             $staff_locations = array_pad($staff_locations, $count, '');
             $durations = array_pad($durations, $count, '');
+            $service_id = $datas->service_id;
+            $service_name = $datas->service_name;
+            $category_id = $datas->parent_category;
+            $client_name = $datas->firstname.' '.$datas->last_name;
 
             // Iterate through each appointment date and create separate entries
             for ($i = 0; $i < $count; $i++) {
@@ -478,7 +488,11 @@ class CalenderController extends Controller
                     'appointment_details' => $appointment_dates[$i],
                     'app_status' => $app_status[$i],
                     'staff_locations' => $staff_locations[$i],
-                    'durations' => $durations[$i]
+                    'durations' => $durations[$i],
+                    'service_id' => $service_id,
+                    'service_name' => $service_name,
+                    'category_id' => $category_id,
+                    'client_name' => $client_name
                 ];
             }
         }
@@ -562,14 +576,20 @@ class CalenderController extends Controller
                         WHEN 10 THEN "Cancelled"
                     END) as app_status'),
                     DB::raw('GROUP_CONCAT(locations.location_name) as staff_locations'),
-                    DB::raw('GROUP_CONCAT(appointment.duration) as durations')
+                    DB::raw('GROUP_CONCAT(appointment.duration) as durations'),
+                    'services.id as service_id',
+                    'services.service_name',
+                    'services.parent_category'
             )
             ->groupBy('clients.id', 
                     'clients.firstname', 
                     'clients.lastname', 
                     'clients.email', 
                     'clients.mobile_number', 
-                    'clients.status'
+                    'clients.status',
+                    'services.id',
+                    'services.service_name',
+                    'services.parent_category'
             )
             ->havingRaw('appointment_dates IS NOT NULL')
             ->where('clients.id',$request->id)
@@ -587,6 +607,10 @@ class CalenderController extends Controller
             $app_status = array_pad($app_status, $count, '');
             $staff_locations = array_pad($staff_locations, $count, '');
             $durations = array_pad($durations, $count, '');
+            $service_id = $datas->service_id;
+            $service_name = $datas->service_name;
+            $category_id = $datas->parent_category;
+            $client_name = $datas->firstname.' '.$datas->last_name;
 
             // Iterate through each appointment date and create separate entries
             for ($i = 0; $i < $count; $i++) {
@@ -600,7 +624,11 @@ class CalenderController extends Controller
                     'appointment_details' => $appointment_dates[$i],
                     'app_status' => $app_status[$i],
                     'staff_locations' => $staff_locations[$i],
-                    'durations' => $durations[$i]
+                    'durations' => $durations[$i],
+                    'service_id' => $service_id,
+                    'service_name' => $service_name,
+                    'category_id' => $category_id,
+                    'client_name' => $client_name
                 ];
             }
         }

@@ -24,7 +24,9 @@
                 <div id="mycalendar"> </div>
                 {{-- <img src="img/demo-calander.png" alt="" class="search_client"> onkeyup="changeInput(this.value)" --}}
             </div>
-
+            <!-- Hidden input field for datepicker -->
+            <input type="text" id="datepicker" style="display:none;">
+            <input type="hidden" id="selectedDateInput">
             <div class="col-lg-9">
                 <div class="main-apnt-calendar" id="calendar">
                 </div>
@@ -608,11 +610,11 @@
                             // Append the new div after #clientDetails
                             $.each(response.appointments, function(index, appointment) {
                                 var appointmentDetails = appointment.appointment_details.split(' ');
-                                var boldDateTime = '<b>' + appointmentDetails[0] + ' ' + appointmentDetails[1] + ' ' + appointmentDetails[2] + '</b>'; // Concatenate the date, time, and AM/PM together
+                                var boldDateTime = '<input type="hidden" id="service_id" value="'+appointment.service_id+'"><input type="hidden" id="service_name" value="'+appointment.service_name+'"><input type="hidden" id="category_id" value="'+appointment.category_id+'"><input type="hidden" id="client_id" value="'+appointment.id+'"><input type="hidden" id="client_name" value="'+appointment.client_name+'"><input type="hidden" id="duration" value="'+appointment.durations+'"><b>' + appointmentDetails[0] + ' ' + appointmentDetails[1] + ' ' + appointmentDetails[2] + '</b>'; // Concatenate the date, time, and AM/PM together
                                 var restOfDetails = appointmentDetails.slice(3).join(' '); // Joining the rest of the details without modification
                                 
                                 // Adding buttons for rebook and go to
-                                app_div += '<div class="user-appnt">' + boldDateTime + ' ' + restOfDetails + '<div class="user-appnt">(' + appointment.staff_locations + ')</div>' + ' ' + '(' + appointment.durations + 'mins) - ' + '<span>' + appointment.app_status + '</span><br>' + '<button class="rebook-btn btn btn-primary btn-sm me-2">Rebook</button>' + '<button class="go-to-btn btn btn-primary btn-sm me-2 upcoming_go_to" date_time="'+ appointmentDetails[0] + ' ' + appointmentDetails[1] + ' ' + appointmentDetails[2] +'">Go to</button></div>';
+                                app_div += '<div class="user-appnt">' + boldDateTime + ' ' + restOfDetails + '<div class="user-appnt">(' + appointment.staff_locations + ')</div>' + ' ' + '(' + appointment.durations + 'mins) - ' + '<span>' + appointment.app_status + '</span><br>' + '<button class="rebook-btn btn btn-primary btn-sm me-2 rebook_upcoming">Rebook</button>' + '<button class="go-to-btn btn btn-primary btn-sm me-2 upcoming_go_to" date_time="'+ appointmentDetails[0] + ' ' + appointmentDetails[1] + ' ' + appointmentDetails[2] +'">Go to</button></div>';
                             });
                         } else {
                             app_div += '<div class="user-appnt">No upcoming appointment found</div>';
@@ -651,11 +653,11 @@
                         // Append the new div after #clientDetails
                         $.each(response.appointments, function(index, appointment) {
                             var appointmentDetails = appointment.appointment_details.split(' ');
-                            var boldDateTime = '<b>' + appointmentDetails[0] + ' ' + appointmentDetails[1] + ' ' + appointmentDetails[2] + '</b>'; // Concatenate the date, time, and AM/PM together
+                            var boldDateTime = '<input type="hidden" id="service_id" value="'+appointment.service_id+'"><input type="hidden" id="service_name" value="'+appointment.service_name+'"><input type="hidden" id="category_id" value="'+appointment.category_id+'"><input type="hidden" id="client_id" value="'+appointment.id+'"><input type="hidden" id="client_name" value="'+appointment.client_name+'"><input type="hidden" id="duration" value="'+appointment.durations+'"><b>' + appointmentDetails[0] + ' ' + appointmentDetails[1] + ' ' + appointmentDetails[2] + '</b>'; // Concatenate the date, time, and AM/PM together
                             var restOfDetails = appointmentDetails.slice(3).join(' '); // Joining the rest of the details without modification
                             
                             // Adding buttons for rebook and go to
-                            app_div += '<div class="user-appnt">' + boldDateTime + ' ' + restOfDetails + '<div class="user-appnt">(' + appointment.staff_locations + ')</div>' + ' ' + '(' + appointment.durations + 'mins) - ' + '<span>' + appointment.app_status + '</span><br>' + '<button class="rebook-btn btn btn-primary btn-sm me-2">Rebook</button>' + '<button class="go-to-btn btn btn-primary btn-sm me-2 history_go_to" date_time="'+ appointmentDetails[0] + ' ' + appointmentDetails[1] + ' ' + appointmentDetails[2] +'">Go to</button></div>';
+                            app_div += '<div class="user-appnt">' + boldDateTime + ' ' + restOfDetails + '<div class="user-appnt">(' + appointment.staff_locations + ')</div>' + ' ' + '(' + appointment.durations + 'mins) - ' + '<span>' + appointment.app_status + '</span><br>' + '<button class="rebook-btn btn btn-primary btn-sm me-2 rebook_histroy">Rebook</button>' + '<button class="go-to-btn btn btn-primary btn-sm me-2 history_go_to" date_time="'+ appointmentDetails[0] + ' ' + appointmentDetails[1] + ' ' + appointmentDetails[2] +'">Go to</button></div>';
                         });
                     }else{
                         app_div += '<div class="user-appnt">No history found</div>';

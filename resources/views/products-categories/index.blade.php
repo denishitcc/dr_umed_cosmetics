@@ -11,6 +11,7 @@
                 <div class="tool-right">
                     <a href="#" class="btn btn-primary btn-md" data-bs-toggle="modal" data-bs-target="#new_Category">+ New Category</a>
                     <!-- <a href="#" class="btn btn-primary btn-md">Back to Products Categories</a> -->
+                    <a href="{{ route('products.index') }}" class="btn btn-primary btn-md">Back to Products</a>
                 </div>
             </div>
         </div>
