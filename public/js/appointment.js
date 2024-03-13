@@ -24,6 +24,7 @@ var DU = {};
             context.staffList();
             context.openClientCardModal();
             context.closeClientCardModal();
+            context.appointmentCancel();
 
             $('#clientmodal').hide();
             $('#service_error').hide();
@@ -890,6 +891,14 @@ var DU = {};
                                         <div class="treatment fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event" data-service_id="${eventId}" data-client_name="${clientName}" data-duration="${duration}" data-client_id="${clientId}" data-category_id="${categoryId}">
                                             ${eventName} <i class="ico-close"></i>
                                         </div>
+                                    </div>
+                                    <div class="btns mb-3">
+                                        <button class="btn btn-secondary btn-sm">Edit Appt</button>
+                                        <button class="btn btn-secondary btn-sm">Repeat appt</button>
+                                        <button class="btn btn-secondary btn-sm">Messages</button>
+                                    </div>
+                                    <div class="text-end">
+                                        <a href="#" class="btn btn-primary btn-md blue-alter" id="appointment_cancel">Cancel</a>
                                     </div>`);
                     });
 
@@ -898,6 +907,13 @@ var DU = {};
                     $("#all_ser").load(location.href+" #all_ser>*","");
                     $("#selected_services").empty();
                 }
+            });
+        },
+
+        appointmentCancel: function(){
+            $(document).on("click", '#appointment_cancel', function() {
+                $('.summry-header').remove();
+                $('#external-events').remove();
             });
         },
 

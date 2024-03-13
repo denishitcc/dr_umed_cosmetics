@@ -916,7 +916,7 @@
                         var appointment = `<p>last appt at ${person.location_name} on ${person.start_date} </p>
                                 <p> ${person.service_name} with ${person.staff_name}(${person.status})</p>`;
                     }
-                    var details = `<li>
+                    resultElement.innerHTML = `<li onclick='setSearch("${person.name}")'>
                             <div class='client-name'>
                                 <div class='drop-cap' style='background: #D0D0D0; color: #000;'>${firstCharacter}</div>
                                 <div class="client-info">
@@ -929,8 +929,6 @@
                             </div>
                             ${appointment}
                         </li>`;
-
-                    resultElement.innerHTML += `<a class='list-group-item list-group-item-action' href='javascript:void(0);' onclick='setSearch("${person.name}")'> ${details} </a>`;
                 }
             }
         }
@@ -1033,7 +1031,7 @@
                         var appointment = `<p>last appt at ${person.location_name} on ${person.start_date} </p>
                                 <p> ${person.service_name} with ${person.staff_name}(${person.status})</p>`;
                     }
-                    var details = `<li>
+                    resultElement.innerHTML += `<li onclick='setSearchModal("${person.name}")'>
                             <div class='client-name'>
                                 <div class='drop-cap' style='background: #D0D0D0; color: #000;'>${firstCharacter}</div>
                                 <div class="client-info">
@@ -1046,7 +1044,6 @@
                             </div>
                             ${appointment}
                         </li>`;
-                    resultElement.innerHTML += `<a class='list-group-item list-group-item-action' href='javascript:void(0);' onclick='setSearchModal("${person.name}")'> ${details} </a>`;
                }
             }
         }
