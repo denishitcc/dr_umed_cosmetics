@@ -154,7 +154,8 @@ var DU = {};
                 ],
                 drop: function(info) {
                     info.draggedEl.parentNode.removeChild(info.draggedEl);
-                    // $("#external-events").remove();
+                    $('.app_sum').hide();
+                    $("#external-events").remove();
                 },
                 eventReceive: function (info) {
                     var resourceId          = info.event._def.resourceIds[0],
@@ -347,10 +348,11 @@ var DU = {};
                 }, 100); // Adjust the delay as needed
             });                         
             $(document).on('click','.rebook_histroy',function(e){
+                $('.history_appointments').hide();
                 //appointment rebook start
 
                 var resultElement = document.getElementById("clientDetails"),
-                details =  `<div>
+                details =  `<div class='app_sum'>
                 <label>appointment summary</label><br><label>Drag and drop on to a day on the appointment book</label>
                 </div>`;
                 resultElement.innerHTML += details;
@@ -368,7 +370,7 @@ var DU = {};
                     $('#external-events').removeAttr('style');
                     $('#external-events').append(`
                     <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event' data-service_id="${eventId}" data-client_name="${clientName}" data-duration="${duration}" data-client_id="${clientId}" data-category_id="${categoryId}"> ${eventName}
-                    </div>`);
+                    </div><a href="javascript:void(0)" class="cancel_rebook">Cancel rebook</a>`);
                 // });
 
                 context.selectors.appointmentModal.modal('hide');
@@ -402,10 +404,11 @@ var DU = {};
             })
 
             $(document).on('click','.rebook_upcoming',function(e){
+                $('.upcoming_appointments').hide();
                 //appointment rebook start
 
                 var resultElement = document.getElementById("clientDetails"),
-                details =  `<div>
+                details =  `<div class='app_sum'>
                 <label>appointment summary</label><br><label>Drag and drop on to a day on the appointment book</label>
                 </div>`;
                 resultElement.innerHTML += details;
@@ -423,7 +426,7 @@ var DU = {};
                     $('#external-events').removeAttr('style');
                     $('#external-events').append(`
                     <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event' data-service_id="${eventId}" data-client_name="${clientName}" data-duration="${duration}" data-client_id="${clientId}" data-category_id="${categoryId}"> ${eventName}
-                    </div>`);
+                    </div><a href="javascript:void(0)" class="cancel_rebook">Cancel rebook</a>`);
                 // });
 
                 context.selectors.appointmentModal.modal('hide');
@@ -455,7 +458,12 @@ var DU = {};
                 // Show datepicker
                 $('#datepicker').datepicker('show');
             })
-            
+            $(document).on('click','.cancel_rebook',function(e){
+                $('.history_appointments').show();
+                $('.upcoming_appointments').show();
+                $('.app_sum').hide();
+                $('#external-events').empty();
+            })
         },
 
         editEvent:function (eventId){
