@@ -468,8 +468,7 @@ var DU = {};
                 success: function (response) {
                     // console.log(response.data.client_data.first_name);return false;
                     $('#clientDetails').html(
-                        `
-                        <div class="client-name">
+                        `<div class="client-name">
                                 <div class="drop-cap" style="background: #D0D0D0; color:#fff;">${response.data.client_data.first_name.charAt(0).toUpperCase()}
                                 </div>
                                 <div class="client-info">
@@ -870,13 +869,7 @@ var DU = {};
                     // Check if the form is valid or not
 
                     var resultElement = document.getElementById("clientDetails"),
-                        details =  `<div class="drag-box mb-3">
-                        <div class="head mb-2"><b>Drag and drop on</b> to a day on the appointment book
-                            <i class="ico-noun-arrow"></i></div>
-                            <div class="treatment">
-                                60 min Skin Treatment-Intro <i class="ico-close"></i>
-                            </div>
-                    </div>`;
+                        details =  `<div class="summry-header"><span class="ico-clock me-2 fs-4"></span> Appointment Summary</div>`;
                     resultElement.innerHTML += details;
 
                     $("#selected_services > li").each(function(){
@@ -891,8 +884,13 @@ var DU = {};
                         // $('#mycalendar').remove();
                         $('#external-events').removeAttr('style');
                         $('#external-events').append(`
-                        <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event' data-service_id="${eventId}" data-client_name="${clientName}" data-duration="${duration}" data-client_id="${clientId}" data-category_id="${categoryId}"> ${eventName}
-                        </div>`);
+                                    <div class="drag-box mb-3">
+                                        <div class="head mb-2"><b>Drag and drop on</b> to a day on the appointment book
+                                            <i class="ico-noun-arrow"></i></div>
+                                        <div class="treatment fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event" data-service_id="${eventId}" data-client_name="${clientName}" data-duration="${duration}" data-client_id="${clientId}" data-category_id="${categoryId}">
+                                            ${eventName} <i class="ico-close"></i>
+                                        </div>
+                                    </div>`);
                     });
 
                     context.selectors.appointmentModal.modal('hide');
@@ -1126,20 +1124,26 @@ var DU = {};
                         postcode: response.data.postcode,
                     });
                     $('#clientDetails').html(
-                        "<div class='client-name'><div class='drop-cap' style='background: #D0D0D0; color: #000;'>" +
-                        response.data.firstname.charAt(0).toUpperCase() +
-                        "</div></div>" +
-                        "<p>" +
-                        response.data.firstname + "<br>" +
-                        (response.data.email ? response.data.email : '') +
-                        (response.data.mobile_number ? " | "  +response.data.mobile_number : '') +
-                        "</p>" +
-                        "<button class='btn btn-primary btn-sm me-2 open-client-card-btn' data-client-id='"+ response.data.id+"'>Client Card</button>" +
-                        "<button class='btn btn-primary btn-sm me-2' data-client-id='"+ response.data.id+"'>History</button>" +
-                        "<button class='btn btn-primary btn-sm me-2' data-client-id='"+ response.data.id+"'>Upcoming</button>"+
-                        "<div>"+
-                        "<label>appointment summary</label><br><label>Drag and drop on to a day on the appointment book</label>"+
-                        "</div>"
+                        `<div class="client-name">
+                                <div class="drop-cap" style="background: #D0D0D0; color:#fff;">${response.data.firstname.charAt(0).toUpperCase()}
+                                </div>
+                                <div class="client-info">
+                                    <input type='hidden' name='client_name' value='${response.data.firstname} ${response.data.lastname}'>
+                                    <input type='hidden' id="client_id" name='client_id' value='${response.data.id}'>
+                                    <h4 class="blue-bold">${response.data.firstname} ${response.data.lastname}</h4>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <a href="#" class="river-bed"><b>${response.data.mobile_number}</b></a><br>
+                                <a href="#" class="river-bed"><b>${response.data.email}</b></a>
+                            </div>
+                            <hr>
+                            <div class="btns">
+                                <button class="btn btn-secondary btn-sm open-client-card-btn" data-client-id="${response.data.id}" >Client Card</button>
+                                <button class="btn btn-secondary btn-sm history" data-client-id="${response.data.id}" >History</button>
+                                <button class="btn btn-secondary btn-sm upcoming" data-client-id="${response.data.id}" >Upcoming</button>
+                            </div>
+                            <hr>`
                     );
 
 					Swal.fire({

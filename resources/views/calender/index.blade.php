@@ -20,7 +20,8 @@
                 </div>
                 <div id="clientDetails" class="detaild-theos pt-3"></div>
                 <div id='external-events'></div>
-                <div id="result" class="list-group"></div>
+                {{-- <div id="result" class="list-group"></div> --}}
+                <ul class="drop-list" id="result"></ul>
                 <div id="mycalendar"> </div>
                 {{-- <img src="img/demo-calander.png" alt="" class="search_client"> onkeyup="changeInput(this.value)" --}}
             </div>
@@ -133,7 +134,8 @@
                             </div>
                         </div>
                     </div>
-                    <div id="resultmodal" class="list-group"></div>
+                    {{-- <div id="resultmodal" class="list-group"></div> --}}
+                    <ul class="drop-list" id="resultmodal"></ul>
 
                     <div class="mb-5" id="clientmodal">
                         <div class="one-inline align-items-center mb-2">
@@ -861,7 +863,7 @@
                                 client_documents: [], // Initialize an empty array for client documents
                                 service_name: res[i].last_appointment.service_name,
                                 staff_name: res[i].last_appointment.staff_name,
-                                start_date: res[i].last_appointment.start_date,
+                                start_date: res[i].last_appointment.appointment_date,
                                 status: res[i].last_appointment.status,
                                 location_name: res[i].last_appointment.location_name
                             });
@@ -905,17 +907,30 @@
                 for (var i = 0, limit = 10, len = autoCompleteResult.length; i < len && i < limit; i++) {
                     var person = autoCompleteResult[i];
                     var firstCharacter = person.name.charAt(0).toUpperCase();
-                    var details = `<div class='client-name'><div class='drop-cap' style='background: #D0D0D0; color: #000;'>${firstCharacter}</div></div><p> ${person.name} <br> ${person.email}  |  ${person.mobile_number} </p>`;
-
                     if(person.service_name == null)
                     {
                         var appointment = `No Visit history`;
                     }
                     else
                     {
-                        var appointment = `last appointment at ${person.location_name} on ${person.start_date} ${person.service_name} with ${person.staff_name}(${person.status})`;
+                        var appointment = `<p>last appt at ${person.location_name} on ${person.start_date} </p>
+                                <p> ${person.service_name} with ${person.staff_name}(${person.status})</p>`;
                     }
-                    resultElement.innerHTML += `<a class='list-group-item list-group-item-action' href='javascript:void(0);' onclick='setSearch("${person.name}")'>${details} ${appointment}</a>`;
+                    var details = `<li>
+                            <div class='client-name'>
+                                <div class='drop-cap' style='background: #D0D0D0; color: #000;'>${firstCharacter}</div>
+                                <div class="client-info">
+                                    <h4 class="blue-bold">${person.name} ${person.lastname}</h4>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <a href="#" class="river-bed"><b> ${person.mobile_number} </b></a><br>
+                                <a href="#" class="river-bed"><b> ${person.email} </b></a>
+                            </div>
+                            ${appointment}
+                        </li>`;
+
+                    resultElement.innerHTML += `<a class='list-group-item list-group-item-action' href='javascript:void(0);' onclick='setSearch("${person.name}")'> ${details} </a>`;
                 }
             }
         }
@@ -966,7 +981,7 @@
                                     client_documents: [], // Initialize an empty array for client documents
                                     service_name: res[i].last_appointment.service_name,
                                     staff_name: res[i].last_appointment.staff_name,
-                                    start_date: res[i].last_appointment.start_date,
+                                    start_date: res[i].last_appointment.appointment_date,
                                     status: res[i].last_appointment.status,
                                     location_name: res[i].last_appointment.location_name
                                 });
@@ -1009,21 +1024,29 @@
                 for (var i = 0, limit = 10, len = autoCompleteResult.length; i < len && i < limit; i++) {
                     var person = autoCompleteResult[i];
                     var firstCharacter = person.name.charAt(0).toUpperCase();
-                    var details = `<div class='client-name'>
-                                    <div class='drop-cap' style='background: #D0D0D0; color: #000;'>${firstCharacter}
-                                    </div>
-                                    </div><p> ${person.name} <br> ${person.email}  |  ${person.mobile_number} </p>`;
-
                     if(person.service_name == null)
                     {
                         var appointment = `No Visit history`;
                     }
                     else
                     {
-                        var appointment = `last appointment at ${person.location_name} on ${person.start_date} ${person.service_name} with ${person.staff_name}(${person.status})`;
+                        var appointment = `<p>last appt at ${person.location_name} on ${person.start_date} </p>
+                                <p> ${person.service_name} with ${person.staff_name}(${person.status})</p>`;
                     }
-
-                    resultElement.innerHTML += `<a class='list-group-item list-group-item-action' href='javascript:void(0);' onclick='setSearchModal("${person.name}")'>${details} ${appointment}</a>`;
+                    var details = `<li>
+                            <div class='client-name'>
+                                <div class='drop-cap' style='background: #D0D0D0; color: #000;'>${firstCharacter}</div>
+                                <div class="client-info">
+                                    <h4 class="blue-bold">${person.name} ${person.lastname}</h4>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <a href="#" class="river-bed"><b> ${person.mobile_number} </b></a><br>
+                                <a href="#" class="river-bed"><b> ${person.email} </b></a>
+                            </div>
+                            ${appointment}
+                        </li>`;
+                    resultElement.innerHTML += `<a class='list-group-item list-group-item-action' href='javascript:void(0);' onclick='setSearchModal("${person.name}")'> ${details} </a>`;
                }
             }
         }
@@ -1050,7 +1073,7 @@
                                 <div class="client-info">
                                     <input type='hidden' name='client_name' value='${client.name} ${client.lastname}'>
                                     <input type='hidden' id="client_id" name='client_id' value='${client.id}'>
-                                    <h4 class="blue-bold">${client.name}</h4>
+                                    <h4 class="blue-bold">${client.name}  ${client.lastname}</h4>
                                 </div>
                             </div>
                             <div class="mb-2">
@@ -1100,7 +1123,7 @@
                                 <div class="client-info">
                                     <input type='hidden' name='client_name' value='${client.name} ${client.lastname}'>
                                     <input type='hidden' id="client_id" name='client_id' value='${client.id}'>
-                                    <h4 class="blue-bold">${client.name}</h4>
+                                    <h4 class="blue-bold">${client.name} ${client.lastname}</h4>
                                 </div>
                             </div>
                             <div class="mb-2">
