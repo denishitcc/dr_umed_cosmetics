@@ -139,7 +139,7 @@ class CalenderController extends Controller
      */
     public function getAllClients(Request $request)
     {
-        $clients = Clients::where('firstname', 'like', '%' .$request->name. '%')->get();
+        $clients = Clients::where('firstname', 'like', '%' .$request->name. '%')->where('status','active')->get();
         return response()->json(ClientResource::collection($clients));
     }
 
