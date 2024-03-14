@@ -20,7 +20,7 @@
                 </div>
                 <div id="clientDetails" class="detaild-theos pt-3"></div>
                 <div id='external-events'></div>
-                {{-- <div id="result" class="list-group"></div> --}}
+                {{-- <div id="result" class="list-group"></div>  --}} 
                 <ul class="drop-list" id="result"></ul>
                 <div id="mycalendar"> </div>
                 {{-- <img src="img/demo-calander.png" alt="" class="search_client"> onkeyup="changeInput(this.value)" --}}
@@ -819,8 +819,17 @@
         return res;
     }
 
+    function debounce(func, timeout = 300){
+        let timer;
+        return (...args) => {
+            clearTimeout(timer);
+            timer = setTimeout(() => { func.apply(this, args); }, timeout);
+        };
+    }
+
     //change input event
-    function changeInput(val) {
+    const changeInput = debounce((val) =>
+    {
         $('#clientDetails').empty();
         $('.upcoming_appointments').empty();
         $('.history_appointments').empty();
@@ -935,10 +944,11 @@
                 }
             }
         }
-    }
+    });
 
     //change input modal
-    function changeInputModal(val) {
+    const changeInputModal = debounce((val) => 
+    {
         $('#clientDetails').empty();
         $('.upcoming_appointments').empty();
         $('.history_appointments').empty();
@@ -1050,7 +1060,7 @@
                }
             }
         }
-    }
+    });
 
     //search and set clients
     function setSearch(value) {
