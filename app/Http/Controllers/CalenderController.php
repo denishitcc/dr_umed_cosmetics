@@ -445,6 +445,45 @@ class CalenderController extends Controller
         return response()->json($data);
     }
 
+    /**
+     * Method deleteAppointment
+     *
+     * @param int $id [explicite description]
+     *
+     * @return void
+     */
+    public function deleteAppointment(int $id)
+    {
+        try {
+            $appointment   = Appointment::with(['note'])->find($id);
+
+            // Delete appointment notes
+            if(isset($appointment->note->id))
+            {
+                $appointment->note()->delete();
+            }
+
+            // Delete Appointment
+            $appointment->delete();
+
+            $data = [
+                'success' => true,
+                'message' => 'Appointment deleted successfully!',
+                'type'    => 'success',
+            ];
+
+        } catch (\Throwable $th) {
+            //throw $th;
+            dd($th);
+            $data = [
+                'success' => false,
+                'message' => $th,
+                'type'    => 'fail',
+            ];
+        }
+        return response()->json($data);
+    }
+
     public function UpcomingAppointment(Request $request)
     {
         $currentDateTime = now()->timezone('Asia/Kolkata')->format('Y-m-d H:i:s');

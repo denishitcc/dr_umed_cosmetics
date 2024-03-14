@@ -25,6 +25,7 @@ var DU = {};
             context.openClientCardModal();
             context.closeClientCardModal();
             context.appointmentCancel();
+            context.deleteAppointment();
 
             $('#clientmodal').hide();
             $('#service_error').hide();
@@ -353,8 +354,8 @@ var DU = {};
 
                 var resultElement = document.getElementById("clientDetails"),
                 details =  `<div class='app_sum'>
-                <label>appointment summary</label><br><label>Drag and drop on to a day on the appointment book</label>
-                </div>`;
+                                <div class="summry-header"><span class="ico-clock me-2 fs-4"></span> Appointment Summary</div>
+                            </div>`;
                 resultElement.innerHTML += details;
 
                 // $("#selected_services > li").each(function(){
@@ -369,18 +370,26 @@ var DU = {};
                     // $('#mycalendar').remove();
                     $('#external-events').removeAttr('style');
                     $('#external-events').append(`
-                    <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event' data-service_id="${eventId}" data-client_name="${clientName}" data-duration="${duration}" data-client_id="${clientId}" data-category_id="${categoryId}"> ${eventName}
-                    </div><a href="javascript:void(0)" class="cancel_rebook">Cancel rebook</a>`);
+                    <div class="drag-box mb-3">
+                        <div class="head mb-2"><b>Drag and drop on</b> to a day on the appointment book
+                            <i class="ico-noun-arrow"></i></div>
+                        <div class="treatment fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event" data-service_id="${eventId}" data-client_name="${clientName}" data-duration="${duration}" data-client_id="${clientId}" data-category_id="${categoryId}">${eventName}
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <a href="javascript:void(0)" class="btn btn-primary btn-md blue-alter cancel_rebook">Cancel rebook</a>
+                    </div>`);
                 // });
 
                 context.selectors.appointmentModal.modal('hide');
                 //for reload all services & selected services
                 $("#all_ser").load(location.href+" #all_ser>*","");
                 $("#selected_services").empty();
+                $('#editEventData').remove();
 
                 //appointment rebook end
 
-                
+
                 // Prevent default behavior (e.g., form submission)
                 e.preventDefault();
                 // Initialize datepicker with options
@@ -395,8 +404,6 @@ var DU = {};
                     $('#selectedDateInput').val(selectedDate);
                     // Change the calendar view to the selected date
                     context.calendar.gotoDate(selectedDate);
-
-                    
                   }
                 });
                 // Show datepicker
@@ -409,8 +416,8 @@ var DU = {};
 
                 var resultElement = document.getElementById("clientDetails"),
                 details =  `<div class='app_sum'>
-                <label>appointment summary</label><br><label>Drag and drop on to a day on the appointment book</label>
-                </div>`;
+                                <div class="summry-header"><span class="ico-clock me-2 fs-4"></span> Appointment Summary</div>
+                            </div>`;
                 resultElement.innerHTML += details;
 
                 // $("#selected_services > li").each(function(){
@@ -425,8 +432,15 @@ var DU = {};
                     // $('#mycalendar').remove();
                     $('#external-events').removeAttr('style');
                     $('#external-events').append(`
-                    <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event' data-service_id="${eventId}" data-client_name="${clientName}" data-duration="${duration}" data-client_id="${clientId}" data-category_id="${categoryId}"> ${eventName}
-                    </div><a href="javascript:void(0)" class="cancel_rebook">Cancel rebook</a>`);
+                    <div class="drag-box mb-3">
+                        <div class="head mb-2"><b>Drag and drop on</b> to a day on the appointment book
+                            <i class="ico-noun-arrow"></i></div>
+                        <div class="treatment fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event" data-service_id="${eventId}" data-client_name="${clientName}" data-duration="${duration}" data-client_id="${clientId}" data-category_id="${categoryId}"> ${eventName}
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <a href="javascript:void(0)" class="btn btn-primary btn-md blue-alter cancel_rebook">Cancel rebook</a>
+                    </div>`);
                 // });
 
                 context.selectors.appointmentModal.modal('hide');
@@ -436,7 +450,6 @@ var DU = {};
 
                 //appointment rebook end
 
-                
                 // Prevent default behavior (e.g., form submission)
                 e.preventDefault();
                 // Initialize datepicker with options
@@ -451,8 +464,6 @@ var DU = {};
                     $('#selectedDateInput').val(selectedDate);
                     // Change the calendar view to the selected date
                     context.calendar.gotoDate(selectedDate);
-
-                    
                   }
                 });
                 // Show datepicker
@@ -461,7 +472,7 @@ var DU = {};
             $(document).on('click','.cancel_rebook',function(e){
                 $('.history_appointments').show();
                 $('.upcoming_appointments').show();
-                $('.app_sum').hide();
+                $('.app_sum').remove();
                 $('#external-events').empty();
             })
         },
@@ -497,6 +508,7 @@ var DU = {};
                                 <button class="btn btn-secondary btn-sm upcoming" data-client-id="${response.data.client_data.id}" >Upcoming</button>
                             </div>
                             <hr>
+                            <div id="editEventData">
                             <div class="summry-header"><span class="ico-clock me-2 fs-4"></span> Appointment Summary</div>
                             <div class="river-bed mb-3">
                                 Date:<br>
@@ -540,7 +552,7 @@ var DU = {};
                             <a href="#" class="btn btn-primary btn-md mb-2 d-block">Make Sale</a>
 
                             <div class="text-end">
-                                <a href="#" class="btn btn-primary btn-md blue-alter">Delete</a>
+                                <a href="javascript:void(0)" class="btn btn-primary btn-md blue-alter" id="deleteAppointment">Delete</a>
                             </div>
                             <hr>
                             <div class="form-group">
@@ -548,6 +560,7 @@ var DU = {};
                                 <textarea rows="4" class="form-control" placeholder="Click to edit" id="commonNotes"></textarea>
                                 <label class="form-label">Treatment Notes</label>
                                 <textarea rows="4" class="form-control" placeholder="Click to edit" id="treatmentNotes"></textarea>
+                            </div>
                             </div>`
                     );
                 },
@@ -608,6 +621,48 @@ var DU = {};
                     }
                 });
 
+            });
+        },
+
+        // Delete Appointment
+        deleteAppointment: function(){
+            var context = this;
+            $(document).on("click", '#deleteAppointment', function() {
+                var appointmentId       = $('#clientDetails').find('input:hidden[name=appointment_id]').val();
+
+                $.ajax({
+                    url: moduleConfig.DeleteAppointment.replace(':ID', appointmentId),
+                    type: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function (data) {
+                        if (data.success) {
+
+                            $('.summry-header').remove();
+                            $('#editEventData').remove();
+                            // context.calendar.refetchEvents();
+                            // console.log(context.calendar.refetchEvents());
+                            // $('#calendar').fullCalendar( 'refetchEvents' );
+                            // context.calendar.render();
+                            Swal.fire({
+                                title: "Appointment!",
+                                text: data.message,
+                                info: "success",
+                            });
+                            location.reload();
+                        } else {
+                            Swal.fire({
+                                title: "Error!",
+                                text: data.message,
+                                info: "error",
+                            });
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Error fetching resources:', error);
+                    }
+                });
             });
         },
 
@@ -897,7 +952,7 @@ var DU = {};
                                         <div class="head mb-2"><b>Drag and drop on</b> to a day on the appointment book
                                             <i class="ico-noun-arrow"></i></div>
                                         <div class="treatment fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event" data-service_id="${eventId}" data-client_name="${clientName}" data-duration="${duration}" data-client_id="${clientId}" data-category_id="${categoryId}">
-                                            ${eventName} <i class="ico-close"></i>
+                                            ${eventName}
                                         </div>
                                     </div>
                                     <div class="btns mb-3">
@@ -918,10 +973,11 @@ var DU = {};
             });
         },
 
+        // Cancel appointment
         appointmentCancel: function(){
             $(document).on("click", '#appointment_cancel', function() {
                 $('.summry-header').remove();
-                $('#external-events').remove();
+                $('#external-events').empty();
             });
         },
 

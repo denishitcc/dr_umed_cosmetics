@@ -151,5 +151,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('calender/upcoming-appointment',[CalenderController::class, 'UpcomingAppointment'])->name('calendar.upcoming-appointment');
     Route::post('calender/history-appointment',[CalenderController::class, 'HistoryAppointment'])->name('calendar.history-appointment');
     Route::post('calender/update-appointment-status',[CalenderController::class, 'UpdateAppointmentStatus'])->name('calendar.update-appointment-status');
+    Route::delete('calender/delete-appointment/{id}',[CalenderController::class, 'deleteAppointment'])->name('calendar.delete-appointment');
 });
 Route::get('/get-staff-list', [CalenderController::class,'getStaffList'])->name('get-staff-list');
