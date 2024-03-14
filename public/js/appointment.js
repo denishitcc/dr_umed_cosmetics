@@ -629,40 +629,41 @@ var DU = {};
             var context = this;
             $(document).on("click", '#deleteAppointment', function() {
                 var appointmentId       = $('#clientDetails').find('input:hidden[name=appointment_id]').val();
+                if(confirm("Are you sure to delete this appointment?")){
+                    $.ajax({
+                        url: moduleConfig.DeleteAppointment.replace(':ID', appointmentId),
+                        type: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function (data) {
+                            if (data.success) {
 
-                $.ajax({
-                    url: moduleConfig.DeleteAppointment.replace(':ID', appointmentId),
-                    type: 'DELETE',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    success: function (data) {
-                        if (data.success) {
-
-                            $('.summry-header').remove();
-                            $('#editEventData').remove();
-                            // context.calendar.refetchEvents();
-                            // console.log(context.calendar.refetchEvents());
-                            // $('#calendar').fullCalendar( 'refetchEvents' );
-                            // context.calendar.render();
-                            Swal.fire({
-                                title: "Appointment!",
-                                text: data.message,
-                                info: "success",
-                            });
-                            location.reload();
-                        } else {
-                            Swal.fire({
-                                title: "Error!",
-                                text: data.message,
-                                info: "error",
-                            });
+                                $('.summry-header').remove();
+                                $('#editEventData').remove();
+                                // context.calendar.refetchEvents();
+                                // console.log(context.calendar.refetchEvents());
+                                // $('#calendar').fullCalendar( 'refetchEvents' );
+                                // context.calendar.render();
+                                Swal.fire({
+                                    title: "Appointment!",
+                                    text: data.message,
+                                    info: "success",
+                                });
+                                location.reload();
+                            } else {
+                                Swal.fire({
+                                    title: "Error!",
+                                    text: data.message,
+                                    info: "error",
+                                });
+                            }
+                        },
+                        error: function (error) {
+                            console.error('Error fetching resources:', error);
                         }
-                    },
-                    error: function (error) {
-                        console.error('Error fetching resources:', error);
-                    }
-                });
+                    });
+                }
             });
         },
 

@@ -119,11 +119,12 @@
             @php
                 $currentDateTime = now()->timezone('Asia/Kolkata')->format('Y-m-d H:i:s');
                 $data = \App\Models\Clients::join('appointment', function($join) use ($currentDateTime) {
-                $join->on('clients.id', '=', 'appointment.client_id')
-                    ->where('appointment.start_date', '>=', $currentDateTime);
+                    $join->on('clients.id', '=', 'appointment.client_id')
+                        ->where('appointment.start_date', '>=', $currentDateTime);
                 })
                 ->join('services', 'services.id', '=', 'appointment.service_id') // Join the service table
                 ->select('clients.firstname','clients.lastname','appointment.start_date', 'services.service_name') // Select the name column from the clients table and the service_name column from the service table
+                ->orderBy('appointment.start_date', 'asc') // Order by start_date in ascending order
                 ->take(5)
                 ->get();
             @endphp
