@@ -75,7 +75,7 @@
                     <th>Type</th>
                     <th>Price ($ Inc GST)</th>
                     <th>Cost ($ Exc GST)</th>
-                    <th>Margin</th>
+                    <th>Margin (%)</th>
                     <th>On Hand</th>
                     <th>On Hand($)</th> 
                     <th>Suppliers</th>
@@ -322,7 +322,14 @@ $(document).ready(function() {
             {data: 'type', name: 'type'},
             {data: 'price', name: 'price'},
             {data: 'cost', name: 'cost'},
-            {data: 'margin', name: 'margin'},
+            // {data: 'margin', name: 'margin'},
+            {
+                data: 'margin', 
+                name: 'margin',
+                render: function(data, type, row, meta) {
+                    return parseFloat(data).toFixed(2); // Format to 2 decimal places
+                }
+            },
             {"defaultContent": ""},//{data: 'id', name: 'id'},//appointment date
             {"defaultContent": ""},//{data: 'id', name: 'id'},//appointment date
             {data: 'supplier_name', name: 'supplier_name'},
