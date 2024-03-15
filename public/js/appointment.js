@@ -766,11 +766,11 @@ var DU = {};
                 data: data,
                 success: function (data) {
                     if (data.success) {
-                        Swal.fire({
-                            title: "Appointment!",
-                            text: data.message,
-                            info: "success",
-                        });
+                        // Swal.fire({
+                        //     title: "Appointment!",
+                        //     text: data.message,
+                        //     info: "success",
+                        // });
                     } else {
                         Swal.fire({
                             title: "Error!",
