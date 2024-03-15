@@ -157,7 +157,7 @@ var DU = {};
                 drop: function(info) {
                     info.draggedEl.parentNode.removeChild(info.draggedEl);
                     $('.app_sum').hide();
-                    $("#external-events").remove();
+                    // $("#external-events").remove();
                 },
                 eventReceive: function (info) {
                     var resourceId          = info.event._def.resourceIds[0],
