@@ -238,8 +238,8 @@ var DU = {};
                 {
                     let italicEl = document.createElement('div');
                     italicEl.classList.add("fc-event-main-frame");
-                    italicEl.innerHTML = `<time>${info.timeText}</time>
-                    <div>${info.event.extendedProps.client_name}</div><label>${info.event.title}</label>`;
+                    italicEl.innerHTML = `<div class='fc-event-time'>${info.timeText}</div>
+                    <div class='fc-event-title-container'><div class='fc-event-title fc-sticky'>${info.event.extendedProps.client_name} ${info.event.title}</div></div>`;
 
                     let arrayOfDomNodes = [italicEl]
 					return {
