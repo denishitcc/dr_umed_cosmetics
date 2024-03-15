@@ -441,6 +441,7 @@ $(document).ready(function() {
             $('#pagelist').val(page_info.page);
         }
     });
+    table.select.info( false);
     table.column(5).search('checked', true, false).draw();
     $(document).on('input', '.dt-search', function()
     {

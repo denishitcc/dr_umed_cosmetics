@@ -307,6 +307,7 @@ $(document).ready(function() {
         $('#pagelist').val(page_info.page);
     }
 });
+table.select.info( false);
 $(document).on('change', '#MultiSelect_DefaultValues', function() {
   var vals = $(this).find(':selected').map(function(index, element) {
     return $.fn.dataTable.util.escapeRegex($(element).val());

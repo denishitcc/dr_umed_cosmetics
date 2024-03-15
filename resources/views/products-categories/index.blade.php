@@ -142,10 +142,10 @@ $(document).ready(function() {
                 extend: 'collection',
                 text: 'Export',
                 buttons: [
-                { text: "Excel",exportOptions: { columns: [0.1] } ,extend: 'excelHtml5'},
-                { text: "CSV" ,exportOptions: { columns: [0.1] } ,extend: 'csvHtml5'},
-                { text: "PDF" ,exportOptions: { columns: [0.1] } ,extend: 'pdfHtml5'},
-                { text: "PRINT" ,exportOptions: { columns: [0.1] } ,extend: 'print'},
+                { text: "Excel",exportOptions: { columns: [0,1] } ,extend: 'excelHtml5'},
+                { text: "CSV" ,exportOptions: { columns: [0,1] } ,extend: 'csvHtml5'},
+                { text: "PDF" ,exportOptions: { columns: [0,1] } ,extend: 'pdfHtml5'},
+                { text: "PRINT" ,exportOptions: { columns: [0,1] } ,extend: 'print'},
             ],
             dropup: true
             },
@@ -230,7 +230,7 @@ $(document).ready(function() {
               $('#pagelist').val(page_info.page);
         }
     });
-
+    table.select.info( false);
     $(document).on('input', '.dt-search', function()
     {
         // table.ajax.reload();//for server side
@@ -277,6 +277,15 @@ $(document).ready(function() {
 			submitEditProductCategoryForm(data,id);
 		}
 	});
+        // Modal close event
+    $('#new_Category').on('hidden.bs.modal', function() {
+        // Clear validation messages when modal is closed
+        $("#new_Category").validate().resetForm();
+    });
+    $('#edit_product_Category').on('hidden.bs.modal', function() {
+        // Clear validation messages when modal is closed
+        $("#edit_product_Category").validate().resetForm();
+    });
 });
     $(document).on('click', '.dt-edit', function(e) {
         

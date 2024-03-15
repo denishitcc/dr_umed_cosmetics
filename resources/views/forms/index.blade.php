@@ -292,6 +292,7 @@ $(document).ready(function() {
         $('#pagelist').val(page_info.page);
     }
     });
+    table.select.info( false);
     $('.status').change(function(){
         
         if ($("input[name='status'][value='1']").prop("checked"))

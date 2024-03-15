@@ -191,7 +191,7 @@ $(document).ready(function() {
               $('#pagelist').val(page_info.page);
         }
     });
-
+    table.select.info( false);
     $(document).on('input', '.dt-search', function()
     {
         // table.ajax.reload();//for server side
