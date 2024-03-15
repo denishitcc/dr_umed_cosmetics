@@ -194,34 +194,34 @@ $(document).ready(function() {
 
                             // Add location
                             if (locationArray[index]) {
-                                formattedLocation = '<div class="user-appnt">' + locationArray[index] + '</div>';
+                                formattedLocation =  locationArray[index] ;
                             }
 
                             // Add a line break after AM or PM
-                            formattedDate = formattedDate.replace(/(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}\s)(AM|PM)/g, '<b>$1$2</b> (' + formattedLocation + ')');
+                            formattedDate = formattedDate.replace(/(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}\s)(AM|PM)/g, '<b>$1$2</b> <em>('+ formattedLocation + ')</em><br>');
                             
                             // Add status badge
                             if (statusArray[index]) {
                                 if (statusArray[index] == 'Booked') {
-                                    formattedStatus = '<span class="badge text-bg-yellow badge-md mb-1">' + statusArray[index] + '</span>';
+                                    formattedStatus = '<span class="badge text-bg-yellow badge-md ms-1">' + statusArray[index] + '</span>';
                                 } else if (statusArray[index] == 'Confirmed') {
-                                    formattedStatus = '<span class="badge text-bg-cyan badge-md mb-1">' + statusArray[index] + '</span>';
+                                    formattedStatus = '<span class="badge text-bg-cyan badge-md ms-1">' + statusArray[index] + '</span>';
                                 } else if (statusArray[index] == 'Started') {
-                                    formattedStatus = '<span class="badge text-bg-orange badge-md mb-1">' + statusArray[index] + '</span>';
+                                    formattedStatus = '<span class="badge text-bg-orange badge-md ms-1">' + statusArray[index] + '</span>';
                                 } else if (statusArray[index] == 'Completed') {
-                                    formattedStatus = '<span class="badge text-bg-blue badge-md mb-1">' + statusArray[index] + '</span>';
+                                    formattedStatus = '<span class="badge text-bg-blue badge-md ms-1">' + statusArray[index] + '</span>';
                                 } else if (statusArray[index] == 'No answer') {
-                                    formattedStatus = '<span class="badge text-bg-light-red badge-md mb-1">' + statusArray[index] + '</span>';
+                                    formattedStatus = '<span class="badge text-bg-light-red badge-md ms-1">' + statusArray[index] + '</span>';
                                 } else if (statusArray[index] == 'Left message') {
-                                    formattedStatus = '<span class="badge text-bg-green badge-md mb-1">' + statusArray[index] + '</span>';
+                                    formattedStatus = '<span class="badge text-bg-green badge-md ms-1">' + statusArray[index] + '</span>';
                                 } else if (statusArray[index] == 'Pencilied in') {
-                                    formattedStatus = '<span class="badge text-bg-grey badge-md mb-1">' + statusArray[index] + '</span>';
+                                    formattedStatus = '<span class="badge text-bg-black badge-md ms-1">' + statusArray[index] + '</span>';
                                 } else if (statusArray[index] == 'Turned up') {
-                                    formattedStatus = '<span class="badge text-bg-purple badge-md mb-1" style="background-color:#B7EDED;">' + statusArray[index] + '</span>';
+                                    formattedStatus = '<span class="badge text-bg-purple badge-md ms-1">' + statusArray[index] + '</span>';
                                 } else if (statusArray[index] == 'No show') {
-                                    formattedStatus = '<span class="badge text-bg-light-red badge-md mb-1">' + statusArray[index] + '</span>';
+                                    formattedStatus = '<span class="badge text-bg-red-purple badge-md ms-1">' + statusArray[index] + '</span>';
                                 } else if (statusArray[index] == 'Cancelled') {
-                                    formattedStatus = '<span class="badge text-bg-red badge-md mb-1">' + statusArray[index] + '</span>';
+                                    formattedStatus = '<span class="badge text-bg-red badge-md ms-1">' + statusArray[index] + '</span>';
                                 }
                             }
 
