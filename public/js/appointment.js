@@ -29,6 +29,7 @@ var DU = {};
 
             $('#clientmodal').hide();
             $('#service_error').hide();
+            $('#client').hide();
             // $("#external-events").draggable()
         },
 
@@ -236,7 +237,7 @@ var DU = {};
                 eventContent: function (info)
                 {
                     let italicEl = document.createElement('div');
-
+                    italicEl.classList.add("fc-event-main-frame");
                     italicEl.innerHTML = `<time>${info.timeText}</time>
                     <div>${info.event.extendedProps.client_name}</div><label>${info.event.title}</label>`;
 
@@ -912,7 +913,9 @@ var DU = {};
             });
 
             $('#appointmentSaveBtn').on('click' ,function(e){
-                var clientselectedServicesCount = $('#selected_services').children("li").length;
+                var clientselectedServicesCount = $('#selected_services').children("li").length,
+                    clientName                  = $('#clientDetailsModal').text();
+                // console.log(clientName);
 
                 if($('#check_client').val() == 'new_client')
                 {
@@ -925,7 +928,17 @@ var DU = {};
                     }
                 }
 
-                if(clientselectedServicesCount == 0)
+                if(clientName === "")
+                {
+                    console.log('in if');
+                    $('#client').show();
+                }
+                else
+                {
+                    $('#client').hide();
+                }
+
+                if(clientselectedServicesCount == 0 )
                 {
                     $('#service_error').show();
                 }

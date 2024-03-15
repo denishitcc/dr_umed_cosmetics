@@ -140,6 +140,7 @@
                     <div class="mb-5" id="clientmodal">
                         <div class="one-inline align-items-center mb-2">
                             <span class="custname me-3" id="clientDetailsModal"> </span>
+                            <input type="hidden" name="clientname" id="clientName">
                             <button type="button" class="btn btn-primary btn-md client_change">Change</button>
                         </div>
                         <em class="d-grey font-12 btn-light">No recent appointments found</em>
@@ -947,7 +948,7 @@
     });
 
     //change input modal
-    const changeInputModal = debounce((val) => 
+    const changeInputModal = debounce((val) =>
     {
         $('#clientDetails').empty();
         $('.upcoming_appointments').empty();
@@ -1124,8 +1125,9 @@
                     // If a match is found, dynamically bind HTML to clientDetails element
                     $('#clientmodal').show();
                     $('.clientCreateModal').hide();
+                    $("#clientName").val(client.name+client.lastname);
                     $("#clientDetailsModal").html(
-                        "<i class='ico-user2 me-2 fs-6'></i> "+ client.name +' '+ client.lastname);
+                        `<i class='ico-user2 me-2 fs-6'></i>  ${client.name}  ${client.lastname}`);
                     $('#clientDetails').html(
                         `<div class="client-name">
                                 <div class="drop-cap" style="background: #D0D0D0; color:#fff;">${client.name.charAt(0).toUpperCase()}
