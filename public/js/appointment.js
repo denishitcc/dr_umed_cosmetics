@@ -546,7 +546,7 @@ var DU = {};
                                 <button class="btn btn-secondary btn-sm">Edit Appt</button>
                                 <button class="btn btn-secondary btn-sm">Edit Forms</button>
                                 <button class="btn btn-secondary btn-sm">Rebook</button>
-                                <button class="btn btn-secondary btn-sm">Repeat Appt</button>
+                                <button class="btn btn-secondary btn-sm repeat_appt">Repeat Appt</button>
                                 <button class="btn btn-secondary btn-sm">Messages</button>
                                 <button class="btn btn-secondary btn-sm">Send appt details</button>
                             </div>
@@ -981,7 +981,7 @@ var DU = {};
 
                     context.selectors.appointmentModal.modal('hide');
                     //for reload all services & selected services
-                    $("#all_ser").load(location.href+" #all_ser>*","");
+                    // $("#all_ser").load(location.href+" #all_ser>*","");
                     $("#selected_services").empty();
                 }
             });
@@ -1155,17 +1155,13 @@ var DU = {};
 
         closeClientCardModal: function(){
             var context = this;
-            jQuery('#Client_card').on('hide.bs.modal', function()
+            jQuery('#New_appointment').on('hide.bs.modal', function()
             {
-                var $this = $(this);
-                $this.find('#ClientNotesData').remove();
-                $this.find('.show_notes').remove();
-
-                // $('#ClientNotesData').remove();
-                // $('#appointmentsData').remove();
+                $('.clientCreateModal').show();
+                $('#clientmodal').hide();
+                $("#selected_services").empty();
             });
         },
-
     }
 
     $('.add_new_client').click(function(){
