@@ -548,7 +548,7 @@ var DU = {};
                                 <button class="btn btn-secondary btn-sm">Rebook</button>
                                 <button class="btn btn-secondary btn-sm">Repeat Appt</button>
                                 <button class="btn btn-secondary btn-sm">Messages</button>
-                                <button class="btn btn-secondary btn-sm">Edit Service</button>
+                                <button class="btn btn-secondary btn-sm">Send appt details</button>
                             </div>
                             <a href="#" class="btn btn-primary btn-md mb-2 d-block">Make Sale</a>
 
