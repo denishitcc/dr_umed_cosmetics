@@ -28,6 +28,8 @@
             <!-- Hidden input field for datepicker -->
             <input type="text" id="datepicker" style="display:none;">
             <input type="hidden" id="selectedDateInput">
+            <input type="hidden" id="client_name" name="client_name">
+            <input type="hidden" id="client_id" name="client_id">
             <div class="col-lg-9">
                 <div class="main-apnt-calendar" id="calendar">
                 </div>
@@ -184,9 +186,9 @@
                                             <label id="subcategory_text">All Services &amp; Tasks</label>
                                         </div>
                                         <ul id="sub_services">
-                                            @foreach ($services as $services)
+                                            @foreach ($services as $service)
                                                 <li>
-                                                    <a href="javascript:void(0);" class="services" data-services_id="{{$services->id}}" data-category_id="{{$services->parent_category}}" data-duration="{{ $services->appearoncalender->duration }}">{{ $services->service_name }}</a>
+                                                    <a href="javascript:void(0);" class="services" data-services_id="{{$service->id}}" data-category_id="{{$service->parent_category}}" data-duration="{{ $service->appearoncalender->duration }}">{{ $service->service_name }}</a>
                                                 </li>
                                             @endforeach
                                         </ul>
@@ -214,6 +216,193 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light btn-md" data-bs-dismiss="modal">Discard</button>
                     <button type="button" class="btn btn-primary btn-md" id="appointmentSaveBtn">Save Changes</button>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="Edit_appointment" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-xxl">
+            <div class="modal-content">
+            <div id="clientEdit" data-url="{{ route('clients.store') }}"></div>
+            <form id="edit_client" name="edit_client" class="form" method="post">
+                @csrf
+                <input type="hidden" name="check_edit_client" id="check_edit_client" value="selected_client">
+                <div class="modal-header">
+                    <h4 class="modal-title">Please Edit appointment here</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="clientEditModal">
+                        <div class="one-inline align-items-center mb-5 client_detail">
+                            <div class="form-group icon mb-0 me-3">
+                                <input type="text" class="form-control" autocomplete="off" id="searcheditmodel" placeholder="Search for a client"  onkeyup="changeEditInputModal(this.value)">
+                                <!-- search_client_modal -->
+                                <i class="ico-search"></i>
+                            </div>
+                            <!-- <div class="list-group" id="search_client_modal"></div> -->
+                            <span class="me-3">Or</span>
+                            <button type="button" class="btn btn-primary btn-md add_new_client">Add a New Client</button>
+                        </div>
+                        <strong class="new_client_head" style="display:none;">New client details</strong><span class="sep new_client_head" style="display:none">|</span><a href="#" class="new_client_head cancel_client" style="display:none">Cancel</a>
+                        <div class="mb-5 client_form" style="display:none;">
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <div class="form-group">
+                                        <label class="form-label">First Name</label>
+                                        <input type="text" class="form-control" name="firstname" id="firstname_client" maxlength="50">
+                                        </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group">
+                                        <label class="form-label">Last Name</label>
+                                        <input type="text" class="form-control" name="lastname" id="lastname_client" maxlength="50">
+                                        </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group">
+                                        <label class="form-label">Email</label>
+                                        <input type="text" class="form-control" name="email" id="email_client" maxlength="100">
+                                        </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <label class="form-label">Gender</label>
+                                    <div class="toggle form-group">
+                                        <input type="radio" name="gender" value="Male" id="male" checked="checked" />
+                                        <label for="male">Male <i class="ico-tick"></i></label>
+                                        <input type="radio" name="gender" value="Female" id="female" />
+                                        <label for="female">Female <i class="ico-tick"></i></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <div class="form-group">
+                                        <label class="form-label">Phone </label>
+                                        <input type="text" class="form-control" name="phone" id="phone_client" maxlength="15">
+                                        </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group">
+                                        <label class="form-label">Phone type</label>
+                                        <select class="form-select form-control" name="phone_type" id="phone_type_client">
+                                            <option selected="" value=""> -- select an option -- </option>
+                                            <option>Mobile</option>
+                                            <option>Home</option>
+                                            <option>Work</option>
+                                        </select>
+                                        </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <label class="form-label">Send Promotions</label>
+                                    <div class="toggle form-group">
+                                        <input type="radio" name="send_promotions" value="1" id="yes" checked="checked">
+                                        <label for="yes">Yes <i class="ico-tick"></i></label>
+                                        <input type="radio" name="send_promotions" value="0" id="no">
+                                        <label for="no">No <i class="ico-tick"></i></label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group">
+                                        <label class="form-label">Preferred contact method</label>
+                                            <select class="form-select form-control" name="contact_method" id="contact_method_client">
+                                                <option selected="" value=""> -- select an option -- </option>
+                                                <option>Text message (SMS)</option>
+                                                <option>Email</option>
+                                                <option>Phone call</option>
+                                                <option>Post</option>
+                                                <option>No preference</option>
+                                                <option>Don't send reminders</option>
+                                            </select>
+                                        </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {{-- <div id="resultmodal" class="list-group"></div> --}}
+                    <ul class="drop-list" id="resulteditmodal"></ul>
+
+                    <div class="mb-5" id="clienteditmodal">
+                        <div class="one-inline align-items-center mb-2">
+                            <input type="hidden" id="event_id" value="">
+                            <input type="hidden" id="latest_staff_id" value="">
+                            <input type="hidden" id="latest_start_time" value="">
+                            <input type="hidden" id="latest_end_time" value="">
+                            <span class="custname me-3" id="clienteditDetailsModal"> </span>
+                            <input type="hidden" name="clientname" id="clientName">
+                            <button type="button" class="btn btn-primary btn-md client_edit_change">Change</button>
+                        </div>
+                        <em class="d-grey font-12 btn-light">No recent appointments found</em>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <h6>Categories</h6>
+                            <div class="service-list-box p-2">
+                                <ul class="ctg-tree ps-0 pe-1">
+                                    <li class="pt-title">
+                                        <div class="disflex">
+                                            <a href="javascript:void(0);" class="edit_parent_category_id">All Services &amp; Tasks </a>
+                                        </div>
+                                    </li>
+                                    @foreach ($categories as $category)
+                                    <li>
+                                        <div class="disflex">
+                                            <a href="javascript:void(0);" class="edit_parent_category_id" data-category_id="{{$category->id}}" data-duration="{{ $category->duration }}">{{$category->category_name}}</a>
+                                        </div>
+                                        @if ($category->children)
+                                            <ul>
+                                                @foreach ($category->children as $child)
+                                                    <li>
+                                                        <a href="javascript:void(0);">{{$child->category_name}}</a>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        @endif
+                                    </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <h6>Services</h6>
+                            <div class="service-list-box p-2" id="all_ser">
+                                <ul class="ctg-tree ps-0 pe-1">
+                                    <li class="pt-title">
+                                        <div class="disflex">
+                                            <label id="subcategory_text">All Services &amp; Tasks</label>
+                                        </div>
+                                        <ul id="edit_sub_services">
+                                            @foreach ($services as $services_data)
+                                                <li>
+                                                    <a href="javascript:void(0);" class="services" data-services_id="{{$services_data->id}}" data-services_id="{{$services_data->id}}" data-category_id="{{$services_data->parent_category}}" data-duration="{{ $services_data->appearoncalender->duration }}">{{ $services_data->service_name }}</a>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <h6>Selected Services</h6>
+                            <div class="service-list-box p-2" id="all_selected_ser">
+                                <ul class="ctg-tree ps-0 pe-1">
+                                    <li class="pt-title">
+                                        <div class="disflex">
+                                            Please Select/Deselect Services
+                                        </div>
+                                        <ul id="edit_selected_services">
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div><label style="color: red" id="service_error">Please select at least one service for this appointment.</label></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light btn-md" data-bs-dismiss="modal">Discard</button>
+                    <button type="button" class="btn btn-primary btn-md" id="appointmentUpdateBtn">Update appointment</button>
                 </div>
             </form>
             </div>
@@ -795,6 +984,36 @@
         });
         return false;
     });
+
+    $(document).on('click','#edit_appointment', function(e){
+        e.preventDefault();
+        // Get the data attributes from the button
+        var clientId = $(this).attr('client-id')
+        var clientName = $(this).attr('client-name');
+        var serviceId = $(this).attr('services_id');
+        var categoryId = $(this).attr('category_id');
+        var duration = $(this).attr('duration');
+        var serviceTitle = $(this).attr('service_name');
+        var app_date = $(this).attr('appointment_date');
+        var app_time = $(this).attr('appointment_time');
+        var staff_name = $(this).attr('staff_name');
+        var staff_id = $(this).attr('staff_id');
+        var event_id = $(this).attr('event_id');
+        $('#latest_staff_id').val(staff_id);
+        $('#latest_start_time').val(app_date);
+        $('#latest_end_time').val(app_time);
+        $('#event_id').val(event_id);
+        // Use the clientId and clientName as needed
+        console.log("Client ID:", clientId);
+        console.log("Client Name:", staff_id);
+        // Trigger the modal to open
+        $('#Edit_appointment').modal('show');
+        $('.clientEditModal').hide();
+        $("#clienteditDetailsModal").html(`<i class='ico-user2 me-2 fs-6'></i>  ${clientName}`);
+        $('#edit_selected_services').empty();
+        $("#edit_selected_services").append(`<li class='selected remove' test="1" data-appointment_date= "${app_date}"  data-appointment_time= "${app_time}" data-staff_name= "${staff_name}" data-services_id= ${serviceId}  data-category_id= ${categoryId}  data-duration='${duration}'><a href='javascript:void(0);' > ${serviceTitle} </a><span class='btn btn-cross cross-red remove_services'><i class='ico-close'></i></span></li>`);
+    });
+        
     //for match clients
     function matchClient(input) {
         var reg = new RegExp(input.trim(), "i");
@@ -882,18 +1101,18 @@
                             });
                         }
                         // Iterate over client documents and push only doc_name and created_at
-                        if (res[i].client_documents && res[i].client_documents.length > 0) {
-                            for (var j = 0; j < res[i].client_documents.length; j++) {
+                        if (res[i].documents && res[i].documents.length > 0) {
+                            for (var j = 0; j < res[i].documents.length; j++) {
                                 // If the record with the same doc_id already exists in the array, skip
-                                if (existingRecordIndex !== -1 && client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].client_documents[j].doc_id)) {
+                                if (existingRecordIndex !== -1 && client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].documents[j].doc_id)) {
                                     continue;
                                 }
-                                // If the record doesn't exist in the array or the doc_id doesn't exist in the client_documents array, add it
-                                if (existingRecordIndex === -1 || !client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].client_documents[j].doc_id)) {
+                                // If the record doesn't exist in the array or the doc_id doesn't exist in the documents array, add it
+                                if (existingRecordIndex === -1 || !client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].documents[j].doc_id)) {
                                     client_details[existingRecordIndex !== -1 ? existingRecordIndex : i].client_documents.push({
-                                        doc_id: res[i].client_documents[j].doc_id,
-                                        doc_name: res[i].client_documents[j].doc_name,
-                                        created_at: res[i].client_documents[j].created_at
+                                        doc_id: res[i].documents[j].doc_id,
+                                        doc_name: res[i].documents[j].doc_name,
+                                        created_at: res[i].documents[j].created_at
                                     });
                                 }
                             }
@@ -999,17 +1218,17 @@
                                 });
                             }
                             // Iterate over client documents and push only doc_name and created_at
-                            for (var j = 0; j < res[i].client_documents.length; j++) {
+                            for (var j = 0; j < res[i].documents.length; j++) {
                                 // If the record with the same doc_id already exists in the array, skip
-                                if (existingRecordIndex !== -1 && client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].client_documents[j].doc_id)) {
+                                if (existingRecordIndex !== -1 && client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].documents[j].doc_id)) {
                                     continue;
                                 }
-                                // If the record doesn't exist in the array or the doc_id doesn't exist in the client_documents array, add it
-                                if (existingRecordIndex === -1 || !client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].client_documents[j].doc_id)) {
+                                // If the record doesn't exist in the array or the doc_id doesn't exist in the documents array, add it
+                                if (existingRecordIndex === -1 || !client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].documents[j].doc_id)) {
                                     client_details[existingRecordIndex !== -1 ? existingRecordIndex : i].client_documents.push({
-                                        doc_id: res[i].client_documents[j].doc_id,
-                                        doc_name: res[i].client_documents[j].doc_name,
-                                        created_at: res[i].client_documents[j].created_at
+                                        doc_id: res[i].documents[j].doc_id,
+                                        doc_name: res[i].documents[j].doc_name,
+                                        created_at: res[i].documents[j].created_at
                                     });
                                 }
                             }
@@ -1062,6 +1281,123 @@
             }
         }
     });
+
+    //change input modal
+    const changeEditInputModal = debounce((val) =>
+    {
+        $('#clientDetails').empty();
+        $('.upcoming_appointments').empty();
+        $('.history_appointments').empty();
+            $.ajax({
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: "{{route('calendar.get-all-clients')}}",
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    name: $('#searcheditmodel').val(),
+                },
+                dataType: "json",
+                success: function(res) {
+                    if (res.length > 0) {
+                        for (var i = 0; i < res.length; ++i) {
+                            // Check if the record with the same id already exists in the array
+                            var existingRecordIndex = client_details.findIndex(record => record.id === res[i].id);
+
+                            // If the record doesn't exist in the array, add it
+                            if (existingRecordIndex === -1) {
+                                // Push client details to the client_details array
+                                client_details.push({
+                                    id: res[i].id,
+                                    name: res[i].first_name,
+                                    lastname: res[i].last_name,
+                                    email: res[i].email,
+                                    mobile_number: res[i].mobile_no,
+                                    date_of_birth: res[i].date_of_birth,
+                                    gender: res[i].gender,
+                                    home_phone: res[i].home_phone,
+                                    work_phone: res[i].work_phone,
+                                    contact_method: res[i].contact_method,
+                                    send_promotions: res[i].send_promotions,
+                                    street_address: res[i].street_address,
+                                    suburb: res[i].suburb,
+                                    city: res[i].city,
+                                    postcode: res[i].postcode,
+                                    client_photos:res[i].client_photos,
+                                    client_documents: [], // Initialize an empty array for client documents
+                                    service_name: res[i].last_appointment.service_name,
+                                    staff_name: res[i].last_appointment.staff_name,
+                                    start_date: res[i].last_appointment.appointment_date,
+                                    status: res[i].last_appointment.status,
+                                    location_name: res[i].last_appointment.location_name
+                                });
+                            }
+                            // Iterate over client documents and push only doc_name and created_at
+                            for (var j = 0; j < res[i].documents.length; j++) {
+                                // If the record with the same doc_id already exists in the array, skip
+                                if (existingRecordIndex !== -1 && client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].documents[j].doc_id)) {
+                                    continue;
+                                }
+                                // If the record doesn't exist in the array or the doc_id doesn't exist in the documents array, add it
+                                if (existingRecordIndex === -1 || !client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].documents[j].doc_id)) {
+                                    client_details[existingRecordIndex !== -1 ? existingRecordIndex : i].client_documents.push({
+                                        doc_id: res[i].documents[j].doc_id,
+                                        doc_name: res[i].documents[j].doc_name,
+                                        created_at: res[i].documents[j].created_at
+                                    });
+                                }
+                            }
+                        }
+                    } else {
+                        $('.table-responsive').empty();
+                    }
+                },
+                error: function(jqXHR, exception) {
+                    // Handle error
+                }
+            });
+
+            // $('#clientDetails').empty();
+            var autoCompleteResult = matchClient(val);
+            var resultElement = document.getElementById("resulteditmodal");
+            if (val.trim() === "") {
+                resultElement.innerHTML = ""; // Clear the result if search box is empty
+        } else {
+            if (autoCompleteResult.length === 0) {
+                resultElement.innerHTML = "<p>No records found</p>";
+            } else {
+                resultElement.innerHTML = ""; // Clear previous message if records are found
+                for (var i = 0, limit = 10, len = autoCompleteResult.length; i < len && i < limit; i++) {
+                    var person = autoCompleteResult[i];
+                    var firstCharacter = person.name.charAt(0).toUpperCase();
+                    if(person.service_name == null)
+                    {
+                        var appointment = `No Visit history`;
+                    }
+                    else
+                    {
+                        var appointment = `<p>last appt at ${person.location_name} on ${person.start_date} </p>
+                                <p> ${person.service_name} with ${person.staff_name}(${person.status})</p>`;
+                    }
+                    resultElement.innerHTML += `<li onclick='setEditSearchModal("${person.name}")'>
+                            <div class='client-name'>
+                                <div class='drop-cap' style='background: #D0D0D0; color: #000;'>${firstCharacter}</div>
+                                <div class="client-info">
+                                    <h4 class="blue-bold">${person.name} ${person.lastname}</h4>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <a href="#" class="river-bed"><b> ${person.mobile_number} </b></a><br>
+                                <a href="#" class="river-bed"><b> ${person.email} </b></a>
+                            </div>
+                            ${appointment}
+                        </li>`;
+               }
+            }
+        }
+    });
+    
 
     //search and set clients
     function setSearch(value) {
@@ -1151,6 +1487,56 @@
                             <hr>`
                     );
                     document.getElementById('searchmodel').value = '';
+                    // Trigger the click event of the history button
+                    // $('.history').click();
+                    break; // Stop iterating once a match is found
+                }
+            }
+        }
+    }
+    function setEditSearchModal(value) {
+        
+        document.getElementById('searcheditmodel').value = value;
+        document.getElementById("resultmodal").innerHTML = "";
+
+        // Iterate over client_details to find a matching value
+        for (const key in client_details) {
+            console.log(client_details);
+            if (client_details.hasOwnProperty(key)) {
+                const client = client_details[key];
+                // Check if value matches any field in the client object
+                if (client.email === value || client.mobile_number === value || client.name === value) {
+                    console.log(client);
+                    // If a match is found, dynamically bind HTML to clientDetails element
+                    $('#clienteditmodal').show();
+                    $('.clientEditModal').hide();
+                    $('#resulteditmodal').empty();
+                    $("#clientName").val(client.name+client.lastname);
+                    $("#clienteditDetailsModal").html(
+                        `<i class='ico-user2 me-2 fs-6'></i>  ${client.name}  ${client.lastname}`);
+                    $('#clientDetails').html(
+                        `<div class="client-name">
+                                <div class="drop-cap" style="background: #D0D0D0; color:#fff;">${client.name.charAt(0).toUpperCase()}
+                                </div>
+                                <div class="client-info">
+                                    <input type='hidden' name='client_name' value='${client.name} ${client.lastname}'>
+                                    <input type='hidden' id="client_id" name='client_id' value='${client.id}'>
+                                    <h4 class="blue-bold">${client.name} ${client.lastname}</h4>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <a href="#" class="river-bed"><b>${client.mobile_number}</b></a><br>
+                                <a href="#" class="river-bed"><b>${client.email}</b></a>
+                            </div>
+                            <hr>
+                            <div class="btns">
+                                <button class="btn btn-secondary btn-sm open-client-card-btn" data-client-id="${client.id}" >Client Card</button>
+                                <button class="btn btn-secondary btn-sm history" data-client-id="${client.id}" >History</button>
+                                <button class="btn btn-secondary btn-sm upcoming" data-client-id="${client.id}" >Upcoming</button>
+                            </div>
+                            <hr>`
+                    );
+                    document.getElementById('searcheditmodel').value = '';
                     // Trigger the click event of the history button
                     // $('.history').click();
                     break; // Stop iterating once a match is found

@@ -21,6 +21,7 @@ var DU = {};
             // context.searchClient();
             // context.searchClientModal();
             context.appointmentSaveBtn();
+            context.appointmentUpdateBtn();
             context.staffList();
             context.openClientCardModal();
             context.closeClientCardModal();
@@ -470,6 +471,67 @@ var DU = {};
                 // Show datepicker
                 $('#datepicker').datepicker('show');
             })
+            $(document).on('click','.rebook',function(e){
+                $('.history_appointments').hide();
+                //appointment rebook start
+
+                var resultElement = document.getElementById("clientDetails"),
+                details =  `<div class='app_sum'>
+                                <div class="summry-header"><span class="ico-clock me-2 fs-4"></span> Appointment Summary</div>
+                            </div>`;
+                resultElement.innerHTML += details;
+
+                // $("#selected_services > li").each(function(){
+                    // var $this           = $(this),
+                    eventName           = $('#service_name').val(),
+                    eventId             = $('#service_id').val();
+                    categoryId          = $('#category_id').val();
+                    duration            = $('#duration').val();
+                    clientName          = $('#client_name').val();
+                    clientId            = $('#client_id').val();
+
+                    // $('#mycalendar').remove();
+                    $('#external-events').removeAttr('style');
+                    $('#external-events').append(`
+                    <div class="drag-box mb-3">
+                        <div class="head mb-2"><b>Drag and drop on</b> to a day on the appointment book
+                            <i class="ico-noun-arrow"></i></div>
+                        <div class="treatment fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event" data-service_id="${eventId}" data-client_name="${clientName}" data-duration="${duration}" data-client_id="${clientId}" data-category_id="${categoryId}">${eventName}
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <a href="javascript:void(0)" class="btn btn-primary btn-md blue-alter cancel_rebook">Cancel rebook</a>
+                    </div>`);
+                // });
+
+                context.selectors.appointmentModal.modal('hide');
+                //for reload all services & selected services
+                $("#all_ser").load(location.href+" #all_ser>*","");
+                $("#selected_services").empty();
+                $('#editEventData').remove();
+
+                //appointment rebook end
+
+
+                // Prevent default behavior (e.g., form submission)
+                e.preventDefault();
+                // Initialize datepicker with options
+                $('#datepicker').datepicker({
+                numberOfMonths: 2, // Display two months
+                dateFormat: 'yy-mm-dd', // Set date format to "yyyy-mm-dd"
+                onSelect: function(selectedDate, inst) {
+                    // Display selected date in console
+                    console.log('Selected date:', selectedDate);
+                    // You can also use the selected date for further processing
+                    // For example, update a hidden input field with the selected date
+                    $('#selectedDateInput').val(selectedDate);
+                    // Change the calendar view to the selected date
+                    context.calendar.gotoDate(selectedDate);
+                  }
+                });
+                // Show datepicker
+                $('#datepicker').datepicker('show');
+            })
             $(document).on('click','.cancel_rebook',function(e){
                 $('.history_appointments').show();
                 $('.upcoming_appointments').show();
@@ -534,18 +596,27 @@ var DU = {};
                                     <option value="10">Cancelled</option>
                                 </select>
                             </div>
-                            <div class="river-bed mb-3">
+                            <div class="river-bed mb-3 reminder">
                                 Reminder<br>
                                 <div class="d-flex align-items-center mt-1"><span class="ico-clock me-1 fs-5"></span> SMS to be sent</div>
                             </div>
                             <div class="orange-box mb-3">
                                 <p><b>${response.data.services_name}</b>
                                 ${response.data.appointment_time} with ${response.data.staff_name}</p>
+                                <input type="hidden" id="service_name" value="${response.data.services_name}">
+                                <input type="hidden" id="service_id" value="${response.data.service_id}">
+                                <input type="hidden" id="category_id" value="${response.data.category_id}">
+                                <input type="hidden" id="client_id" value="${response.data.id}">
+                                <input type="hidden" id="client_name" value="${response.data.client_data.first_name+' '+response.data.client_data.last_name}">
+                                <input type="hidden" id="duration" value="${response.data.duration}">
+                                <input type="hidden" id="appointment_time" value="${response.data.appointment_time}">
+                                <input type="hidden" id="staff_name" value="${response.data.staff_name}">
+                                <input type="hidden" id="staff_id" value="${response.data.staff_id}">
                             </div>
                             <div class="btns mb-3">
-                                <button class="btn btn-secondary btn-sm">Edit Appt</button>
+                                <button class="btn btn-secondary btn-sm" id="edit_appointment" event_id="${response.data.id}" staff_id="${response.data.staff_id}" appointment_date="${response.data.appointment_date}" appointment_time="${response.data.appointment_time}" staff_name="${response.data.staff_name}" service_name="${response.data.services_name}" duration="${response.data.duration}" category_id="${response.data.category_id}" services_id="${response.data.service_id}" client-id="${response.data.id}" client-name="${response.data.client_data.first_name+' '+response.data.client_data.last_name}" edit-service-name="${response.data.service_id}">Edit Appt</button>
                                 <button class="btn btn-secondary btn-sm">Edit Forms</button>
-                                <button class="btn btn-secondary btn-sm">Rebook</button>
+                                <button class="btn btn-secondary btn-sm rebook">Rebook</button>
                                 <button class="btn btn-secondary btn-sm repeat_appt">Repeat Appt</button>
                                 <button class="btn btn-secondary btn-sm">Messages</button>
                                 <button class="btn btn-secondary btn-sm">Send appt details</button>
@@ -825,6 +896,36 @@ var DU = {};
                     }
                 });
             });
+
+            jQuery('.edit_parent_category_id').on('click', function(e) {
+                e.preventDefault();
+                var $this           = $(this),
+                    categoryId      = $this.data('category_id'),
+                    duration        = $this.data('duration'),
+                    categoryTitle   = $this.text();
+
+                $.ajax({
+                    url: moduleConfig.categotyByservices, // Replace with your actual API endpoint
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {
+                        'category_id' : categoryId === undefined ? 0 : categoryId
+                    },
+                    success: function (data) {
+
+                        $('#subcategory_text').text(categoryTitle);
+                        $('#edit_sub_services').empty();
+                        $.each(data, function(index, item) {
+                            $("#edit_sub_services").append(`<li><a href='javascript:void(0);' class='services' data-services_id=${item.id} data-category_id=${item.parent_category} data-duration=${item.duration}>${item.service_name}</a></li>`);
+                        });
+                    },
+                    error: function (error) {
+                        console.error('Error fetching resources:', error);
+                    }
+                });
+            });
         },
 
         selecedServices: function(){
@@ -839,6 +940,22 @@ var DU = {};
                         serviceTitle    = $this.text();
 
                     $("#selected_services").append(`<li class='selected remove' data-services_id= ${serviceId}  data-category_id= ${categoryId}  data-duration='${duration}'><a href='javascript:void(0);' > ${serviceTitle} </a><span class='btn btn-cross cross-red remove_services'><i class='ico-close'></i></span></li>`);
+                });
+
+                $('#edit_sub_services').on('click', '.services', function(e) {
+                    
+ 
+                    e.preventDefault();
+                    var $this           = $(this),
+                        serviceId       = $this.data('services_id'),
+                        categoryId      = $this.data('category_id'),
+                        duration        = $this.data('duration'),
+                        serviceTitle    = $this.text();
+                        var app_date = $('#latest_start_time').val();//$('#edit_appointment').attr('appointment_date'); 
+                        var app_time =$('#latest_end_time').val();//$('#edit_appointment').attr('appointment_time'); 
+                        var staff_name = $('#edit_appointment').attr('staff_name');                        ;
+
+                    $("#edit_selected_services").append(`<li class='selected remove'  data-appointment_date= "${app_date}" data-appointment_time= "${app_time}" data-staff_name= "${staff_name}"  data-services_id= ${serviceId}  data-category_id= ${categoryId}  data-duration='${duration}'><a href='javascript:void(0);' > ${serviceTitle} </a><span class='btn btn-cross cross-red remove_services'><i class='ico-close'></i></span></li>`);
                 });
             });
             // jQuery('#sub_services').on('click',".services", function(e) {
@@ -855,6 +972,10 @@ var DU = {};
             var context = this;
 
             jQuery('#selected_services').on('click',".remove_services", function(e) {
+                e.preventDefault();
+                $(this).closest('li').remove();
+            });
+            jQuery('#edit_selected_services').on('click',".remove_services", function(e) {
                 e.preventDefault();
                 $(this).closest('li').remove();
             });
@@ -922,68 +1043,406 @@ var DU = {};
                     if ($("#create_client").valid()) {
                         var data = $('#create_client').serialize();
                         SubmitCreateClient(data);
+                        if(clientName === "")
+                        {
+                            console.log('in if');
+                            $('#client').show();
+                        }
+                        else
+                        {
+                            $('#client').hide();
+                        }
+
+                        if(clientselectedServicesCount == 0 )
+                        {
+                            $('#service_error').show();
+                        }
+                        else{
+                            $('#service_error').hide();
+                            // Check if the form is valid or not
+
+                            var resultElement = document.getElementById("clientDetails"),
+                                details =  `<div class="summry-header"><span class="ico-clock me-2 fs-4"></span> Appointment Summary</div>`;
+                            resultElement.innerHTML += details;
+
+                            $("#selected_services > li").each(function(){
+                                var $this           = $(this),
+                                eventName           = $(this).text(),
+                                eventId             = $(this).data('services_id');
+                                categoryId          = $(this).data('category_id');
+                                duration            = $(this).data('duration');
+                                clientName          = $('#clientDetails').find('input:hidden[name=client_name]').val();
+                                clientId            = $('#clientDetails').find('input:hidden[name=client_id]').val();
+
+                                // $('#mycalendar').remove();
+                                $('#external-events').removeAttr('style');
+                                $('#external-events').append(`
+                                            <div class="drag-box mb-3">
+                                                <div class="head mb-2"><b>Drag and drop on</b> to a day on the appointment book
+                                                    <i class="ico-noun-arrow"></i></div>
+                                                <div class="treatment fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event" data-service_id="${eventId}" data-client_name="${clientName}" data-duration="${duration}" data-client_id="${clientId}" data-category_id="${categoryId}">
+                                                    ${eventName}
+                                                </div>
+                                            </div>
+                                            <div class="btns mb-3">
+                                                <button class="btn btn-secondary btn-sm">Edit Appt</button>
+                                                <button class="btn btn-secondary btn-sm">Repeat appt</button>
+                                                <button class="btn btn-secondary btn-sm">Messages</button>
+                                            </div>
+                                            <div class="text-end">
+                                                <a href="#" class="btn btn-primary btn-md blue-alter" id="appointment_cancel">Cancel</a>
+                                            </div>`);
+                            });
+
+                            context.selectors.appointmentModal.modal('hide');
+                            //for reload all services & selected services
+                            // $("#all_ser").load(location.href+" #all_ser>*","");
+                            $("#selected_services").empty();
+                        }
                     } else {
                         // Prevent the form from being submitted if it's not valid
                         e.preventDefault();
                     }
-                }
+                }else{
+                    if(clientName === "")
+                    {
+                        console.log('in if');
+                        $('#client').show();
+                    }
+                    else
+                    {
+                        $('#client').hide();
+                    }
 
-                if(clientName === "")
-                {
-                    console.log('in if');
-                    $('#client').show();
-                }
-                else
-                {
-                    $('#client').hide();
-                }
+                    if(clientselectedServicesCount == 0 )
+                    {
+                        $('#service_error').show();
+                    }
+                    else{
+                        $('#service_error').hide();
+                        // Check if the form is valid or not
 
-                if(clientselectedServicesCount == 0 )
-                {
-                    $('#service_error').show();
-                }
-                else{
-                    $('#service_error').hide();
-                    // Check if the form is valid or not
+                        var resultElement = document.getElementById("clientDetails"),
+                            details =  `<div class="summry-header"><span class="ico-clock me-2 fs-4"></span> Appointment Summary</div>`;
+                        resultElement.innerHTML += details;
 
-                    var resultElement = document.getElementById("clientDetails"),
-                        details =  `<div class="summry-header"><span class="ico-clock me-2 fs-4"></span> Appointment Summary</div>`;
-                    resultElement.innerHTML += details;
+                        $("#selected_services > li").each(function(){
+                            var $this           = $(this),
+                            eventName           = $(this).text(),
+                            eventId             = $(this).data('services_id');
+                            categoryId          = $(this).data('category_id');
+                            duration            = $(this).data('duration');
+                            clientName          = $('#clientDetails').find('input:hidden[name=client_name]').val();
+                            clientId            = $('#clientDetails').find('input:hidden[name=client_id]').val();
 
-                    $("#selected_services > li").each(function(){
-                        var $this           = $(this),
-                        eventName           = $(this).text(),
-                        eventId             = $(this).data('services_id');
-                        categoryId          = $(this).data('category_id');
-                        duration            = $(this).data('duration');
-                        clientName          = $('#clientDetails').find('input:hidden[name=client_name]').val();
-                        clientId            = $('#clientDetails').find('input:hidden[name=client_id]').val();
-
-                        // $('#mycalendar').remove();
-                        $('#external-events').removeAttr('style');
-                        $('#external-events').append(`
-                                    <div class="drag-box mb-3">
-                                        <div class="head mb-2"><b>Drag and drop on</b> to a day on the appointment book
-                                            <i class="ico-noun-arrow"></i></div>
-                                        <div class="treatment fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event" data-service_id="${eventId}" data-client_name="${clientName}" data-duration="${duration}" data-client_id="${clientId}" data-category_id="${categoryId}">
-                                            ${eventName}
+                            // $('#mycalendar').remove();
+                            $('#external-events').removeAttr('style');
+                            $('#external-events').append(`
+                                        <div class="drag-box mb-3">
+                                            <div class="head mb-2"><b>Drag and drop on</b> to a day on the appointment book
+                                                <i class="ico-noun-arrow"></i></div>
+                                            <div class="treatment fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event" data-service_id="${eventId}" data-client_name="${clientName}" data-duration="${duration}" data-client_id="${clientId}" data-category_id="${categoryId}">
+                                                ${eventName}
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="btns mb-3">
-                                        <button class="btn btn-secondary btn-sm">Edit Appt</button>
-                                        <button class="btn btn-secondary btn-sm">Repeat appt</button>
-                                        <button class="btn btn-secondary btn-sm">Messages</button>
-                                    </div>
-                                    <div class="text-end">
-                                        <a href="#" class="btn btn-primary btn-md blue-alter" id="appointment_cancel">Cancel</a>
-                                    </div>`);
-                    });
+                                        <div class="btns mb-3">
+                                            <button class="btn btn-secondary btn-sm">Edit Appt</button>
+                                            <button class="btn btn-secondary btn-sm">Repeat appt</button>
+                                            <button class="btn btn-secondary btn-sm">Messages</button>
+                                        </div>
+                                        <div class="text-end">
+                                            <a href="#" class="btn btn-primary btn-md blue-alter" id="appointment_cancel">Cancel</a>
+                                        </div>`);
+                        });
 
-                    context.selectors.appointmentModal.modal('hide');
-                    //for reload all services & selected services
-                    // $("#all_ser").load(location.href+" #all_ser>*","");
-                    $("#selected_services").empty();
+                        context.selectors.appointmentModal.modal('hide');
+                        //for reload all services & selected services
+                        // $("#all_ser").load(location.href+" #all_ser>*","");
+                        $("#selected_services").empty();
+                    }
                 }
+
+                
+            });
+        },
+
+        //appointment save
+        appointmentUpdateBtn: function(){
+            var context = this;
+            // Validate the client form
+            $("#edit_client").validate({
+                rules: {
+                    firstname: {
+                        required: true,
+                    },
+                    lastname:{
+                        required:true,
+                    },
+                    email: {
+                        required: true,
+                        email: true,
+                        remote: {
+                            url: "../clients/checkClientEmail", // Replace with the actual URL to check email uniqueness
+                            type: "post", // Use "post" method for the AJAX request
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            data: {
+                                email: function () {
+                                    return $("#email_client").val(); // Pass the value of the email field to the server
+                                }
+                            },
+                            dataFilter: function (data) {
+                                var json = $.parseJSON(data);
+                                var chk = json.exists ? '"Email already exist!"' : '"true"';
+                                return chk;
+                            }
+                        }
+                    },
+                    phone:{
+                        required: true,
+                    },
+                    phone_type:{
+                        required: true,
+                    },
+                    contact_method:{
+                        required: true,
+                    },
+                },
+            });
+
+            $('#appointmentUpdateBtn').on('click', function(e) {
+                e.preventDefault(); // Prevent default form submission behavior
+                var clientselectedServicesCount = $('#edit_selected_services').children("li").length,
+                    clientName                  = $('#clienteditDetailsModal').text();
+                // console.log(clientName);
+
+                if($('#check_client').val() == 'new_client')
+                {
+                    if ($("#edit_client").valid()) {
+                        var data = $('#edit_client').serialize();
+                        SubmitEditClient(data);
+                        if(clientName === "")
+                        {
+                            console.log('in if');
+                            $('#client').show();
+                            return false;
+                        }
+                        else
+                        {
+                            $('#client').hide();
+                        }
+
+                        if(clientselectedServicesCount == 0 )
+                        {
+                            $('#service_error').show();
+                        }
+                        else{
+                            $('#service_error').hide();
+                            // Check if the form is valid or not
+
+                            var resultElement = document.getElementById("clientDetails"),
+                                details =  `<div class="summry-header"><span class="ico-clock me-2 fs-4"></span> Appointment Summary</div>`;
+                            resultElement.innerHTML += details;
+                            $('.reminder').next('.orange-box').remove();
+
+                            var appointmentsData = []; // Array to store appointment data
+                        
+                            $("#edit_selected_services > li").each(function() {
+                                var $this = $(this),
+                                    eventName = $(this).text(),
+                                    eventId = $(this).data('services_id'),
+                                    categoryId = $(this).data('category_id'),
+                                    duration = $(this).data('duration'),
+                                    clientName = $('#clientDetails').find('input:hidden[name=client_name]').val(),
+                                    clientId = $('#clientDetails').find('input:hidden[name=client_id]').val(),
+                                    appointmentDate = $(this).data('appointment_date'),
+                                    appointmentTime = $(this).data('appointment_time'),
+                                    staffId = $(this).data('staff_name'),
+                                    staffName = $(this).data('staff_name');
+                        
+                                const parsedDate = moment(appointmentDate, 'ddd DD MMM YYYY').format('YYYY-MM-DD');
+                                const parsedTime = moment(appointmentTime, 'hh:mm a').format('HH:mm:ss');
+                                const dateTimeString = `${parsedDate}T${parsedTime}`;
+                        
+                                // Push appointment data to the array
+                                appointmentsData.push({
+                                    'staff_id': $('#latest_staff_id').val(),//$('#edit_appointment').attr('staff_id'),
+                                    'start_date': moment().format('YYYY-MM-DD'),
+                                    'start_time': moment(dateTimeString).format('YYYY-MM-DDTHH:mm:ss'),
+                                    'end_time': moment(dateTimeString).add(duration, 'minutes').format('YYYY-MM-DDTHH:mm:ss'),
+                                    'duration': duration,
+                                    'client_id': clientId,
+                                    'service_id': eventId,
+                                    'category_id': categoryId,
+                                    'event_id': $('#event_id').val(),//$('#edit_appointment').attr('event_id'),
+                                });
+
+                                // $('.reminder').append(`
+                                //     <div class="orange-box mb-3">
+                                //         <p><b>${eventName}</b>
+                                //         ${appointmentTime} with ${staffName}</p>
+                                //         <input type="hidden" id="service_name" value="${eventName}">
+                                //         <input type="hidden" id="service_id" value="${eventId}">
+                                //         <input type="hidden" id="category_id" value="${categoryId}">
+                                //         <input type="hidden" id="client_id" value="${clientId}">
+                                //         <input type="hidden" id="client_name" value="${clientName}">
+                                //         <input type="hidden" id="duration" value="${duration}">
+                                //     </div>
+                                // `);
+                            });
+                            
+                            // Fire AJAX request after collecting all appointment data
+                            $.ajax({
+                                url: '../calender/update-create-appointments',
+                                type: 'POST',
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                },
+                                data: {
+                                    appointments: appointmentsData
+                                },
+                                success: function(data) {
+                                    if (data.success) {
+                                        Swal.fire({
+                                            title: "Appointments Updated!",
+                                            text: data.message,
+                                            icon: "success",
+                                        }).then(function() {
+                                            // Reload the current page
+                                            location.reload();
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            title: "Error!",
+                                            text: data.message,
+                                            icon: "error",
+                                        });
+                                    }
+                                },
+                                error: function(error) {
+                                    console.error('Error fetching resources:', error);
+                                }
+                            });
+                        
+                            $('#Edit_appointment').modal('hide');
+                            $("#all_ser").load(location.href + " #all_ser>*", "");
+                            $("#edit_selected_services").empty();
+                        }
+                    } else {
+                        // Prevent the form from being submitted if it's not valid
+                        e.preventDefault();
+                    }
+                }else{
+                    if(clientName === "")
+                    {
+                        console.log('in if');
+                        $('#client').show();
+                        return false;
+                    }
+                    else
+                    {
+                        $('#client').hide();
+                    }
+
+                    if(clientselectedServicesCount == 0 )
+                    {
+                        $('#service_error').show();
+                    }
+                    else{
+                        $('#service_error').hide();
+                        // Check if the form is valid or not
+
+                        var resultElement = document.getElementById("clientDetails"),
+                            details =  `<div class="summry-header"><span class="ico-clock me-2 fs-4"></span> Appointment Summary</div>`;
+                        resultElement.innerHTML += details;
+                        $('.reminder').next('.orange-box').remove();
+
+                        var appointmentsData = []; // Array to store appointment data
+                    
+                        $("#edit_selected_services > li").each(function() {
+                            var $this = $(this),
+                                eventName = $(this).text(),
+                                eventId = $(this).data('services_id'),
+                                categoryId = $(this).data('category_id'),
+                                duration = $(this).data('duration'),
+                                clientName = $('#clientDetails').find('input:hidden[name=client_name]').val(),
+                                clientId = $('#clientDetails').find('input:hidden[name=client_id]').val(),
+                                appointmentDate = $(this).data('appointment_date'),
+                                appointmentTime = $(this).data('appointment_time'),
+                                staffId = $(this).data('staff_name'),
+                                staffName = $(this).data('staff_name');
+                    
+                            const parsedDate = moment(appointmentDate, 'ddd DD MMM YYYY').format('YYYY-MM-DD');
+                            const parsedTime = moment(appointmentTime, 'hh:mm a').format('HH:mm:ss');
+                            const dateTimeString = `${parsedDate}T${parsedTime}`;
+                    
+                            // Push appointment data to the array
+                            appointmentsData.push({
+                                'staff_id': $('#latest_staff_id').val(),//$('#edit_appointment').attr('staff_id'),
+                                'start_date': moment().format('YYYY-MM-DD'),
+                                'start_time': moment(dateTimeString).format('YYYY-MM-DDTHH:mm:ss'),
+                                'end_time': moment(dateTimeString).add(duration, 'minutes').format('YYYY-MM-DDTHH:mm:ss'),
+                                'duration': duration,
+                                'client_id': clientId,
+                                'service_id': eventId,
+                                'category_id': categoryId,
+                                'event_id': $('#event_id').val(),//$('#edit_appointment').attr('event_id'),
+                            });
+                            // $('.reminder').append(`
+                            //     <div class="orange-box mb-3">
+                            //         <p><b>${eventName}</b>
+                            //         ${appointmentTime} with ${staffName}</p>
+                            //         <input type="hidden" id="service_name" value="${eventName}">
+                            //         <input type="hidden" id="service_id" value="${eventId}">
+                            //         <input type="hidden" id="category_id" value="${categoryId}">
+                            //         <input type="hidden" id="client_id" value="${clientId}">
+                            //         <input type="hidden" id="client_name" value="${clientName}">
+                            //         <input type="hidden" id="duration" value="${duration}">
+                            //     </div>
+                            // `);
+                        });
+                    
+                        // Fire AJAX request after collecting all appointment data
+                        $.ajax({
+                            url: '../calender/update-create-appointments',
+                            type: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            data: {
+                                appointments: appointmentsData
+                            },
+                            success: function(data) {
+                                if (data.success) {
+                                    Swal.fire({
+                                        title: "Appointments Updated!",
+                                        text: data.message,
+                                        icon: "success",
+                                    }).then(function() {
+                                        // Reload the current page
+                                        location.reload();
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        title: "Error!",
+                                        text: data.message,
+                                        icon: "error",
+                                    });
+                                }
+                            },
+                            error: function(error) {
+                                console.error('Error fetching resources:', error);
+                            }
+                        });
+                    
+                        $('#Edit_appointment').modal('hide');
+                        $("#all_ser").load(location.href + " #all_ser>*", "");
+                        $("#edit_selected_services").empty();
+                    }
+                }
+
+                
             });
         },
 
@@ -1176,11 +1635,23 @@ var DU = {};
         $('.new_client_head').hide();
         $('.client_form').hide();
         $('.client_detail').show();
+        // $('#clientDetails').find('input:hidden[name=client_name]').val()
+        // $('.client_detail').hide();
+        // $('.client_edit_change').show();
+        // $('#clienteditDetailsModal').show();
+
+        $('.clientEditModal').hide();
+        $('#clienteditmodal').show();
+        $("#clienteditDetailsModal").html(`<i class='ico-user2 me-2 fs-6'></i> ${$('#clientDetails').find('input:hidden[name=client_name]').val()}`);
     })
 
     $('.client_change').click(function(){
         $('.clientCreateModal').show();
         $('#clientmodal').hide();
+    })
+    $('.client_edit_change').click(function(){
+        $('.clientEditModal').show();
+        $('#clienteditmodal').hide();
     })
     //submit create client form
     function SubmitCreateClient(data){
@@ -1190,6 +1661,93 @@ var DU = {};
             url: url,
 			type: "post",
 			data: data,
+			success: function(response) {
+				// Show a Sweet Alert message after the form is submitted.
+				if (response.success) {
+                    // $('#client_name').val(response.data.firstname + ' ' + response.data.lastname);
+                    // $('#client_id').val(response.data.id);
+                    var clientName = response.data.firstname + ' ' + response.data.lastname;
+                    $('.treatment').each(function() {
+                        $(this).attr('data-client_name', clientName);
+                        $(this).attr('data-client_id', response.data.id);
+                    });
+                    $('.photos_count').text(0);
+                    $('.documents_count').text(0);
+                    // Push client details to the client_details array
+                    client_details.push({
+                        id: response.data.id,
+                        name: response.data.firstname,
+                        lastname: response.data.lastname,
+                        email: response.data.email,
+                        mobile_number: response.data.mobile_number,
+                        date_of_birth: response.data.date_of_birth,
+                        gender: response.data.gender,
+                        home_phone: response.data.home_phone,
+                        work_phone: response.data.work_phone,
+                        contact_method: response.data.contact_method,
+                        send_promotions: response.data.send_promotions,
+                        street_address: response.data.street_address,
+                        suburb: response.data.suburb,
+                        city: response.data.city,
+                        postcode: response.data.postcode,
+                    });
+                    $('#clientDetails').html(
+                        `<div class="client-name">
+                                <div class="drop-cap" style="background: #D0D0D0; color:#fff;">${response.data.firstname.charAt(0).toUpperCase()}
+                                </div>
+                                <div class="client-info">
+                                    <input type='hidden' name='client_name' value='${response.data.firstname} ${response.data.lastname}'>
+                                    <input type='hidden' id="client_id" name='client_id' value='${response.data.id}'>
+                                    <h4 class="blue-bold">${response.data.firstname} ${response.data.lastname}</h4>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <a href="#" class="river-bed"><b>${response.data.mobile_number}</b></a><br>
+                                <a href="#" class="river-bed"><b>${response.data.email}</b></a>
+                            </div>
+                            <hr>
+                            <div class="btns">
+                                <button class="btn btn-secondary btn-sm open-client-card-btn" data-client-id="${response.data.id}" >Client Card</button>
+                                <button class="btn btn-secondary btn-sm history" data-client-id="${response.data.id}" >History</button>
+                                <button class="btn btn-secondary btn-sm upcoming" data-client-id="${response.data.id}" >Upcoming</button>
+                            </div>
+                            <hr>`
+                    );
+
+					Swal.fire({
+						title: "Client!",
+						text: "Client & Appointment created successfully.",
+						info: "success",
+					}).then((result) => {
+                        $("#create_client").trigger("reset");
+                        $('#check_client').val('selected_client');
+                        $('.new_client_head').hide();
+                        $('.client_form').hide();
+                        $('.client_detail').show();
+                        //for reload all services & selected services
+                        $("#all_ser").load(location.href+" #all_ser>*","");
+                        $("#selected_services").empty();
+                        // console.log(result);
+                        // window.location = redirct_url;
+                    });
+				} else {
+					Swal.fire({
+						title: "Error!",
+						text: response.message,
+						info: "error",
+					});
+				}
+			},
+		});
+	}
+    function SubmitEditClient(data){
+        var url = $("#clientEdit").data("url");
+		$.ajax({
+			headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            url: url,
+			type: "post",
+			data: data,
+            async: false,
 			success: function(response) {
 				// Show a Sweet Alert message after the form is submitted.
 				if (response.success) {

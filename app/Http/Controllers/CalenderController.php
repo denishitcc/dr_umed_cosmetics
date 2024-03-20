@@ -791,4 +791,64 @@ class CalenderController extends Controller
         ];
         return response()->json($response);
     }
+    public function updateCreateAppointments(Request $request){
+        DB::beginTransaction();
+        try {
+            // Extract appointments array from the request
+            $appointments = $request->appointments;
+    
+            // First, delete existing appointments with provided event_ids
+            $eventIds = collect($appointments)->pluck('event_id');
+            // dd($appointments);
+            Appointment::whereIn('id', $eventIds)->delete();
+    
+            $startDateTime = null; // Initialize startDateTime outside the loop
+    
+            foreach ($appointments as $key => $appointmentData) {
+                $duration = $appointmentData['duration'];
+                $endDateTime = null;
+    
+                // Calculate start time for first iteration or update start time for subsequent iterations
+                if ($key === 0 || $startDateTime === null) {
+                    $startDateTime = Carbon::parse($appointmentData['start_time']);
+                } else {
+                    // Increase start time and end time by duration
+                    $startDateTime->addMinutes($duration);
+                    // dd($startDateTime);
+                }
+    
+                // Calculate end time based on start time and duration
+                $endDateTime = $startDateTime->copy()->addMinutes($duration);
+    
+                $appointmentsData = [
+                    'client_id'     => $appointmentData['client_id'],
+                    'service_id'    => $appointmentData['service_id'],
+                    'category_id'   => $appointmentData['category_id'],
+                    'staff_id'      => $appointmentData['staff_id'],
+                    'start_date'    => $startDateTime->toDateTimeString(),
+                    'end_date'      => $endDateTime->toDateTimeString(),
+                    'duration'      => $duration,
+                    'status'        => Appointment::BOOKED,
+                    'current_date'  => $startDateTime->toDateString(),
+                ];
+    
+                Appointment::create($appointmentsData);
+            }
+    
+            DB::commit();
+            $data = [
+                'success' => true,
+                'message' => 'Appointments updated successfully!',
+            ];
+    
+        } catch (\Exception $e) {
+            DB::rollback();
+            $data = [
+                'success' => false,
+                'message' => $e->getMessage(),
+            ];
+        }
+    
+        return response()->json($data);
+    }    
 }
