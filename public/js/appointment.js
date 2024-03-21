@@ -943,7 +943,7 @@ var DU = {};
                 });
 
                 $('#edit_sub_services').on('click', '.services', function(e) {
-                    
+
  
                     e.preventDefault();
                     var $this           = $(this),
@@ -1064,7 +1064,7 @@ var DU = {};
                             var resultElement = document.getElementById("clientDetails"),
                                 details =  `<div class="summry-header"><span class="ico-clock me-2 fs-4"></span> Appointment Summary</div>`;
                             resultElement.innerHTML += details;
-
+                            var count = 0;
                             $("#selected_services > li").each(function(){
                                 var $this           = $(this),
                                 eventName           = $(this).text(),
@@ -1073,25 +1073,34 @@ var DU = {};
                                 duration            = $(this).data('duration');
                                 clientName          = $('#clientDetails').find('input:hidden[name=client_name]').val();
                                 clientId            = $('#clientDetails').find('input:hidden[name=client_id]').val();
-
+                                // Increment the counter
+                                count++;
                                 // $('#mycalendar').remove();
                                 $('#external-events').removeAttr('style');
-                                $('#external-events').append(`
-                                            <div class="drag-box mb-3">
-                                                <div class="head mb-2"><b>Drag and drop on</b> to a day on the appointment book
-                                                    <i class="ico-noun-arrow"></i></div>
-                                                <div class="treatment fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event" data-service_id="${eventId}" data-client_name="${clientName}" data-duration="${duration}" data-client_id="${clientId}" data-category_id="${categoryId}">
-                                                    ${eventName}
-                                                </div>
+                                if (count === 1) {
+                                    $('#external-events').append(`
+                                        <div class="drag-box mb-3">
+                                            <div class="head mb-2"><b>Drag and drop on</b> to a day on the appointment book
+                                                <i class="ico-noun-arrow"></i></div>
+                                            <div class="treatment fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event" data-service_id="${eventId}" data-service_name="${eventName}" data-client_name="${clientName}" data-duration="${duration}" data-client_id="${clientId}" data-category_id="${categoryId}">
+                                                ${eventName}
                                             </div>
-                                            <div class="btns mb-3">
-                                                <button class="btn btn-secondary btn-sm">Edit Appt</button>
-                                                <button class="btn btn-secondary btn-sm">Repeat appt</button>
-                                                <button class="btn btn-secondary btn-sm">Messages</button>
+                                        </div>
+                                        <div class="btns mb-3">
+                                            <button class="btn btn-secondary btn-sm" id="edit_created_appointment" event_id="${eventId}" service_name="${eventName}" services_id="${eventId}"  category_id="${categoryId}"  duration="${duration}"  client-id="${clientId}" client-name="${clientName}" edit-service-name="${eventId}">Edit Appt</button>
+                                            <button class="btn btn-secondary btn-sm">Repeat appt</button>
+                                            <button class="btn btn-secondary btn-sm">Messages</button>
+                                        </div>
+                                        <div class="text-end">
+                                            <a href="#" class="btn btn-primary btn-md blue-alter" id="appointment_cancel">Cancel</a>
+                                        </div>`);
+                                } else if (count > 1) {
+                                    $('.drag-box').append(`
+                                            <div class="treatment fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event" data-service_id="${eventId}" data-service_name="${eventName}" data-client_name="${clientName}" data-duration="${duration}" data-client_id="${clientId}" data-category_id="${categoryId}">
+                                                ${eventName}
                                             </div>
-                                            <div class="text-end">
-                                                <a href="#" class="btn btn-primary btn-md blue-alter" id="appointment_cancel">Cancel</a>
-                                            </div>`);
+                                        `);
+                                }                            
                             });
 
                             context.selectors.appointmentModal.modal('hide');
@@ -1126,6 +1135,7 @@ var DU = {};
                             details =  `<div class="summry-header"><span class="ico-clock me-2 fs-4"></span> Appointment Summary</div>`;
                         resultElement.innerHTML += details;
 
+                        var count = 0;
                         $("#selected_services > li").each(function(){
                             var $this           = $(this),
                             eventName           = $(this).text(),
@@ -1134,25 +1144,34 @@ var DU = {};
                             duration            = $(this).data('duration');
                             clientName          = $('#clientDetails').find('input:hidden[name=client_name]').val();
                             clientId            = $('#clientDetails').find('input:hidden[name=client_id]').val();
-
+                            // Increment the counter
+                            count++;
                             // $('#mycalendar').remove();
                             $('#external-events').removeAttr('style');
-                            $('#external-events').append(`
-                                        <div class="drag-box mb-3">
-                                            <div class="head mb-2"><b>Drag and drop on</b> to a day on the appointment book
-                                                <i class="ico-noun-arrow"></i></div>
-                                            <div class="treatment fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event" data-service_id="${eventId}" data-client_name="${clientName}" data-duration="${duration}" data-client_id="${clientId}" data-category_id="${categoryId}">
+                            if (count === 1) {
+                                $('#external-events').append(`
+                                    <div class="drag-box mb-3">
+                                        <div class="head mb-2"><b>Drag and drop on</b> to a day on the appointment book
+                                            <i class="ico-noun-arrow"></i></div>
+                                        <div class="treatment fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event" data-service_name="${eventName}" data-service_id="${eventId}" data-client_name="${clientName}" data-duration="${duration}" data-client_id="${clientId}" data-category_id="${categoryId}">
+                                            ${eventName}
+                                        </div>
+                                    </div>
+                                    <div class="btns mb-3">
+                                        <button class="btn btn-secondary btn-sm" id="edit_created_appointment" event_id="${eventId}" service_name="${eventName}" services_id="${eventId}"  category_id="${categoryId}"  duration="${duration}"  client-id="${clientId}" client-name="${clientName}" edit-service-name="${eventId}">Edit Appt</button>
+                                        <button class="btn btn-secondary btn-sm">Repeat appt</button>
+                                        <button class="btn btn-secondary btn-sm">Messages</button>
+                                    </div>
+                                    <div class="text-end">
+                                        <a href="#" class="btn btn-primary btn-md blue-alter" id="appointment_cancel">Cancel</a>
+                                    </div>`);
+                            } else if (count > 1) {
+                                $('.drag-box').append(`
+                                            <div class="treatment fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event" data-service_name="${eventName}" data-service_id="${eventId}" data-client_name="${clientName}" data-duration="${duration}" data-client_id="${clientId}" data-category_id="${categoryId}">
                                                 ${eventName}
                                             </div>
-                                        </div>
-                                        <div class="btns mb-3">
-                                            <button class="btn btn-secondary btn-sm">Edit Appt</button>
-                                            <button class="btn btn-secondary btn-sm">Repeat appt</button>
-                                            <button class="btn btn-secondary btn-sm">Messages</button>
-                                        </div>
-                                        <div class="text-end">
-                                            <a href="#" class="btn btn-primary btn-md blue-alter" id="appointment_cancel">Cancel</a>
-                                        </div>`);
+                                        `);
+                            }                            
                         });
 
                         context.selectors.appointmentModal.modal('hide');
@@ -1247,7 +1266,7 @@ var DU = {};
                             $('.reminder').next('.orange-box').remove();
 
                             var appointmentsData = []; // Array to store appointment data
-                        
+                            $('.treatment').remove();
                             $("#edit_selected_services > li").each(function() {
                                 var $this = $(this),
                                     eventName = $(this).text(),
@@ -1277,53 +1296,63 @@ var DU = {};
                                     'category_id': categoryId,
                                     'event_id': $('#event_id').val(),//$('#edit_appointment').attr('event_id'),
                                 });
-
-                                // $('.reminder').append(`
-                                //     <div class="orange-box mb-3">
-                                //         <p><b>${eventName}</b>
-                                //         ${appointmentTime} with ${staffName}</p>
-                                //         <input type="hidden" id="service_name" value="${eventName}">
-                                //         <input type="hidden" id="service_id" value="${eventId}">
-                                //         <input type="hidden" id="category_id" value="${categoryId}">
-                                //         <input type="hidden" id="client_id" value="${clientId}">
-                                //         <input type="hidden" id="client_name" value="${clientName}">
-                                //         <input type="hidden" id="duration" value="${duration}">
-                                //     </div>
-                                // `);
-                            });
-                            
-                            // Fire AJAX request after collecting all appointment data
-                            $.ajax({
-                                url: '../calender/update-create-appointments',
-                                type: 'POST',
-                                headers: {
-                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                                },
-                                data: {
-                                    appointments: appointmentsData
-                                },
-                                success: function(data) {
-                                    if (data.success) {
-                                        Swal.fire({
-                                            title: "Appointments Updated!",
-                                            text: data.message,
-                                            icon: "success",
-                                        }).then(function() {
-                                            // Reload the current page
-                                            location.reload();
-                                        });
-                                    } else {
-                                        Swal.fire({
-                                            title: "Error!",
-                                            text: data.message,
-                                            icon: "error",
-                                        });
-                                    }
-                                },
-                                error: function(error) {
-                                    console.error('Error fetching resources:', error);
+                                if($('#is_app_created').val() == '1'){
+                                    
+                                    $('#external-events').removeAttr('style');
+                                    $('.drag-box').append(`
+                                            <div class="treatment fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event" data-service_name="${eventName}" data-service_id="${eventId}" data-client_name="${clientName}" data-duration="${duration}" data-client_id="${clientId}" data-category_id="${categoryId}">
+                                                ${eventName}
+                                            </div>
+                                        `);
+                                    // $('#external-events').append(`
+                                    //     <div class="orange-box mb-3">
+                                    //         <p><b>${eventName}</b>
+                                    //         ${appointmentTime} with ${staffName}</p>
+                                    //         <input type="hidden" id="service_name" value="${eventName}">
+                                    //         <input type="hidden" id="service_id" value="${eventId}">
+                                    //         <input type="hidden" id="category_id" value="${categoryId}">
+                                    //         <input type="hidden" id="client_id" value="${clientId}">
+                                    //         <input type="hidden" id="client_name" value="${clientName}">
+                                    //         <input type="hidden" id="duration" value="${duration}">
+                                    //     </div>
+                                    // `);
                                 }
                             });
+                            if($('#is_app_created').val() != '1'){
+                                $.ajax({
+                                    url: '../calender/update-create-appointments',
+                                    type: 'POST',
+                                    headers: {
+                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                    },
+                                    data: {
+                                        appointments: appointmentsData
+                                    },
+                                    success: function(data) {
+                                        if (data.success) {
+                                            Swal.fire({
+                                                title: "Appointments Updated!",
+                                                text: data.message,
+                                                icon: "success",
+                                            }).then(function() {
+                                                // Reload the current page
+                                                location.reload();
+                                            });
+                                        } else {
+                                            Swal.fire({
+                                                title: "Error!",
+                                                text: data.message,
+                                                icon: "error",
+                                            });
+                                        }
+                                    },
+                                    error: function(error) {
+                                        console.error('Error fetching resources:', error);
+                                    }
+                                });
+                            }
+                            // Fire AJAX request after collecting all appointment data
+                            
                         
                             $('#Edit_appointment').modal('hide');
                             $("#all_ser").load(location.href + " #all_ser>*", "");
@@ -1359,7 +1388,7 @@ var DU = {};
                         $('.reminder').next('.orange-box').remove();
 
                         var appointmentsData = []; // Array to store appointment data
-                    
+                        $('.treatment').remove();
                         $("#edit_selected_services > li").each(function() {
                             var $this = $(this),
                                 eventName = $(this).text(),
@@ -1389,53 +1418,63 @@ var DU = {};
                                 'category_id': categoryId,
                                 'event_id': $('#event_id').val(),//$('#edit_appointment').attr('event_id'),
                             });
-                            // $('.reminder').append(`
-                            //     <div class="orange-box mb-3">
-                            //         <p><b>${eventName}</b>
-                            //         ${appointmentTime} with ${staffName}</p>
-                            //         <input type="hidden" id="service_name" value="${eventName}">
-                            //         <input type="hidden" id="service_id" value="${eventId}">
-                            //         <input type="hidden" id="category_id" value="${categoryId}">
-                            //         <input type="hidden" id="client_id" value="${clientId}">
-                            //         <input type="hidden" id="client_name" value="${clientName}">
-                            //         <input type="hidden" id="duration" value="${duration}">
-                            //     </div>
-                            // `);
-                        });
-                    
-                        // Fire AJAX request after collecting all appointment data
-                        $.ajax({
-                            url: '../calender/update-create-appointments',
-                            type: 'POST',
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            },
-                            data: {
-                                appointments: appointmentsData
-                            },
-                            success: function(data) {
-                                if (data.success) {
-                                    Swal.fire({
-                                        title: "Appointments Updated!",
-                                        text: data.message,
-                                        icon: "success",
-                                    }).then(function() {
-                                        // Reload the current page
-                                        location.reload();
-                                    });
-                                } else {
-                                    Swal.fire({
-                                        title: "Error!",
-                                        text: data.message,
-                                        icon: "error",
-                                    });
-                                }
-                            },
-                            error: function(error) {
-                                console.error('Error fetching resources:', error);
+                            if($("#is_app_created").val()=='1'){
+                                
+                                $('#external-events').removeAttr('style');
+                                    $('.drag-box').append(`
+                                            <div class="treatment fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event" data-service_name="${eventName}" data-service_id="${eventId}" data-client_name="${clientName}" data-duration="${duration}" data-client_id="${clientId}" data-category_id="${categoryId}">
+                                                ${eventName}
+                                            </div>
+                                        `);
+                                // $('.reminder').append(`
+                                //     <div class="orange-box mb-3">
+                                //         <p><b>${eventName}</b>
+                                //         ${appointmentTime} with ${staffName}</p>
+                                //         <input type="hidden" id="service_name" value="${eventName}">
+                                //         <input type="hidden" id="service_id" value="${eventId}">
+                                //         <input type="hidden" id="category_id" value="${categoryId}">
+                                //         <input type="hidden" id="client_id" value="${clientId}">
+                                //         <input type="hidden" id="client_name" value="${clientName}">
+                                //         <input type="hidden" id="duration" value="${duration}">
+                                //     </div>
+                                // `);
                             }
+
                         });
-                    
+                        if($("#is_app_created").val() != '1'){
+                            // Fire AJAX request after collecting all appointment data
+                            $.ajax({
+                                url: '../calender/update-create-appointments',
+                                type: 'POST',
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                },
+                                data: {
+                                    appointments: appointmentsData
+                                },
+                                success: function(data) {
+                                    if (data.success) {
+                                        Swal.fire({
+                                            title: "Appointments Updated!",
+                                            text: data.message,
+                                            icon: "success",
+                                        }).then(function() {
+                                            // Reload the current page
+                                            location.reload();
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            title: "Error!",
+                                            text: data.message,
+                                            icon: "error",
+                                        });
+                                    }
+                                },
+                                error: function(error) {
+                                    console.error('Error fetching resources:', error);
+                                }
+                            });
+                        }
                         $('#Edit_appointment').modal('hide');
                         $("#all_ser").load(location.href + " #all_ser>*", "");
                         $("#edit_selected_services").empty();

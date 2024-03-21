@@ -803,21 +803,20 @@ class CalenderController extends Controller
             Appointment::whereIn('id', $eventIds)->delete();
     
             $startDateTime = null; // Initialize startDateTime outside the loop
+            $endDateTime = null; // Initialize endDateTime
     
             foreach ($appointments as $key => $appointmentData) {
                 $duration = $appointmentData['duration'];
-                $endDateTime = null;
     
                 // Calculate start time for first iteration or update start time for subsequent iterations
                 if ($key === 0 || $startDateTime === null) {
                     $startDateTime = Carbon::parse($appointmentData['start_time']);
                 } else {
-                    // Increase start time and end time by duration
-                    $startDateTime->addMinutes($duration);
-                    // dd($startDateTime);
+                    // Start time for subsequent appointments is the end time of the previous appointment
+                    $startDateTime = $endDateTime->copy();
                 }
     
-                // Calculate end time based on start time and duration
+                 // Calculate end time based on start time and duration
                 $endDateTime = $startDateTime->copy()->addMinutes($duration);
     
                 $appointmentsData = [

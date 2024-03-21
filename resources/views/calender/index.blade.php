@@ -1013,7 +1013,41 @@
         $('#edit_selected_services').empty();
         $("#edit_selected_services").append(`<li class='selected remove' test="1" data-appointment_date= "${app_date}"  data-appointment_time= "${app_time}" data-staff_name= "${staff_name}" data-services_id= ${serviceId}  data-category_id= ${categoryId}  data-duration='${duration}'><a href='javascript:void(0);' > ${serviceTitle} </a><span class='btn btn-cross cross-red remove_services'><i class='ico-close'></i></span></li>`);
     });
-        
+    $(document).on('click','#edit_created_appointment', function(e){
+        e.preventDefault();
+        console.log('start');
+        $('#edit_selected_services').empty();
+        $('.summry-header').hide();
+        $(this).parent().parent().find('.treatment').each(function() {
+            console.log('start_1',$(this));
+            // Your code to operate on each '.treatment' element goes here
+            // You can access each '.treatment' element using $(this) inside this function
+            var serviceId = $(this).data('service_id');
+            // var serviceName = $(this).data('service_name');
+            console.log('serviceId',serviceId);
+            var categoryId = $(this).data('category_id');
+            var duration = $(this).data('duration');
+            var serviceTitle = $(this).data('service_name');
+            // Appending a list item to #edit_selected_services
+            $("#edit_selected_services").append(`
+                <li class='selected remove' data-services_id='${serviceId}' data-services_name='${serviceTitle}'  data-category_id='${categoryId}' data-duration='${duration}'>
+                    <a href='javascript:void(0);'>${serviceTitle}</a>
+                    <span class='btn btn-cross cross-red remove_services'><i class='ico-close'></i></span>
+                </li>
+            `);
+        });
+
+        // Get the data attributes from the button
+        var clientName = $(this).attr('client-name');
+        // Trigger the modal to open
+        $('#Edit_appointment').modal('show');
+        $('.clientEditModal').hide();
+        $("#clienteditDetailsModal").html(`<i class='ico-user2 me-2 fs-6'></i>  ${clientName}`);
+        // Add hidden fields dynamically to the modal
+        $('#Edit_appointment').find('.modal-body').append(`
+            <input type="hidden" name="is_app_created" id="is_app_created" value="1">
+        `);
+    });
     //for match clients
     function matchClient(input) {
         var reg = new RegExp(input.trim(), "i");
