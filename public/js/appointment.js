@@ -3,8 +3,10 @@ var DU = {};
     DU.appointment = {
         calendar: null,
         selectors: {
-            appointmentModal: jQuery('#New_appointment'),
-            clientCardModal:  jQuery('#Client_card'),
+            appointmentModal:           jQuery('#New_appointment'),
+            clientCardModal:            jQuery('#Client_card'),
+            repeatAppointmentModal:     jQuery('#repeat_Appointment'),
+            repeatAppointmentForm:      jQuery("#addwaiterform"),
         },
         init: function (){
             this.addHandler();
@@ -27,10 +29,14 @@ var DU = {};
             context.closeClientCardModal();
             context.appointmentCancel();
             context.deleteAppointment();
+            context.openResetAppointmentModal();
+            context.repeatAppointmentSaveBtn();
+            context.closeReAppointmentModal();
 
             $('#clientmodal').hide();
             $('#service_error').hide();
             $('#client').hide();
+            $("#repeat_error").hide();
             // $("#external-events").draggable()
         },
 
@@ -557,6 +563,11 @@ var DU = {};
                                 <div class="client-info">
                                     <input type='hidden' name='client_name' value='${response.data.client_data.first_name} ${response.data.client_data.last_name}'>
                                     <input type='hidden' id="client_id" name='client_id' value='${response.data.client_data.id}'>
+                                    <input type='hidden' id="category_id" name='category_id' value='${response.data.category_id}'>
+                                    <input type='hidden' id="service_id" name='service_id' value='${response.data.services_id}'>
+                                    <input type='hidden' id="staff_id" name='staff_id' value='${response.data.staff_id}'>
+                                    <input type='hidden' id="start_date" name='start_date' value='${response.data.date}'>
+                                    <input type='hidden' name='appointment_duration' value='${response.data.duration}'>
                                     <h4 class="blue-bold">${response.data.client_data.first_name} ${response.data.client_data.last_name}</h4>
                                 </div>
                             </div>
@@ -601,8 +612,8 @@ var DU = {};
                                 <div class="d-flex align-items-center mt-1"><span class="ico-clock me-1 fs-5"></span> SMS to be sent</div>
                             </div>
                             <div class="orange-box mb-3">
-                                <p><b>${response.data.services_name}</b>
-                                ${response.data.appointment_time} with ${response.data.staff_name}</p>
+                                <p><b id='servicename'>${response.data.services_name}</b>
+                                <label id='servicewithdoctor'>${response.data.appointment_time} with ${response.data.staff_name}</label></p>
                                 <input type="hidden" id="service_name" value="${response.data.services_name}">
                                 <input type="hidden" id="service_id" value="${response.data.service_id}">
                                 <input type="hidden" id="category_id" value="${response.data.category_id}">
@@ -1499,7 +1510,6 @@ var DU = {};
             $(document).on('click','.open-client-card-btn', function(e){
                 var clientId = $(this).data('client-id'); // Use data('client-id') to access the attribute
 
-                // openClientCard(clientId);
                 $.ajax({
                     url: moduleConfig.getClientCardData.replace(':ID', clientId), // Replace with your actual API endpoint
                     type: 'GET',
@@ -1572,7 +1582,7 @@ var DU = {};
                     e.preventDefault();
                     var appointmentId    = $('.treatment_notes').find('input:hidden[name=appointment_id]').val(),
                         treatmentNotes   = $('#treatment_notes').val(),
-                        clientId      = $('#clientcardid').data('client_id');
+                        clientId         = $('#clientcardid').data('client_id');
 
                     context.treatmentNoteAddUpdateAjax(appointmentId,treatmentNotes,clientId);
                 });
@@ -1652,12 +1662,169 @@ var DU = {};
         },
 
         closeClientCardModal: function(){
-            var context = this;
             jQuery('#New_appointment').on('hide.bs.modal', function()
             {
                 $('.clientCreateModal').show();
                 $('#clientmodal').hide();
                 $("#selected_services").empty();
+            });
+        },
+
+        closeReAppointmentModal: function(){
+            jQuery('#repeat_Appointment').on('hide.bs.modal', function()
+            {
+                $('#repeatappt')[0].reset();
+            });
+        },
+
+        openResetAppointmentModal: function(){
+            var context     = this;
+
+            $(document).on('click','.repeat_appt', function(e){
+                var clientName              = $('#clientDetails').find('input:hidden[name=client_name]').val(),
+                    servicename             = $('#clientDetails').find('#servicename').text(),
+                    servicewithdoctor       = $('#clientDetails').find('#servicewithdoctor').text(),
+                    appointmentdate         = $('#clientDetails').find('#start_date').val(),
+                    appointmentduration     = $('#clientDetails').find('input:hidden[name=appointment_duration]').val();
+
+                const weekday = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+                const day = new Date(appointmentdate);
+                let days = weekday[day.getDay()];
+                console.log(days);
+
+                $('#repeat_name').text(clientName);
+                $('#repeat_services_name').text(servicename);
+                $('#servicewithdoctorname').text(servicewithdoctor);
+                $('#appointment_date').val(appointmentdate);
+                $('#appointment_duration').val(appointmentduration);
+
+                // $(function(){
+                //     var dtToday = new Date();
+                //     var month = dtToday.getMonth() + 1;
+                //     var day = dtToday.getDate();
+                //     var year = dtToday.getFullYear();
+                //     if(month < 10)
+                //         month = '0' + month.toString();
+                //     if(day < 10)
+                //         day = '0' + day.toString();
+                //     var minDate= year + '-' + month + '-' + day;
+                //     $('#stop_repeating_date').attr('min', minDate);
+                // });
+
+                var startdate = $("#appointment_date").val();
+
+                $("#stop_repeating_date").datepicker({
+                    minDate: startdate,
+                    dateFormat: 'yy-mm-d'
+                });
+                var item = $(".repeat_every :selected").val();
+
+                if(item === 'day')
+                {
+                    $('#days').hide();
+                }
+                if(item === 'week')
+                {
+                    $('#days').show();
+                }
+
+                // $("#stop_repeating_date").datepicker({ minDate: 0 });
+                context.selectors.repeatAppointmentModal.modal('show');
+
+                $(document).on('change', '.repeat_every', function(e) {
+                    var item = $(".repeat_every :selected").val();
+
+                    if(item === 'day')
+                    {
+                        $('#days').hide();
+                    }
+                    if(item === 'week')
+                    {
+                        $('#days').show();
+                    }
+                });
+            });
+        },
+
+        // repeatAppointmentValidation: function(){
+        //     var context = this;
+        //     console.log('in function');
+        //     context.selectors.repeatAppointmentForm.validate({
+        //         rules: {
+        //             stop_repeating: {
+        //                 required: true
+        //             }
+        //         },
+        //         messages: {
+        //             stop_repeating: {
+        //                 required: "Please enter price",
+        //             },
+        //         },
+        //         errorPlacement: function (error, element) {
+        //             console.log('test'+element);
+        //             if (element.attr("type") == "checkbox") {
+        //                 error.insertAfter($(element).closest('div'));
+        //             } else {
+        //                 error.insertAfter($(element));
+        //             }
+        //         },
+        //     });
+        // },
+
+        repeatAppointmentSaveBtn: function(){
+            var context = this;
+            $('#repeatappt').on('submit' ,function(e){
+                e.preventDefault();
+                var option = document.getElementsByName('stop_repeating');
+
+                if (!(option[0].checked || option[1].checked)) {
+                    $("#repeat_error").show();
+                    return false;
+                }
+
+                var Form        = new FormData($('#repeatappt')[0]);
+                client_id       = $('#clientDetails').find('input:hidden[name=client_id]').val(),
+                category_id     = $('#clientDetails').find('input:hidden[name=category_id]').val(),
+                service_id      = $('#clientDetails').find('input:hidden[name=service_id]').val(),
+                staff_id        = $('#clientDetails').find('input:hidden[name=staff_id]').val();
+                duration        = $('#clientDetails').find('input:hidden[name=appointment_duration]').val();
+
+                Form.append('client_id',client_id);
+                Form.append('category_id',category_id);
+                Form.append('service_id',service_id);
+                Form.append('staff_id',staff_id);
+                Form.append('duration',duration);
+
+                $.ajax({
+                    url: moduleConfig.repeatAppointment,
+                    type: 'POST',
+                    data: Form,
+                    dataType: 'json',
+                    processData: false,
+                    contentType: false,
+                    // headers: {
+                    //     'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                    // },
+                    success: function (data) {
+                        if (data.success) {
+                            Swal.fire({
+                                title: "Appointment!",
+                                text: data.message,
+                                info: "success",
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Error!",
+                                text: data.message,
+                                info: "error",
+                            });
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Error fetching events:', error);
+                    }
+                });
+
             });
         },
     }

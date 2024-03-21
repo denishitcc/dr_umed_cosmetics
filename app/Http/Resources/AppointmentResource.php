@@ -16,16 +16,18 @@ class AppointmentResource extends JsonResource
     {
         return [
             'id'                => $this->id,
-            'category_id'       => $this->category_id,
             'service_id'        => $this->service_id,
-            'duration'          => $this->duration,
-            'date'              => $this->start_date,
+            // 'date'              => $this->start_date,
+            'date'              => date('Y-m-d', strtotime($this->start_date)),
             'appointment_date'  => date('D d M Y', strtotime($this->start_date)),
             'appointment_time'  => date('H:i a', strtotime($this->start_date)),
             'status'            => $this->appointment_status,
             'services_name'     => $this->services->service_name,
+            'services_id'       => $this->service_id,
+            'category_id'       => $this->category_id,
             'staff_id'          => $this->staff_id,
             'staff_name'        => $this->staff->name,
+            'duration'          => $this->services->appearoncalender->duration,
             'client_data'       => isset($this->clients) ? new ClientResource($this->clients) : []
         ];
     }

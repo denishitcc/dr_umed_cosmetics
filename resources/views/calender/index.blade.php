@@ -20,7 +20,7 @@
                 </div>
                 <div id="clientDetails" class="detaild-theos pt-3"></div>
                 <div id='external-events'></div>
-                {{-- <div id="result" class="list-group"></div>  --}} 
+                {{-- <div id="result" class="list-group"></div>  --}}
                 <ul class="drop-list" id="result"></ul>
                 <div id="mycalendar"> </div>
                 {{-- <img src="img/demo-calander.png" alt="" class="search_client"> onkeyup="changeInput(this.value)" --}}
@@ -409,6 +409,7 @@
         </div>
     </div>
     @include('calender.partials.client-modal')
+    @include('calender.partials.repeat-appointment-modal')
 </div>
 @stop
 @section('script')
@@ -429,6 +430,7 @@
         EventById:                    "{!! route('calendar.get-event-by-id', ':ID') !!}",
         updateAppointmentStatus:      "{!! route('calendar.update-appointment-status') !!}",
         DeleteAppointment:            "{!! route('calendar.delete-appointment', ':ID') !!}",
+        repeatAppointment:            "{!! route('calendar.repeat-appointment') !!}"
     };
 
     $(document).ready(function()

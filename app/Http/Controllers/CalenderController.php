@@ -233,8 +233,8 @@ class CalenderController extends Controller
         if ($request->start_date) {
             $events->whereBetween(DB::raw('DATE(start_date)'), array($request->start_date, $request->end_date));
         }
-
         $events = $events->get();
+        // dd($events);
         return response()->json(AppointmentListResource::collection($events));
     }
 
@@ -409,13 +409,13 @@ class CalenderController extends Controller
     }
 
     /**
-     * Method UpdateAppointmentStatus
+     * Method updateAppointmentStatus
      *
      * @param Request $request [explicite description]
      *
      * @return void
      */
-    public function UpdateAppointmentStatus(Request $request)
+    public function updateAppointmentStatus(Request $request)
     {
         DB::beginTransaction();
         try {
@@ -474,7 +474,6 @@ class CalenderController extends Controller
 
         } catch (\Throwable $th) {
             //throw $th;
-            dd($th);
             $data = [
                 'success' => false,
                 'message' => $th,
@@ -482,6 +481,88 @@ class CalenderController extends Controller
             ];
         }
         return response()->json($data);
+    }
+
+    /**
+     * Method repeatAppointment
+     *
+     * @param Request $request [explicite description]
+     *
+     * @return void
+     */
+    public function repeatAppointment(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $appointmentsData = [
+                'client_id'     => $request->client_id,
+                'service_id'    => $request->service_id,
+                'category_id'   => $request->category_id,
+                'staff_id'      => $request->staff_id,
+                'duration'      => $request->duration,
+                'status'        => Appointment::BOOKED,
+            ];
+
+            $repeat_every   = $request->repeat_every;
+            $todayDate      = Carbon::now();
+            $days           = $request->repeat_every_no;
+
+            switch ($repeat_every) {
+                case 'day':
+                    $newdata        = $this->appointmentDays($days,$todayDate,$request, $appointmentsData);
+                    break;
+
+                case 'week':
+                    $newdata = $this->appointmentWeeks($days,$todayDate,$request, $appointmentsData);
+                    break;
+
+                default:
+                    # code...
+                    break;
+            }
+
+            $data  = Appointment::insert($newdata);
+            DB::commit();
+
+            $data = [
+                'success' => true,
+                'message' => 'Appointment created successfully!',
+                'type'    => 'success',
+            ];
+
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollback();
+            $data = [
+                'success' => false,
+                'message' => $th,
+                'type'    => 'fail',
+            ];
+        }
+
+        return $data;
+
+    }
+
+    function appointmentDays($days ,$todayDate,$request, $appointmentsData)
+    {
+        for ($i = 1 ; $i <= $days; $i++) {
+
+            $latest_date = $todayDate->addDays($days);
+            $appointmentsData['start_date']  = $latest_date->toDateString(). ' '.$request->repeat_time.''.':00';
+            $latest                          = Carbon::parse($appointmentsData['start_date']);
+            $appointmentsData['end_date']    = $latest->addMinutes($request->duration)->toDateTimeString();
+
+            $newdata[]  = $appointmentsData;
+            if ($i == $request->no_of_appointment) {
+                break;
+            }
+
+            if($latest_date->gte($request->stop_repeating_date)){
+                break;
+            }
+        }
+        return $newdata;
     }
 
     public function UpcomingAppointment(Request $request)

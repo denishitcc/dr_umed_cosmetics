@@ -150,8 +150,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('calender/get-event-by-id/{id}',[CalenderController::class, 'getEventById'])->name('calendar.get-event-by-id');
     Route::post('calender/upcoming-appointment',[CalenderController::class, 'UpcomingAppointment'])->name('calendar.upcoming-appointment');
     Route::post('calender/history-appointment',[CalenderController::class, 'HistoryAppointment'])->name('calendar.history-appointment');
-    Route::post('calender/update-appointment-status',[CalenderController::class, 'UpdateAppointmentStatus'])->name('calendar.update-appointment-status');
+    Route::post('calender/update-appointment-status',[CalenderController::class, 'updateAppointmentStatus'])->name('calendar.update-appointment-status');
     Route::delete('calender/delete-appointment/{id}',[CalenderController::class, 'deleteAppointment'])->name('calendar.delete-appointment');
     Route::post('calender/update-create-appointments',[CalenderController::class, 'updateCreateAppointments'])->name('calendar.update-create-appointments');
+    Route::post('calender/repeat-appointment',[CalenderController::class, 'repeatAppointment'])->name('calendar.repeat-appointment');
 });
 Route::get('/get-staff-list', [CalenderController::class,'getStaffList'])->name('get-staff-list');
