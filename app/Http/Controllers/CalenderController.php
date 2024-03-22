@@ -493,6 +493,7 @@ class CalenderController extends Controller
     public function repeatAppointment(Request $request)
     {
         try {
+            dd($request->all());
             DB::beginTransaction();
             $appointmentsData = [
                 'client_id'     => $request->client_id,
@@ -509,11 +510,15 @@ class CalenderController extends Controller
 
             switch ($repeat_every) {
                 case 'day':
-                    $newdata        = $this->appointmentDays($days,$todayDate,$request, $appointmentsData);
+                    $newdata = $this->appointmentDays($days,$todayDate,$request, $appointmentsData);
                     break;
 
                 case 'week':
                     $newdata = $this->appointmentWeeks($days,$todayDate,$request, $appointmentsData);
+                    break;
+
+                case 'year':
+                    $newdata = $this->appointmentYear($days,$todayDate,$request, $appointmentsData);
                     break;
 
                 default:
@@ -563,6 +568,11 @@ class CalenderController extends Controller
             }
         }
         return $newdata;
+    }
+
+    function appointmentYear($days,$todayDate,$request, $appointmentsData)
+    {
+        dd('test');
     }
 
     public function UpcomingAppointment(Request $request)

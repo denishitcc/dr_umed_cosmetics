@@ -25,6 +25,7 @@
                             <div class="form-group">
                                 <label class="form-label">&nbsp;</label>
                                 <select class="form-select form-control repeat_every" name="repeat_every">
+                                    <option selected>Choose option</option>
                                     <option value="day">Day(s)</option>
                                     <option value="week">Week(s)</option>
                                     <option value="month">Month(s)</option>
@@ -34,7 +35,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group" id="days">
+                    <div class="form-group" id="days" style="display: none;">
                         <label class="cst-check me-4">
                             <input type="checkbox" value="monday" name="weekdays[]"><span class="checkmark me-2"></span> Monday</label>
                         <label class="cst-check me-4">
@@ -51,17 +52,32 @@
                             <input type="checkbox" value="sunday" name="weekdays[]"><span class="checkmark me-2"></span> Sunday</label>
                     </div>
 
-                    <div class="form-group" id="years">
+                    <div class="form-group" id="years" style="display: none;">
                         <div class="col-auto">
                             <label class="cst-radio">
-                                <input type="radio" name="repeat_year" >
-                                <span class="checkmark me-2"></span><label class="year">On the 4th of April</label>
+                                <input type="radio" name="repeat_year" value="0">
+                                <span class="checkmark me-2"></span><label class="year"></label>
                             </label>
                         </div>
                         <div class="col-auto">
                             <label class="cst-radio">
-                                <input type="radio" name="repeat_year" >
-                                <span class="checkmark me-2"></span><label class="week_year">On the 1st Thursday of April</label>
+                                <input type="radio" name="repeat_year" value="1">
+                                <span class="checkmark me-2"></span><label class="week_year"></label>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="month" style="display: none;">
+                        <div class="col-auto">
+                            <label class="cst-radio">
+                                <input type="radio" name="repeat_month" value="0" >
+                                <span class="checkmark me-2"></span><label >On the 3rd day of the month</label>
+                            </label>
+                        </div>
+                        <div class="col-auto">
+                            <label class="cst-radio">
+                                <input type="radio" name="repeat_month" value="0">
+                                <span class="checkmark me-2"></span><label >On the 1st Thursday of the month</label>
                             </label>
                         </div>
                     </div>

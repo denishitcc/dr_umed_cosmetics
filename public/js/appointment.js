@@ -1681,35 +1681,29 @@ var DU = {};
             var context     = this;
 
             $(document).on('click','.repeat_appt', function(e){
+
+                context.selectors.repeatAppointmentModal.modal('show');
+
                 var clientName              = $('#clientDetails').find('input:hidden[name=client_name]').val(),
                     servicename             = $('#clientDetails').find('#servicename').text(),
                     servicewithdoctor       = $('#clientDetails').find('#servicewithdoctor').text(),
                     appointmentdate         = $('#clientDetails').find('#start_date').val(),
                     appointmentduration     = $('#clientDetails').find('input:hidden[name=appointment_duration]').val();
 
-                const weekday = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-                const day = new Date(appointmentdate);
-                let days = weekday[day.getDay()];
-                console.log(days);
+                const weekday   = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+                const month     = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+                const appdate   = new Date(appointmentdate);
+                var days        = weekday[appdate.getDay()],
+                monthname       = month[appdate.getMonth()],
+                monthdigit      = appdate.getDate();
 
                 $('#repeat_name').text(clientName);
                 $('#repeat_services_name').text(servicename);
                 $('#servicewithdoctorname').text(servicewithdoctor);
                 $('#appointment_date').val(appointmentdate);
                 $('#appointment_duration').val(appointmentduration);
-
-                // $(function(){
-                //     var dtToday = new Date();
-                //     var month = dtToday.getMonth() + 1;
-                //     var day = dtToday.getDate();
-                //     var year = dtToday.getFullYear();
-                //     if(month < 10)
-                //         month = '0' + month.toString();
-                //     if(day < 10)
-                //         day = '0' + day.toString();
-                //     var minDate= year + '-' + month + '-' + day;
-                //     $('#stop_repeating_date').attr('min', minDate);
-                // });
+                $('.year').text(`On the ${monthdigit} of ${monthname}`);
+                $('.week_year').text(`On the 1st ${days} of ${monthname}`);
 
                 var startdate = $("#appointment_date").val();
 
@@ -1717,30 +1711,52 @@ var DU = {};
                     minDate: startdate,
                     dateFormat: 'yy-mm-d'
                 });
-                var item = $(".repeat_every :selected").val();
+                // var item = $(".repeat_every :selected").val();
 
-                if(item === 'day')
-                {
-                    $('#days').hide();
-                }
-                if(item === 'week')
-                {
-                    $('#days').show();
-                }
+                // if(item === 'day')
+                // {
+                //     $('#days').hide();
+                // }
+                // if(item === 'week')
+                // {
+                //     $('#days').show();
+                // }
+                // if(item === 'year')
+                // {
+                //     $('#days').hide();
+                //     $('#years').show();
+                // }
 
                 // $("#stop_repeating_date").datepicker({ minDate: 0 });
-                context.selectors.repeatAppointmentModal.modal('show');
+                // $('#days').hide();
+                // $('#years').hide();
+                // $('#month').hide();
 
                 $(document).on('change', '.repeat_every', function(e) {
                     var item = $(".repeat_every :selected").val();
-
                     if(item === 'day')
                     {
                         $('#days').hide();
+                        $('#years').hide();
                     }
                     if(item === 'week')
                     {
                         $('#days').show();
+                        $('#month').hide();
+                        $('#years').hide();
+                    }
+                    if(item === 'month')
+                    {
+                        $('#month').show();
+                        $('#days').hide();
+                        $('#years').hide();
+                    }
+
+                    if(item === 'year')
+                    {
+                        $('#years').show();
+                        $('#month').hide();
+                        $('#days').hide();
                     }
                 });
             });
