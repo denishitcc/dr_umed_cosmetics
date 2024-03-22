@@ -214,7 +214,7 @@
                                                             <div class="col loc_details">
                                                                 <label class="form-label">Price</label>
                                                                 <div class="input-group">
-                                                                    <input type="text" class="form-control" placeholder="0" id="availability_min" name="availability_price[]" maxlength="5" value="{{$availability->price}}">
+                                                                    <input type="text" class="form-control" placeholder="0" id="availability_min" name="availability_price[]" maxlength="10" value="{{$availability->price}}">
                                                                     <span class="input-group-text"><span class="ico-dollar fs-4"></span></span>
                                                                 </div>
                                                             </div>
@@ -297,6 +297,7 @@ $(document).ready(function() {
         }
         else{
             $(this).parent().parent().parent().find('.show-timing').show();
+            $(this).parent().parent().parent().find('.show-timing').find('.loc_details').show();
 
             //if new location add and bind this min,max,price content
             if($.trim($(this).parent().parent().parent().find('.show-timing').find('.show-inner').text()) == '')
@@ -313,7 +314,7 @@ $(document).ready(function() {
                     <div class="col loc_details">
                         <label class="form-label">Price</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" placeholder="0" name="availability_price[]" maxlength="5">
+                            <input type="text" class="form-control" placeholder="0" name="availability_price[]" maxlength="10">
                             <span class="input-group-text"><span class="ico-dollar fs-4"></span></span>
                         </div>
                     </div>
@@ -348,7 +349,7 @@ $(document).ready(function() {
                     <div class="col loc_details">
                         <label class="form-label">Price</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" placeholder="0" name="availability_price[]" maxlength="5">
+                            <input type="text" class="form-control" placeholder="0" name="availability_price[]" maxlength="10">
                             <span class="input-group-text"><span class="ico-dollar fs-4"></span></span>
                         </div>
                     </div>
@@ -368,6 +369,7 @@ $(document).ready(function() {
             },
             cost:{
                 required: true,
+                costLessThanEqualPrice: true
             },
             gst_code:{
                 required: true,
@@ -398,7 +400,19 @@ $(document).ready(function() {
                 error.insertAfter(element);
             }
         },
+        // Custom validation method to check if cost is less than or equal to price
+        messages: {
+            cost: {
+                costLessThanEqualPrice: "Cost must be less than or equal to Price.",
+            },
+        },
     });
+    // Custom validation method to check if cost is less than or equal to price
+    $.validator.addMethod("costLessThanEqualPrice", function (value, element) {
+        var cost = parseFloat(value);
+        var price = parseFloat($("#price").val());
+        return cost <= price;
+    }, "Cost must be less than or equal to Price.");
     $(document).on('submit','#edit_product',function(e){
         e.preventDefault();
         var valid= $("#edit_product").validate();

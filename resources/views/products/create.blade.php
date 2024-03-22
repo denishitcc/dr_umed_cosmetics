@@ -197,7 +197,7 @@
                                             <div class="col loc_details">
                                                     <label class="form-label">Price</label>
                                                     <div class="input-group">
-                                                        <input type="text" class="form-control" placeholder="0" id="availability_price" name="availability_price[]" maxlength="5">
+                                                        <input type="text" class="form-control" placeholder="0" id="availability_price" name="availability_price[]" maxlength="10">
                                                         <span class="input-group-text"><span class="ico-dollar fs-4"></span></span>
                                                         </div>
                                             </div>
@@ -280,6 +280,7 @@ $(document).ready(function() {
         }
         else{
             $(this).parent().parent().parent().find('.show-timing').show();
+            $(this).parent().parent().parent().find('.show-timing').find('.loc_details').show();
         }
     })
     
@@ -302,6 +303,7 @@ $(document).ready(function() {
             },
             cost:{
                 required: true,
+                costLessThanEqualPrice: true
             },
             gst_code:{
                 required: true,
@@ -332,7 +334,19 @@ $(document).ready(function() {
                 error.insertAfter(element);
             }
         },
+        // Custom validation method to check if cost is less than or equal to price
+        messages: {
+            cost: {
+                costLessThanEqualPrice: "Cost must be less than or equal to Price.",
+            },
+        },
     });
+    // Custom validation method to check if cost is less than or equal to price
+    $.validator.addMethod("costLessThanEqualPrice", function (value, element) {
+        var cost = parseFloat(value);
+        var price = parseFloat($("#price").val());
+        return cost <= price;
+    }, "Cost must be less than or equal to Price.");
     $(document).on('submit','#create_product',function(e){
         e.preventDefault();
         var valid= $("#create_product").validate();

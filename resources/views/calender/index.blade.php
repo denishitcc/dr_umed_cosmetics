@@ -268,10 +268,10 @@
                                 <div class="col-lg-3">
                                     <label class="form-label">Gender</label>
                                     <div class="toggle form-group">
-                                        <input type="radio" name="gender" value="Male" id="male" checked="checked" />
-                                        <label for="male">Male <i class="ico-tick"></i></label>
-                                        <input type="radio" name="gender" value="Female" id="female" />
-                                        <label for="female">Female <i class="ico-tick"></i></label>
+                                        <input type="radio" name="gender" value="Male" id="edit_male" checked="checked" />
+                                        <label for="edit_male">Male <i class="ico-tick"></i></label>
+                                        <input type="radio" name="gender" value="Female" id="edit_female" />
+                                        <label for="edit_female">Female <i class="ico-tick"></i></label>
                                     </div>
                                 </div>
                             </div>
@@ -296,10 +296,10 @@
                                 <div class="col-lg-3">
                                     <label class="form-label">Send Promotions</label>
                                     <div class="toggle form-group">
-                                        <input type="radio" name="send_promotions" value="1" id="yes" checked="checked">
-                                        <label for="yes">Yes <i class="ico-tick"></i></label>
-                                        <input type="radio" name="send_promotions" value="0" id="no">
-                                        <label for="no">No <i class="ico-tick"></i></label>
+                                        <input type="radio" name="send_promotions" value="1" id="edit_yes" checked="checked">
+                                        <label for="edit_yes">Yes <i class="ico-tick"></i></label>
+                                        <input type="radio" name="send_promotions" value="0" id="edit_no">
+                                        <label for="edit_no">No <i class="ico-tick"></i></label>
                                     </div>
                                 </div>
                                 <div class="col-lg-3">
