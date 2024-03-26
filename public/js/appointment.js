@@ -1812,6 +1812,7 @@ var DU = {};
                 Form.append('duration',duration);
 
                 $.ajax({
+                    headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     url: moduleConfig.repeatAppointment,
                     type: 'POST',
                     data: Form,
