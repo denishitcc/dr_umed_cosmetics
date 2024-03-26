@@ -51,7 +51,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="clientCreateModal">
-                        <div class="one-inline align-items-center mb-5 client_detail">
+                        <div class="one-inline align-items-center mb-4 client_detail">
                             <div class="form-group icon mb-0 me-3">
                                 <input type="text" class="form-control" autocomplete="off" id="searchmodel" placeholder="Search for a client"  onkeyup="changeInputModal(this.value)">
                                 <!-- search_client_modal -->
@@ -187,7 +187,7 @@
                                         </div>
                                         <ul id="sub_services">
                                             @foreach ($services as $service)
-                                                <li>
+                                                <li class="service_selected">
                                                     <a href="javascript:void(0);" class="services" data-services_id="{{$service->id}}" data-category_id="{{$service->parent_category}}" data-duration="{{ $service->appearoncalender->duration }}">{{ $service->service_name }}</a>
                                                 </li>
                                             @endforeach
@@ -353,7 +353,7 @@
                                         @if ($category->children)
                                             <ul>
                                                 @foreach ($category->children as $child)
-                                                    <li>
+                                                    <li class="services_selected">
                                                         <a href="javascript:void(0);">{{$child->category_name}}</a>
                                                     </li>
                                                 @endforeach
@@ -372,7 +372,7 @@
                                         <div class="disflex">
                                             <label id="subcategory_text">All Services &amp; Tasks</label>
                                         </div>
-                                        <ul id="edit_sub_services">
+                                        <ul id="edit_sub_services" class="edit_sub_services">
                                             @foreach ($services as $services_data)
                                                 <li>
                                                     <a href="javascript:void(0);" class="services" data-services_id="{{$services_data->id}}" data-services_id="{{$services_data->id}}" data-category_id="{{$services_data->parent_category}}" data-duration="{{ $services_data->appearoncalender->duration }}">{{ $services_data->service_name }}</a>
@@ -742,7 +742,9 @@
                 });
             }
         });
-
+        $(document).on('click','.services',function(e){
+            $(this).parent().addClass('selected');
+        })
         //remove document
         $(document).on('click', '.remove_doc', function (e) {
             e.preventDefault();
@@ -1013,6 +1015,18 @@
         $('.clientEditModal').hide();
         $("#clienteditDetailsModal").html(`<i class='ico-user2 me-2 fs-6'></i>  ${clientName}`);
         $('#edit_selected_services').empty();
+        // Loop through each service item
+        $('.edit_sub_services li').each(function () {
+            var serviceLi = $(this);
+            var serviceDataId = serviceLi.find('a').data('services_id');
+            var serviceDataCategoryId = serviceLi.find('a').data('category_id');
+            var serviceDataDuration = serviceLi.find('a').data('duration');
+            // Check if the service matches the selected service
+            if (serviceDataId == serviceId && serviceDataCategoryId == categoryId && serviceDataDuration == duration) {
+                serviceLi.addClass('selected'); // Add 'selected' class to the matched service
+            }
+        });
+
         $("#edit_selected_services").append(`<li class='selected remove' test="1" data-appointment_date= "${app_date}"  data-appointment_time= "${app_time}" data-staff_name= "${staff_name}" data-services_id= ${serviceId}  data-category_id= ${categoryId}  data-duration='${duration}'><a href='javascript:void(0);' > ${serviceTitle} </a><span class='btn btn-cross cross-red remove_services'><i class='ico-close'></i></span></li>`);
     });
     $(document).on('click','#edit_created_appointment', function(e){

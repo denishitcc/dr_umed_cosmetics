@@ -58,6 +58,7 @@ var DU = {};
                             client_id   :dataset.client_id,
                             category_id :dataset.category_id,
                             duration    :dataset.duration,
+                            app_id:dataset.app_id
                         }
                     };
                 }
@@ -175,8 +176,8 @@ var DU = {};
                         duration            = info.event.extendedProps.duration,
                         start_time          = moment(info.event.startStr).format('YYYY-MM-DDTHH:mm:ss'),
                         end_time            = moment(start_time).add(duration,'minutes').format('YYYY-MM-DDTHH:mm:ss');
-
-                        context.createAppointmentDetails(resourceId,start_date,start_time,end_time,duration,client_id,service_id,category_id);
+                        app_id              = info.event.extendedProps.app_id,
+                        context.createAppointmentDetails(resourceId,start_date,start_time,end_time,duration,client_id,service_id,category_id,app_id);
                 },
                 eventDrop: function (events) {
                     var resourceId          = events.event._def.resourceIds[0],
@@ -538,6 +539,61 @@ var DU = {};
                 // Show datepicker
                 $('#datepicker').datepicker('show');
             })
+            $(document).on('click','.move_appointment',function(e){
+                var resultElement = document.getElementById("clientDetails"),
+                details =  `<div class='app_sum'>
+                                <div class="summry-header"><span class="ico-clock me-2 fs-4"></span> Appointment Summary</div>
+                            </div>`;
+                resultElement.innerHTML += details;
+
+                // $("#selected_services > li").each(function(){
+                    // var $this           = $(this),
+                    eventName           = $('.orange-box').find('#service_name').val(),
+                    eventId             = $('.orange-box').find('#service_id').val();
+                    categoryId          = $('.orange-box').find('#category_id').val();
+                    duration            = $('.orange-box').find('#duration').val();
+                    clientName          = $('.orange-box').find('#client_name').val();
+                    clientId            = $('.orange-box').find('#client_id').val();
+                    appId               = $('.orange-box').next().find('#edit_appointment').attr('event_id');
+                    // $('#mycalendar').remove();
+                    $('#external-events').removeAttr('style');
+                    $('#external-events').append(`
+                    <div class="drag-box mb-3">
+                        <div class="head mb-2"><b>Drag and drop on</b> to a day on the appointment book
+                            <i class="ico-noun-arrow"></i></div>
+                        <div class="treatment fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event" data-app_id="${appId}" data-service_id="${eventId}" data-client_name="${clientName}" data-duration="${duration}" data-client_id="${clientId}" data-category_id="${categoryId}">${eventName}
+                        </div>
+                    </div>`);
+                // });
+
+                context.selectors.appointmentModal.modal('hide');
+                //for reload all services & selected services
+                $("#all_ser").load(location.href+" #all_ser>*","");
+                $("#selected_services").empty();
+                $('#editEventData').remove();
+
+                //appointment rebook end
+
+
+                // Prevent default behavior (e.g., form submission)
+                e.preventDefault();
+                // Initialize datepicker with options
+                $('#datepicker').datepicker({
+                numberOfMonths: 2, // Display two months
+                dateFormat: 'yy-mm-dd', // Set date format to "yyyy-mm-dd"
+                onSelect: function(selectedDate, inst) {
+                    // Display selected date in console
+                    console.log('Selected date:', selectedDate);
+                    // You can also use the selected date for further processing
+                    // For example, update a hidden input field with the selected date
+                    $('#selectedDateInput').val(selectedDate);
+                    // Change the calendar view to the selected date
+                    context.calendar.gotoDate(selectedDate);
+                  }
+                });
+                // Show datepicker
+                $('#datepicker').datepicker('show');
+            })
             $(document).on('click','.cancel_rebook',function(e){
                 $('.history_appointments').show();
                 $('.upcoming_appointments').show();
@@ -589,7 +645,7 @@ var DU = {};
                                 <b>${response.data.appointment_date}</b>
                             </div>
                             <div class="mb-3">
-                                <a href="#" class="btn btn-primary btn-md blue-alter">Move Appointment</a>
+                                <a href="#" class="btn btn-primary btn-md blue-alter move_appointment">Move Appointment</a>
                             </div>
                             <div class="form-group mb-3">
                                 <label class="form-label">Status </label>
@@ -614,10 +670,11 @@ var DU = {};
                             <div class="orange-box mb-3">
                                 <p><b id='servicename'>${response.data.services_name}</b>
                                 <label id='servicewithdoctor'>${response.data.appointment_time} with ${response.data.staff_name}</label></p>
+                                <input type="hidden" id="check_edit_appt" value="">
                                 <input type="hidden" id="service_name" value="${response.data.services_name}">
                                 <input type="hidden" id="service_id" value="${response.data.service_id}">
                                 <input type="hidden" id="category_id" value="${response.data.category_id}">
-                                <input type="hidden" id="client_id" value="${response.data.id}">
+                                <input type="hidden" id="client_id" value="${response.data.client_data.id}">
                                 <input type="hidden" id="client_name" value="${response.data.client_data.first_name+' '+response.data.client_data.last_name}">
                                 <input type="hidden" id="duration" value="${response.data.duration}">
                                 <input type="hidden" id="appointment_time" value="${response.data.appointment_time}">
@@ -798,7 +855,7 @@ var DU = {};
         },
 
         // For create appointment
-        createAppointmentDetails: function(resourceId,start_date,start_time,end_time,durationInMinutes,client_id,service_id,category_id){
+        createAppointmentDetails: function(resourceId,start_date,start_time,end_time,durationInMinutes,client_id,service_id,category_id,app_id){
             $.ajax({
                 url: moduleConfig.createAppointment,
                 type: 'POST',
@@ -813,7 +870,8 @@ var DU = {};
                     'duration'    : durationInMinutes,
                     'client_id'   : client_id,
                     'service_id'  : service_id,
-                    'category_id' : category_id
+                    'category_id' : category_id,
+                    'app_id'      : app_id
                 },
                 success: function (data) {
                     if (data.success) {
