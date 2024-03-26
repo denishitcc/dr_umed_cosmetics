@@ -62,7 +62,7 @@
                         <div class="col-auto">
                             <label class="cst-radio">
                                 <input type="radio" name="repeat_year" value="1">
-                                <span class="checkmark me-2"></span><label class="week_year"></label>
+                                <span class="checkmark me-2"><input type="hidden" name="repeat_day" id="repeat_day"><input type="hidden" name="repeat_month" id="repeat_month"></span><label class="week_year"></label>
                             </label>
                         </div>
                     </div>

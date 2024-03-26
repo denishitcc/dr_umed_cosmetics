@@ -493,7 +493,7 @@ class CalenderController extends Controller
     public function repeatAppointment(Request $request)
     {
         try {
-            // dd($request->all());
+            dd($request->all());
             DB::beginTransaction();
             $appointmentsData = [
                 'client_id'     => $request->client_id,
@@ -572,19 +572,15 @@ class CalenderController extends Controller
 
     function appointmentYear($days,$todayDate,$request, $appointmentsData)
     {
-        for ($i = 1 ; $i <= $days; $i++) {
+        for ($i = 1 ; $i <= $request->no_of_appointment; $i++) {
 
             $latest_date = $todayDate->addYear($days);
+            if($request->repeat_year == 1){  // same date
+                $weekday            = $request->repeat_day;
+                $firstDayOfmonth    = Carbon::createFromDate(null, 4, 1);
+            }
 
-            // if($request->repeat_year == 0){  // same date
-                
-            // }
-            // else{ // given by week day
-
-            // }
-dump($latest_date);
             // Get the first day of April
-            // $firstDayOfApril = Carbon::createFromDate(null, 4, 1);
 
             // Find the first Friday of April
             // $firstFridayOfApril = $firstDayOfApril->next(Carbon::FRIDAY);
@@ -595,14 +591,12 @@ dump($latest_date);
             $appointmentsData['end_date']    = $latest->addMinutes($request->duration)->toDateTimeString();
 
             $newdata[]  = $appointmentsData;
-            // if ($i == $request->no_of_appointment) {
-            //     break;
-            // }
 
             // if($latest_date->gte($request->stop_repeating_date)){
             //     break;
             // }
         }
+        dump($newdata);
         exit;
         return $newdata;
     }
