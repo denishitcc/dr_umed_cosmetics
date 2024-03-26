@@ -572,7 +572,33 @@ class CalenderController extends Controller
 
     function appointmentYear($days,$todayDate,$request, $appointmentsData)
     {
-        dd('test');
+        for ($i = 1 ; $i <= $request->no_of_appointment; $i++) {
+
+            $latest_date = $todayDate->addYear($days);
+            if($request->repeat_year == 1){  // same date
+                $weekday            = $request->repeat_day;
+                $firstDayOfmonth    = Carbon::createFromDate(null, 4, 1);
+            }
+
+            // Get the first day of April
+
+            // Find the first Friday of April
+            // $firstFridayOfApril = $firstDayOfApril->next(Carbon::FRIDAY);
+            // dump($firstFridayOfApril);
+
+            $appointmentsData['start_date']  = $latest_date->toDateString(). ' '.$request->repeat_time.''.':00';
+            $latest                          = Carbon::parse($appointmentsData['start_date']);
+            $appointmentsData['end_date']    = $latest->addMinutes($request->duration)->toDateTimeString();
+
+            $newdata[]  = $appointmentsData;
+
+            // if($latest_date->gte($request->stop_repeating_date)){
+            //     break;
+            // }
+        }
+        dump($newdata);
+        exit;
+        return $newdata;
     }
 
     public function UpcomingAppointment(Request $request)

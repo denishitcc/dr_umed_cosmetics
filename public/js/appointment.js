@@ -1755,13 +1755,18 @@ var DU = {};
                 monthname       = month[appdate.getMonth()],
                 monthdigit      = appdate.getDate();
 
+                console.log(appointmentdate);
+                console.log(appdate.getMonth());
                 $('#repeat_name').text(clientName);
                 $('#repeat_services_name').text(servicename);
                 $('#servicewithdoctorname').text(servicewithdoctor);
                 $('#appointment_date').val(appointmentdate);
                 $('#appointment_duration').val(appointmentduration);
+
                 $('.year').text(`On the ${monthdigit} of ${monthname}`);
                 $('.week_year').text(`On the 1st ${days} of ${monthname}`);
+                $('#repeat_day').val(days);
+                $('#repeat_month').val(appdate.getMonth());
 
                 var startdate = $("#appointment_date").val();
 
@@ -1870,6 +1875,7 @@ var DU = {};
                 Form.append('duration',duration);
 
                 $.ajax({
+                    headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     url: moduleConfig.repeatAppointment,
                     type: 'POST',
                     data: Form,
