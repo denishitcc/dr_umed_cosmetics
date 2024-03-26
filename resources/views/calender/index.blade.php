@@ -1044,6 +1044,18 @@
             var categoryId = $(this).data('category_id');
             var duration = $(this).data('duration');
             var serviceTitle = $(this).data('service_name');
+
+            // Loop through each service item
+            $('.edit_sub_services li').each(function () {
+                var serviceLi = $(this);
+                var serviceDataId = serviceLi.find('a').data('services_id');
+                var serviceDataCategoryId = serviceLi.find('a').data('category_id');
+                var serviceDataDuration = serviceLi.find('a').data('duration');
+                // Check if the service matches the selected service
+                if (serviceDataId == serviceId && serviceDataCategoryId == categoryId && serviceDataDuration == duration) {
+                    serviceLi.addClass('selected'); // Add 'selected' class to the matched service
+                }
+            });
             // Appending a list item to #edit_selected_services
             $("#edit_selected_services").append(`
                 <li class='selected remove' data-services_id='${serviceId}' data-services_name='${serviceTitle}'  data-category_id='${categoryId}' data-duration='${duration}'>
