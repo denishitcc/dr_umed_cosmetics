@@ -494,7 +494,7 @@ class CalenderController extends Controller
     public function repeatAppointment(Request $request)
     {
         try {
-            dd($request->all());
+            // dd($request->all());
             DB::beginTransaction();
             $appointmentsData = [
                 'client_id'     => $request->client_id,
@@ -507,6 +507,7 @@ class CalenderController extends Controller
 
             $repeat_every   = $request->repeat_every;
             $todayDate      = Carbon::now();
+            $apptDate       = $request->appointment_date;
             $days           = $request->repeat_every_no;
 
             switch ($repeat_every) {
@@ -518,8 +519,12 @@ class CalenderController extends Controller
                     $newdata = $this->appointmentWeeks($days,$todayDate,$request, $appointmentsData);
                     break;
 
+                case 'month':
+                    $newdata = $this->appointmentMonths($days,$apptDate,$request, $appointmentsData);
+                    break;
+
                 case 'year':
-                    $newdata = $this->appointmentYear($days,$todayDate,$request, $appointmentsData);
+                    $newdata = $this->appointmentYear($days,$apptDate,$request, $appointmentsData);
                     break;
 
                 default:
@@ -571,34 +576,68 @@ class CalenderController extends Controller
         return $newdata;
     }
 
-    function appointmentYear($days,$todayDate,$request, $appointmentsData)
+    function appointmentYear($days,$apptDate,$request, $appointmentsData)
     {
+        $apptDate = Carbon::parse($apptDate);
         for ($i = 1 ; $i <= $request->no_of_appointment; $i++) {
 
-            $latest_date = $todayDate->addYear($days);
-            if($request->repeat_year == 1){  // same date
-                $weekday            = $request->repeat_day;
-                $firstDayOfmonth    = Carbon::createFromDate(null, 4, 1);
-            }
-
-            // Get the first day of April
-
-            // Find the first Friday of April
-            // $firstFridayOfApril = $firstDayOfApril->next(Carbon::FRIDAY);
-            // dump($firstFridayOfApril);
-
+            $latest_date        = $apptDate->addYear($days);
             $appointmentsData['start_date']  = $latest_date->toDateString(). ' '.$request->repeat_time.''.':00';
             $latest                          = Carbon::parse($appointmentsData['start_date']);
             $appointmentsData['end_date']    = $latest->addMinutes($request->duration)->toDateTimeString();
 
+            if($request->repeat_year == 1) // same date
+            {
+                $latest_date        = $apptDate->addYear($days);
+                $firstDayOfMonth    = $latest_date->firstOfMonth();
+                $weekday            = 'first '.$request->repeat_day.' of this month';
+                $firstFridayOfMonth = $firstDayOfMonth->modify($weekday);
+
+                $appointmentsData['start_date']  = $firstFridayOfMonth->toDateString(). ' '.$request->repeat_time.''.':00';
+                $latest                          = Carbon::parse($appointmentsData['start_date']);
+                $appointmentsData['end_date']    = $latest->addMinutes($request->duration)->toDateTimeString();
+
+            }
             $newdata[]  = $appointmentsData;
 
-            // if($latest_date->gte($request->stop_repeating_date)){
-            //     break;
-            // }
+            if(!empty($request->stop_repeating_date) && $latest_date->gte($request->stop_repeating_date)){
+                break;
+            }
         }
-        dump($newdata);
-        exit;
+
+        return $newdata;
+    }
+
+    function appointmentMonths($days,$apptDate,$request, $appointmentsData)
+    {
+        dd($apptDate);
+        $apptDate = Carbon::parse($apptDate);
+        for ($i = 1 ; $i <= $request->no_of_appointment; $i++) {
+
+            $latest_date                     = $apptDate->addMonths($days);
+            $appointmentsData['start_date']  = $latest_date->toDateString(). ' '.$request->repeat_time.''.':00';
+            $latest                          = Carbon::parse($appointmentsData['start_date']);
+            $appointmentsData['end_date']    = $latest->addMinutes($request->duration)->toDateTimeString();
+            dd($latest_date);
+            if($request->repeat_month == 1) // same date
+            {
+                // $latest_date        = $apptDate->addMonth($days);
+                // $firstDayOfMonth    = $latest_date->firstOfMonth();
+                // $weekday            = $latest_date->next('Wednesday')->addWeeks(5);
+                // dd($latest_date);
+                // $firstFridayOfMonth = $latest_date->modify($weekday);
+                // $appointmentsData['start_date']  = $firstFridayOfMonth->toDateString(). ' '.$request->repeat_time.''.':00';
+                // $latest                          = Carbon::parse($appointmentsData['start_date']);
+                // $appointmentsData['end_date']    = $latest->addMinutes($request->duration)->toDateTimeString();
+
+            }
+            $newdata[]  = $appointmentsData;
+
+            if(!empty($request->stop_repeating_date) && $latest_date->gte($request->stop_repeating_date)){
+                break;
+            }
+        }
+        dd($newdata);
         return $newdata;
     }
 

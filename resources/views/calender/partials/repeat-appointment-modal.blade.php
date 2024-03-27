@@ -62,7 +62,10 @@
                         <div class="col-auto">
                             <label class="cst-radio">
                                 <input type="radio" name="repeat_year" value="1">
-                                <span class="checkmark me-2"><input type="hidden" name="repeat_day" id="repeat_day"><input type="hidden" name="repeat_month" id="repeat_month"></span><label class="week_year"></label>
+                                <span class="checkmark me-2">
+                                    <input type="hidden" name="repeat_day" id="repeat_day">
+                                    <input type="hidden" name="repeat_year_month" id="repeat_year_month">
+                                </span><label class="week_year"></label>
                             </label>
                         </div>
                     </div>
@@ -71,13 +74,14 @@
                         <div class="col-auto">
                             <label class="cst-radio">
                                 <input type="radio" name="repeat_month" value="0" >
-                                <span class="checkmark me-2"></span><label >On the 3rd day of the month</label>
+                                <span class="checkmark me-2"></span><label id="repeat_every_month"></label>
                             </label>
                         </div>
                         <div class="col-auto">
+                            <input type="hidden" name="repeat_every_month_weekday" class="repeat_every_month_weekday">
                             <label class="cst-radio">
-                                <input type="radio" name="repeat_month" value="0">
-                                <span class="checkmark me-2"></span><label >On the 1st Thursday of the month</label>
+                                <input type="radio" name="repeat_month" value="1">
+                                <span class="checkmark me-2"></span><label id="repeat_every_month_weekday"></label>
                             </label>
                         </div>
                     </div>

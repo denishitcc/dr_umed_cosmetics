@@ -1744,6 +1744,18 @@ var DU = {};
             });
         },
 
+        getOrdinalSuffix: function(weekofmonth){
+            if (weekofmonth % 10 === 1 && weekofmonth !== 11) {
+                return weekofmonth + "st";
+            } else if (weekofmonth % 10 === 2 && weekofmonth !== 12) {
+                return weekofmonth + "nd";
+            } else if (weekofmonth % 10 === 3 && weekofmonth !== 13) {
+                return weekofmonth + "rd";
+            } else {
+                return weekofmonth + "th";
+            }
+        },
+
         openResetAppointmentModal: function(){
             var context     = this;
 
@@ -1757,15 +1769,12 @@ var DU = {};
                     appointmentdate         = $('#clientDetails').find('#start_date').val(),
                     appointmentduration     = $('#clientDetails').find('input:hidden[name=appointment_duration]').val();
 
-                const weekday   = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-                const month     = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-                const appdate   = new Date(appointmentdate);
-                var days        = weekday[appdate.getDay()],
-                monthname       = month[appdate.getMonth()],
-                monthdigit      = appdate.getDate();
+                var weekdate        = moment(appointmentdate),
+                    days            = moment(appointmentdate).format("dddd"),
+                    monthname       = moment(appointmentdate).format("MMMM"),
+                    monthdigit      = moment(appointmentdate).format("Do"),
+                    weekofmonth     = weekdate.isoWeek() - moment(weekdate).startOf('month').isoWeek() + 1;
 
-                console.log(appointmentdate);
-                console.log(appdate.getMonth());
                 $('#repeat_name').text(clientName);
                 $('#repeat_services_name').text(servicename);
                 $('#servicewithdoctorname').text(servicewithdoctor);
@@ -1773,9 +1782,14 @@ var DU = {};
                 $('#appointment_duration').val(appointmentduration);
 
                 $('.year').text(`On the ${monthdigit} of ${monthname}`);
-                $('.week_year').text(`On the 1st ${days} of ${monthname}`);
+                $('.week_year').text(`On the ${context.getOrdinalSuffix(weekofmonth)} ${days} of ${monthname}`);
+
+                $('#repeat_every_month').text(`On the ${monthdigit} day of the month`);
+                $('#repeat_every_month_weekday').text(`On the ${context.getOrdinalSuffix(weekofmonth)} ${days} of the month`);
+                $('.repeat_every_month_weekday').val(`On the ${context.getOrdinalSuffix(weekofmonth)} ${days} of the month`);
+
                 $('#repeat_day').val(days);
-                $('#repeat_month').val(appdate.getMonth());
+                $('#repeat_year_month').val(moment(appointmentdate).format("M"));
 
                 var startdate = $("#appointment_date").val();
 
@@ -1901,6 +1915,7 @@ var DU = {};
                                 text: data.message,
                                 info: "success",
                             });
+                            location.reload();
                         } else {
                             Swal.fire({
                                 title: "Error!",
