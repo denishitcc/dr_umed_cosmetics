@@ -9,6 +9,9 @@ use App\Models\ClientsPhotos;
 use App\Models\ClientsDocuments;
 use App\Models\Locations;
 use App\Models\Appointment;
+use App\Models\Category;
+use App\Models\Services;
+use App\Models\User;
 use DB;
 use Carbon\Carbon;
 
@@ -115,7 +118,14 @@ class ClientsController extends Controller
         ->join('clients', 'clients.id', '=', 'appointment.client_id')
         ->select('clients.id', 'clients.firstname', 'clients.lastname', 'appointment.start_date', 'appointment.end_date')
         ->get();
-        return view('clients.index', compact('clients','count_today_appointments'));
+
+        $categories = Category::with([
+            'children'
+        ])->whereNull('parent_category')->get();
+
+        $services   = Services::with(['appearoncalender'])->get();
+        $users = User::all();
+        return view('clients.index', compact('clients','count_today_appointments','categories','services','users'));
     }
 
     /**

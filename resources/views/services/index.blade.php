@@ -25,7 +25,7 @@
         <div class="scaffold-layout-outr">
             <div class="scaffold-layout-list-details">
                 <div class="ctg-greybox-list-box">
-                    <div class="ctg-greybox">
+                    <div class="ctg-greybox h-100">
                         <div class="p-4">
                             <h6 class="mb-4">Categories</h6>
                             <a href="#" class="btn btn-primary btn-md" data-bs-toggle="modal" data-bs-target="#new_Category">+ New Category</a>

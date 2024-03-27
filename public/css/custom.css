@@ -624,7 +624,8 @@ div.dataTables_filter { text-align: right; float: right;}
 .ctg-greybox-details-box::-webkit-scrollbar-track { background:transparent; border-radius:0px; }
 .ctg-greybox-details-box::-webkit-scrollbar-thumb { background:rgba(0, 0, 0, 0); border-radius:0px; }
 
-.ctg-tree{ list-style: none; padding: 0 1.5rem; margin: 0;  overflow-y: scroll; height: calc(100vh - 425px);}
+.modal .ctg-tree{height: calc(100vh - 425px);}
+.ctg-tree{ list-style: none; padding: 0 1.5rem; margin: 0;  overflow-y: scroll; height: calc(100vh - 134px);}
 .ctg-tree li{ margin-bottom: 5px; }
 
 .ctg-tree li.parent_category ul{ border-left: 2px solid #0747A6;}
@@ -894,8 +895,18 @@ html .hasDatepicker .ui-button.ui-state-disabled:active{ border: 0; background: 
 
 /* #calendar .fc-v-event .fc-event-main{ color: #282828;} */
 
-.drop-list{ list-style: none; padding: 0; margin: 0; }
-.drop-list li{ border-radius: 12px; background: #EEF1F5; padding: 15px; margin-bottom: 10px; }
+.drop-list:hover::-webkit-scrollbar-thumb {background:rgb(0, 0, 0);}
+.drop-list::-webkit-scrollbar { width:4px;  }
+.drop-list::-webkit-scrollbar-track { background:#EDEDED; border-radius:0px; }
+.drop-list::-webkit-scrollbar-thumb { background:rgba(0, 0, 0, 0); border-radius:20px; }
+
+.modal .client_list_box{max-width: 500px; padding: 15px; border-radius: 8px; border: 1px solid #D1D1D1; background: #FFF; }
+.client_list_box{}
+
+.modal .drop-list{margin: 0;}
+
+.drop-list{ list-style: none; padding: 0; margin: 0 0 25px 0; max-height: 400px; overflow-y: scroll;}
+.drop-list li{ border-radius: 12px; background: #EEF1F5; padding: 15px; margin-bottom: 10px; cursor: pointer;}
 .drop-list li:last-child{ margin-bottom: 0;}
 
 .drop-list li p{color: #282828; font-size: 13px; margin: 0 0 2px 0;}
@@ -961,7 +972,7 @@ html .hasDatepicker .ui-button.ui-state-disabled:active{ border: 0; background: 
 .note-box{border-radius: 5px; border: 1px solid #D1D1D1; color: #666; font-size: 15px; padding: 1.2rem;}
 
 .recent-slot{border-radius: 5px; background: #F9F9F9; color: #666;  padding: 12px; margin-bottom: 15px;}
-.recent-slot .status-check{ border-radius: 3px; background: #FFF; padding: 5px 20px 5px 5px; position: relative; margin-bottom: 5px;}
+.recent-slot .status-check{ border-radius: 3px; background: #FFF; padding: 5px 30px 5px 5px; position: relative; margin-bottom: 5px;}
 .recent-slot .status-check span{ position: absolute; right: 6px; top: 5px;}
 .recent-slot p b{ color: #282828; display: block;}
 .slot-btn.btn{color:#666666; padding: 0.45rem 1rem;}

@@ -21,6 +21,7 @@ use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
 use App\Models\Locations;
+use App\Models\WaitlistClient;
 use DateTime;
 
 class CalenderController extends Controller
@@ -967,4 +968,13 @@ class CalenderController extends Controller
     
         return response()->json($data);
     }    
+    public function CreateWaitListClient(Request $request){
+        WaitlistClient::create($request->appointments[0]);
+        $response = [
+            'success' => true,
+            'message' => 'Waitlist Client Created successfully!',
+            'type' => 'success',
+        ];
+        return response()->json($response);
+    }
 }

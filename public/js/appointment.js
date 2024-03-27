@@ -932,6 +932,15 @@ var DU = {};
             {
                 context.selectors.appointmentModal.modal('show');
             });
+
+            // var openModal = sessionStorage.getItem('openModal');
+            // if (openModal === 'true') {
+            //     // Clear session storage value
+            //     sessionStorage.removeItem('openModal');
+
+            //     // Open the modal
+            //     context.selectors.appointmentModal.modal('show');
+            // }
         },
 
         changeServices: function(){

@@ -21,7 +21,9 @@
                 <div id="clientDetails" class="detaild-theos pt-3"></div>
                 <div id='external-events'></div>
                 {{-- <div id="result" class="list-group"></div>  --}}
-                <ul class="drop-list" id="result"></ul>
+                <div class="client_list_box" style="display:none;">
+                    <ul class="drop-list" id="result"></ul>
+                </div>
                 <div id="mycalendar"> </div>
                 {{-- <img src="img/demo-calander.png" alt="" class="search_client"> onkeyup="changeInput(this.value)" --}}
             </div>
@@ -137,8 +139,9 @@
                         </div>
                     </div>
                     {{-- <div id="resultmodal" class="list-group"></div> --}}
-                    <ul class="drop-list" id="resultmodal"></ul>
-
+                    <div class="client_list_box" style="display:none;">
+                        <ul class="drop-list" id="resultmodal"></ul>
+                    </div>
                     <div class="mb-5" id="clientmodal">
                         <div class="one-inline align-items-center mb-2">
                             <span class="custname me-3" id="clientDetailsModal"> </span>
@@ -320,8 +323,9 @@
                         </div>
                     </div>
                     {{-- <div id="resultmodal" class="list-group"></div> --}}
-                    <ul class="drop-list" id="resulteditmodal"></ul>
-
+                    <div class="client_list_box" style="display:none;">
+                        <ul class="drop-list" id="resulteditmodal"></ul>    
+                    </div>
                     <div class="mb-5" id="clienteditmodal">
                         <div class="one-inline align-items-center mb-2">
                             <input type="hidden" id="event_id" value="">
@@ -1130,6 +1134,7 @@
             dataType: "json",
             success: function(res) {
                 if (res.length > 0) {
+                    $('.client_list_box').show();
                     for (var i = 0; i < res.length; ++i) {
                         // Check if the record with the same id already exists in the array
                         var existingRecordIndex = client_details.findIndex(record => record.id === res[i].id);
@@ -1247,6 +1252,7 @@
                 dataType: "json",
                 success: function(res) {
                     if (res.length > 0) {
+                        $('.client_list_box').show();
                         for (var i = 0; i < res.length; ++i) {
                             // Check if the record with the same id already exists in the array
                             var existingRecordIndex = client_details.findIndex(record => record.id === res[i].id);
@@ -1363,6 +1369,7 @@
                 dataType: "json",
                 success: function(res) {
                     if (res.length > 0) {
+                        $('.client_list_box').show();
                         for (var i = 0; i < res.length; ++i) {
                             // Check if the record with the same id already exists in the array
                             var existingRecordIndex = client_details.findIndex(record => record.id === res[i].id);
@@ -1463,6 +1470,7 @@
 
     //search and set clients
     function setSearch(value) {
+        $('.client_list_box').hide();
         document.getElementById('search').value = value;
         document.getElementById("result").innerHTML = "";
 
@@ -1509,6 +1517,7 @@
 
     //search and set clients modal
     function setSearchModal(value) {
+        $('.client_list_box').hide();
         document.getElementById('searchmodel').value = value;
         document.getElementById("resultmodal").innerHTML = "";
 
@@ -1557,7 +1566,7 @@
         }
     }
     function setEditSearchModal(value) {
-        
+        $('.client_list_box').hide();
         document.getElementById('searcheditmodel').value = value;
         document.getElementById("resultmodal").innerHTML = "";
 
