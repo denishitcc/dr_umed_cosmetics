@@ -36,20 +36,20 @@
                     </div>
 
                     <div class="form-group" id="days" style="display: none;">
-                        <label class="cst-check me-4">
-                            <input type="checkbox" value="monday" name="weekdays[]"><span class="checkmark me-2"></span> Monday</label>
-                        <label class="cst-check me-4">
-                            <input type="checkbox" value="tuesday" name="weekdays[]"><span class="checkmark me-2"></span> Tuesday</label>
-                        <label class="cst-check me-4">
-                            <input type="checkbox" value="wednesday" name="weekdays[]" ><span class="checkmark me-2"></span> Wednesday</label>
-                        <label class="cst-check me-4">
-                            <input type="checkbox" value="thrusday" name="weekdays[]"><span class="checkmark me-2"></span> Thursday</label>
-                        <label class="cst-check me-4">
-                            <input type="checkbox" value="friday" name="weekdays[]"><span class="checkmark me-2"></span> Friday</label>
                         <label class="cst-check">
-                            <input type="checkbox" value="saturaday" name="weekdays[]"><span class="checkmark me-2"></span> Saturday</label><br>
+                            <input type="checkbox" value="0" name="weekdays[]"><span class="checkmark me-2"></span> Sunday</label>
+                        <label class="cst-check me-4">
+                            <input type="checkbox" value="1" name="weekdays[]"><span class="checkmark me-2"></span> Monday</label>
+                        <label class="cst-check me-4">
+                            <input type="checkbox" value="2" name="weekdays[]"><span class="checkmark me-2"></span> Tuesday</label>
+                        <label class="cst-check me-4">
+                            <input type="checkbox" value="3" name="weekdays[]" ><span class="checkmark me-2"></span> Wednesday</label>
+                        <label class="cst-check me-4">
+                            <input type="checkbox" value="4" name="weekdays[]"><span class="checkmark me-2"></span> Thursday</label>
+                        <label class="cst-check me-4">
+                            <input type="checkbox" value="5" name="weekdays[]"><span class="checkmark me-2"></span> Friday</label>
                         <label class="cst-check">
-                            <input type="checkbox" value="sunday" name="weekdays[]"><span class="checkmark me-2"></span> Sunday</label>
+                            <input type="checkbox" value="6" name="weekdays[]"><span class="checkmark me-2"></span> Saturday</label><br>
                     </div>
 
                     <div class="form-group" id="years" style="display: none;">

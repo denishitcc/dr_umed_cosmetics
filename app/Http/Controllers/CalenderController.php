@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Locations;
 use App\Models\WaitlistClient;
 use DateTime;
+use PhpParser\Node\Stmt\Foreach_;
 
 class CalenderController extends Controller
 {
@@ -516,7 +517,7 @@ class CalenderController extends Controller
                     break;
 
                 case 'week':
-                    $newdata = $this->appointmentWeeks($days,$todayDate,$request, $appointmentsData);
+                    $newdata = $this->appointmentWeeks($days,$apptDate,$request, $appointmentsData);
                     break;
 
                 case 'month':
@@ -608,20 +609,52 @@ class CalenderController extends Controller
         return $newdata;
     }
 
+    function appointmentWeeks($days,$apptDate,$request, $appointmentsData)
+    {
+        $apptDate = Carbon::parse('2024-04-30');
+        $weekdays = $request->weekdays;
+        $newDate = $apptDate->addWeek($days);
+
+        $latestweekdays = $newdata =  [];
+        // for ($i = 1 ; $i <= $request->no_of_appointment; $i++) {
+
+        for ($w = Carbon::SUNDAY; $w <= Carbon::SATURDAY; $w++) {
+            if (in_array($w, $weekdays)) {
+                $latestweekdays[] = $newDate->copy()->startOfWeek()->addDays($w)->format('Y-m-d');
+            }
+        }
+
+        foreach ($latestweekdays as $key => $value) {
+            $latestDate = Carbon::parse($value);
+
+            $appointmentsData['start_date']  = $latestDate->toDateString(). ' '.$request->repeat_time.''.':00';
+            $latest                          = Carbon::parse($appointmentsData['start_date']);
+            $appointmentsData['end_date']    = $latest->addMinutes($request->duration)->toDateTimeString();
+            $newdata[]  = $appointmentsData;
+        }
+        return $newdata;
+        // }
+    }
+
     function appointmentMonths($days,$apptDate,$request, $appointmentsData)
     {
-        dd($apptDate);
         $apptDate = Carbon::parse($apptDate);
         for ($i = 1 ; $i <= $request->no_of_appointment; $i++) {
 
-            $latest_date                     = $apptDate->addMonths($days);
-            $appointmentsData['start_date']  = $latest_date->toDateString(). ' '.$request->repeat_time.''.':00';
-            $latest                          = Carbon::parse($appointmentsData['start_date']);
-            $appointmentsData['end_date']    = $latest->addMinutes($request->duration)->toDateTimeString();
-            dd($latest_date);
+            if($request->repeat_month == 0)
+            {
+                $latest_date                     = $apptDate->addMonths($days);
+                $appointmentsData['start_date']  = $latest_date->toDateString(). ' '.$request->repeat_time.''.':00';
+                $latest                          = Carbon::parse($appointmentsData['start_date']);
+                $appointmentsData['end_date']    = $latest->addMinutes($request->duration)->toDateTimeString();
+            }
+
             if($request->repeat_month == 1) // same date
             {
-                // $latest_date        = $apptDate->addMonth($days);
+                // $latest_date        = $apptDate->addWeeks(5);
+                // $latest_date        = $apptDate->nthInMonth(Carbon::FRIDAY, 5);
+                $newDate = $this->addNthWeekdayInMonth($apptDate, 5, Carbon::TUESDAY);
+                dd($newDate);
                 // $firstDayOfMonth    = $latest_date->firstOfMonth();
                 // $weekday            = $latest_date->next('Wednesday')->addWeeks(5);
                 // dd($latest_date);
@@ -637,8 +670,35 @@ class CalenderController extends Controller
                 break;
             }
         }
-        dd($newdata);
         return $newdata;
+    }
+
+    // Function to add nth weekday
+    function addNthWeekdayInMonth(Carbon $date, $n, $weekday)
+    {
+        // Calculate the difference between the desired weekday and the current weekday
+        $diff = ($weekday - $date->dayOfWeek + 7) % 7;
+
+        // If the difference is zero, then it's the same weekday, so move to the next occurrence
+        if ($diff == 0) {
+            $diff = 7;
+        }
+
+        // Get the last day of the current month
+        $lastDayOfMonth = $date->copy()->endOfMonth();
+
+        // Calculate the number of occurrences of the desired weekday in the current month
+        $totalOccurrences = $lastDayOfMonth->diffInDaysFiltered(function (Carbon $date) use ($weekday) {
+            return $date->dayOfWeek == $weekday;
+        });
+
+        // If the desired nth occurrence exists, add it
+        if ($n <= $totalOccurrences) {
+            return $date->addDays(($n - 1) * 7 + $diff);
+        }
+
+        // Otherwise, add the last occurrence of the weekday in the current month
+        return $lastDayOfMonth->copy()->previous($weekday);
     }
 
     public function UpcomingAppointment(Request $request)

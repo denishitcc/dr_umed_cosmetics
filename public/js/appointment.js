@@ -1791,6 +1791,8 @@ var DU = {};
                 $('#repeat_day').val(days);
                 $('#repeat_year_month').val(moment(appointmentdate).format("M"));
 
+                $(`input[type=checkbox][value=${moment(appointmentdate).day()}]`).prop("checked",true);
+
                 var startdate = $("#appointment_date").val();
 
                 $("#stop_repeating_date").datepicker({
