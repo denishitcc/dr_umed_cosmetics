@@ -54,7 +54,8 @@
                     @if(count($waitlist)>0)
                     <ul class="drop-list light-green">
                     @foreach($waitlist as $waitlists)
-                        <li>
+                        <div id='waitlist-events'></div>
+                        <li class="wl-event">
                             <div class="hist-strip">
                                 @php
                                     // Convert the date string to a DateTime object
@@ -1048,7 +1049,7 @@
 
         DU.appointment.init();
         $('#external-events').draggable();
-
+        $('#waitlist-events').draggable();
         //for fancybox gallery
         $(".gallery a").attr("data-fancybox","mygallery");
         $(".gallery a").fancybox();

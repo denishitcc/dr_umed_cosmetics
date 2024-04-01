@@ -44,14 +44,34 @@ var DU = {};
             const draggableElements = document.querySelectorAll('.fc-event');
             var context     = this,
                 Draggable   = FullCalendar.Draggable;
+                Draggable2   = FullCalendar.Draggable;
                 containerEl = document.getElementById('external-events');
+                containerEl2 = document.getElementById('waitlist-events');
 
                 new Draggable(containerEl, {
                     itemSelector: '.fc-event',
-                    eventData: function (eventEl) {
+                    eventData: function (eventEl) {debugger;
                     var dataset = eventEl.dataset;
                     return {
                         title: eventEl.innerText,
+                        extendedProps:{
+                            client_name :dataset.client_name,
+                            service_id  :dataset.service_id,
+                            client_id   :dataset.client_id,
+                            category_id :dataset.category_id,
+                            duration    :dataset.duration,
+                            app_id:dataset.app_id
+                        }
+                    };
+                }
+            });
+
+            new Draggable2(containerEl2, {
+                    itemSelector: '.wl-event',
+                    eventData: function (eventEl2) {debugger;
+                    var dataset = eventEl2.dataset;
+                    return {
+                        title: eventEl2.innerText,
                         extendedProps:{
                             client_name :dataset.client_name,
                             service_id  :dataset.service_id,
