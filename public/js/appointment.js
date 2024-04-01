@@ -1004,6 +1004,36 @@ var DU = {};
                     }
                 });
             });
+
+            jQuery('.edit_waitlist_parent_category_id').on('click', function(e) {
+                e.preventDefault();
+                var $this           = $(this),
+                    categoryId      = $this.data('category_id'),
+                    duration        = $this.data('duration'),
+                    categoryTitle   = $this.text();
+
+                $.ajax({
+                    url: moduleConfig.categotyByservices, // Replace with your actual API endpoint
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {
+                        'category_id' : categoryId === undefined ? 0 : categoryId
+                    },
+                    success: function (data) {
+
+                        $('#subcategory_text').text(categoryTitle);
+                        $('#waitlist_sub_services').empty();
+                        $.each(data, function(index, item) {
+                            $("#waitlist_sub_services").append(`<li><a href='javascript:void(0);' class='services' data-services_id=${item.id} data-category_id=${item.parent_category} data-duration=${item.duration}>${item.service_name}</a></li>`);
+                        });
+                    },
+                    error: function (error) {
+                        console.error('Error fetching resources:', error);
+                    }
+                });
+            });
         },
 
         selecedServices: function(){
@@ -1035,6 +1065,21 @@ var DU = {};
 
                     $("#edit_selected_services").append(`<li class='selected remove'  data-appointment_date= "${app_date}" data-appointment_time= "${app_time}" data-staff_name= "${staff_name}"  data-services_id= ${serviceId}  data-category_id= ${categoryId}  data-duration='${duration}'><a href='javascript:void(0);' > ${serviceTitle} </a><span class='btn btn-cross cross-red remove_services'><i class='ico-close'></i></span></li>`);
                 });
+
+                $('#waitlist_sub_services').on('click', '.services', function(e) {
+                    e.preventDefault();
+                    var $this           = $(this),
+                        serviceId       = $this.data('services_id'),
+                        categoryId      = $this.data('category_id'),
+                        duration        = $this.data('duration'),
+                        serviceTitle    = $this.text();
+                        var app_date = $('#latest_start_time').val();//$('#edit_appointment').attr('appointment_date'); 
+                        var app_time =$('#latest_end_time').val();//$('#edit_appointment').attr('appointment_time'); 
+                        var staff_name = $('#edit_appointment').attr('staff_name');                        ;
+
+                    $("#edit_waitlist_selected_services").append(`<li class='selected remove'  data-appointment_date= "${app_date}" data-appointment_time= "${app_time}" data-staff_name= "${staff_name}"  data-services_id= ${serviceId}  data-category_id= ${categoryId}  data-duration='${duration}'><a href='javascript:void(0);' > ${serviceTitle} </a><span class='btn btn-cross cross-red remove_services'><i class='ico-close'></i></span></li>`);
+                });
+                
             });
             // jQuery('#sub_services').on('click',".services", function(e) {
             //     e.preventDefault();
@@ -1054,6 +1099,10 @@ var DU = {};
                 $(this).closest('li').remove();
             });
             jQuery('#edit_selected_services').on('click',".remove_services", function(e) {
+                e.preventDefault();
+                $(this).closest('li').remove();
+            });
+            jQuery('#edit_waitlist_selected_services').on('click',".remove_services", function(e) {
                 e.preventDefault();
                 $(this).closest('li').remove();
             });
@@ -1964,6 +2013,10 @@ var DU = {};
     $('.client_edit_change').click(function(){
         $('.clientEditModal').show();
         $('#clienteditmodal').hide();
+    })
+    $('.client_waitlist_change').click(function(){
+        $('.clientWaitListEditModal').show();
+        $('#clientWaitListEditModal').hide();
     })
     //submit create client form
     function SubmitCreateClient(data){

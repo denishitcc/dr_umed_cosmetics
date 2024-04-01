@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use App\Models\Clients;
 use App\Models\ClientsPhotos;
 use App\Models\ClientsDocuments;
+use App\Models\ServicesAppearOnCalendar;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
@@ -38,18 +39,48 @@ class CalenderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $categories = Category::with([
                             'children'
                         ])->whereNull('parent_category')->get();
 
         $services   = Services::with(['appearoncalender'])->get();
-
+        $staffs      = User::all();
+        $todayDate = date('Y-m-d'); // Get current date in 'YYYY-MM-DD' format
+        $waitlist = WaitlistClient::select('waitlist_client.*', 'clients.firstname','clients.lastname','clients.mobile_number','clients.email', 'users.first_name as user_firstname', 'users.last_name as user_lastname')
+            ->join('clients', 'waitlist_client.client_id', '=', 'clients.id')
+            ->leftjoin('users', 'waitlist_client.user_id', '=', 'users.id')
+            ->where('preferred_from_date',$todayDate)
+            ->get();
+        foreach($waitlist as $wait)
+        {
+            $ser_id = explode(',',$wait->service_id);
+            $service_names = [];
+            $service_durations = [];
+            $serv_id = [];
+            foreach ($ser_id as $ser) {
+                $service = Services::find($ser); // Assuming Services model has 'id' as primary key
+                $service_appear = ServicesAppearOnCalendar::where('service_id',$ser)->first();
+                if ($service) {
+                    $service_names[] = $service->service_name;
+                    $serv_id[] = $ser;
+                }
+                if ($service_appear) {
+                    $service_durations[] = $service_appear->duration;
+                }
+            }
+            $wait->service_name = $service_names;
+            $wait->servid = $serv_id;
+            $wait->duration = $service_durations;
+        }
+        // dd($waitlist);
         return view('calender.index')->with(
             [
                 'categories' => $categories,
-                'services'   => $services
+                'services'   => $services,
+                'waitlist'   => $waitlist,
+                'staffs'      =>$staffs
             ]
         );
     }
@@ -1075,5 +1106,137 @@ class CalenderController extends Controller
             'type' => 'success',
         ];
         return response()->json($response);
+    }
+    public function FilterCalendarDate(Request $request){
+        $todayDate = date('Y-m-d'); // Get current date in 'YYYY-MM-DD' format
+        $staffs      = User::all();
+        if($request->is_checked == '1') {
+            $waitlist = WaitlistClient::select('waitlist_client.*', 'clients.firstname','clients.lastname','clients.mobile_number','clients.email', 'users.first_name as user_firstname', 'users.last_name as user_lastname')
+                ->join('clients', 'waitlist_client.client_id', '=', 'clients.id')
+                ->leftjoin('users', 'waitlist_client.user_id', '=', 'users.id')
+                ->where('preferred_from_date', $todayDate)
+                ->get();
+        } else {
+            $waitlist = WaitlistClient::select('waitlist_client.*', 'clients.firstname','clients.lastname','clients.mobile_number','clients.email', 'users.first_name as user_firstname', 'users.last_name as user_lastname')
+                ->join('clients', 'waitlist_client.client_id', '=', 'clients.id')
+                ->leftjoin('users', 'waitlist_client.user_id', '=', 'users.id')
+                ->get();
+        }
+
+        foreach($waitlist as $wait) {
+            $ser_id = explode(',',$wait->service_id);
+            $service_names = [];
+            $service_durations = [];
+            
+            foreach ($ser_id as $ser) {
+                $service = Services::find($ser); // Assuming Services model has 'id' as primary key
+                $service_appear = ServicesAppearOnCalendar::where('service_id',$ser)->first();
+                if ($service) {
+                    $service_names[] = $service->service_name;
+                }
+                if ($service_appear) {
+                    $service_durations[] = $service_appear->duration;
+                }
+            }
+
+            $wait->service_name = $service_names;
+            $wait->duration = $service_durations;
+        }
+
+        $response = [
+            'success' => true,
+            'data'    => $waitlist, // Include data in response
+            'staffs'  => $staffs,
+            'message' => 'Waitlist Client Created successfully!',
+            'type' => 'success',
+        ];
+        return response()->json($response);
+    }
+    public function filterCalendarStaff(Request $request)
+    {
+        $todayDate = date('Y-m-d'); // Get current date in 'YYYY-MM-DD' format
+        $staffs      = User::all();
+        if($request->is_checked == '1') {
+            $waitlist = WaitlistClient::select('waitlist_client.*', 'clients.firstname','clients.lastname','clients.mobile_number','clients.email', 'users.first_name as user_firstname', 'users.last_name as user_lastname')
+                ->join('clients', 'waitlist_client.client_id', '=', 'clients.id')
+                ->leftjoin('users', 'waitlist_client.user_id', '=', 'users.id')
+                ->where('preferred_from_date', $todayDate)
+                ->where('users.id', $request->staff_id)
+                ->get();
+        } else {
+            $waitlist = WaitlistClient::select('waitlist_client.*', 'clients.firstname','clients.lastname','clients.mobile_number','clients.email', 'users.first_name as user_firstname', 'users.last_name as user_lastname')
+                ->join('clients', 'waitlist_client.client_id', '=', 'clients.id')
+                ->leftjoin('users', 'waitlist_client.user_id', '=', 'users.id')
+                ->where('users.id', $request->staff_id)
+                ->get();
+            // dd($waitlist);
+        }
+
+        foreach($waitlist as $wait) {
+            $ser_id = explode(',',$wait->service_id);
+            $service_names = [];
+            $service_durations = [];
+            
+            foreach ($ser_id as $ser) {
+                $service = Services::find($ser); // Assuming Services model has 'id' as primary key
+                $service_appear = ServicesAppearOnCalendar::where('service_id',$ser)->first();
+                if ($service) {
+                    $service_names[] = $service->service_name;
+                }
+                if ($service_appear) {
+                    $service_durations[] = $service_appear->duration;
+                }
+            }
+
+            $wait->service_name = $service_names;
+            $wait->duration = $service_durations;
+        }
+        $response = [
+            'success' => true,
+            'data'    => $waitlist, // Include data in response
+            'staffs'  => $staffs,
+            'message' => 'Waitlist Client Created successfully!',
+            'type' => 'success',
+        ];
+        return response()->json($response);
+    }
+    public function UpdateWaitListClient(Request $request){
+        // dd($request->all());
+        $waitlist_id = $request->appointments[0]['waitlist_id'];
+        $waitlistClient = WaitlistClient::find($waitlist_id);
+            if ($waitlistClient) {
+                $waitlistClient->update($request->appointments[0]);
+            }
+        // WaitlistClient::update($request->appointments[0]);
+        $response = [
+            'success' => true,
+            'message' => 'Waitlist Client Updated successfully!',
+            'type' => 'success',
+        ];
+        return response()->json($response);
+    }
+    public function deleteWaitlistClient(Request $request,$id)
+    {
+        try {
+            $appointment   = WaitlistClient::find($id);
+
+            // Delete Appointment
+            $appointment->delete();
+
+            $data = [
+                'success' => true,
+                'message' => 'Waitlist client deleted successfully!',
+                'type'    => 'success',
+            ];
+
+        } catch (\Throwable $th) {
+            //throw $th;
+            $data = [
+                'success' => false,
+                'message' => $th,
+                'type'    => 'fail',
+            ];
+        }
+        return response()->json($data);
     }
 }

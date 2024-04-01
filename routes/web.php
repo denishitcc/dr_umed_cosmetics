@@ -155,5 +155,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('calender/update-create-appointments',[CalenderController::class, 'updateCreateAppointments'])->name('calendar.update-create-appointments');
     Route::post('calender/repeat-appointment',[CalenderController::class, 'repeatAppointment'])->name('calendar.repeat-appointment');
     Route::post('calender/add-waitlist-client',[CalenderController::class, 'CreateWaitListClient'])->name('calendar.calender/add-waitlist-client');
+    Route::get('calendar/filter-calendar-date', [CalenderController::class, 'filterCalendarDate'])->name('calendar.filter-current-date');
+    Route::get('calendar/filter-staff', [CalenderController::class, 'filterCalendarStaff'])->name('calendar.filter-staff');
+    Route::post('calender/update-waitlist-client',[CalenderController::class, 'UpdateWaitListClient'])->name('calendar/update-waitlist-client');
+    Route::delete('calender/delete-waitlist-client/{id}',[CalenderController::class, 'deleteWaitlistClient'])->name('calendar.delete-waitlist-client');
 });
 Route::get('/get-staff-list', [CalenderController::class,'getStaffList'])->name('get-staff-list');

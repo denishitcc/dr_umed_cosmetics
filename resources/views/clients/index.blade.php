@@ -76,7 +76,7 @@
                 </table>
         </div>
         
-        <div class="modal fade" id="New_appointment" tabindex="-1">
+        <div class="modal fade" id="New_waitlist_client" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered modal-xxl">
                 <div class="modal-content">
                 <div id="clientCreate" data-url="{{ route('clients.store') }}"></div>
@@ -349,14 +349,12 @@
         });
 
         $('#waitlistSaveBtn').on('click' ,function(e){
-            debugger;
             var clientselectedServicesCount = $('#selected_services').children("li").length,
                 clientName                  = $('#clientDetailsModal').text();
             // console.log(clientName);
 
             if($('#check_client').val() == 'new_client')
             {
-                debugger;
                 if ($("#create_waitlist_client").valid()) {
                     var data = $('#create_waitlist_client').serialize();
                     SubmitCreateWaitlistClient(data);
@@ -375,7 +373,6 @@
                         $('#service_error').show();
                     }
                     else{
-                        debugger;
                         $('#service_error').hide();
                         // Check if the form is valid or not
 
@@ -599,7 +596,7 @@ headers: {
 });
 $(document).ready(function() {
     $("#openWaitListModalBtn").click(function(){
-        $("#New_appointment").modal('show');
+        $("#New_waitlist_client").modal('show');
         $('#clientmodal').hide();
     });
 
@@ -631,7 +628,6 @@ $(document).ready(function() {
     })
 
     $('.parent_category_id').on('click', function(e) {
-        debugger;
         e.preventDefault();
         var $this           = $(this),
             categoryId      = $this.data('category_id'),
@@ -1301,7 +1297,7 @@ const changeInputModal = debounce((val) =>
 
 //search and set clients
 //search and set clients modal
-function setSearchModal(value) {debugger;
+function setSearchModal(value) {
     $('.client_list_box').hide();
     document.getElementById('searchmodel').value = value;
     document.getElementById("resultmodal").innerHTML = "";
@@ -1332,7 +1328,6 @@ function setSearchModal(value) {debugger;
 
 //submit create client form
 function SubmitCreateWaitlistClient(data){
-    debugger;
     var url = $("#clientCreate").data("url");
     $.ajax({
         headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
