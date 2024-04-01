@@ -816,8 +816,10 @@ div.dataTables_filter { text-align: right; float: right;}
 .service-list-box .ctg-tree li li a{ flex: auto;}
 .service-list-box .ctg-tree li.selected{  background-color: #fff; }
 .service-list-box .ctg-tree li.selected a{ color: #3699FF !important;}
-.service-list-box .ctg-tree li.selected:before{ height: 24px; width: 24px; display: inline-block; background: #232323; border-radius: 5px; vertical-align: middle; content: ''; position: absolute; right: .75em; top: .4em;}
-.service-list-box .ctg-tree li.selected:after { content: "\e91a"; position: absolute; line-height: normal; right: 14px; top: 9px; color: #fff; font-family: 'ico'; font-size: 18px;}
+.service-list-box .ctg-tree li.selected:before,
+.service-list-box .ctg-tree li.selected .disflex:before{ height: 24px; width: 24px; display: inline-block; background: #232323; border-radius: 5px; vertical-align: middle; content: ''; position: absolute; right: .75em; top: .4em;}
+.service-list-box .ctg-tree li.selected:after,
+.service-list-box .ctg-tree li.selected .disflex:after { content: "\e91a"; position: absolute; line-height: normal; right: 14px; top: 9px; color: #fff; font-family: 'ico'; font-size: 18px;}
 
 .service-list-box .ctg-tree li.selected.remove:before,
 .service-list-box .ctg-tree li.selected.remove:after{ display: none;}

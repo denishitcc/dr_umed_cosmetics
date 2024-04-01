@@ -1201,11 +1201,39 @@ class CalenderController extends Controller
         return response()->json($response);
     }
     public function UpdateWaitListClient(Request $request){
-        dd($request->all());
+        // dd($request->all());
+
+        //store category id
+        $c_id = $request->appointments[0]['service_id'];
+        $cs_id =explode(',',$c_id);
+        $category_ids = []; // Array to store category IDs
+        foreach($cs_id as $cs)
+        {
+            $sr = Services::where('id',$cs)->select('parent_category')->first();
+            if ($sr) {
+                $category_ids[] = $sr->parent_category;
+            }
+        }
+        // Convert the array of category IDs to a comma-separated string
+        $category_ids = array_unique($category_ids);
+        $category_ids_str = implode(',', $category_ids);
+        // Create a new array with the modified data
+        $appointmentsData = [
+            'waitlist_id' => $request->input('appointments.0.waitlist_id'),
+            'client_id' => $request->input('appointments.0.client_id'),
+            'user_id' => $request->input('appointments.0.user_id'),
+            'preferred_from_date' => $request->input('appointments.0.preferred_from_date'),
+            'preferred_to_date' => $request->input('appointments.0.preferred_to_date'),
+            'additional_notes' => $request->input('appointments.0.additional_notes'),
+            'category_id' => $category_ids_str,
+            'service_id' => $request->input('appointments.0.service_id'), // Assuming this is not modified
+        ];
+
         $waitlist_id = $request->appointments[0]['waitlist_id'];
         $waitlistClient = WaitlistClient::find($waitlist_id);
             if ($waitlistClient) {
-                $waitlistClient->update($request->appointments[0]);
+                $waitlistClient->update($appointmentsData);
+                // $waitlistClient->update($request->appointments[0]);
             }
         // WaitlistClient::update($request->appointments[0]);
         $response = [

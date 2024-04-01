@@ -258,7 +258,7 @@
                         <div class="col">
                             <h6>Categories</h6>
                             <div class="service-list-box p-2">
-                                <ul class="ctg-tree ps-0 pe-1">
+                                <ul class="ctg-tree ps-0 pe-1" id="main_categories">
                                     <li class="pt-title">
                                         <div class="disflex">
                                             <a href="javascript:void(0);" class="parent_category_id">All Services &amp; Tasks </a>
@@ -446,7 +446,7 @@
                         <div class="col">
                             <h6>Categories</h6>
                             <div class="service-list-box p-2">
-                                <ul class="ctg-tree ps-0 pe-1">
+                                <ul class="ctg-tree ps-0 pe-1" id="edit_main_categories" >
                                     <li class="pt-title">
                                         <div class="disflex">
                                             <a href="javascript:void(0);" class="edit_parent_category_id">All Services &amp; Tasks </a>
@@ -664,7 +664,7 @@
                         <div class="col">
                             <h6>Categories</h6>
                             <div class="service-list-box p-2">
-                                <ul class="ctg-tree ps-0 pe-1">
+                                <ul class="ctg-tree ps-0 pe-1" id="waitlist_main_categories">
                                     <li class="pt-title">
                                         <div class="disflex">
                                             <a href="javascript:void(0);" class="edit_waitlist_parent_category_id">All Services &amp; Tasks </a>
@@ -837,7 +837,7 @@
 
                         var appointmentsData = []; // Array to store appointment data
                         var eventIds = []; // Array to store eventIds
-                        var categoryIdsSet = [];
+                        var categoryIdsSet = new Set(); 
 
                         $("#edit_waitlist_selected_services > li").each(function(){
                             var eventId = $(this).data('services_id');
@@ -845,13 +845,13 @@
 
                             // Push eventId to eventIds array
                             eventIds.push(eventId);
-                            categoryIdsSet.push(categoryId);
+                            categoryIdsSet.add(categoryId);
                         });
-                        // var categoryIds = Array.from(categoryIdsSet);
+                        var categoryIdsArray = Array.from(categoryIdsSet);
 
                         // Create a comma-separated string of eventIds
                         var eventIdsStr = eventIds.join(',');
-                        var categoryIdsStr = categoryIdsSet.join(',');
+                        var categoryIdsStr = categoryIdsArray.join(',');
 
                         // Create a single appointment object with all eventIds stored as comma-separated
                         var appointment = {
@@ -861,10 +861,20 @@
                             'preferred_from_date': $('#preferred_from_date').val(),
                             'preferred_to_date': $('#preferred_to_date').val(),
                             'additional_notes': $('#additional_notes').val(),
-                            'category_id': categoryIdsStr,
-                            'service_id': eventIdsStr // Store eventIds as comma-separated string
+                            // 'category_id': categoryIdsStr,
+                            // 'service_id': eventIdsStr // Store eventIds as comma-separated string
                         };
 
+                        // Create categoryIdsStr with unique category IDs
+                        for (var i = 0; i < categoryIdsArray.length; i++) {
+                            if (categoryIdsStr !== '') {
+                                categoryIdsStr += ',';
+                            }
+                            categoryIdsStr += categoryIdsArray[i];
+                        }
+                        appointment.category_id = categoryIdsStr;
+                        appointment.service_id = eventIdsStr; // Store eventIds as comma-separated string
+                        
                         appointmentsData.push(appointment);
 
                         // Now appointmentsData contains only one object with all eventIds stored as comma-separated
@@ -930,7 +940,7 @@
 
                     var appointmentsData = []; // Array to store appointment data
                     var eventIds = []; // Array to store eventIds
-                    var categoryIdsSet = [];
+                    var categoryIdsSet = new Set(); 
 
                     $("#edit_waitlist_selected_services > li").each(function(){
                         var eventId = $(this).data('services_id');
@@ -938,13 +948,13 @@
 
                         // Push eventId to eventIds array
                         eventIds.push(eventId);
-                        categoryIdsSet.push(categoryId);
+                        categoryIdsSet.add(categoryId);
                     });
-                    // var categoryIds = Array.from(categoryIdsSet);
+                    var categoryIdsArray = Array.from(categoryIdsSet);
 
                     // Create a comma-separated string of eventIds
                     var eventIdsStr = eventIds.join(',');
-                    var categoryIdsStr = categoryIdsSet.join(',');
+                    var categoryIdsStr = '';
 
                     // Create a single appointment object with all eventIds stored as comma-separated
                     var appointment = {
@@ -954,9 +964,18 @@
                         'preferred_from_date': $('#preferred_from_date').val(),
                         'preferred_to_date': $('#preferred_to_date').val(),
                         'additional_notes': $('#additional_notes').val(),
-                        'category_id': categoryIdsStr,
-                        'service_id': eventIdsStr // Store eventIds as comma-separated string
+                        // 'category_id': categoryIdsStr,
+                        // 'service_id': eventIdsStr // Store eventIds as comma-separated string
                     };
+                    // Create categoryIdsStr with unique category IDs
+                    for (var i = 0; i < categoryIdsArray.length; i++) {
+                        if (categoryIdsStr !== '') {
+                            categoryIdsStr += ',';
+                        }
+                        categoryIdsStr += categoryIdsArray[i];
+                    }
+                    appointment.category_id = categoryIdsStr;
+                    appointment.service_id = eventIdsStr; // Store eventIds as comma-separated string
 
                     appointmentsData.push(appointment);
 
@@ -1843,6 +1862,13 @@
 
             $('#edit_waitlist_selected_services').empty();
             // Loop through each service item
+            $('#waitlist_main_categories li').each(function(){
+                let selected_cats = categoryId;
+                var cat_id = $(this).find('.edit_waitlist_parent_category_id').attr('data-category_id');
+                if (selected_cats.indexOf(cat_id) !== -1) {
+                    $(this).addClass('selected'); // Add the 'selected' class to the <li> element
+                }
+            })
             $('.waitlist_sub_services li').each(function () {
                 var serviceLi = $(this);
                 var serviceDataId = serviceLi.find('a').data('services_id');
@@ -1990,6 +2016,15 @@
         $("#clienteditDetailsModal").html(`<i class='ico-user2 me-2 fs-6'></i>  ${clientName}`);
         $('#edit_selected_services').empty();
         // Loop through each service item
+        $('#edit_main_categories li').each(function(){
+            let selected_cats = categoryId;
+            // alert(selected_cats);
+            var cat_id = $(this).find('.edit_parent_category_id').attr('data-category_id');
+            if (selected_cats.indexOf(cat_id) !== -1) {
+                $(this).addClass('selected'); // Add the 'selected' class to the <li> element
+            }
+        })
+        
         $('.edit_sub_services li').each(function () {
             var serviceLi = $(this);
             var serviceDataId = serviceLi.find('a').data('services_id');

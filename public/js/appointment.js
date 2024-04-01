@@ -50,7 +50,7 @@ var DU = {};
 
                 new Draggable(containerEl, {
                     itemSelector: '.fc-event',
-                    eventData: function (eventEl) {debugger;
+                    eventData: function (eventEl) {
                     var dataset = eventEl.dataset;
                     return {
                         title: eventEl.innerText,
@@ -68,7 +68,7 @@ var DU = {};
 
             new Draggable2(containerEl2, {
                     itemSelector: '.wl-event',
-                    eventData: function (eventEl2) {debugger;
+                    eventData: function (eventEl2) {
                     var dataset = eventEl2.dataset;
                     return {
                         title: eventEl2.innerText,
@@ -971,7 +971,7 @@ var DU = {};
                     categoryId      = $this.data('category_id'),
                     duration        = $this.data('duration'),
                     categoryTitle   = $this.text();
-
+                $(this).closest('li').addClass('selected');
                 $.ajax({
                     url: moduleConfig.categotyByservices, // Replace with your actual API endpoint
                     type: 'POST',
@@ -1114,7 +1114,7 @@ var DU = {};
         removeSelectedServices: function(){
             var context = this;
 
-            jQuery('#selected_services').on('click',".remove_services", function(e) {debugger;
+            jQuery('#selected_services').on('click',".remove_services", function(e) {
                 e.preventDefault();
                 $(this).closest('li').remove();
                 var ser_ids = $(this).closest('li').attr('data-services_id');
@@ -1126,7 +1126,7 @@ var DU = {};
                     }
                 });
             });
-            jQuery('#edit_selected_services').on('click',".remove_services", function(e) {debugger;
+            jQuery('#edit_selected_services').on('click',".remove_services", function(e) {
                 e.preventDefault();
                 $(this).closest('li').remove();
                 var ser_ids = $(this).closest('li').attr('data-services_id');
@@ -1138,18 +1138,52 @@ var DU = {};
                     }
                 });
             });
-            jQuery('#edit_waitlist_selected_services').on('click',".remove_services", function(e) {debugger;
+            jQuery('#edit_waitlist_selected_services').on('click',".remove_services", function(e) {
                 e.preventDefault();
                 $(this).closest('li').remove();
                 var ser_ids = $(this).closest('li').attr('data-services_id');
+                var sel_id='';
                 $('.service_selected').each(function(index, element) {
                     var id=ser_ids;
                     if($(element).find('.services').attr('data-services_id') == id)
                     {
                         $(element).removeClass('selected');
+                        sel_id = $(element).find('.services').attr('data-category_id');
                     }
                 });
-            });
+                
+                $('#edit_waitlist_selected_services').find('.selected').each(function(index) {
+                    var ca_id = $(this).attr('data-category_id');
+                    var ca_id_array = ca_id.split(',');
+                    var indexToRemove = ca_id_array.indexOf(sel_id);
+                    if (indexToRemove !== -1) {
+                        // Value already exists, no need to push again
+                        console.log('Value already exists in ca_id_array:', sel_id);
+                        ca_id_array.push(sel_id);
+                        
+                        // Convert ca_id_array back to a comma-separated string
+                        var updated_ca_id = ca_id_array.join(',');
+                        
+                        // Output the updated value
+                        console.log('Updated ca_id:', updated_ca_id);
+                        
+                        // Update the data-category_id attribute
+                        $(this).attr('data-category_id', updated_ca_id);
+                    } else {
+                        // Value does not exist, push it into ca_id_array
+                        ca_id_array.push(sel_id);
+                        
+                        // Convert ca_id_array back to a comma-separated string
+                        var updated_ca_id = ca_id_array.join(',');
+                        
+                        // Output the updated value
+                        console.log('Updated ca_id:', updated_ca_id);
+                        
+                        // Update the data-category_id attribute
+                        $(this).attr('data-category_id', updated_ca_id);
+                    }
+                });                
+            });       
         },
 
         addSelectedProduct: function(product){
