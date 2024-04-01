@@ -378,7 +378,7 @@
 
                         var appointmentsData = []; // Array to store appointment data
                         var eventIds = []; // Array to store eventIds
-                        var categoryId = '';
+                        var categoryIdsSet = new Set();
 
                         $("#selected_services > li").each(function(){
                             var eventId = $(this).data('services_id');
@@ -386,10 +386,13 @@
 
                             // Push eventId to eventIds array
                             eventIds.push(eventId);
+                            categoryIdsSet.add(categoryId);
                         });
+                        var categoryIds = Array.from(categoryIdsSet);
 
                         // Create a comma-separated string of eventIds
                         var eventIdsStr = eventIds.join(',');
+                        var categoryIdsStr = categoryIds.join(',');
 
                         // Create a single appointment object with all eventIds stored as comma-separated
                         var appointment = {
@@ -398,7 +401,7 @@
                             'preferred_from_date': $('#preferred_from_date').val(),
                             'preferred_to_date': $('#preferred_to_date').val(),
                             'additional_notes': $('#additional_notes').val(),
-                            'category_id': categoryId,
+                            'category_id': categoryIdsStr,
                             'service_id': eventIdsStr // Store eventIds as comma-separated string
                         };
 
@@ -467,7 +470,7 @@
 
                     var appointmentsData = []; // Array to store appointment data
                     var eventIds = []; // Array to store eventIds
-                    var categoryId = '';
+                    var categoryIdsSet = new Set();
 
                     $("#selected_services > li").each(function(){
                         var eventId = $(this).data('services_id');
@@ -475,10 +478,14 @@
 
                         // Push eventId to eventIds array
                         eventIds.push(eventId);
+                        categoryIdsSet.add(categoryId);
                     });
+
+                    var categoryIds = Array.from(categoryIdsSet);
 
                     // Create a comma-separated string of eventIds
                     var eventIdsStr = eventIds.join(',');
+                    var categoryIdsStr = categoryIds.join(',');
 
                     // Create a single appointment object with all eventIds stored as comma-separated
                     var appointment = {
@@ -487,7 +494,7 @@
                         'preferred_from_date': $('#preferred_from_date').val(),
                         'preferred_to_date': $('#preferred_to_date').val(),
                         'additional_notes': $('#additional_notes').val(),
-                        'category_id': categoryId,
+                        'category_id': categoryIdsStr,
                         'service_id': eventIdsStr // Store eventIds as comma-separated string
                     };
 
@@ -671,6 +678,14 @@ $(document).ready(function() {
     $('#selected_services').on('click',".remove_services", function(e) {
         e.preventDefault();
         $(this).closest('li').remove();
+        var ser_ids = $(this).closest('li').attr('data-services_id');
+        $('.service_selected').each(function(index, element) {
+            var id=ser_ids;
+            if($(element).find('.services').attr('data-services_id') == id)
+            {
+                $(element).removeClass('selected');
+            }
+        });
     });
     $(document).on('click','.services',function(e){
         $(this).parent().addClass('selected');

@@ -27,7 +27,7 @@
                     <ul class="drop-list" id="result"></ul>
                 </div>
                 <div id="mycalendar"> </div>
-                <div class="waitlist" style="display:none;">
+                <div class="waitlist" id="waitlist" style="display:none;">
 
                     <h5 class="mb-3">Waitlist</h5>
                     <button class="btn-close close_waitlist"></button>
@@ -54,7 +54,7 @@
                     @if(count($waitlist)>0)
                     <ul class="drop-list light-green">
                     @foreach($waitlist as $waitlists)
-                        <div id='waitlist-events'></div>
+                        <!-- <div id='waitlist-events'></div> -->
                         <li class="wl-event">
                             <div class="hist-strip">
                                 @php
@@ -481,7 +481,7 @@
                                         </div>
                                         <ul id="edit_sub_services" class="edit_sub_services">
                                             @foreach ($services as $services_data)
-                                                <li>
+                                                <li class="service_selected">
                                                     <a href="javascript:void(0);" class="services" data-services_id="{{$services_data->id}}" data-services_id="{{$services_data->id}}" data-category_id="{{$services_data->parent_category}}" data-duration="{{ $services_data->appearoncalender->duration }}">{{ $services_data->service_name }}</a>
                                                 </li>
                                             @endforeach
@@ -837,7 +837,7 @@
 
                         var appointmentsData = []; // Array to store appointment data
                         var eventIds = []; // Array to store eventIds
-                        var categoryId = '';
+                        var categoryIdsSet = [];
 
                         $("#edit_waitlist_selected_services > li").each(function(){
                             var eventId = $(this).data('services_id');
@@ -845,10 +845,13 @@
 
                             // Push eventId to eventIds array
                             eventIds.push(eventId);
+                            categoryIdsSet.push(categoryId);
                         });
+                        // var categoryIds = Array.from(categoryIdsSet);
 
                         // Create a comma-separated string of eventIds
                         var eventIdsStr = eventIds.join(',');
+                        var categoryIdsStr = categoryIdsSet.join(',');
 
                         // Create a single appointment object with all eventIds stored as comma-separated
                         var appointment = {
@@ -858,7 +861,7 @@
                             'preferred_from_date': $('#preferred_from_date').val(),
                             'preferred_to_date': $('#preferred_to_date').val(),
                             'additional_notes': $('#additional_notes').val(),
-                            'category_id': categoryId,
+                            'category_id': categoryIdsStr,
                             'service_id': eventIdsStr // Store eventIds as comma-separated string
                         };
 
@@ -927,7 +930,7 @@
 
                     var appointmentsData = []; // Array to store appointment data
                     var eventIds = []; // Array to store eventIds
-                    var categoryId = '';
+                    var categoryIdsSet = [];
 
                     $("#edit_waitlist_selected_services > li").each(function(){
                         var eventId = $(this).data('services_id');
@@ -935,10 +938,13 @@
 
                         // Push eventId to eventIds array
                         eventIds.push(eventId);
+                        categoryIdsSet.push(categoryId);
                     });
+                    // var categoryIds = Array.from(categoryIdsSet);
 
                     // Create a comma-separated string of eventIds
                     var eventIdsStr = eventIds.join(',');
+                    var categoryIdsStr = categoryIdsSet.join(',');
 
                     // Create a single appointment object with all eventIds stored as comma-separated
                     var appointment = {
@@ -948,7 +954,7 @@
                         'preferred_from_date': $('#preferred_from_date').val(),
                         'preferred_to_date': $('#preferred_to_date').val(),
                         'additional_notes': $('#additional_notes').val(),
-                        'category_id': categoryId,
+                        'category_id': categoryIdsStr,
                         'service_id': eventIdsStr // Store eventIds as comma-separated string
                     };
 
@@ -1049,7 +1055,7 @@
 
         DU.appointment.init();
         $('#external-events').draggable();
-        $('#waitlist-events').draggable();
+        $('.waitlist').draggable();
         //for fancybox gallery
         $(".gallery a").attr("data-fancybox","mygallery");
         $(".gallery a").fancybox();
@@ -1551,7 +1557,7 @@
                         }
 
                         let htmlContent = `
-                            <div class="waitlist">
+                            <div class="waitlist" id="waitlist">
                                 <h5 class="mb-3">Waitlist</h5>
                                 <button class="btn-close close_waitlist"></button>
                                 <div class="mb-3">
@@ -1693,7 +1699,7 @@
                         }
 
                         let htmlContent = `
-                            <div class="waitlist">
+                            <div class="waitlist" id="waitlist">
                                 <h5 class="mb-3">Waitlist</h5>
                                 <button class="btn-close close_waitlist"></button>
                                 <div class="mb-3">

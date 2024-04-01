@@ -1201,7 +1201,7 @@ class CalenderController extends Controller
         return response()->json($response);
     }
     public function UpdateWaitListClient(Request $request){
-        // dd($request->all());
+        dd($request->all());
         $waitlist_id = $request->appointments[0]['waitlist_id'];
         $waitlistClient = WaitlistClient::find($waitlist_id);
             if ($waitlistClient) {

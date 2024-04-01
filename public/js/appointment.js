@@ -46,7 +46,7 @@ var DU = {};
                 Draggable   = FullCalendar.Draggable;
                 Draggable2   = FullCalendar.Draggable;
                 containerEl = document.getElementById('external-events');
-                containerEl2 = document.getElementById('waitlist-events');
+                containerEl2 = document.getElementById('waitlist');
 
                 new Draggable(containerEl, {
                     itemSelector: '.fc-event',
@@ -1114,17 +1114,41 @@ var DU = {};
         removeSelectedServices: function(){
             var context = this;
 
-            jQuery('#selected_services').on('click',".remove_services", function(e) {
+            jQuery('#selected_services').on('click',".remove_services", function(e) {debugger;
                 e.preventDefault();
                 $(this).closest('li').remove();
+                var ser_ids = $(this).closest('li').attr('data-services_id');
+                $('.service_selected').each(function(index, element) {
+                    var id=ser_ids;
+                    if($(element).find('.services').attr('data-services_id') == id)
+                    {
+                        $(element).removeClass('selected');
+                    }
+                });
             });
-            jQuery('#edit_selected_services').on('click',".remove_services", function(e) {
+            jQuery('#edit_selected_services').on('click',".remove_services", function(e) {debugger;
                 e.preventDefault();
                 $(this).closest('li').remove();
+                var ser_ids = $(this).closest('li').attr('data-services_id');
+                $('.service_selected').each(function(index, element) {
+                    var id=ser_ids;
+                    if($(element).find('.services').attr('data-services_id') == id)
+                    {
+                        $(element).removeClass('selected');
+                    }
+                });
             });
-            jQuery('#edit_waitlist_selected_services').on('click',".remove_services", function(e) {
+            jQuery('#edit_waitlist_selected_services').on('click',".remove_services", function(e) {debugger;
                 e.preventDefault();
                 $(this).closest('li').remove();
+                var ser_ids = $(this).closest('li').attr('data-services_id');
+                $('.service_selected').each(function(index, element) {
+                    var id=ser_ids;
+                    if($(element).find('.services').attr('data-services_id') == id)
+                    {
+                        $(element).removeClass('selected');
+                    }
+                });
             });
         },
 
