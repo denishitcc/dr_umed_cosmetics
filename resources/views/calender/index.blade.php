@@ -51,11 +51,11 @@
                         <div class="head"><b>Drag and drop on</b> to a day on the appointment book
                             <i class="ico-noun-arrow"></i></div>
                     </div>
+                    <ul class="drop-list light-green" id="waitlist-events">
                     @if(count($waitlist)>0)
-                    <ul class="drop-list light-green">
                     @foreach($waitlist as $waitlists)
                         <!-- <div id='waitlist-events'></div> -->
-                        <li class="wl-event">
+                        <li class="fc-event">
                             <div class="hist-strip">
                                 @php
                                     // Convert the date string to a DateTime object
@@ -70,7 +70,7 @@
                             <div class="client-name">
                                 <div class="drop-cap" style="background: #D0D0D0; color:#fff;">{{ strtoupper(substr($waitlists->firstname, 0, 1))}}</div>
                                 <div class="client-info">
-                                    <h4 class="blue-bold">{{$waitlists->firstname.' '.$waitlists->lastname}}</h4>
+                                    <h4 class="blue-bold" data-clientid="{{$waitlists->id}}">{{$waitlists->firstname.' '.$waitlists->lastname}}</h4>
                                 </div>
                             </div>
                             <div class="mb-2"><a href="#" class="river-bed"><b>{{$waitlists->mobile_number}}</b></a><br>
@@ -1074,7 +1074,7 @@
 
         DU.appointment.init();
         $('#external-events').draggable();
-        $('.waitlist').draggable();
+        $('#waitlist-events').draggable();
         //for fancybox gallery
         $(".gallery a").attr("data-fancybox","mygallery");
         $(".gallery a").fancybox();
@@ -1600,18 +1600,18 @@
                                     </div>
                                 </div>
 
-                                <ul class="drop-list light-green">`;
+                                <ul class="drop-list light-green ui-draggable ui-draggable-handle" id="waitlist-events">`;
 
                         response.data.forEach(item => {
                             console.log('item',item);
                             let formattedDate = formatDateToCustom(item.preferred_from_date); // Format date as desired
                             let formattedTimeElapsed = formatTimeElapsed(item.updated_at); // Format time elapsed
                             htmlContent += `
-                                <li>
+                                <li class="fc-event">
                                     <div class="hist-strip">${formattedDate} <span><i class="ico-clock me-1 fs-5"></i>${formattedTimeElapsed}</span></div>
                                     <div class="client-name">
                                         <div class="drop-cap" style="background: #D0D0D0; color:#fff;">${item.firstname.charAt(0).toUpperCase()}</div>
-                                        <div class="client-info"><h4 class="blue-bold">${item.firstname} ${item.lastname}</h4></div>
+                                        <div class="client-info"><h4 class="blue-bold" data-clientid="${item.client_id}">${item.firstname} ${item.lastname}</h4></div>
                                     </div>
                                     <div class="mb-2"><a href="#" class="river-bed"><b>${item.mobile_number}</b></a><br>
                                     <a href="#" class="river-bed"><b>${item.email}</b></a></div>
@@ -1742,13 +1742,13 @@
                                     </div>
                                 </div>
 
-                                <ul class="drop-list light-green">`;
+                                <ul class="drop-list light-green ui-draggable ui-draggable-handle" id="waitlist-events">`;
 
                         response.data.forEach(item => {
                             let formattedDate = formatDateToCustom(item.preferred_from_date); // Format date as desired
                             let formattedTimeElapsed = formatTimeElapsed(item.updated_at); // Format time elapsed
                             htmlContent += `
-                                <li>
+                                <li class="fc-event">
                                     <div class="hist-strip">${formattedDate} <span><i class="ico-clock me-1 fs-5"></i>${formattedTimeElapsed}</span></div>
                                     <div class="client-name">
                                         <div class="drop-cap" style="background: #D0D0D0; color:#fff;">${item.firstname.charAt(0).toUpperCase()}</div>

@@ -41,49 +41,7 @@ var DU = {};
         },
 
         initialCalender: function(){
-            const draggableElements = document.querySelectorAll('.fc-event');
-            var context     = this,
-                Draggable   = FullCalendar.Draggable;
-                Draggable2   = FullCalendar.Draggable;
-                containerEl = document.getElementById('external-events');
-                containerEl2 = document.getElementById('waitlist');
-
-                new Draggable(containerEl, {
-                    itemSelector: '.fc-event',
-                    eventData: function (eventEl) {
-                    var dataset = eventEl.dataset;
-                    return {
-                        title: eventEl.innerText,
-                        extendedProps:{
-                            client_name :dataset.client_name,
-                            service_id  :dataset.service_id,
-                            client_id   :dataset.client_id,
-                            category_id :dataset.category_id,
-                            duration    :dataset.duration,
-                            app_id:dataset.app_id
-                        }
-                    };
-                }
-            });
-
-            new Draggable2(containerEl2, {
-                    itemSelector: '.wl-event',
-                    eventData: function (eventEl2) {
-                    var dataset = eventEl2.dataset;
-                    return {
-                        title: eventEl2.innerText,
-                        extendedProps:{
-                            client_name :dataset.client_name,
-                            service_id  :dataset.service_id,
-                            client_id   :dataset.client_id,
-                            category_id :dataset.category_id,
-                            duration    :dataset.duration,
-                            app_id:dataset.app_id
-                        }
-                    };
-                }
-            });
-
+            var context     = this;
             // Calender
             var calendarEl = document.getElementById('calendar');
                 context.calendar = new FullCalendar.Calendar(calendarEl, {
@@ -283,6 +241,8 @@ var DU = {};
                     $('#New_appointment').modal('toggle');
                 },
             });
+            context.draggable1();
+            context.draggable2();
 
             context.calendar.render();
 
@@ -620,6 +580,51 @@ var DU = {};
                 $('.app_sum').remove();
                 $('#external-events').empty();
             })
+        },
+
+        draggable1: function(){
+            var context         = this,
+                containerEl     = document.getElementById('external-events');
+            var eventdraggable  = new FullCalendar.Draggable(containerEl, {
+                itemSelector: '.fc-event',
+                eventData: function (eventEl) {
+                    var dataset = eventEl.dataset;
+                    return {
+                        title: eventEl.innerText,
+                        extendedProps:{
+                            client_name :dataset.client_name,
+                            service_id  :dataset.service_id,
+                            client_id   :dataset.client_id,
+                            category_id :dataset.category_id,
+                            duration    :dataset.duration,
+                            app_id:dataset.app_id
+                        }
+                    };
+                }
+            });
+
+        },
+
+        draggable2: function(){
+            var context             = this,
+                containerEl2        = document.getElementById('waitlist-events');
+            var waitingdraggable    = new FullCalendar.Draggable(containerEl2, {
+                itemSelector: '.fc-event',
+                eventData: function (eventEl2) {
+                    var dataset = eventEl2.dataset;
+                    return {
+                        title: eventEl2.innerText,
+                        extendedProps:{
+                            client_name :dataset.client_name,
+                            service_id  :dataset.service_id,
+                            client_id   :dataset.client_id,
+                            category_id :dataset.category_id,
+                            duration    :dataset.duration,
+                            app_id:dataset.app_id
+                        }
+                    };
+                }
+            });
         },
 
         editEvent:function (eventId){
