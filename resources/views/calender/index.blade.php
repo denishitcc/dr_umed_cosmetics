@@ -54,8 +54,24 @@
                     <ul class="drop-list light-green" id="waitlist-events">
                     @if(count($waitlist)>0)
                     @foreach($waitlist as $waitlists)
-                        <!-- <div id='waitlist-events'></div> -->
-                        <li class="fc-event">
+                        @foreach($waitlists->servid as $wait)
+                            @php
+                                $ser_ids[] = $wait;
+                            @endphp
+                        @endforeach
+                        @php
+                        $ser_ids_str = implode(',', $ser_ids); // Convert array to comma-separated string
+                        @endphp
+                        @foreach($waitlists->service_name as $key => $ser)
+                            @php
+                                $ser_names[] = $ser;
+                            @endphp
+                        @endforeach
+                        @php
+                        $ser_names_str = implode(',', $ser_names); // Convert array to comma-separated string
+                        $dur_str = implode(',',$waitlists->duration);
+                        @endphp
+                        <li class="fc-event" data-app_id="{{$waitlists->id}}" data-client_id="{{$waitlists->client_id}}" data-category_id="{{$waitlists->category_id}}" data-duration="{{$dur_str}}" data-service_name="{{$ser_names_str}}" data-service_id="{{$ser_ids_str}}" data-client_name="{{$waitlists->firstname.' '.$waitlists->lastname}}">
                             <div class="hist-strip">
                                 @php
                                     // Convert the date string to a DateTime object
@@ -119,12 +135,13 @@
                                 @if(!empty($waitlists->additional_notes))
                                     <a href="#" class="btn btn-primary font-13 alter btn-sm slot-btn show_notes"> Show notes</a>
                                 @else
-                                    <a href="#" class="btn btn-primary font-13 alter btn-sm slot-btn show_notes" disabled> Show notes</a>
+                                    <a href="#" class="btn btn-primary font-13 alter btn-sm slot-btn show_notes" disabled style="color: darkgray;"> Show notes</a>
                                 @endif
                             </div>
                         </li>
                     @endforeach
-
+                    @else
+                    <span>No data found
                     </ul>
                     @endif
                 </div>
@@ -1075,6 +1092,7 @@
         DU.appointment.init();
         $('#external-events').draggable();
         $('#waitlist-events').draggable();
+        $('#waitlist-events').removeAttr('style');
         //for fancybox gallery
         $(".gallery a").attr("data-fancybox","mygallery");
         $(".gallery a").fancybox();
@@ -1600,14 +1618,14 @@
                                     </div>
                                 </div>
 
-                                <ul class="drop-list light-green ui-draggable ui-draggable-handle" id="waitlist-events">`;
+                                <ul class="drop-list light-green" id="waitlist-events">`;
 
                         response.data.forEach(item => {
                             console.log('item',item);
                             let formattedDate = formatDateToCustom(item.preferred_from_date); // Format date as desired
                             let formattedTimeElapsed = formatTimeElapsed(item.updated_at); // Format time elapsed
                             htmlContent += `
-                                <li class="fc-event">
+                                <li class="fc-event" data-app_id="${item.id}" data-client_id="${item.client_id}" data-category_id="${item.category_id}" data-duration="${item.duration}" data-service_name="${item.service_name}" data-service_id="${item.service_id}" data-client_name="${item.firstname+' '+item.lastname}">
                                     <div class="hist-strip">${formattedDate} <span><i class="ico-clock me-1 fs-5"></i>${formattedTimeElapsed}</span></div>
                                     <div class="client-name">
                                         <div class="drop-cap" style="background: #D0D0D0; color:#fff;">${item.firstname.charAt(0).toUpperCase()}</div>
@@ -1631,7 +1649,7 @@
                                                 <a class="dropdown-item delete-btn" href="#">Delete</a>
                                             </div>
                                         </span>
-                                        ${item.additional_notes ? `<a href="#" class="btn btn-primary font-13 alter btn-sm slot-btn show_notes"> Show notes</a>` : `<a href="#" class="btn btn-primary font-13 alter btn-sm slot-btn show_notes" disabled> Show notes</a>`}
+                                        ${item.additional_notes ? `<a href="#" class="btn btn-primary font-13 alter btn-sm slot-btn show_notes"> Show notes</a>` : `<a href="#" class="btn btn-primary font-13 alter btn-sm slot-btn show_notes" disabled style="color: darkgray;"> Show notes</a>`}
                                     </div>
                                 </li>`;
                         });
@@ -1643,7 +1661,9 @@
 
                         // Update the .waitlist element with the generated HTML content
                         $('.waitlist').html(htmlContent);
-                        
+                        $('#waitlist-events').draggable();
+                        $('#waitlist-events').removeAttr('style');
+
                         $('.current_date_checked').prop('checked', isChecked === '1');
                         let selectedStaff = response.staffs; // Assuming this is provided in your response
                         if (response.staffs && response.staffs.length > 0) {
@@ -1742,40 +1762,45 @@
                                     </div>
                                 </div>
 
-                                <ul class="drop-list light-green ui-draggable ui-draggable-handle" id="waitlist-events">`;
-
-                        response.data.forEach(item => {
-                            let formattedDate = formatDateToCustom(item.preferred_from_date); // Format date as desired
-                            let formattedTimeElapsed = formatTimeElapsed(item.updated_at); // Format time elapsed
-                            htmlContent += `
-                                <li class="fc-event">
-                                    <div class="hist-strip">${formattedDate} <span><i class="ico-clock me-1 fs-5"></i>${formattedTimeElapsed}</span></div>
-                                    <div class="client-name">
-                                        <div class="drop-cap" style="background: #D0D0D0; color:#fff;">${item.firstname.charAt(0).toUpperCase()}</div>
-                                        <div class="client-info"><h4 class="blue-bold">${item.firstname} ${item.lastname}</h4></div>
-                                    </div>
-                                    <div class="mb-2"><a href="#" class="river-bed"><b>${item.mobile_number}</b></a><br>
-                                    <a href="#" class="river-bed"><b>${item.email}</b></a></div>
-                                    <!-- Your other content -->
-                                    ${item.service_name.map((service, index) => `
-                                        <p>${service}</p>
-                                        <p>${item.duration[index]} Mins with ${item.user_firstname ? item.user_firstname + ' ' + item.user_lastname : 'Anyone'}</p>
-                                    `).join('')}
-                                    <p class="additional_notes" style="display:none;">${item.additional_notes}</p>
-                                    <div class="mt-2">
-                                        <span class="dropdown show">
-                                            <a class="btn btn-primary font-13 alter btn-sm slot-btn me-2 dropdown-toggle more-options-btn" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                More Options
-                                            </a>
-                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                                <a class="dropdown-item edit-btn" href="javascript:void(0)" waitlist_id="${item.id}" client_id="${item.client_id}" category_id="${item.category_id}" duration="${item.duration}" service_name="${item.service_name}" services_id="${item.service_id}" preferred-from-date="${item.preferred_from_date}" user-id="${item.user_id}" preferred-to-date="${item.preferred_to_date}" additional-notes="${item.additional_notes}" client-name="${item.firstname+' '+item.lastname}" id="edit_waitlist_clients" client-name="${item.firstname} ${item.lastname}">Edit</a>
-                                                <a class="dropdown-item delete-btn" href="#">Delete</a>
-                                            </div>
-                                        </span>
-                                        ${item.additional_notes ? `<a href="#" class="btn btn-primary font-13 alter btn-sm slot-btn show_notes"> Show notes</a>` : `<a href="#" class="btn btn-primary font-13 alter btn-sm slot-btn show_notes" disabled> Show notes</a>`}
-                                    </div>
-                                </li>`;
-                        });
+                                <ul class="drop-list light-green" id="waitlist-events">`;
+                        if(response.data.length > 0)
+                        {
+                            response.data.forEach(item => {
+                                let formattedDate = formatDateToCustom(item.preferred_from_date); // Format date as desired
+                                let formattedTimeElapsed = formatTimeElapsed(item.updated_at); // Format time elapsed
+                                htmlContent += `
+                                    <li class="fc-event" data-app_id="${item.id}" data-client_id="${item.client_id}" data-category_id="${item.category_id}" data-duration="${item.duration}" data-service_name="${item.service_name}" data-service_id="${item.service_id}" data-client_name="${item.firstname+' '+item.lastname}">
+                                        <div class="hist-strip">${formattedDate} <span><i class="ico-clock me-1 fs-5"></i>${formattedTimeElapsed}</span></div>
+                                        <div class="client-name">
+                                            <div class="drop-cap" style="background: #D0D0D0; color:#fff;">${item.firstname.charAt(0).toUpperCase()}</div>
+                                            <div class="client-info"><h4 class="blue-bold">${item.firstname} ${item.lastname}</h4></div>
+                                        </div>
+                                        <div class="mb-2"><a href="#" class="river-bed"><b>${item.mobile_number}</b></a><br>
+                                        <a href="#" class="river-bed"><b>${item.email}</b></a></div>
+                                        <!-- Your other content -->
+                                        ${item.service_name.map((service, index) => `
+                                            <p>${service}</p>
+                                            <p>${item.duration[index]} Mins with ${item.user_firstname ? item.user_firstname + ' ' + item.user_lastname : 'Anyone'}</p>
+                                        `).join('')}
+                                        <p class="additional_notes" style="display:none;">${item.additional_notes}</p>
+                                        <div class="mt-2">
+                                            <span class="dropdown show">
+                                                <a class="btn btn-primary font-13 alter btn-sm slot-btn me-2 dropdown-toggle more-options-btn" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    More Options
+                                                </a>
+                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                                    <a class="dropdown-item edit-btn" href="javascript:void(0)" waitlist_id="${item.id}" client_id="${item.client_id}" category_id="${item.category_id}" duration="${item.duration}" service_name="${item.service_name}" services_id="${item.service_id}" preferred-from-date="${item.preferred_from_date}" user-id="${item.user_id}" preferred-to-date="${item.preferred_to_date}" additional-notes="${item.additional_notes}" client-name="${item.firstname+' '+item.lastname}" id="edit_waitlist_clients" client-name="${item.firstname} ${item.lastname}">Edit</a>
+                                                    <a class="dropdown-item delete-btn" href="#">Delete</a>
+                                                </div>
+                                            </span>
+                                            ${item.additional_notes ? `<a href="#" class="btn btn-primary font-13 alter btn-sm slot-btn show_notes"> Show notes</a>` : `<a href="#" class="btn btn-primary font-13 alter btn-sm slot-btn show_notes" disabled  style="color: darkgray;"> Show notes</a>`}
+                                        </div>
+                                    </li>`;
+                            });
+                        }else{
+                            htmlContent +=`<span>No data found</span>`;
+                        }
+                        
 
                         htmlContent += `
                                 </ul>
@@ -1784,6 +1809,8 @@
 
                         // Update the .waitlist element with the generated HTML content
                         $('.waitlist').html(htmlContent);
+                        $('#waitlist-events').draggable();
+                        $('#waitlist-events').removeAttr('style');
                         
                         // $('.current_date_checked').prop('checked', isChecked === '1');
                         let selectedStaff = response.staffs; // Assuming this is provided in your response

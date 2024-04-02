@@ -185,47 +185,110 @@ class CalenderController extends Controller
      */
     public function createAppointments(Request $request)
     {
-        DB::beginTransaction();
-        $appointmentsData = [
-            'client_id'     => $request->client_id,
-            'service_id'    => $request->service_id,
-            'category_id'   => $request->category_id,
-            'staff_id'      => $request->staff_id,
-            'start_date'    => $request->start_time,
-            'end_date'      => $request->end_time,
-            'duration'      => $request->duration,
-            'status'        => Appointment::BOOKED,
-            'current_date'  => $request->start_date
-        ];
+        if(isset($request->app_id)) {
+            $service_ex = explode(',',$request->service_id);
+            $duration_ex = explode(',',$request->duration);
+            $category_ex = explode(',',$request->category_id);
+            $data = []; // Initialize an array to store response data
+        
+            try {
+                DB::beginTransaction(); // Begin a transaction
+                foreach($service_ex as $key => $ser) {
+                    $single_ser = Services::where('id',$ser)->first();
+                    $startDateTime = Carbon::parse($request->start_time);
+                    $duration = $duration_ex[$key];
+                    // Add duration to start_date
+                    if($key > 0) {
+                        $startDateTime = Carbon::parse($data[$key - 1]['data']['end_date']); // Use previous end_date
+                    }
 
-        try {
-            $findAppointment = Appointment::where('id',$request->app_id)->first();
-            
-            if( isset($findAppointment->id) ){
-                $findAppointment->update($appointmentsData);
+                    $endDateTime = $startDateTime->copy()->addMinutes($duration);
+                    $formattedEndDateTime = $endDateTime->format('Y-m-d\TH:i:s');
+
+                    $appointmentsData = [
+                        'client_id'     => $request->client_id,
+                        'service_id'    => $ser,
+                        'category_id'   => $single_ser['parent_category'],//$category_ex[$key],
+                        'staff_id'      => $request->staff_id,
+                        'start_date'    => $startDateTime->format('Y-m-d\TH:i:s'),
+                        'end_date'      => $formattedEndDateTime,
+                        'duration'      => $duration,
+                        'status'        => Appointment::BOOKED,
+                        'current_date'  => $request->start_date
+                    ];
+        
+                    Appointment::create($appointmentsData);
+                    $data[] = [
+                        'success' => true,
+                        'message' => 'Appointment data prepared!',
+                        'type'    => 'info',
+                        'data'    => $appointmentsData, // Store prepared data for reference
+                    ];
+                }
+        
+                DB::commit();
+
+                // Delete waitlist data corresponding to this appointment
+                WaitlistClient::where('id', $request->app_id)
+                ->delete();
+                
+                $data = [
+                    'success' => true,
+                    'message' => 'Appointment booked successfully!',
+                    'type'    => 'success',
+                ];
+            } catch (\Throwable $th) {
+                dd($th);
+                DB::rollback(); // Rollback the transaction on exception
+                $data[] = [
+                    'success' => false,
+                    'message' => 'Something went wrong!',
+                    'type'    => 'fail',
+                ];
             }
-            else
-            {
-            Appointment::create($appointmentsData);
+        } 
+        else
+        {
+            $appointmentsData = [
+                'client_id'     => $request->client_id,
+                'service_id'    => $request->service_id,
+                'category_id'   => $request->category_id,
+                'staff_id'      => $request->staff_id,
+                'start_date'    => $request->start_time,
+                'end_date'      => $request->end_time,
+                'duration'      => $request->duration,
+                'status'        => Appointment::BOOKED,
+                'current_date'  => $request->start_date
+            ];
+    
+            try {
+                $findAppointment = Appointment::where('id',$request->app_id)->first();
+                
+                if( isset($findAppointment->id) ){
+                    $findAppointment->update($appointmentsData);
+                }
+                else
+                {
+                Appointment::create($appointmentsData);
+                }
+    
+                DB::commit();
+                $data = [
+                    'success' => true,
+                    'message' => 'Appointment booked successfully!',
+                    'type'    => 'success',
+                ];
+    
+            } catch (\Throwable $th) {
+                //throw $th;
+                DB::rollback();
+                $data = [
+                    'success' => false,
+                    'message' => 'something went wrong!',
+                    'type'    => 'fail',
+                ];
             }
-
-            DB::commit();
-            $data = [
-                'success' => true,
-                'message' => 'Appointment booked successfully!',
-                'type'    => 'success',
-            ];
-
-        } catch (\Throwable $th) {
-            //throw $th;
-            DB::rollback();
-            $data = [
-                'success' => false,
-                'message' => 'something went wrong!',
-                'type'    => 'fail',
-            ];
         }
-
         return response()->json($data);
     }
 

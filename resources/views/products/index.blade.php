@@ -252,6 +252,8 @@ $(document).ready(function() {
         $('#change_Availability').modal('toggle');
     })
     $('.cancel_min_max').click(function(){
+        $('#change_min_max_form')[0].reset();
+        $('.set_locations_data').hide();
         $('#Change_min_max').modal('toggle');
     })
     $(document).on("input", "#min_price", function() {

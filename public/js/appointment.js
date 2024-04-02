@@ -241,8 +241,8 @@ var DU = {};
                     $('#New_appointment').modal('toggle');
                 },
             });
-            context.draggable1();
-            context.draggable2();
+            context.appointmentDraggable();
+            context.wailtlistClientDraggable();
 
             context.calendar.render();
 
@@ -582,7 +582,7 @@ var DU = {};
             })
         },
 
-        draggable1: function(){
+        appointmentDraggable: function(){
             var context         = this,
                 containerEl     = document.getElementById('external-events');
             var eventdraggable  = new FullCalendar.Draggable(containerEl, {
@@ -605,13 +605,14 @@ var DU = {};
 
         },
 
-        draggable2: function(){
+        wailtlistClientDraggable: function(){
             var context             = this,
                 containerEl2        = document.getElementById('waitlist-events');
             var waitingdraggable    = new FullCalendar.Draggable(containerEl2, {
                 itemSelector: '.fc-event',
                 eventData: function (eventEl2) {
                     var dataset = eventEl2.dataset;
+                    console.log('dataset',dataset);
                     return {
                         title: eventEl2.innerText,
                         extendedProps:{
@@ -620,7 +621,8 @@ var DU = {};
                             client_id   :dataset.client_id,
                             category_id :dataset.category_id,
                             duration    :dataset.duration,
-                            app_id:dataset.app_id
+                            app_id:dataset.app_id,
+                            service_name:dataset.service_name
                         }
                     };
                 }
