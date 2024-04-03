@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Http\Resources\LocationsResource;
 use App\Models\User;
 use App\Models\UserRoles;
 use Illuminate\Http\Request;
@@ -294,7 +296,8 @@ class UsersController extends Controller
     }
     public function get_all_locations()
     {
-        $loc = $locations = Locations::all();
-        return response()->json($loc);
+        $loc = Locations::all();
+        return response()->json(LocationsResource::collection($loc));
+        // return response()->json($loc);
     }
 }

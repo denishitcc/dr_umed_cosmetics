@@ -24,6 +24,8 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Locations;
 use App\Models\WaitlistClient;
 use DateTime;
+use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Support\Facades\Auth;
 use PhpParser\Node\Stmt\Foreach_;
 
 class CalenderController extends Controller
@@ -92,7 +94,19 @@ class CalenderController extends Controller
      */
     public function getStaffList()
     {
-        $user = User::where('role_type','!=','admin')->get();
+        // $role       = Auth::user()->role_type;
+        $location   = Auth::user()->staff_member_location;
+        $user   = User::select();
+
+        if($location)
+        {
+            $user = $user->where('role_type','!=','admin')->where('staff_member_location','=',$location);
+        }
+        else
+        {
+            $user = $user->where('role_type','!=','admin');
+        }
+        $user = $user->get();
         return response()->json(StaffListResource::collection($user));
     }
 
