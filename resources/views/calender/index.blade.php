@@ -1661,6 +1661,7 @@
 
                         // Update the .waitlist element with the generated HTML content
                         $('.waitlist').html(htmlContent);
+                        wailtlistClientDraggable();
                         $('#waitlist-events').draggable();
                         $('#waitlist-events').removeAttr('style');
 
@@ -1809,6 +1810,7 @@
 
                         // Update the .waitlist element with the generated HTML content
                         $('.waitlist').html(htmlContent);
+                        wailtlistClientDraggable();
                         $('#waitlist-events').draggable();
                         $('#waitlist-events').removeAttr('style');
                         
@@ -2968,6 +2970,27 @@
                     });
                 }
             },
+        });
+    }
+    function wailtlistClientDraggable() {
+        var containerEl2 = document.getElementById('waitlist-events');
+        var waitingdraggable = new FullCalendar.Draggable(containerEl2, {
+            itemSelector: '.fc-event',
+            eventData: function (eventEl2) {
+                var dataset = eventEl2.dataset;
+                return {
+                    title: eventEl2.innerText,
+                    extendedProps: {
+                        client_name: dataset.client_name,
+                        service_id: dataset.service_id,
+                        client_id: dataset.client_id,
+                        category_id: dataset.category_id,
+                        duration: dataset.duration,
+                        app_id: dataset.app_id,
+                        service_name: dataset.service_name
+                    }
+                };
+            }
         });
     }
 </script>
