@@ -311,7 +311,7 @@
                                         <ul id="sub_services">
                                             @foreach ($services as $service)
                                                 <li class="service_selected">
-                                                    <a href="javascript:void(0);" class="services" data-services_id="{{$service->id}}" data-category_id="{{$service->parent_category}}" data-duration="{{ $service->appearoncalender->duration }}">{{ $service->service_name }}</a>
+                                                    <a href="javascript:void(0);" class="services" data-services_id="{{$service->id}}" data-category_id="{{$service->category_id}}" data-duration="{{ $service->appearoncalender->duration }}">{{ $service->service_name }}</a>
                                                 </li>
                                             @endforeach
                                         </ul>
@@ -499,7 +499,7 @@
                                         <ul id="edit_sub_services" class="edit_sub_services">
                                             @foreach ($services as $services_data)
                                                 <li class="service_selected">
-                                                    <a href="javascript:void(0);" class="services" data-services_id="{{$services_data->id}}" data-services_id="{{$services_data->id}}" data-category_id="{{$services_data->parent_category}}" data-duration="{{ $services_data->appearoncalender->duration }}">{{ $services_data->service_name }}</a>
+                                                    <a href="javascript:void(0);" class="services" data-services_id="{{$services_data->id}}" data-services_id="{{$services_data->id}}" data-category_id="{{$services_data->category_id}}" data-duration="{{ $services_data->appearoncalender->duration }}">{{ $services_data->service_name }}</a>
                                                 </li>
                                             @endforeach
                                         </ul>
@@ -717,7 +717,7 @@
                                         <ul id="waitlist_sub_services" class="waitlist_sub_services">
                                             @foreach ($services as $service)
                                                 <li class="service_selected">
-                                                    <a href="javascript:void(0);" class="services" data-services_id="{{$service->id}}" data-category_id="{{$service->parent_category}}" data-duration="{{ $service->appearoncalender->duration }}">{{ $service->service_name }}</a>
+                                                    <a href="javascript:void(0);" class="services" data-services_id="{{$service->id}}" data-category_id="{{$service->category_id}}" data-duration="{{ $service->appearoncalender->duration }}">{{ $service->service_name }}</a>
                                                 </li>
                                             @endforeach
                                         </ul>

@@ -108,7 +108,7 @@ class CalenderController extends Controller
         $services   = Services::select();
 
         if ($request->category_id) {
-            $services->where('parent_category', $request->category_id);
+            $services->where('category_id', $request->category_id);
         }
 
         $services = $services->get();
@@ -208,7 +208,7 @@ class CalenderController extends Controller
                     $appointmentsData = [
                         'client_id'     => $request->client_id,
                         'service_id'    => $ser,
-                        'category_id'   => $single_ser['parent_category'],//$category_ex[$key],
+                        'category_id'   => $single_ser['category_id'],//$category_ex[$key],
                         'staff_id'      => $request->staff_id,
                         'start_date'    => $startDateTime->format('Y-m-d\TH:i:s'),
                         'end_date'      => $formattedEndDateTime,
@@ -830,7 +830,7 @@ class CalenderController extends Controller
                     DB::raw('GROUP_CONCAT(appointment.duration) as durations'),
                     'services.id as service_id',
                     'services.service_name',
-                    'services.parent_category'
+                    'services.category_id'
             )
             ->groupBy('clients.id', 
                     'clients.firstname', 
@@ -840,7 +840,7 @@ class CalenderController extends Controller
                     'clients.status',
                     'services.id',
                     'services.service_name',
-                    'services.parent_category'
+                    'services.category_id'
             )
             ->havingRaw('appointment_dates IS NOT NULL')
             ->where('clients.id',$request->id)
@@ -860,7 +860,7 @@ class CalenderController extends Controller
             $durations = array_pad($durations, $count, '');
             $service_id = $datas->service_id;
             $service_name = $datas->service_name;
-            $category_id = $datas->parent_category;
+            $category_id = $datas->category_id;
             $client_name = $datas->firstname.' '.$datas->last_name;
 
             // Iterate through each appointment date and create separate entries
@@ -983,7 +983,7 @@ class CalenderController extends Controller
                     DB::raw('GROUP_CONCAT(appointment.duration) as durations'),
                     'services.id as service_id',
                     'services.service_name',
-                    'services.parent_category'
+                    'services.category_id'
             )
             ->groupBy('clients.id', 
                     'clients.firstname', 
@@ -993,7 +993,7 @@ class CalenderController extends Controller
                     'clients.status',
                     'services.id',
                     'services.service_name',
-                    'services.parent_category'
+                    'services.category_id'
             )
             ->havingRaw('appointment_dates IS NOT NULL')
             ->where('clients.id',$request->id)
@@ -1013,7 +1013,7 @@ class CalenderController extends Controller
             $durations = array_pad($durations, $count, '');
             $service_id = $datas->service_id;
             $service_name = $datas->service_name;
-            $category_id = $datas->parent_category;
+            $category_id = $datas->category_id;
             $client_name = $datas->firstname.' '.$datas->last_name;
 
             // Iterate through each appointment date and create separate entries
@@ -1272,9 +1272,9 @@ class CalenderController extends Controller
         $category_ids = []; // Array to store category IDs
         foreach($cs_id as $cs)
         {
-            $sr = Services::where('id',$cs)->select('parent_category')->first();
+            $sr = Services::where('id',$cs)->select('category_id')->first();
             if ($sr) {
-                $category_ids[] = $sr->parent_category;
+                $category_ids[] = $sr->category_id;
             }
         }
         // Convert the array of category IDs to a comma-separated string

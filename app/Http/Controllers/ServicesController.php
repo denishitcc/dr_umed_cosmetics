@@ -55,7 +55,7 @@ class ServicesController extends Controller
         // dd($request->all());
         $newService = Services::create([
             'service_name' => $request->service_name,
-            'parent_category' => $request->parent_category,
+            'category_id' => $request->parent_category,
             'gender_specific' => $request->gender_specific,
             'code' => $request->code,
             'appear_on_calendar' => $request->appear_on_calendar,
@@ -152,7 +152,7 @@ class ServicesController extends Controller
         // dd($request->all());
         $editService = Services::updateOrCreate(['id' => $id],[
             'service_name' => $request->service_name,
-            'parent_category' => $request->parent_category,
+            'category_id' => $request->parent_category,
             'gender_specific' => $request->gender_specific,
             'code' => $request->code,
             'appear_on_calendar' => $request->appear_on_calendar,
@@ -312,7 +312,7 @@ class ServicesController extends Controller
             // $list_services = Services::where('parent_category',$request->categories)->get();
             $list_services = Services::leftJoin('services_appear_on_calendars', 'services.id', '=', 'services_appear_on_calendars.service_id')
             ->select('services.*', 'services_appear_on_calendars.duration')
-            ->where('services.parent_category',$request->categories)
+            ->where('services.category_id',$request->categories)
             ->get();
         }
         // dd($list_services);
@@ -591,7 +591,7 @@ class ServicesController extends Controller
                 foreach ($dataToInsert as $rowData) {
                     $service = Services::create([
                         'service_name' => $rowData['service_name'],
-                        'parent_category' => $rowData['parent_category'],
+                        'category_id' => $rowData['parent_category'],
                         'gender_specific' => $rowData['gender_specific'],
                         'code' => $rowData['code'],
                         'appear_on_calendar' => $rowData['appear_on_calendar'],

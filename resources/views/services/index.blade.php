@@ -41,7 +41,7 @@
                                 <li class="parent_category">
                                     <div class="disflex">
                                         <a href="#" ids="{{$parentCategory->id}}">{{ $parentCategory->category_name }}</a>
-                                        <span class="count">{{ $list_service->where('parent_category', $parentCategory->id)->count() }}</span>
+                                        <span class="count">{{ $list_service->where('category_id', $parentCategory->id)->count() }}</span>
                                     </div>
                                     <ul>
                                         @foreach($list_cat->where('parent_category', $parentCategory->id) as $subcategory)
