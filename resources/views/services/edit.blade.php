@@ -31,9 +31,9 @@
                                 @if(count($list_parent_cat)>0)
                                     @foreach($list_parent_cat as $cats)
                                     @if($cats->parent_category != '0')
-                                    <option value="{{ $cats->id }}" {{ ( $cats->id == $services->parent_category) ? 'selected' : '' }}> &nbsp;&nbsp;{{ $cats->category_name }} </option>
+                                    <option value="{{ $cats->id }}" {{ ( $cats->id == $services->category_id) ? 'selected' : '' }}> &nbsp;&nbsp;{{ $cats->category_name }} </option>
                                     @else
-                                    <option value="{{ $cats->id }}" {{ ( $cats->id == $services->parent_category) ? 'selected' : '' }}> {{ $cats->category_name }} </option>
+                                    <option value="{{ $cats->id }}" {{ ( $cats->id == $services->category_id) ? 'selected' : '' }}> {{ $cats->category_name }} </option>
                                     @endif
                                     @endforeach
                                 @endif
