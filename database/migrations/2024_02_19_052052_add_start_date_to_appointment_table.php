@@ -28,13 +28,12 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('appointment', function (Blueprint $table) {
+            $table->dropForeign(['staff_id']);
             $table->dropColumn('staff_id');
             $table->dropColumn('start_date');
             $table->dropColumn('end_date');
             $table->dropColumn('duration');
             $table->dropColumn('status');
-
-            $table->dropForeign(['staff_id']);
         });
     }
 };
