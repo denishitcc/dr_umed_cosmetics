@@ -17,7 +17,8 @@ class StaffListResource extends JsonResource
         return [
             'id'                => $this->id,
             'title'             => $this->first_name.' '.$this->last_name,
-            'backgroundColor'   => $this->calendar_color
+            'backgroundColor'   => $this->calendar_color,
+            'location_id'       => $this->staff_member_location
         ];
     }
 }

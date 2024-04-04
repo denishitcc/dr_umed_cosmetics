@@ -28,6 +28,7 @@ class Appointment extends Model
         'category_id',
         'service_id',
         'staff_id',
+        'location_id',
         'start_date',
         'end_date',
         'duration',
