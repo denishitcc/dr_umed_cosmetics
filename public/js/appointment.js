@@ -32,6 +32,7 @@ var DU = {};
             context.openResetAppointmentModal();
             context.repeatAppointmentSaveBtn();
             context.closeReAppointmentModal();
+            context.locationDropdown();
 
             $('#clientmodal').hide();
             $('#service_error').hide();
@@ -629,6 +630,28 @@ var DU = {};
             });
         },
 
+        locationDropdown: function(){
+            var context = this;
+
+            $.ajax({
+                url: moduleConfig.getLocation,
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                },
+                success: function (data) {
+                    if (data && data.length > 0) {
+                        data.forEach(function (location) {
+                            $('#locations').append($('<option>', { value: location.id, text: location.location_name }));
+                        });
+                    }
+                },
+                error: function (error) {
+                    console.error('Error fetching resources:', error);
+                }
+            });
+        },
+
         editEvent:function (eventId){
             var context       = this;
             $.ajax({
@@ -874,6 +897,14 @@ var DU = {};
                     // Update the FullCalendar resources with the retrieved data
                     context.calendar.setOption('resources', data);
                     context.calendar.refetchEvents(); // Refresh events if needed
+
+                    if (data && data.length > 0) {
+                        data.forEach(function (name) {
+                            let fullName = name.title;
+                            let id = name.id;
+                            $('#staff').append($('<option>', { value: id, text: fullName }));
+                        });
+                    }
                 },
                 error: function (error) {
                     console.error('Error fetching resources:', error);

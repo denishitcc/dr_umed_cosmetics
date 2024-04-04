@@ -24,6 +24,8 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Locations;
 use App\Models\WaitlistClient;
 use DateTime;
+use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Support\Facades\Auth;
 use PhpParser\Node\Stmt\Foreach_;
 
 class CalenderController extends Controller
@@ -46,13 +48,14 @@ class CalenderController extends Controller
                         ])->whereNull('parent_category')->get();
 
         $services   = Services::with(['appearoncalender'])->get();
-        $staffs      = User::all();
-        $todayDate = date('Y-m-d'); // Get current date in 'YYYY-MM-DD' format
-        $waitlist = WaitlistClient::select('waitlist_client.*', 'clients.firstname','clients.lastname','clients.mobile_number','clients.email', 'users.first_name as user_firstname', 'users.last_name as user_lastname')
+        $staffs     = User::all();
+        $todayDate  = date('Y-m-d'); // Get current date in 'YYYY-MM-DD' format
+        $waitlist   = WaitlistClient::select('waitlist_client.*', 'clients.firstname','clients.lastname','clients.mobile_number','clients.email', 'users.first_name as user_firstname', 'users.last_name as user_lastname')
             ->join('clients', 'waitlist_client.client_id', '=', 'clients.id')
             ->leftjoin('users', 'waitlist_client.user_id', '=', 'users.id')
             ->where('preferred_from_date',$todayDate)
             ->get();
+
         foreach($waitlist as $wait)
         {
             $ser_id = explode(',',$wait->service_id);
@@ -74,7 +77,7 @@ class CalenderController extends Controller
             $wait->servid = $serv_id;
             $wait->duration = $service_durations;
         }
-        // dd($waitlist);
+
         return view('calender.index')->with(
             [
                 'categories' => $categories,
@@ -92,7 +95,19 @@ class CalenderController extends Controller
      */
     public function getStaffList()
     {
-        $user = User::where('role_type','!=','admin')->get();
+        // $role       = Auth::user()->role_type;
+        $location   = Auth::user()->staff_member_location;
+        $user       = User::select();
+
+        if($location)
+        {
+            $user = $user->where('role_type','!=','admin')->where('staff_member_location','=',$location);
+        }
+        else
+        {
+            $user = $user->where('role_type','!=','admin');
+        }
+        $user = $user->get();
         return response()->json(StaffListResource::collection($user));
     }
 
@@ -320,6 +335,7 @@ class CalenderController extends Controller
      */
     public function getEvents(Request $request)
     {
+        $location = Auth()->user()->staff_member_location;
         $events   = Appointment::select()
                     ->with([
                         'services',
@@ -329,6 +345,10 @@ class CalenderController extends Controller
         if ($request->start_date) {
             $events->whereBetween(DB::raw('DATE(start_date)'), array($request->start_date, $request->end_date));
         }
+        // if($location)
+        // {
+        //     $events->where
+        // }
         $events = $events->get();
         // dd($events);
         return response()->json(AppointmentListResource::collection($events));

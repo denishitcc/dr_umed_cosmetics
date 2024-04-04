@@ -5,6 +5,7 @@
 <div class="card">
     <div class="card-head">
         <h4 class="small-title mb-0">Appointments</h4>
+        @include('calender.partials.appointment-dropdown')
     </div>
 
     <div class="card-body">
@@ -772,7 +773,8 @@
         EventById:                    "{!! route('calendar.get-event-by-id', ':ID') !!}",
         updateAppointmentStatus:      "{!! route('calendar.update-appointment-status') !!}",
         DeleteAppointment:            "{!! route('calendar.delete-appointment', ':ID') !!}",
-        repeatAppointment:            "{!! route('calendar.repeat-appointment') !!}"
+        repeatAppointment:            "{!! route('calendar.repeat-appointment') !!}",
+        getLocation:                  "{!! route('get-all-locations') !!}"
     };
 
     $(document).ready(function()
