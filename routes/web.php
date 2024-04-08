@@ -160,4 +160,4 @@ Route::middleware(['auth'])->group(function () {
     Route::post('calender/update-waitlist-client',[CalenderController::class, 'UpdateWaitListClient'])->name('calendar/update-waitlist-client');
     Route::delete('calender/delete-waitlist-client/{id}',[CalenderController::class, 'deleteWaitlistClient'])->name('calendar.delete-waitlist-client');
 });
-Route::get('/get-staff-list', [CalenderController::class,'getStaffList'])->name('get-staff-list');
+Route::post('/get-staff-list', [CalenderController::class,'getStaffList'])->name('get-staff-list');

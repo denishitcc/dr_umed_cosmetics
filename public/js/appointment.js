@@ -6,6 +6,7 @@ var DU = {};
             appointmentModal:           jQuery('#New_appointment'),
             clientCardModal:            jQuery('#Client_card'),
             repeatAppointmentModal:     jQuery('#repeat_Appointment'),
+            newAppointmentBtn:          jQuery('#appointment'),
             repeatAppointmentForm:      jQuery("#addwaiterform"),
         },
         init: function (){
@@ -33,6 +34,8 @@ var DU = {};
             context.repeatAppointmentSaveBtn();
             context.closeReAppointmentModal();
             context.locationDropdown();
+            context.staffchangeafterlocation();
+            context.staffchangecalendar();
 
             $('#clientmodal').hide();
             $('#service_error').hide();
@@ -53,14 +56,24 @@ var DU = {};
                 forceEventDuration: true,
                 defaultAllDayEventDuration: "01:00",
                 initialView: 'resourceTimeGridDay',
+                // titleFormat: 'dddd, MMMM D, YYYY',
                 // dayHeaderFormat: {
                 //     weekday: 'narrow', // Use 'narrow' for even shorter abbreviations.
                 //     month: 'numeric'
                 // },
                 views: {
-                    resourceTimeGridWeek: { // name of view
-                      titleFormat: { year: 'numeric', month: '2-digit', day: '2-digit' }
-                      // other view-specific options here
+                    resourceTimeGridWeek: {
+                        dayHeaderFormat: {
+                            weekday: 'short', // Displays abbreviated day of the week
+                            day: '2-digit',   // Displays day with leading zero (e.g., 01)
+                            month: '2-digit', // Displays month with leading zero (e.g., 01)
+                            year: 'numeric'   // Displays full year
+                        },
+                        titleFormat: {
+                            year: 'numeric',  // Displays full year
+                            month: 'long',    // Displays full month name
+                            day: '2-digit'    // Displays day with leading zero (e.g., 01)
+                        }
                     }
                 },
                 buttonText: {
@@ -73,11 +86,11 @@ var DU = {};
                 headerToolbar: {
                     left: 'prev,today,next',
                     center: 'title',
-                    right: 'resourceTimeGridDay,resourceTimeGridWeek,dayGridMonth,resourceTimelineYear'
+                    right: 'resourceTimeGridDay,dayGridMonth,resourceTimelineYear'
                 },
 
                 datesSet: function (info) {
-                    // info.start and info.end represent the new date range
+                    // info.start and info.end represent the new date range resourceTimeGridWeek
                     var start_date  = moment(info.startStr).format('YYYY-MM-DD'),
                         end_date    = moment(info.endStr).format('YYYY-MM-DD');
 
@@ -630,6 +643,70 @@ var DU = {};
             });
         },
 
+        staffchangeafterlocation: function(){
+            var context = this;
+            jQuery('#locations').on('change', function(e) {
+                var location_id           = $(this).val()
+
+                $.ajax({
+                    url: moduleConfig.getStaffList,
+                    type: 'POST',
+                    data: {
+                        'location_id'    : location_id,
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function (data) {
+                        console.log(data.length);
+                        // Update the FullCalendar resources with the retrieved data
+                        context.calendar.setOption('resources', data);
+                        context.calendar.refetchEvents(); // Refresh events if needed
+
+                        $('#staff').empty();
+                        $('#staff').append(`<option value="all">All staff</option>
+                                <option disabled>Individual staff</option>`);
+                        if (data && data.length > 0) {
+                            data.forEach(function (name) {
+                                let fullName = name.title;
+                                let id = name.id;
+                                $('#staff').append($('<option>', { value: id, text: fullName }));
+                            });
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Error fetching resources:', error);
+                    }
+                });
+            });
+        },
+
+        staffchangecalendar: function(){
+            var context = this;
+            jQuery('#staff').on('change', function(e) {
+                var resourceId    = $(this).val();
+                const resources = context.calendar.getOption('resources');
+                if(resourceId != 'all')
+                {
+                    const filteredResources = resources.filter(resource => resource.id === resourceId);
+
+                    context.calendar.setOption('resources', filteredResources);
+                    context.calendar.changeView('timeGridWeek');
+
+                    // var start_date = moment(context.calendar.currentData.dateProfile.currentRange.start).format('YYYY-MM-DD');
+                    // var end_date   = moment(context.calendar.currentData.dateProfile.currentRange.end).format('YYYY-MM-DD');
+                    // context.eventsList(start_date, end_date);
+                }
+                else{
+                    // context.calendar.setOption('resources', resources);
+                    context.staffList();
+                    context.calendar.changeView('resourceTimeGridDay');
+                }
+                console.log('test');
+                context.calendar.render();
+            });
+        },
+
         locationDropdown: function(){
             var context = this;
 
@@ -889,7 +966,7 @@ var DU = {};
 
             $.ajax({
                 url: moduleConfig.getStaffList,
-                type: 'GET',
+                type: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
                 },
@@ -897,6 +974,10 @@ var DU = {};
                     // Update the FullCalendar resources with the retrieved data
                     context.calendar.setOption('resources', data);
                     context.calendar.refetchEvents(); // Refresh events if needed
+
+                    $('#staff').empty();
+                    $('#staff').append(`<option value="all">All staff</option>
+                    <option disabled>Individual staff</option>`);
 
                     if (data && data.length > 0) {
                         data.forEach(function (name) {
@@ -986,8 +1067,10 @@ var DU = {};
         openAppointmentModal: function(){
             var context = this;
 
-            $('#appointment').on('click', function(e)
+            context.selectors.newAppointmentBtn.on('click', function(e)
             {
+                var locationId = jQuery('#locations').val();
+                // get all the services related to location
                 context.selectors.appointmentModal.modal('show');
             });
 

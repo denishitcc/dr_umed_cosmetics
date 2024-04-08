@@ -287,15 +287,6 @@
                                         <div class="disflex">
                                             <a href="javascript:void(0);" class="parent_category_id" data-category_id="{{$category->id}}" data-duration="{{ $category->duration }}">{{$category->category_name}}</a>
                                         </div>
-                                        @if ($category->children)
-                                            <ul>
-                                                @foreach ($category->children as $child)
-                                                    <li>
-                                                        <a href="javascript:void(0);">{{$child->category_name}}</a>
-                                                    </li>
-                                                @endforeach
-                                            </ul>
-                                        @endif
                                     </li>
                                     @endforeach
                                 </ul>

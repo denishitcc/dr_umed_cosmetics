@@ -91,12 +91,13 @@ class CalenderController extends Controller
     /**
      * Method getStaffList
      *
-     * @return mixed
+     * @param Request $request [explicite description]
+     *
+     * @return void
      */
-    public function getStaffList()
+    public function getStaffList(Request $request)
     {
-        // $role       = Auth::user()->role_type;
-        $location   = Auth::user()->staff_member_location;
+        $location   = isset($request->location_id) ? $request->location_id : Auth::user()->staff_member_location;
         $user       = User::select();
 
         if($location)
