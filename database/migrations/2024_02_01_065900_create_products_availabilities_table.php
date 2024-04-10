@@ -20,8 +20,8 @@ return new class extends Migration
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
             $table->string('location_name', 100)->nullable();
-            $table->string('min', 50)->nullable();
-            $table->string('max', 50)->nullable();
+            $table->string('quanitiy', 50)->nullable();
+            // $table->string('max', 50)->nullable();
             $table->decimal('price', 10, 2)->nullable(); // Example decimal type, adjust as needed
             $table->string('availability', 100)->nullable();
             $table->softDeletes();

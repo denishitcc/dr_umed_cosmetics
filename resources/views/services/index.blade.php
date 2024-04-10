@@ -43,13 +43,13 @@
                                         <a href="#" ids="{{$parentCategory->id}}">{{ $parentCategory->category_name }}</a>
                                         <span class="count">{{ $list_service->where('category_id', $parentCategory->id)->count() }}</span>
                                     </div>
-                                    <ul>
+                                    <!-- <ul>
                                         @foreach($list_cat->where('parent_category', $parentCategory->id) as $subcategory)
-                                            <li ids="{{$subcategory->id}}" class="child_category"><!-- class="active"-->
+                                            <li ids="{{$subcategory->id}}" class="child_category">
                                                 <a href="#">{{ $subcategory->category_name }}</a>
                                             </li>
                                         @endforeach
-                                    </ul>
+                                    </ul> -->
                                 </li>
                             @endforeach
                         </ul>
@@ -111,11 +111,11 @@
                     <label class="form-label">Parent Category</label>
                     <select class="form-select form-control" id="parent_category" name="parent_category" maxlength="50">
                         <option selected value=""> (top-level) </option>
-                        @if(count($categories)>0)
+                        <!-- @if(count($categories)>0)
                             @foreach($categories as $cats)
                                 <option value="{{$cats->id}}">{{$cats->category_name}}</option>
                             @endforeach
-                        @endif
+                        @endif -->
                     </select>
                 </div>
                 <div class="form-group">
@@ -156,11 +156,11 @@
                     <label class="form-label">Parent Category</label>
                     <select class="form-select form-control edit_parent_category_name" id="parent_category_edit" name="parent_category" maxlength="50">
                         <option selected value="" > (top-level) </option>
-                        @if(count($categories)>0)
+                        <!-- @if(count($categories)>0)
                             @foreach($categories as $cats)
                                 <option value="{{$cats->id}}">{{$cats->category_name}}</option>
                             @endforeach
-                        @endif
+                        @endif -->
                     </select>
                 </div>
                 <div class="form-group">
@@ -387,73 +387,73 @@ $(document).ready(function() {
         });
         return false;
     })
-    $('.child_category').click(function(e){
-        if($(this).find('.count').text() > 0)
-        {
-            $('.set_availability').show();
-        }else{
-            $('.set_availability').hide();
-        }
-        $('.edit_service').show();
-        // $('.set_availability').show();
-        //for active current class
-        $(this).parent().parent().parent().parent().find('.blue-active').removeClass('blue-active');
-        $(this).parent().parent().parent().parent().find('.active').removeClass('active');
-        $(this).addClass('active');
+    // $('.child_category').click(function(e){
+    //     if($(this).find('.count').text() > 0)
+    //     {
+    //         $('.set_availability').show();
+    //     }else{
+    //         $('.set_availability').hide();
+    //     }
+    //     $('.edit_service').show();
+    //     // $('.set_availability').show();
+    //     //for active current class
+    //     $(this).parent().parent().parent().parent().find('.blue-active').removeClass('blue-active');
+    //     $(this).parent().parent().parent().parent().find('.active').removeClass('active');
+    //     $(this).addClass('active');
 
-        //bind data in edit category name
-        $('.edit_category_name').val($(this).find('a').text());
+    //     //bind data in edit category name
+    //     $('.edit_category_name').val($(this).find('a').text());
         
-        //parent category selected
-        // var cat = $(this).parent().parent().find('.disflex').find('a').text();
-        var cat = $(this).parent().parent().find('.disflex').find('a').attr('ids');
-        var targetValue = cat;
+    //     //parent category selected
+    //     // var cat = $(this).parent().parent().find('.disflex').find('a').text();
+    //     var cat = $(this).parent().parent().find('.disflex').find('a').attr('ids');
+    //     var targetValue = cat;
 
-        $('#parent_category_edit  option').each(function(){
-            if (this.value == targetValue) {
-                $('#parent_category_edit').val(targetValue);
-            }
-        });
-        $('#cat_hdn_id').val($(this).attr('ids'));
-        $('.service_name').text($(this).find('a').text());
+    //     $('#parent_category_edit  option').each(function(){
+    //         if (this.value == targetValue) {
+    //             $('#parent_category_edit').val(targetValue);
+    //         }
+    //     });
+    //     $('#cat_hdn_id').val($(this).attr('ids'));
+    //     $('.service_name').text($(this).find('a').text());
 
-        //bind value in set availability
-        $('#hdn_cat_id').val($(this).attr('ids'));
-        //get services from category
-        var categories = $(this).attr('ids');
-        $.ajax({
-            type: "POST",
-            headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            url: "{{route('services.get-services')}}",
-            data: {// change data to this object
-              _token : $('meta[name="csrf-token"]').attr('content'), 
-              categories:categories
-            },
-            dataType: "json",
-            success: function(res) {
+    //     //bind value in set availability
+    //     $('#hdn_cat_id').val($(this).attr('ids'));
+    //     //get services from category
+    //     var categories = $(this).attr('ids');
+    //     $.ajax({
+    //         type: "POST",
+    //         headers: {
+    //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    //         },
+    //         url: "{{route('services.get-services')}}",
+    //         data: {// change data to this object
+    //           _token : $('meta[name="csrf-token"]').attr('content'), 
+    //           categories:categories
+    //         },
+    //         dataType: "json",
+    //         success: function(res) {
                 
-                if(res.data.length > 0)
-                {
-                    $('.table-responsive').empty();
-                    $('.table-responsive').append("<table class='table all-db-table align-middle table-striped' id='ser_tbl'><thead><tr><th class='blue-bold' width='75%' aria-sort='ascending'>Services in this category</th><th class='blue-bold' width='25%'>Minutes </th></tr></thead><tbody>");
-                    $.each(res.data, function(index, res) {
-                        var url = '{{ URL::to("services/") }}/' + res.id; // Corrected URL formatting
-                        $('.table-striped').append("<tr><td><a href='" + url + "' style='color: #282828;'><b>" + res.service_name + "</b></a></td><td>" + res.duration + " mins</td></tr>");
-                    });
-                    $('.table-responsive').append("</tbody></table>");
-                }
-                else{
-                    $('.table-responsive').empty();
-                }
-            },
-            error: function (jqXHR, exception) {
+    //             if(res.data.length > 0)
+    //             {
+    //                 $('.table-responsive').empty();
+    //                 $('.table-responsive').append("<table class='table all-db-table align-middle table-striped' id='ser_tbl'><thead><tr><th class='blue-bold' width='75%' aria-sort='ascending'>Services in this category</th><th class='blue-bold' width='25%'>Minutes </th></tr></thead><tbody>");
+    //                 $.each(res.data, function(index, res) {
+    //                     var url = '{{ URL::to("services/") }}/' + res.id; // Corrected URL formatting
+    //                     $('.table-striped').append("<tr><td><a href='" + url + "' style='color: #282828;'><b>" + res.service_name + "</b></a></td><td>" + res.duration + " mins</td></tr>");
+    //                 });
+    //                 $('.table-responsive').append("</tbody></table>");
+    //             }
+    //             else{
+    //                 $('.table-responsive').empty();
+    //             }
+    //         },
+    //         error: function (jqXHR, exception) {
 
-           }
-        });
-        return false;
-    })
+    //        }
+    //     });
+    //     return false;
+    // })
     $('.parent_category').click(function(){
         if($(this).find('.disflex').find('.count').text() > 0)
         {

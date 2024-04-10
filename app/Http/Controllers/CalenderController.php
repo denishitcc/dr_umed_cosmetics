@@ -23,6 +23,7 @@ use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
 use App\Models\Locations;
 use App\Models\WaitlistClient;
+use App\Models\Products;
 use DateTime;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Support\Facades\Auth;
@@ -56,6 +57,37 @@ class CalenderController extends Controller
             ->where('preferred_from_date',$todayDate)
             ->get();
 
+        $all_services = Services::select('id','service_name', 'standard_price')->with(['appearoncalender'])->get();
+        $all_products = Products::select('id','product_name', 'price','gst_code')->get();
+
+        // Initialize an empty array to store the merged data
+        $mergedArray = [];
+
+        // Extract and format services data
+        foreach ($all_services as $service) {
+            $mergedArray[] = [
+                'id'    => $service->id,
+                'name'  => $service->service_name,
+                'price' => $service->standard_price,
+                'gst'   =>'yes'
+            ];
+        }
+        // Extract and format products data
+        foreach ($all_products as $product) {
+            $gst = $product->gst_code === 'Standard' ? 'yes' : 'no';
+
+            $mergedArray[] = [
+                'id'    => $product->id,
+                'name'  => $product->product_name,
+                'price' => $product->price,
+                'gst'   => $gst
+            ];
+        }
+
+        // Convert the merged array to JSON format
+        $mergedProductService = $mergedArray;
+
+
         foreach($waitlist as $wait)
         {
             $ser_id = explode(',',$wait->service_id);
@@ -83,7 +115,8 @@ class CalenderController extends Controller
                 'categories' => $categories,
                 'services'   => $services,
                 'waitlist'   => $waitlist,
-                'staffs'      =>$staffs
+                'staffs'     => $staffs,
+                'productServiceJson'   => $mergedProductService
             ]
         );
     }
@@ -1350,5 +1383,10 @@ class CalenderController extends Controller
             ];
         }
         return response()->json($data);
+    }
+    public function getAllProductsServices(Request $request)
+    {
+        $products = Products::where('product_name', 'like', '%' .$request->name. '%')->get();
+        return response()->json($products);
     }
 }

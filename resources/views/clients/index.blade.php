@@ -9,7 +9,7 @@
                     <a href="{{ route('clients.create') }}" class="btn btn-primary btn-md me-2">Add New Client</a>
                     <!-- <a href="#" class="btn btn-primary btn-md me-2">Import Client</a> -->
                     <a href="#" id="openWaitListModalBtn" class="btn btn-primary btn-md me-2">Add New Waitlist Client</a>
-                    <a href="#" class="btn btn-primary btn-md me-2">Add New Walk-in Sale</a>
+                    <!-- <a href="#" class="btn btn-primary btn-md me-2">Add New Walk-in Sale</a> -->
                     <a href="{{ route('calender.index') }}" class="btn btn-primary btn-md new_app">Make New Appointment</a>
                 </div>
             </div>

@@ -133,18 +133,19 @@
                     <input type="text" class="form-control" placeholder="-" name="order_lot" id="order_lot" maxlength="5">
                     </div>
             </div>
+            <!-- 
             <div class="col-lg-1">
                 <div class="form-group mb-0">
                     <label class="form-label">Min <i class="ico-help" data-toggle="tooltip" data-placement="top" title="The minimum amount of this item to have on-hand before you need to order more."></i></label>
                     <input type="text" class="form-control" placeholder="-" name="min" id="min" maxlength="5">
                     </div>
-            </div>
+            </div>  
             <div class="col-lg-1">
                 <div class="form-group mb-0">
                     <label class="form-label">Max <i class="ico-help" data-toggle="tooltip" data-placement="top" title="When reordering, the maximum quantity you'd like to have on-hand."></i></label>
                     <input type="text" class="form-control" placeholder="-" name="max" id="max" maxlength="5">
                     </div>
-            </div>
+            </div> -->
             
         </div>
     </div>
@@ -187,13 +188,14 @@
                                     <div class="show-timing">
                                         <div class="show-inner">
                                             <div class="min-max loc_details">
-                                                    <label class="form-label">Min <i class="ico-help" data-toggle="tooltip" data-placement="top" title="The minimum amount of this item to have on-hand before you need to order more."></i></label>
-                                                    <input type="text" class="form-control" placeholder="-" id="availability_min" name="availability_min[]" maxlength="5">
+                                                    <label class="form-label">Quanitiy <i class="ico-help" data-toggle="tooltip" data-placement="top" title="The minimum amount of this item to have on-hand before you need to order more."></i></label>
+                                                    <input type="text" class="form-control" placeholder="-" id="availability_quantity" name="availability_quantity[]" maxlength="5">
                                             </div>
+                                            <!-- 
                                             <div class="min-max loc_details">
                                                     <label class="form-label">Max <i class="ico-help" data-toggle="tooltip" data-placement="top" title="When reordering, the maximum quantity you'd like to have on-hand."></i></label>
                                                     <input type="text" class="form-control" placeholder="-" id="availability_max" name="availability_max[]" maxlength="5">
-                                            </div>
+                                            </div> -->
                                             <div class="col loc_details">
                                                     <label class="form-label">Price</label>
                                                     <div class="input-group">
@@ -255,12 +257,12 @@ $(document).ready(function() {
     $(document).on("input", "#max", function() {
         this.value = this.value.replace(/\D/g,'');
     });
-    $(document).on("input", "#availability_min", function() {
+    $(document).on("input", "#availability_quantity", function() {
         this.value = this.value.replace(/\D/g,'');
     });
-    $(document).on("input", "#availability_max", function() {
-        this.value = this.value.replace(/\D/g,'');
-    });
+    // $(document).on("input", "#availability_max", function() {
+    //     this.value = this.value.replace(/\D/g,'');
+    // });
     $(document).on("input", "#availability_price", function() {
         // Allow only numbers and the decimal point
         this.value = this.value.replace(/[^0-9.]/g, '');

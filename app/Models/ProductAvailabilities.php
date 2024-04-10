@@ -24,8 +24,7 @@ class ProductAvailabilities extends Model
         'id',
         'product_id',
         'location_name',
-        'min',
-        'max',
+        'quantity',
         'price',
         'availability'
     ];

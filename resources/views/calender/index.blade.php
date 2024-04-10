@@ -13,7 +13,16 @@
             <div class="col-lg-3">
                 <div class="main_calendar">
                 <div class="mb-3 d-flex">
-                    <a href="javascript:void(0);" class="btn btn-primary btn-md me-3 w-100" id="appointment">New Appointment</a>
+                    <div class="dropdown">
+                        <button class="btn btn-primary btn-md me-3 w-100 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Add
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" id="appointment" href="javascript:void(0);">New appointment</a></li>
+                            <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#Walkin_Retail" id="new_walk_in_sale" href="javascript:void(0);">New walk-in sale</a></li>
+                        </ul>
+                    </div>
+                    <!-- <a href="javascript:void(0);" class="btn btn-primary btn-md me-3 w-100" id="appointment">New Appointment</a> -->
                     <a href="javascript:void(0);" class="btn btn-wait-list waitlist_btn"><i class="ico-calendar"></i></a>
                 </div>
                 </div>
@@ -287,6 +296,15 @@
                                         <div class="disflex">
                                             <a href="javascript:void(0);" class="parent_category_id" data-category_id="{{$category->id}}" data-duration="{{ $category->duration }}">{{$category->category_name}}</a>
                                         </div>
+                                        @if ($category->children)
+                                            <ul>
+                                                @foreach ($category->children as $child)
+                                                    <li>
+                                                        <a href="javascript:void(0);">{{$child->category_name}}</a>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        @endif
                                     </li>
                                     @endforeach
                                 </ul>
@@ -742,6 +760,430 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="Walkin_Retail" tabindex="-1">
+        <input type="hidden" id="customer_type" value="casual">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content main_walk_in">
+                <div class="modal-header">
+                <h4 class="modal-title">Walk-in retail sale @ Hope Island</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                        <ul class="nav nav-pills nav-fill nav-group mb-3 main_walkin" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link active casual_cus" data-bs-toggle="tab" href="#casual_customer" aria-selected="true" role="tab">Casual Customer <i class="ico-tick ms-1"></i></a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link new_cus" data-bs-toggle="tab" href="#new_customer" aria-selected="true" role="tab">New Customer <i class="ico-tick ms-1"></i></a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link existing_cus" data-bs-toggle="tab" href="#exist_customer" aria-selected="true" role="tab">Existing Customer <i class="ico-tick ms-1"></i></a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                        <div class="tab-pane fade show active" id="casual_customer" role="tabpanel">
+                            <div class="form-group icon">
+                                <label>Invoice Date</label>
+                                <input type="date" id="datePicker1" name="datePicker1" class="form-control" placeholder="date" value="<?php echo date('Y-m-d'); ?>">
+                            </div>
+                            <div class="form-group icon">
+                                <input type="text" id="search_products" class="form-control " autocomplete="off" placeholder="Search for services, products or scan barcode" onkeyup="changeProductInput(this.value)">
+                                <i class="ico-search"></i>
+                                <div id="result1" class="list-group"></div>
+                                <div class="products_box" style="display:none;">
+                                    <ul class="drop-list" id="resultproductmodal"></ul>
+                                </div>
+                            </div>
+                            <div id="productDetails" class="detaild-theos pt-3"></div>
+                            
+                            <div class="mb-3">
+                                <a href="#" class="btn btn-dashed w-100 btn-blue icon-btn-center add_discount"><i class="ico-percentage me-2 fs-5"></i> Add discount / surcharge</a>
+                            </div>
+                            <table width="100%">
+                                <tbody>
+                                    <tr>
+                                        <td>Subtotal</td>
+                                        <td class="text-end subtotal">$0.00</td>
+                                    </tr>
+                                    <tr class="discount-row">
+                                        <td>Discount</td>
+                                        <td class="text-end discount">$0.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Total</b></td>
+                                        <td class="text-end total"><b>$0.00</b></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td class="text-end d-grey font-13 gst_total">(Includes GST of $0.00)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <hr class="my-4">
+                            <div class="form-group credit_sale">
+                                <label class="form-label">Credit Sale to <span class="d-grey font-13">(required)</span></label>
+                                <select class="form-select form-control" name="sale_staff_id" id="sale_staff_id">
+                                    <option>Please select</option>
+                                    @foreach($staffs as $staff)
+                                        <option value="{{$staff->id}}">{{$staff->first_name.' '.$staff->last_name}}</option>
+                                    @endforeach
+                                </select>
+                                </div>
+                                <div class="form-group mb-0">
+                                <label class="form-label">Note</label>
+                                <textarea class="form-control" rows="3" placeholder="Add a note" name="notes" id="notes"></textarea>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade show" id="new_customer" role="tabpanel">
+                            <div class="row">
+                                <div class="form-group icon col-lg-4">
+                                    <label>First Name</label>
+                                    <input type="text" id="first_name" class="form-control" placeholder="First">
+                                </div>
+                                <div class="form-group icon col-lg-4">
+                                    <label>Last Name</label>
+                                    <input type="text" id="last_name" class="form-control" placeholder="Last">
+                                </div>
+                                <div class="form-group icon col-lg-4">
+                                    <label>Email</label>
+                                    <input type="text" id="email" class="form-control" placeholder="Email">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group icon col-lg-4">
+                                    <label>Phone</label>
+                                        <select class="form-select form-control" name="phone_type" id="phone_type">
+                                            <option selected="" value=""> -- select an option -- </option>
+                                            <option>Mobile</option>
+                                            <option>Home</option>
+                                            <option>Work</option>
+                                        </select>
+                                </div>
+                                <div class="form-group icon col-lg-4">
+                                    <label></label>
+                                    <input type="text" id="phone_no" name="phone_no" class="form-control">
+                                </div>
+                                <div class="col-lg-3">
+                                    <label class="form-label">Gender</label>
+                                    <div class="toggle form-group">
+                                        <input type="radio" name="gender" value="Male" id="males" checked="checked" />
+                                        <label for="males">Male <i class="ico-tick"></i></label>
+                                        <input type="radio" name="gender" value="Female" id="females" />
+                                        <label for="females">Female <i class="ico-tick"></i></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="form-label">Preferred contact method</label>
+                                        <select class="form-select form-control" name="contact_method" id="contact_method_client">
+                                            <option selected="" value=""> -- select an option -- </option>
+                                            <option>Text message (SMS)</option>
+                                            <option>Email</option>
+                                            <option>Phone call</option>
+                                            <option>Post</option>
+                                            <option>No preference</option>
+                                            <option>Don't send reminders</option>
+                                        </select>
+                                </div>
+                                <div class="col-lg-3">
+                                    <label class="form-label">Send promotions</label>
+                                    <div class="toggle mb-0">
+                                        <input type="radio" name="send_promotions" value="1" id="yes" checked="checked">
+                                        <label for="yes">Yes <i class="ico-tick"></i></label>
+                                        <input type="radio" name="send_promotions" value="0" id="no">
+                                        <label for="no">No <i class="ico-tick"></i></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr class="my-4">
+                            <div class="form-group icon">
+                                <label>Invoice Date</label>
+                                <input type="date" id="datePicker2" name="datePicker2" class="form-control" value="<?php echo date('Y-m-d'); ?>">
+                            </div>
+                            <div class="form-group icon">
+                                <input type="text" id="search_products_new_customer" class="form-control " autocomplete="off" placeholder="Search for services, products or scan barcode" onkeyup="changeProductInputNewCustomer(this.value)">
+                                <i class="ico-search"></i>
+                                <div id="result1" class="list-group"></div>
+                                <div class="products_box_new" style="display:none;">
+                                    <ul class="drop-list" id="resultproductmodalNew"></ul>
+                                </div>
+                            </div>
+                            <div id="NewproductDetails" class="detaild-theos pt-3"></div>
+                            
+                            <div class="mb-3">
+                                <a href="#" class="btn btn-dashed w-100 btn-blue icon-btn-center add_discount"><i class="ico-percentage me-2 fs-5"></i> Add discount / surcharge</a>
+                            </div>
+                            <table width="100%">
+                                <tbody>
+                                    <tr>
+                                        <td>Subtotal</td>
+                                        <td class="text-end subtotal">$0.00</td>
+                                    </tr>
+                                    <tr class="discount-row">
+                                        <td>Discount</td>
+                                        <td class="text-end discount">$0.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Total</b></td>
+                                        <td class="text-end total"><b>$0.00</b></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td class="text-end d-grey font-13 gst_total">(Includes GST of $0.00)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <hr class="my-4">
+                            <div class="form-group credit_sale">
+                                <label class="form-label">Credit Sale to <span class="d-grey font-13">(required)</span></label>
+                                <select class="form-select form-control" name="sale_staff_id" id="sale_staff_id">
+                                    <option>Please select</option>
+                                    @foreach($staffs as $staff)
+                                        <option value="{{$staff->id}}">{{$staff->first_name.' '.$staff->last_name}}</option>
+                                    @endforeach
+                                </select>
+                                </div>
+                                <div class="form-group mb-0">
+                                <label class="form-label">Note</label>
+                                <textarea class="form-control" rows="3" placeholder="Add a note"></textarea>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade show" id="exist_customer" role="tabpanel">
+                            <div class="form-group icon">
+                                <input type="text" id="search1" class="form-control" placeholder="Search for a client">
+                                <i class="ico-search"></i>
+                                <div id="result1" class="list-group"></div>
+                            </div>
+                            <div class="form-group icon">
+                                <label>Invoice Date</label>
+                                <input type="date" id="datePicker3" name="datePicker3" class="form-control" value="<?php echo date('Y-m-d'); ?>">
+                            </div>
+                            <div class="form-group icon">
+                                <input type="text" id="search_products_existing_customer" class="form-control " autocomplete="off" placeholder="Search for services, products or scan barcode" onkeyup="changeProductInputExistingCustomer(this.value)">
+                                <i class="ico-search"></i>
+                                <div id="result1" class="list-group"></div>
+                                <div class="products_box_existing" style="display:none;">
+                                    <ul class="drop-list" id="resultproductmodalExisting"></ul>
+                                </div>
+                            </div>
+                            <div id="ExistingproductDetails" class="detaild-theos pt-3"></div>
+                            
+                            <div class="mb-3">
+                                <a href="#" class="btn btn-dashed w-100 btn-blue icon-btn-center add_discount"><i class="ico-percentage me-2 fs-5"></i> Add discount / surcharge</a>
+                            </div>
+                            <table width="100%">
+                                <tbody>
+                                    <tr>
+                                        <td>Subtotal</td>
+                                        <td class="text-end subtotal">$0.00</td>
+                                    </tr>
+                                    <tr class="discount-row">
+                                        <td>Discount</td>
+                                        <td class="text-end discount">$0.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Total</b></td>
+                                        <td class="text-end total"><b>$0.00</b></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td class="text-end d-grey font-13 gst_total">(Includes GST of $0.00)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <hr class="my-4">
+                            <div class="form-group credit_sale">
+                                <label class="form-label">Credit Sale to <span class="d-grey font-13">(required)</span></label>
+                                <select class="form-select form-control" name="sale_staff_id" id="sale_staff_id">
+                                    <option>Please select</option>
+                                    @foreach($staffs as $staff)
+                                        <option value="{{$staff->id}}">{{$staff->first_name.' '.$staff->last_name}}</option>
+                                    @endforeach
+                                </select>
+                                </div>
+                                <div class="form-group mb-0">
+                                <label class="form-label">Note</label>
+                                <textarea class="form-control" rows="3" placeholder="Add a note"></textarea>
+                            </div>
+                            </div>
+                        </div>
+                </div>
+                
+                <div class="modal-footer justify-content-between">
+                    <div class="mod-ft-left d-flex gap-2">
+                        <button type="button" class="btn btn-light-outline-grey btn-md icon-btn-left"><i class="ico-print3 me-2 fs-6"></i> Print Quote</button>
+                        <button type="button" class="btn btn-light-outline-grey btn-md icon-btn-left"><i class="ico-draft me-2 fs-6"></i> Save sale as a draft</button>
+                    </div>
+                    <div class="mod-ft-right">
+                        <button type="button" class="btn btn-light btn-md">Cancel</button>
+                        <button type="button" class="btn btn-primary btn-md">Take Payment</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-content edit_product" style="display:none;">
+                <div class="modal-header" id="edit_product">
+                    <h4 class="modal-title">Edit Product</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="invo-notice mb-4 closed">
+                        <input type="hidden" name="edit_product_id" id="edit_product_id">
+                        <div class="inv-left"><b class="edit_product_name">VIP Skin treatment</b></div>
+                        <span id="dynamic_discount"></span>
+                        <div class="inv-number edit_product_quantity"><b>1</b></div>
+                        <div class="inv-number edit_product_price"><b>$60.00</b></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label">Price per unit</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control edit_price_per_unit" placeholder="0">
+                                    <span class="input-group-text"><i class="ico-percentage fs-4"></i></span>
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                <label class="form-label">Quantity</label>
+                                <div class="number-input safari_only">
+                                    <button class="minus"></button>
+                                    <input class="quantity form-control edit_quantity" min="0" name="quantity" value="1" type="number">
+                                    <button class="plus"></button>
+                                </div>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label class="form-label">Who did work</label>
+                                <select class="form-select form-control" name="edit_sale_staff_id" id="edit_sale_staff_id">
+                                    <option>Please select</option>
+                                    @foreach($staffs as $staff)
+                                        <option value="{{$staff->id}}">{{$staff->first_name.' '.$staff->last_name}}</option>
+                                    @endforeach
+                                </select>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label class="form-label">Select discount / surcharge</label>
+                                <select class="form-select form-control" id="edit_discount_surcharge" name="edit_discount_surcharge">
+                                    <option selected>No Discount</option>
+                                    <option>Manual Discount</option>
+                                    <option>Manual Surcharge</option>
+                                    <option>Credit Card Surcharge</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-auto">
+                            <div class="form-group">
+                                <label class="form-label mb-3">Discount type </label><br>
+                                <label class="cst-radio me-3"><input type="radio" checked="" name="edit_discount_type" id="edit_discount_type" value="amount"><span class="checkmark me-2"></span>Amount</label>
+                                <label class="cst-radio"><input type="radio" name="edit_discount_type" id="edit_discount_type" value="percent"><span class="checkmark me-2"></span>Percent</label>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label">Amount</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="edit_amount" placeholder="0">
+                                    <span class="input-group-text"><i class="ico-percentage fs-4"></i></span>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="form-group mb-0">
+                        <label class="form-label">Reason</label>
+                        <textarea class="form-control" rows="3" placeholder="Add a reason" id="edit_reason"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <div class="mod-ft-left"><button type="button" class="btn btn-light-outline-red btn-md remove_edit_product">Remove</button></div>
+                    <div class="mod-ft-right">
+                        <button type="button" class="btn btn-light btn-md cancel_product">Cancel</button>
+                        <button type="button" class="btn btn-primary btn-md update_product">Update</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-content main_discount" style="display:none;">
+                <input type="hidden" id="discount_customer_type">
+                <input type="hidden" id="hdn_amt">
+                <input type="hidden" id="hdn_dis_type">
+                <input type="hidden" id="hdn_discount_surcharge">
+                <div class="modal-header" id="main_discount">
+                    <h4 class="modal-title">Add discount / surcharge</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label class="form-label">Select discount / surcharge</label>
+                                <select class="form-select form-control" id="discount_surcharge" name="discount_surcharge">
+                                    <option>No Discount</option>
+                                    <option selected>Manual Discount</option>
+                                    <option>Manual Surcharge</option>
+                                    <option>Credit Card Surcharge</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                    <div class="col-auto">
+                        <div class="form-group">
+                            <label class="form-label mb-3">Discount type </label><br>
+                            <label class="cst-radio me-3"><input type="radio" checked="" name="discount_type" id="discount_type" value="amount"><span class="checkmark me-2"></span>Amount</label>
+                            <label class="cst-radio"><input type="radio" name="discount_type" id="discount_type" value="percent"><span class="checkmark me-2"></span>Percent</label>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-label">Amount</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="amount" placeholder="0">
+                                <span class="input-group-text"><i class="ico-percentage fs-4"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Reason</label>
+                        <textarea class="form-control" rows="7" placeholder="Add a reason" id="reason"></textarea>
+                    </div>
+                    <table width="100%" class="add_dis">
+                        <tr>
+                            <td>Subtotal</td>
+                            <td class="text-end subtotal dis_subtotal">$0.00</td>
+                        </tr>
+                        <tr class="discount-row">
+                            <td>Discount</td>
+                            <td class="text-end discount dis_discount">$0.00</td>
+                        </tr>
+                        <tr>
+                            <td><b>Total</b></td>
+                            <td class="text-end total dis_total"><b>$0.00</b></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td class="text-end d-grey font-13 gst_total">(Includes GST of $0.00)</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light btn-md cancel_discount">Cancel</button>
+                    <button type="button" class="btn btn-primary btn-md update_discount">Update</button>
+                </div>
+            </div>
+            
+        </div>
+    </div>
     @include('calender.partials.client-modal')
     @include('calender.partials.repeat-appointment-modal')
 </div>
@@ -770,6 +1212,15 @@
 
     $(document).ready(function()
     {
+        var product_details = [];
+        
+        var today = new Date();
+        
+        // Set the max attribute of the date pickers to yesterday
+        document.getElementById("datePicker1").setAttribute("max", today.toISOString().split('T')[0]);
+        document.getElementById("datePicker2").setAttribute("max", today.toISOString().split('T')[0]);
+        document.getElementById("datePicker3").setAttribute("max", today.toISOString().split('T')[0]);
+        
         $("#edit_waitlist_client").validate({
             rules: {
                 firstname: {
@@ -1961,6 +2412,9 @@
     //get all client details
 
     var client_details = [];
+    // var product_details = [];
+    var product_details = @json($productServiceJson);
+    // var service_details = @json($services);
 
     // Assuming you have a function to trigger opening the modal with a specific client id
     // For example, if you have a button or link to open the modal, you can attach a click event handler to it
@@ -2107,6 +2561,917 @@
             <input type="hidden" name="is_app_created" id="is_app_created" value="1">
         `);
     });
+    $(document).on('click','.add_discount',function(e){
+        debugger;
+        $('.main_walkin .nav-item:visible').each(function() {
+            debugger;
+            // Check if the current nav-item is active (visible)
+            if ($(this).find('a.nav-link').hasClass('active')) {
+                var link = $(this).find('a.nav-link');
+                if (link.hasClass('casual_cus')) {
+                    $('#discount_customer_type').val('casual');
+                } else if (link.hasClass('new_cus')) {
+                    $('#discount_customer_type').val('new');
+                } else {
+                    $('#discount_customer_type').val('existing');
+                }
+                return false; // Exit the loop once we find the active nav-item
+            }
+        });
+        
+        $('.main_discount').show();
+        $('.main_walk_in').hide();
+
+        if($(this).text() == 'Edit discount / surcharge')
+        {
+            $('#main_discount').find('h4').text('Edit discount / surcharge')
+            $('#hdn_amt').val($('#amount').val());
+            $('#hdn_dis_type').val($('input[name="discount_type"]:checked').val());
+            // $('.main_walk_in').find('.add_discount').each(function() {
+                debugger;
+                // Update the HTML content of the element
+                // $(this).html('<i class="ico-percentage me-2 fs-5"></i>Edit discount / surcharge');
+
+                // Your additional code logic here for each element with the class 'add_discount'
+            // });   
+        }
+    });
+    $(document).on('click','.cancel_discount',function(e){
+        debugger;
+        $('.main_discount').hide();
+        $('.main_walk_in').show();
+        $('#discount_surcharge').val($('#hdn_discount_surcharge').val());
+        // $('#discount_surcharge').val($('#discount_surcharge').val());
+        $('#amount').prop('disabled', false);
+        $('#discount_type').prop('disabled', false);
+        $('#percent_type').prop('disabled', false);
+        $('#reason').prop('disabled', false);
+        $('.discount-row').show();
+        $('#reason').val('');
+        var type = $('#discount_customer_type').val();
+
+        //cancel 
+        if($('#main_discount').find('h4').text() != 'Edit discount / surcharge')
+        {
+            $('#amount').val(0);
+        }
+        else
+        {
+            $('#amount').val($('#hdn_amt').val());
+            var hd = $('#hdn_dis_type').val();
+            $('input[name="discount_type"][value="' + hd + '"]').prop('checked', true);
+        }
+        updateSubtotalAndTotal(type);
+    })
+    $(document).on('click','.cancel_product',function(e){
+        // $('.main_product').hide();
+        $('.edit_product').hide();
+        $('.main_walk_in').show();
+    })
+    $(document).on('click','.update_product',function(e){
+        // $('.main_product').hide();
+        $('.edit_product').hide();
+        $('.main_walk_in').show();
+        
+        // Retrieve the product details
+        var productInfo = $('.modal-body');
+
+        // Update the product price in the productDetail div
+        var pricePerUnit = parseFloat(productInfo.find('.edit_price_per_unit').val());
+        var quantity = parseInt(productInfo.find('.edit_quantity').val());
+        var productPrice = pricePerUnit * quantity;
+        $('.productDetail .edit_product_price').text('$' + productPrice.toFixed(2));
+        var cus_type = $('#customer_type').val();
+        var edit_prod_id = $('#edit_product_id').val();
+        $('.invo-notice').each(function(index, element) {
+            debugger;
+            if($(this).attr('prod_id') == edit_prod_id)
+            {
+                $(this).find('.inv-number').find('b').text($('.edit_product_price').text());
+                $(this).find('.inv-left').find('.dis').text('(' + $('#dynamic_discount').text() + ')');
+                $(this).find('.quantity').val($('.edit_product_quantity').text());
+
+                //
+                var productPrice = $(this).find('#product_price').val() // Get the text content of edit_product_price
+                var priceWithoutDollar = productPrice.replace('$', ''); // Remove the dollar sign
+                $(this).find('.product-name').attr('product_price', priceWithoutDollar); // Set the product_price attribute
+
+
+                updateSubtotalAndTotal(cus_type); // Update Subtotal and Total
+            }
+        });
+        $('#notes').append('\n' + $('#edit_reason').val() + ' - ' + '$'+$('#edit_amount').val() + ' on ' + $('.edit_product_name').text() + '\n');
+    })
+    $(document).on('click','.update_discount',function(e){
+
+        debugger;
+        $('.main_discount').hide();
+        $('.main_walk_in').show();
+
+        $('#hdn_discount_surcharge').val($('#discount_surcharge').val());
+        $('.main_walk_in').find('.add_discount').each(function() {
+            debugger;
+            // Update the HTML content of the element
+            $(this).html('<i class="ico-percentage me-2 fs-5"></i>Edit discount / surcharge');
+
+            // Your additional code logic here for each element with the class 'add_discount'
+        });
+
+        var amt_type_note = $('input[name="discount_type"]:checked').val();
+        if(amt_type_note == 'amount')
+        {
+            $('#notes').text($('#reason').val() + ' - ' + '$'+$('#amount').val() + ' applied to invoice.' );
+        }else{
+            $('#notes').text($('#reason').val() + ' - ' +$('#amount').val()+'%' + ' applied to invoice.');
+        }
+        
+    })
+    $(document).on('click', '.c_minus', function(e) {
+        debugger;
+        var type = "casual";
+        var $currentDiv = $(this).closest('.product-info1'); // Reference to the current div
+        var $input = $currentDiv.find('input.quantity');
+        var count = parseInt($input.val()) - 1;
+        count = count < 1 ? 1 : count;
+        $input.val(count);
+
+        var chk_dis_type = $('input[name="edit_discount_type"]:checked').val();
+        var main_price = parseFloat($currentDiv.find('#product_price').val());
+        var price_amt;
+        
+        if (chk_dis_type == 'percent') {
+            if($(this).parent().parent().parent().find('.inv-left').find('.dis').text() == '')
+            {
+                var discount = 0;
+                price_amt = main_price - (main_price * (discount / 100));
+            }
+            else
+            {
+                var discount = parseFloat($('#edit_amount').val());
+                price_amt = main_price - (main_price * (discount / 100));
+            }
+            
+        } else {
+            if($(this).parent().parent().parent().find('.inv-left').find('.dis').text() == '')
+            {
+                price_amt = parseFloat(main_price);
+            }else{
+                price_amt = parseFloat(main_price - $('#edit_amount').val());
+            }
+        }
+
+        var price_mul = price_amt * parseInt($input.val());
+        $currentDiv.find('.inv-number b').text('$' + price_mul);
+        // $(this).parent().parent().parent().find('.product-name').attr('product_price',price_amt);
+        $input.change();
+        
+        var textValue = $(this).parent().parent().parent().find('.dis').text();
+
+        // Extract the number from the text using regular expressions
+        var regex = /\$([\d.]+)/;
+        var match = textValue.match(regex);
+
+        if (match && match.length > 1) {
+            // Extracted number from the text
+            var discountAmount = parseFloat(match[1]);
+            
+            // Calculate half of the discount amount
+            if(chk_dis_type =='percent')
+            {
+                var discount = (parseFloat(main_price) * parseFloat($('#edit_amount').val())) / 100;
+                var newDiscountAmount = discountAmount - discount;
+            }else{
+                var newDiscountAmount = discountAmount - parseFloat($('#edit_amount').val());
+            }
+            // var final = discountAmount - newDiscountAmount;
+
+            newDiscountAmount = Math.max(newDiscountAmount, 0);
+            // Replace the text with the new discount amount
+            // $(".dis").text("( Discount: $" + newDiscountAmount.toFixed(2) + ")");
+            // $('#dynamic_discount').text(' Discount: $' + newDiscountAmount.toFixed(2));
+
+            // $(".dis").text("( Discount: $" + newDiscountAmount.toFixed(2) + ")");
+            // Inside the click event handler for c_minus and c_plus
+            $currentDiv.find('.dis').text("( Discount: $" + newDiscountAmount.toFixed(2) + ")");
+            $('#dynamic_discount').text(' Discount: $' + newDiscountAmount.toFixed(2));
+        }
+
+        updateSubtotalAndTotal(type);
+        return false;
+    });
+
+    $(document).on('click', '.c_plus', function(e) {
+        debugger;
+        var type = "casual";
+        var $currentDiv = $(this).closest('.product-info1'); // Reference to the current div
+        var $input = $currentDiv.find('input.quantity');
+        $input.val(parseInt($input.val()) + 1);
+
+        var chk_dis_type = $('input[name="edit_discount_type"]:checked').val();
+        var main_price = parseFloat($currentDiv.find('#product_price').val());
+        var price_amt;
+
+        if (chk_dis_type == 'percent') {
+            if($(this).parent().parent().parent().find('.inv-left').find('.dis').text() == '')
+            {
+                var discount = 0;
+                price_amt = main_price - (main_price * (discount / 100));
+            }
+            else
+            {
+                var discount = parseFloat($('#edit_amount').val());
+                price_amt = main_price - (main_price * (discount / 100));
+            }
+            
+        } else {
+            if($(this).parent().parent().parent().find('.inv-left').find('.dis').text() == '')
+            {
+                price_amt = parseFloat(main_price);
+            }else{
+                price_amt = parseFloat(main_price - $('#edit_amount').val());
+            }
+        }
+
+        var price_mul = price_amt * parseInt($input.val());
+        $currentDiv.find('.inv-number b').text('$' + price_mul);
+        $input.change();
+        var textValue = $currentDiv.find('.dis').text();
+
+        // Extract the number from the text using regular expressions
+        var regex = /\$([\d.]+)/;
+        var match = textValue.match(regex);
+
+        if (match && match.length > 1) {
+            // Extracted number from the text
+            var discountAmount = parseFloat(match[1]);
+
+            // Calculate the new discount amount based on the discount type
+            var newDiscountAmount;
+            if(chk_dis_type =='percent')
+            {
+                var discount = (parseFloat(main_price) * parseFloat($('#edit_amount').val())) / 100;
+                var newDiscountAmount = discountAmount + discount;
+            }else{
+                var newDiscountAmount = discountAmount + parseFloat($('#edit_amount').val());
+            }
+            newDiscountAmount = Math.max(newDiscountAmount, 0);
+
+            // Update the displayed discount value
+            $currentDiv.find('.dis').text("( Discount: $" + newDiscountAmount.toFixed(2) + ")");
+            $('#dynamic_discount').text(' Discount: $' + newDiscountAmount.toFixed(2));
+        }
+        updateSubtotalAndTotal(type);
+        return false;
+    });
+
+    $(document).on('click', '.n_minus', function(e) {
+        var type="new";
+        var $currentDiv = $(this).closest('.product-info2'); // Reference to the current div
+        var $input = $currentDiv.find('input.quantity');
+        var count = parseInt($input.val()) - 1;
+        count = count < 1 ? 1 : count;
+        $input.val(count);
+
+        var chk_dis_type = $('input[name="edit_discount_type"]:checked').val();
+        var main_price = parseFloat($currentDiv.find('#product_price').val());
+        var price_amt;
+        
+        if (chk_dis_type == 'percent') {
+            if($(this).parent().parent().parent().find('.inv-left').find('.dis').text() == '')
+            {
+                var discount = 0;
+                price_amt = main_price - (main_price * (discount / 100));
+            }
+            else
+            {
+                var discount = parseFloat($('#edit_amount').val());
+                price_amt = main_price - (main_price * (discount / 100));
+            }
+            
+        } else {
+            if($(this).parent().parent().parent().find('.inv-left').find('.dis').text() == '')
+            {
+                price_amt = parseFloat(main_price);
+            }else{
+                price_amt = parseFloat(main_price - $('#edit_amount').val());
+            }
+        }
+
+        var price_mul = price_amt * parseInt($input.val());
+        $currentDiv.find('.inv-number b').text('$' + price_mul);
+
+        $input.change();
+        var textValue = $(this).parent().parent().parent().find('.dis').text();
+
+        // Extract the number from the text using regular expressions
+        var regex = /\$([\d.]+)/;
+        var match = textValue.match(regex);
+
+        if (match && match.length > 1) {
+            // Extracted number from the text
+            var discountAmount = parseFloat(match[1]);
+            
+            // Calculate half of the discount amount
+            if(chk_dis_type =='percent')
+            {
+                var discount = (parseFloat(main_price) * parseFloat($('#edit_amount').val())) / 100;
+                var newDiscountAmount = discountAmount - discount;
+            }else{
+                var newDiscountAmount = discountAmount - parseFloat($('#edit_amount').val());
+            }
+            newDiscountAmount = Math.max(newDiscountAmount, 0);
+
+            // Replace the text with the new discount amount
+            // $(".dis").text("( Discount: $" + newDiscountAmount.toFixed(2) + ")");
+            // $('#dynamic_discount').text(' Discount: $' + newDiscountAmount.toFixed(2));
+
+            $currentDiv.find('.dis').text("( Discount: $" + newDiscountAmount.toFixed(2) + ")");
+            $('#dynamic_discount').text(' Discount: $' + newDiscountAmount.toFixed(2));
+        }
+        updateSubtotalAndTotal(type);
+        return false;
+    });
+
+    $(document).on('click', '.n_plus', function(e) {
+        var type="new";
+        var $currentDiv = $(this).closest('.product-info2'); // Reference to the current div
+        var $input = $currentDiv.find('input.quantity');
+        $input.val(parseInt($input.val()) + 1);
+
+        var chk_dis_type = $('input[name="edit_discount_type"]:checked').val();
+        var main_price = parseFloat($currentDiv.find('#product_price').val());
+        var price_amt;
+
+        if (chk_dis_type == 'percent') {
+            if($(this).parent().parent().parent().find('.inv-left').find('.dis').text() == '')
+            {
+                var discount = 0;
+                price_amt = main_price - (main_price * (discount / 100));
+            }
+            else
+            {
+                var discount = parseFloat($('#edit_amount').val());
+                price_amt = main_price - (main_price * (discount / 100));
+            }
+            
+        } else {
+            if($(this).parent().parent().parent().find('.inv-left').find('.dis').text() == '')
+            {
+                price_amt = parseFloat(main_price);
+            }else{
+                price_amt = parseFloat(main_price - $('#edit_amount').val());
+            }
+        }
+
+        var price_mul = price_amt * parseInt($input.val());
+        $currentDiv.find('.inv-number b').text('$' + price_mul);
+
+        $input.change();
+        var textValue = $(this).parent().parent().parent().find('.dis').text();
+
+        // Extract the number from the text using regular expressions
+        var regex = /\$([\d.]+)/;
+        var match = textValue.match(regex);
+
+        if (match && match.length > 1) {
+            // Extracted number from the text
+            var discountAmount = parseFloat(match[1]);
+            
+            // Calculate half of the discount amount
+            if(chk_dis_type =='percent')
+            {
+                var discount = (parseFloat(main_price) * parseFloat($('#edit_amount').val())) / 100;
+                var newDiscountAmount = discountAmount + discount;
+            }else{
+                var newDiscountAmount = discountAmount + parseFloat($('#edit_amount').val());
+            }
+            // var final = discountAmount - newDiscountAmount;
+
+            newDiscountAmount = Math.max(newDiscountAmount, 0);
+            // var newDiscountAmount = discountAmount + parseFloat($('#edit_amount').val());
+            // var final = newDiscountAmount;
+
+            $currentDiv.find('.dis').text("( Discount: $" + newDiscountAmount.toFixed(2) + ")");
+            $('#dynamic_discount').text(' Discount: $' + newDiscountAmount.toFixed(2));
+        }
+        updateSubtotalAndTotal(type);
+        return false;
+    });
+
+    $(document).on('click', '.e_minus', function(e) {
+        var type = "casual";
+        var $currentDiv = $(this).closest('.product-info3'); // Reference to the current div
+        var $input = $currentDiv.find('input.quantity');
+        var count = parseInt($input.val()) - 1;
+        count = count < 1 ? 1 : count;
+        $input.val(count);
+
+        var chk_dis_type = $('input[name="edit_discount_type"]:checked').val();
+        var main_price = parseFloat($currentDiv.find('#product_price').val());
+        var price_amt;
+        
+        if (chk_dis_type == 'percent') {
+            if($(this).parent().parent().parent().find('.inv-left').find('.dis').text() == '')
+            {
+                var discount = 0;
+                price_amt = main_price - (main_price * (discount / 100));
+            }
+            else
+            {
+                var discount = parseFloat($('#edit_amount').val());
+                price_amt = main_price - (main_price * (discount / 100));
+            }
+            
+        } else {
+            if($(this).parent().parent().parent().find('.inv-left').find('.dis').text() == '')
+            {
+                price_amt = parseFloat(main_price);
+            }else{
+                price_amt = parseFloat(main_price - $('#edit_amount').val());
+            }
+        }
+
+        var price_mul = price_amt * parseInt($input.val());
+        $currentDiv.find('.inv-number b').text('$' + price_mul);
+        
+        $input.change();
+        var textValue = $(this).parent().parent().parent().find('.dis').text();
+
+        // Extract the number from the text using regular expressions
+        var regex = /\$([\d.]+)/;
+        var match = textValue.match(regex);
+
+        if (match && match.length > 1) {
+            // Extracted number from the text
+            var discountAmount = parseFloat(match[1]);
+            
+            if(chk_dis_type =='percent')
+            {
+                var discount = (parseFloat(main_price) * parseFloat($('#edit_amount').val())) / 100;
+                var newDiscountAmount = discountAmount - discount;
+            }else{
+                var newDiscountAmount = discountAmount - parseFloat($('#edit_amount').val());
+            }
+            // var final = discountAmount - newDiscountAmount;
+
+            newDiscountAmount = Math.max(newDiscountAmount, 0);
+
+            // Replace the text with the new discount amount
+            // $(".dis").text("( Discount: $" + newDiscountAmount.toFixed(2) + ")");
+            // $('#dynamic_discount').text(' Discount: $' + newDiscountAmount.toFixed(2));
+
+            $currentDiv.find('.dis').text("( Discount: $" + newDiscountAmount.toFixed(2) + ")");
+            $('#dynamic_discount').text(' Discount: $' + newDiscountAmount.toFixed(2));
+        }
+        updateSubtotalAndTotal(type);
+        return false;
+    });
+
+    $(document).on('click', '.e_plus', function(e) {
+        var type = "casual";
+        var $currentDiv = $(this).closest('.product-info3'); // Reference to the current div
+        var $input = $currentDiv.find('input.quantity');
+        $input.val(parseInt($input.val()) + 1);
+
+        var chk_dis_type = $('input[name="edit_discount_type"]:checked').val();
+        var main_price = parseFloat($currentDiv.find('#product_price').val());
+        var price_amt;
+
+        if (chk_dis_type == 'percent') {
+            if($(this).parent().parent().parent().find('.inv-left').find('.dis').text() == '')
+            {
+                var discount = 0;
+                price_amt = main_price - (main_price * (discount / 100));
+            }
+            else
+            {
+                var discount = parseFloat($('#edit_amount').val());
+                price_amt = main_price - (main_price * (discount / 100));
+            }
+            
+        } else {
+            if($(this).parent().parent().parent().find('.inv-left').find('.dis').text() == '')
+            {
+                price_amt = parseFloat(main_price);
+            }else{
+                price_amt = parseFloat(main_price - $('#edit_amount').val());
+            }
+        }
+
+        var price_mul = price_amt * parseInt($input.val());
+        $currentDiv.find('.inv-number b').text('$' + price_mul);
+
+        $input.change();
+        var textValue = $(this).parent().parent().parent().find('.dis').text();
+
+        // Extract the number from the text using regular expressions
+        var regex = /\$([\d.]+)/;
+        var match = textValue.match(regex);
+
+        if (match && match.length > 1) {
+            // Extracted number from the text
+            var discountAmount = parseFloat(match[1]);
+            
+            // Calculate half of the discount amount
+            if(chk_dis_type =='percent')
+            {
+                var discount = (parseFloat(main_price) * parseFloat($('#edit_amount').val())) / 100;
+                var newDiscountAmount = discountAmount + discount;
+            }else{
+                var newDiscountAmount = discountAmount + parseFloat($('#edit_amount').val());
+            }
+            // var final = discountAmount - newDiscountAmount;
+
+            newDiscountAmount = Math.max(newDiscountAmount, 0);
+            
+            // var newDiscountAmount = discountAmount + parseFloat($('#edit_amount').val());
+            // var final = newDiscountAmount;
+
+            $currentDiv.find('.dis').text("( Discount: $" + newDiscountAmount.toFixed(2) + ")");
+            $('#dynamic_discount').text(' Discount: $' + newDiscountAmount.toFixed(2));
+        }
+        updateSubtotalAndTotal(type);
+        return false;
+    });
+    $(document).on('click', '.minus', function() {
+        // Decrement quantity if greater than 1
+        var quantityInput = $('.edit_quantity');
+        var currentQuantity = parseInt(quantityInput.val());
+        if (currentQuantity > 1) {
+            quantityInput.val(currentQuantity - 1);
+            $('.edit_product_quantity').text(currentQuantity - 1);
+            calculateAndUpdate(); // Update total and recalculate
+        }
+    });
+
+    $(document).on('click', '.plus', function() {
+        // Increment quantity
+        var quantityInput = $('.edit_quantity');
+        var currentQuantity = parseInt(quantityInput.val());
+        quantityInput.val(currentQuantity + 1);
+        $('.edit_product_quantity').text(currentQuantity + 1);
+        calculateAndUpdate(); // Update total and recalculate
+    });
+
+
+    $(document).on('click', '.casual_cus', function(e) {
+        debugger;
+        e.preventDefault(); // Prevent default link behavior
+        $('#customer_type').val('casual');
+        $("#casual_customer").load(location.href + " #casual_customer");
+        $('.add_dis').find('.subtotal').text('$0.00');
+        $('.add_dis').find('.discount').text('$0.00');
+        $('.add_dis').find('.total').text('$0.00');
+        $('#amount').val(0);
+        $('#discount_surcharge').val('Manual Discount');
+        $('#amount').prop('disabled', false);
+        $('#discount_type').prop('disabled', false);
+        $('#percent_type').prop('disabled', false);
+        $('#reason').prop('disabled', false);
+        $('.discount-row').show();
+        $('#reason').val('');
+    });
+    $(document).on('click', '.new_cus', function(e) {
+        debugger;
+        e.preventDefault(); // Prevent default link behavior
+        $('#customer_type').val('new');
+        $("#new_customer").load(location.href + " #new_customer");
+        $('.add_dis').find('.subtotal').text('$0.00');
+        $('.add_dis').find('.discount').text('$0.00');
+        $('.add_dis').find('.total').text('$0.00');
+        $('#amount').val(0);
+        $('#discount_surcharge').val('Manual Discount');
+        $('#amount').prop('disabled', false);
+        $('#discount_type').prop('disabled', false);
+        $('#percent_type').prop('disabled', false);
+        $('#reason').prop('disabled', false);
+        $('.discount-row').show();
+        $('#reason').val('');
+    });
+    $(document).on('click', '.existing_cus', function(e) {
+        debugger;
+        e.preventDefault(); // Prevent default link behavior
+        $('#customer_type').val('existing');
+        $("#exist_customer").load(location.href + " #exist_customer");
+        $('.add_dis').find('.subtotal').text('$0.00');
+        $('.add_dis').find('.discount').text('$0.00');
+        $('.add_dis').find('.total').text('$0.00');
+        $('#amount').val(0);
+        $('#discount_surcharge').val('Manual Discount');
+        $('#amount').prop('disabled', false);
+        $('#discount_type').prop('disabled', false);
+        $('#percent_type').prop('disabled', false);
+        $('#reason').prop('disabled', false);
+        $('.discount-row').show();
+        $('#reason').val('');
+    });
+    // Call updateSubtotalAndTotal when discount type or amount changes
+    $(document).on('change input', 'input[name="discount_type"], #amount', function() {
+        var type =$('#discount_customer_type').val();
+        updateSubtotalAndTotal(type);
+    });
+    // Event listener for change in discount selection
+    $(document).on('change', '#discount_surcharge', function() {
+        var type =$('#discount_customer_type').val();
+        checkDiscountSelection();
+        updateSubtotalAndTotal(type);
+    });
+
+    $(document).on('change', '#edit_discount_surcharge', function() {
+        var selectedOption = $(this).val();
+        var $discountType = $('#edit_discount_type');
+        var $amount = $('#edit_amount');
+        var $reason = $('#edit_reason');
+        var $dynamicDiscount = $('#dynamic_discount');
+
+        if (selectedOption === "No Discount") {
+            $discountType.prop('disabled', true);
+            $amount.prop('disabled', true);
+            $reason.prop('disabled', true);
+            $amount.val('');
+            $reason.val('');
+            
+            // Remove dynamic discount
+            $dynamicDiscount.text('');
+            
+            // Recalculate edit_product_price
+            calculatePrice();
+        } else if (selectedOption === "Credit Card Surcharge") {
+             // Set discount type to percentage and disable the field
+            $('input[name="edit_discount_type"][value="percent"]').prop('checked', true).prop('disabled', true);
+            
+            // Set the discount amount to 2%
+            var pricePerUnit = parseFloat($('.edit_price_per_unit').val());
+            var quantity = parseInt($('.edit_quantity').val());
+            var totalAmount = pricePerUnit * quantity;
+            var discountAmount = totalAmount * 0.02; // 2% discount amount for Credit Card Surcharge
+            
+            // Update dynamic discount display
+            $dynamicDiscount.text(' Discount: $' + discountAmount.toFixed(2));
+
+            $amount.val('2').prop('disabled', true);
+            $reason.val('Credit Card Surcharge').prop('disabled', true);
+
+            // Recalculate edit_product_price with fixed discount amount
+            var newPrice = totalAmount + discountAmount;
+
+            // Update edit_product_price
+            $('.edit_product_price').text('$' + newPrice.toFixed(2));
+        }else if (selectedOption === "Manual Surcharge") {
+            // Enable all fields
+            $discountType.prop('disabled', false);
+            $discountType.closest('.form-group').find('input[type="radio"]').prop('disabled', false);
+            $amount.prop('disabled', false);
+            $reason.prop('disabled', false);
+            $amount.val(0);
+            // Check if amount is blank, if so set it to 0
+            var amountValue = $('#edit_amount').val().trim() === '' ? 0 : parseFloat($('#edit_amount').val());
+
+            // Update dynamic discount display
+            var pricePerUnit = parseFloat($('.edit_price_per_unit').val());
+            var quantity = parseInt($('.edit_quantity').val());
+            var totalAmount = pricePerUnit * quantity;
+            var discountAmount = amountValue; // Manual Surcharge discount amount
+
+            $dynamicDiscount.text(' Discount: $' + discountAmount.toFixed(2));
+
+            $amount.val(amountValue);
+
+            // Recalculate edit_product_price with fixed discount amount
+            var newPrice = totalAmount + discountAmount;
+
+            // Update edit_product_price
+            $('.edit_product_price').text('$' + newPrice.toFixed(2));
+        } else {
+            $discountType.prop('disabled', false);
+            $discountType.closest('.form-group').find('input[type="radio"]').prop('disabled', false);
+            $amount.prop('disabled', false);
+            $reason.prop('disabled', false);
+        }
+    });
+    $(document).on('change', '#edit_discount_type, #edit_amount, .edit_price_per_unit, .edit_quantity', function() {
+        debugger;
+        var d_types = $('input[name="edit_discount_type"]:checked').val();
+        $('#discount_types').val(d_types);
+        // var pricePerUnit = parseFloat($('.edit_price_per_unit').val());
+        // var quantity = parseInt($('.edit_quantity').val());
+        // var discountType = $('input[name="edit_discount_type"]:checked').val();
+        // var amount = parseFloat($('#edit_amount').val());
+        // var discountAmount = 0;
+
+        // if (discountType === "amount" && !isNaN(amount)) {
+        //     discountAmount = amount * quantity;
+        // } else if (discountType === "percent" && !isNaN(amount)) {
+        //     var discountPercent = amount / 100;
+        //     discountAmount = (pricePerUnit * quantity) * discountPercent;
+        // }
+
+        // // Calculate new price after discount
+        // var newPrice = (pricePerUnit * quantity) - discountAmount;
+
+        // // Update edit_product_price
+        // $('.edit_product_price').text('$' + newPrice.toFixed(2));
+
+        // // Update dynamic discount display
+        // $('#dynamic_discount').text(' Discount: $' + discountAmount.toFixed(2));
+        calculateAndUpdate();
+    });
+
+    
+    $(document).on('click', '.product-name.clickable', function() {
+        debugger;
+        var id = $(this).attr('product_id');
+        var name = $(this).attr('product_name');
+        var price = $(this).attr('product_price');//$('#product_price').val();
+        var product_price = $(this).attr('product_price');
+        var quanitity = $(this).parent().parent().find('.quantity').val();
+
+        var discountText = $('#dynamic_discount').text();
+        var dis_price = discountText.replace('Discount: $', '');
+        dis_price = $.trim(dis_price);
+        
+        if (dis_price === '') {
+            dis_price = 0;
+        }
+
+        $('.edit_product').show();
+        $('.main_walk_in').hide();
+        $('#edit_product_id').val(id);
+        $('.edit_product_name').text(name);
+        $('.edit_product_quantity').text(quanitity);
+        // $('.edit_product_price').text('$' + (price * quanitity - dis_price));
+        $('.edit_product_price').text($(this).parent().find('b').text());
+        
+        $('.edit_price_per_unit').val(price);
+        $('.edit_quantity').val(quanitity);
+        $('#edit_sale_staff_id').val($(this).parent().parent().parent().parent().find('.credit_sale').find('#sale_staff_id').val());
+
+        //by default this field is disabled bcs of no discount selected
+        $('#edit_discount_type, #edit_amount, #edit_reason').prop('disabled', true);
+    });
+
+    $(document).on('click','.remove_product',function() {
+        debugger;
+        $(this).parent().remove();
+        var type=$('#customer_type').val();
+        updateSubtotalAndTotal(type); // Update Subtotal and Total
+    })
+    $(document).on('click','.remove_edit_product',function() {
+        debugger;
+        $('.edit_product').hide();
+        $('.main_walk_in').show();
+
+        var edit_prod_id = $('#edit_product_id').val();
+        var type=$('#customer_type').val();
+
+        $('.invo-notice').each(function(index, element) {
+            debugger;
+            if($(this).attr('prod_id') == edit_prod_id)
+            {
+                $(this).remove();
+                updateSubtotalAndTotal(type); // Update Subtotal and Total
+            }
+        });
+    })
+
+    // $(document).on('change keyup', '.edit_price_per_unit', function() {
+    //     $('.edit_product_price').text('$'+$(this).val());
+    // });
+    $(document).on('change keyup', '.edit_quantity', function() {
+        debugger;
+        updateQuantity();
+        // updatePrice();
+        calculateAndUpdate();
+    });
+    $(document).on('click', '.number-input .walk_number_input button', function() {
+        var inputField = $(this).siblings('.edit_quantity');
+        var currentValue = parseInt(inputField.val());
+        if ($(this).hasClass('plus')) {
+            inputField.val(currentValue + 1);
+        } else {
+            if (currentValue > 1) {
+                inputField.val(currentValue - 1);
+            }
+        }
+        updateQuantity();
+        updatePrice(); 
+    });
+    function calculateAndUpdate() {
+        debugger;
+        var pricePerUnit = parseFloat($('.edit_price_per_unit').val()) || 0;
+        var quantity = parseInt($('.edit_quantity').val()) || 0;
+        var discountType = $('input[name="edit_discount_type"]:checked').val();
+        var amount = parseFloat($('#edit_amount').val());
+        var discountAmount = 0;
+
+        if (discountType === "amount" && !isNaN(amount)) {
+            discountAmount = amount * quantity;
+        } else if (discountType === "percent" && !isNaN(amount)) {
+            var discountPercent = amount / 100;
+            discountAmount = (pricePerUnit * quantity) * discountPercent;
+        }
+
+        // Calculate new price after discount
+        var newPrice = (pricePerUnit * quantity) - discountAmount;
+
+        // Update edit_product_price
+        $('.edit_product_price').text('$' + newPrice.toFixed(2));
+
+        // Update dynamic discount display
+        $('#dynamic_discount').text(' Discount: $' + discountAmount.toFixed(2));
+
+        // Calculate new total after discount
+        var productPrice = pricePerUnit * quantity;
+        var newTotal = productPrice - discountAmount;
+
+        // Update edit_product_price
+        $('.edit_product_price').text('$' + newTotal.toFixed(2));
+    }
+
+    function calculatePrice() {
+        var pricePerUnit = parseFloat($('.edit_price_per_unit').val());
+        var quantity = parseInt($('.edit_quantity').val());
+
+        // Calculate new price without discount
+        var newPrice = pricePerUnit * quantity;
+
+        // Update edit_product_price
+        $('.edit_product_price').text('$' + newPrice.toFixed(2));
+    }
+
+    function updateQuantity() {
+        debugger;
+        var newQuantity = parseInt($('.edit_quantity').val());
+        // $('.edit_product_quantity').text(newQuantity);
+    }
+    function updatePrice() {
+        var pricePerUnit = parseFloat($('.edit_price_per_unit').val());
+        var quantity = parseInt($('.edit_quantity').val());
+        var totalPrice = pricePerUnit * quantity;
+        $('.edit_product_price').text('$' + totalPrice.toFixed(2));
+    }
+
+    function checkDiscountSelection() {
+        debugger;
+        
+        var selectedOption = $('#discount_surcharge').val();
+        
+        if (selectedOption === 'No Discount') {
+            // Disable the amount input
+            $('#amount').val('').prop('disabled', true);
+
+            // Disable the discount type radio buttons
+            $('#discount_type').prop('disabled', true);
+            $('#percent_type').prop('disabled', true);
+            $('#reason').prop('disabled', true);
+            $('.discount-row').hide(); // Or $('.discount-row').remove();
+            $('#reason').val('');
+
+            // $('#edit_discount_surcharge').val(selectedOption);//for edit product
+        }
+        else if(selectedOption === 'Credit Card Surcharge') {
+            $('#amount').val('2').prop('disabled', true); // Set a default value of 2
+            $('input[name="discount_type"][value="percent"]').prop('checked', true).prop('disabled', true);
+
+            // Set the reason to "Credit Card Surcharge" and disable the input
+            $('#reason').val('Credit Card Surcharge').prop('disabled', true);
+            $('.discount-row').show();
+        } else if (selectedOption === "Manual Surcharge") {
+            // Enable all fields
+            $('#discount_type').prop('disabled', false);
+            $('#discount_type').closest('.form-group').find('input[type="radio"]').prop('disabled', false);
+            $('#amount').prop('disabled', false);
+            $('#reason').prop('disabled', false);
+            $('#amount').val(0);
+            // Check if amount is blank, if so set it to 0
+            var amountValue = $('#amount').val().trim() === '' ? 0 : parseFloat($('#amount').val());
+
+            // Update dynamic discount display
+            // var pricePerUnit = parseFloat($('.edit_price_per_unit').val());
+            // var quantity = parseInt($('.edit_quantity').val());
+            // var totalAmount = pricePerUnit * quantity;
+            var discountAmount = amountValue; // Manual Surcharge discount amount
+
+            // $dynamicDiscount.text(' Discount: $' + discountAmount.toFixed(2));
+
+            $('#amount').val(amountValue);
+
+            // Recalculate edit_product_price with fixed discount amount
+            var newPrice = amountValue + discountAmount;
+
+            // Update edit_product_price
+            $('.edit_product_price').text('$' + newPrice.toFixed(2));
+        } else {
+            // Enable the amount input
+            $('#amount').prop('disabled', false);
+
+            // Enable the discount type radio buttons
+            $('#discount_type').prop('disabled', false);
+            $('#reason').prop('disabled', false);
+            $('.discount-row').show();
+        }
+    }
+        
     //for match clients
     function matchClient(input) {
         var reg = new RegExp(input.trim(), "i");
@@ -2611,6 +3976,35 @@
         }
     });
 
+    //change input modal
+    const changeProductInput = debounce((val) => {
+        var results = matchProducts(val);
+        if (results && results.length > 0) {
+            updateSearchResults(results); // Update UI with search results
+        } else {
+            $('#resultproductmodal').empty(); // Clear search results if no data
+            $('.products_box').hide(); // Hide the product search results box
+        }
+    }, 300);
+    const changeProductInputNewCustomer = debounce((val) => {
+        var results = matchProductsNewCustomer(val);
+        if (results && results.length > 0) {
+            updateSearchResultsNewCustomer(results); // Update UI with search results
+        } else {
+            $('#resultproductmodalNew').empty(); // Clear search results if no data
+            $('.products_box_new').hide(); // Hide the product search results box
+        }
+    }, 300);
+    const changeProductInputExistingCustomer = debounce((val) => {
+        var results = matchProductsExistingCustomer(val);
+        if (results && results.length > 0) {
+            updateSearchResultsExistingCustomer(results); // Update UI with search results
+        } else {
+            $('#resultproductmodalExisting').empty(); // Clear search results if no data
+            $('.products_box_existing').hide(); // Hide the product search results box
+        }
+    }, 300);
+
     //search and set clients
     function setSearch(value) {
         $('.client_list_box').hide();
@@ -2808,7 +4202,380 @@
             }
         }
     }
-    
+    function setProductSearchModal(value) {
+        debugger;
+        $('#search_products').val(value); // Set selected value to input field
+        $('.products_box').hide();
+        
+        document.getElementById('search_products').value = value;
+        document.getElementById("resultproductmodal").innerHTML = "";
+
+        // Iterate over client_details to find a matching value
+        for (const key in product_details) {
+            console.log(product_details);
+            if (product_details.hasOwnProperty(key)) {
+                const product = product_details[key];
+                // Check if value matches any field in the product object
+                if (product.name === value) {
+                    console.log(product);
+                    // If a match is found, dynamically bind HTML to productDetails element
+                    $('#productDetails').append(
+                        `<div class="invo-notice mb-4 closed product-info1" prod_id='${product.id}'>
+                            <a href="#" class="btn cross remove_product"><i class="ico-close"></i></a>
+                            <input type='hidden' name='product_name' value='${product.name}'>
+                            <input type='hidden' id="product_id" name='product_id' value='${product.id}'>
+                            <input type='hidden' id="product_price" name='product_price' value='${product.price}'>
+                            <input type='hidden' id="product_gst" name='product_gst' value='${product.gst}'>
+                            <input type='hidden' id="discount_types" name='discount_types' value=''>
+                            <div class="inv-left"><b>${product.name} </b><span class="dis"></span></div>
+                            <div class="inv-center">
+                                <div class="number-input walk_number_input safari_only form-group mb-0 number">
+                                    <button class="c_minus"></button>
+                                    <input class="quantity form-control" min="0" name="product_quanitity" value="1" type="number">
+                                    <button class="c_plus"></button>
+                                </div>
+                            </div>
+                            <div class="inv-number go price"><b>${'$'+product.price}</b> <a href="#" class="btn btn-sm px-0 product-name clickable" product_id="${product.id}" product_name="${product.name}" product_price="${product.price}"><i class="ico-right-arrow fs-2 ms-3"></i></a></div>
+                        </div>`
+                    );
+                    var type='casual';
+
+                    updateSubtotalAndTotal(type); // Update Subtotal and Total
+
+                    document.getElementById('search_products').value = '';
+                    break; // Stop iterating once a match is found
+                }
+            }
+        }
+    }
+    function setProductSearchModalNew(value) {
+        debugger;
+        $('#search_products_new_customer').val(value); // Set selected value to input field
+        $('.products_box_new').hide();
+        
+        document.getElementById('search_products_new_customer').value = value;
+        document.getElementById("resultproductmodalNew").innerHTML = "";
+
+        // Iterate over client_details to find a matching value
+        for (const key in product_details) {
+            console.log(product_details);
+            if (product_details.hasOwnProperty(key)) {
+                const product = product_details[key];
+                // Check if value matches any field in the product object
+                if (product.name === value) {
+                    console.log(product);
+                    // If a match is found, dynamically bind HTML to productDetails element
+                    $('#NewproductDetails').append(
+                        `<div class="invo-notice mb-4 closed product-info2" prod_id='${product.id}'>
+                            <a href="#" class="btn cross remove_product"><i class="ico-close"></i></a>
+                            <input type='hidden' name='product_name' value='${product.name}'>
+                            <input type='hidden' id="product_id" name='product_id' value='${product.id}'>
+                            <input type='hidden' id="product_price" name='product_price' value='${product.price}'>
+                            <input type='hidden' id="product_gst" name='product_gst' value='${product.gst}'>
+                            <input type='hidden' id="discount_types" name='discount_types' value=''>
+                            <div class="inv-left"><b>${product.name} </b><span class="dis"></span></div>
+                            <div class="inv-center">
+                                <div class="number-input walk_number_input safari_only form-group mb-0 number">
+                                    <button class="n_minus"></button>
+                                    <input class="quantity form-control" min="0" name="product_quanitity" value="1" type="number">
+                                    <button class="n_plus"></button>
+                                </div>
+                            </div>
+                            <div class="inv-number go price"><b>${'$'+product.price}</b> <a href="#" class="btn btn-sm px-0 product-name clickable" product_id="${product.id}" product_name="${product.name}" product_price="${product.price}"><i class="ico-right-arrow fs-2 ms-3"></i></a></div>
+                        </div>`
+                    );
+                    var type='new';
+
+                    updateSubtotalAndTotal(type); // Update Subtotal and Total
+                    document.getElementById('search_products_new_customer').value = '';
+                    break; // Stop iterating once a match is found
+                }
+            }
+        }
+    }
+    function setProductSearchModalExisting(value) {
+        $('#search_products_existing_customer').val(value); // Set selected value to input field
+        $('.products_box_existing').hide();
+        
+        document.getElementById('search_products_existing_customer').value = value;
+        document.getElementById("resultproductmodalExisting").innerHTML = "";
+
+        // Iterate over client_details to find a matching value
+        for (const key in product_details) {
+            console.log(product_details);
+            if (product_details.hasOwnProperty(key)) {
+                const product = product_details[key];
+                // Check if value matches any field in the product object
+                if (product.name === value) {
+                    console.log(product);
+                    // If a match is found, dynamically bind HTML to productDetails element
+                    $('#ExistingproductDetails').append(
+                        `<div class="invo-notice mb-4 closed product-info3" prod_id='${product.id}'>
+                            <a href="#" class="btn cross remove_product"><i class="ico-close"></i></a>
+                            <input type='hidden' name='product_name' value='${product.name}'>
+                            <input type='hidden' id="product_id" name='product_id' value='${product.id}'>
+                            <input type='hidden' id="product_price" name='product_price' value='${product.price}'>
+                            <input type='hidden' id="product_gst" name='product_gst' value='${product.gst}'>
+                            <input type='hidden' id="discount_types" name='discount_types' value=''>
+                            <div class="inv-left"><b>${product.name} </b><span class="dis"></span></div>
+                            <div class="inv-center">
+                                <div class="number-input walk_number_input safari_only form-group mb-0 number">
+                                    <button class="e_minus"></button>
+                                    <input class="quantity form-control" min="0" name="product_quanitity" value="1" type="number">
+                                    <button class="e_plus"></button>
+                                </div>
+                            </div>
+                            <div class="inv-number go price"><b>${'$'+product.price}</b> <a href="#" class="btn btn-sm px-0 product-name clickable" product_id="${product.id}" product_name="${product.name}" product_price="${product.price}"><i class="ico-right-arrow fs-2 ms-3"></i></a></div>
+                        </div>`
+                    );
+                    var type='existing';
+
+                    updateSubtotalAndTotal(type); // Update Subtotal and Total
+                    document.getElementById('search_products_existing_customer').value = '';
+                    break; // Stop iterating once a match is found
+                }
+            }
+        }
+    }
+    function updateSubtotalAndTotal(type) {
+        debugger;
+
+        if(type === 'casual') {
+            debugger;
+            var subtotal = 0;
+            var discount = 0;
+            var discount_type = $('input[name="discount_type"]:checked').val();
+            var amountInput = $('#amount').val();
+            var amount = parseFloat(amountInput.trim() !== '' ? amountInput : 0);
+            var gst = 0;
+            $('.product-info1').each(function() {
+                if($(this).find('.dis').text() == '')
+                {
+                    var price = parseFloat($(this).find('#product_price').val()); //parseFloat($(this).find('.price').text().replace('$', ''));
+                }
+                else
+                {
+                    var chk_dis_type = $('input[name="edit_discount_type"]:checked').val();
+                    if(chk_dis_type == 'amount')
+                    {
+                        var price = parseFloat($(this).find('#product_price').val()) - $('#edit_amount').val();    
+                    }
+                    else
+                    {
+                        var price = parseFloat($(this).find('#product_price').val()) - (parseFloat($(this).find('#product_price').val()) * ($('#edit_amount').val() / 100));
+                    }                    
+                }
+                var quantity = parseInt($(this).find('.quantity').val());
+                subtotal += price * quantity;
+
+                var text = $(this).find('.dis').text();
+
+                // Regular expression to extract the numerical value
+                var regex = /(\$[\d,]+\.\d{2})/;
+
+                // Match the regular expression against the text
+                var match = regex.exec(text);
+
+                var discount = 0;
+
+                if (match) {
+                    // Extract the numerical value from the matched result
+                    discount = match[0].replace(/\$/, ''); // Remove '$' sign
+                }
+
+                // if($(this).find('#discount_types').val() == 'percent')
+                // {
+                //     subtotal = subtotal + parseFloat(discount);
+                // }
+
+                if($(this).find('#product_gst').val() == 'yes'){
+                    gst += price / 11; // Assuming GST is 11% of total
+                } else {
+                    gst += 0; // GST is 0 when the condition is not met
+                }
+            });
+
+            // Calculate discount based on discount type
+            if (discount_type === 'percent') {
+                discount = (subtotal * amount) / 100; // Calculate percentage discount
+            } else if (discount_type === 'amount') {
+                discount = amount; // Use the entered amount as the discount
+            }
+
+            var dis_sur = $('#discount_surcharge').val();
+            if(dis_sur == 'Credit Card Surcharge' || dis_sur == 'Manual Surcharge')
+            {
+                var total = subtotal + discount; // Calculate total after discount
+            }else{
+                var total = subtotal - discount; // Calculate total after discount
+            }
+            
+            
+            
+            var grandTotal = total + gst; // Calculate total including GST
+
+            // Update the displayed values on the page
+            $('.subtotal').text('$' + subtotal.toFixed(2));
+            $('.discount').text('$' + discount.toFixed(2));
+            $('.total').text('$' + total.toFixed(2));
+            $('.gst_total').text('(Includes GST of $' + gst.toFixed(2) + ')');
+            // $('.grand-total').text('$' + grandTotal.toFixed(2));
+        }
+        else if(type === 'new') {
+            var subtotal = 0;
+            var discount = 0;
+            var discount_type = $('input[name="discount_type"]:checked').val();
+            var amountInput = $('#amount').val();
+            var amount = parseFloat(amountInput.trim() !== '' ? amountInput : 0);
+            var gst = 0;
+            $('.product-info2').each(function() {
+                if($(this).find('.dis').text() == '')
+                {
+                    var price = parseFloat($(this).find('#product_price').val()); //parseFloat($(this).find('.price').text().replace('$', ''));
+                }
+                else
+                {
+                    var chk_dis_type = $('input[name="edit_discount_type"]:checked').val();
+                    if(chk_dis_type == 'amount')
+                    {
+                        var price = parseFloat($(this).find('#product_price').val()) - $('#edit_amount').val();    
+                    }
+                    else
+                    {
+                        var price = parseFloat($(this).find('#product_price').val()) - (parseFloat($(this).find('#product_price').val()) * ($('#edit_amount').val() / 100));
+                    }
+                }
+                var quantity = parseInt($(this).find('.quantity').val());
+                subtotal += price * quantity;
+
+                var text = $(this).find('.dis').text();
+
+                // Regular expression to extract the numerical value
+                var regex = /(\$[\d,]+\.\d{2})/;
+
+                // Match the regular expression against the text
+                var match = regex.exec(text);
+
+                var discount = 0;
+
+                if (match) {
+                    // Extract the numerical value from the matched result
+                    discount = match[0].replace(/\$/, ''); // Remove '$' sign
+                }
+
+                // if($(this).find('#discount_types').val() == 'percent')
+                // {
+                //     subtotal = subtotal + parseFloat(discount);
+                // }
+
+                if($(this).find('#product_gst').val() == 'yes'){
+                    gst += price / 11; // Assuming GST is 11% of total
+                } else {
+                    gst += 0; // GST is 0 when the condition is not met
+                }
+            });
+
+            // Calculate discount based on discount type
+            if (discount_type === 'percent') {
+                discount = (subtotal * amount) / 100; // Calculate percentage discount
+            } else if (discount_type === 'amount') {
+                discount = amount; // Use the entered amount as the discount
+            }
+            var total = subtotal - discount; // Calculate total after discount
+            var gst = total * 0.05; // Assuming GST is 5% of total
+            var grandTotal = total + gst; // Calculate total including GST
+
+            // Update the displayed values on the page
+            $('.subtotal').text('$' + subtotal.toFixed(2));
+            $('.discount').text('$' + discount.toFixed(2));
+            $('.total').text('$' + total.toFixed(2));
+            $('.gst_total').text('(Includes GST of $' + gst.toFixed(2) + ')');
+            // $('.grand-total').text('$' + grandTotal.toFixed(2));
+        }
+        else {
+            var subtotal = 0;
+            var discount = 0;
+            var discount_type = $('input[name="discount_type"]:checked').val();
+            var amountInput = $('#amount').val();
+            var amount = parseFloat(amountInput.trim() !== '' ? amountInput : 0);
+            var gst = 0;
+            $('.product-info3').each(function() {
+                if($(this).find('.dis').text() == '')
+                {
+                    var price = parseFloat($(this).find('#product_price').val()); //parseFloat($(this).find('.price').text().replace('$', ''));
+                }
+                else
+                {
+                    var chk_dis_type = $('input[name="edit_discount_type"]:checked').val();
+                    if(chk_dis_type == 'amount')
+                    {
+                        var price = parseFloat($(this).find('#product_price').val()) - $('#edit_amount').val();    
+                    }
+                    else
+                    {
+                        var price = parseFloat($(this).find('#product_price').val()) - (parseFloat($(this).find('#product_price').val()) * ($('#edit_amount').val() / 100));
+                    }
+                }
+                // var price = parseFloat($(this).find('.price').text().replace('$', ''));
+                var quantity = parseInt($(this).find('.quantity').val());
+                subtotal += price * quantity;
+
+                var text = $(this).find('.dis').text();
+
+                // Regular expression to extract the numerical value
+                var regex = /(\$[\d,]+\.\d{2})/;
+
+                // Match the regular expression against the text
+                var match = regex.exec(text);
+
+                var discount = 0;
+
+                if (match) {
+                    // Extract the numerical value from the matched result
+                    discount = match[0].replace(/\$/, ''); // Remove '$' sign
+                }
+
+                // if($('input[name="edit_discount_type"]:checked').val() == 'percent')
+                // {
+                //     subtotal = subtotal + parseFloat(discount);
+                // }
+                // if($('input[name="edit_discount_type"]:checked').val() == 'percent')
+                // {
+                //     subtotal = subtotal + parseFloat(discount);
+                // }
+
+                if($(this).find('#product_gst').val() == 'yes'){
+                    gst += price / 11; // Assuming GST is 11% of total
+                } else {
+                    gst += 0; // GST is 0 when the condition is not met
+                }
+
+                if($(this).find('#product_gst').val() == 'yes'){
+                    gst += price / 11; // Assuming GST is 11% of total
+                } else {
+                    gst += 0; // GST is 0 when the condition is not met
+                }
+            });
+
+            // Calculate discount based on discount type
+            if (discount_type === 'percent') {
+                discount = (subtotal * amount) / 100; // Calculate percentage discount
+            } else if (discount_type === 'amount') {
+                discount = amount; // Use the entered amount as the discount
+            }
+            var total = subtotal - discount; // Calculate total after discount
+            // var gst = total * 0.05; // Assuming GST is 5% of total
+            // var grandTotal = total + gst; // Calculate total including GST
+
+            // Update the displayed values on the page
+            $('.subtotal').text('$' + subtotal.toFixed(2));
+            $('.discount').text('$' + discount.toFixed(2));
+            $('.total').text('$' + total.toFixed(2));
+            $('.gst_total').text('(Includes GST of $' + gst.toFixed(2) + ')');
+            // $('.grand-total').text('$' + grandTotal.toFixed(2));
+        }
+    }
+
 
     // Assuming you have a function to open the modal
     function openClientCard(clientId) {
@@ -2986,6 +4753,97 @@
             }
         });
     }
+    function matchProducts(input) {
+        var reg = new RegExp(input.trim(), "i");
+        var res = [];
+        if (input.trim().length === 0) {
+            return res;
+        }
+        for (var i = 0, len = product_details.length; i < len; i++) {
+            var product = product_details[i];
+            if (product.name && product.name.match(reg)) {
+                res.push(product);
+            }
+        }
+        return res;
+    }
+    function matchProductsNewCustomer(input) {
+        var reg = new RegExp(input.trim(), "i");
+        var res = [];
+        if (input.trim().length === 0) {
+            return res;
+        }
+        for (var i = 0, len = product_details.length; i < len; i++) {
+            var product = product_details[i];
+            if (product.name && product.name.match(reg)) {
+                res.push(product);
+            }
+        }
+        return res;
+    }
+    function matchProductsExistingCustomer(input) {
+        var reg = new RegExp(input.trim(), "i");
+        var res = [];
+        if (input.trim().length === 0) {
+            return res;
+        }
+        for (var i = 0, len = product_details.length; i < len; i++) {
+            var product = product_details[i];
+            if (product.name && product.name.match(reg)) {
+                res.push(product);
+            }
+        }
+        return res;
+    }
+    function updateSearchResults(results) {
+        var resultList = $('#resultproductmodal');
+        resultList.empty(); // Clear previous search results
+        for (var i = 0; i < results.length; i++) {
+            // resultList.append(`<li>${results[i].name}</li>`); // Update HTML with search results
+
+            resultList.append(`<li onclick='setProductSearchModal("${results[i].name}")'>
+                <div class='client-name'>
+                    <div class="client-info">
+                        <h4 class="blue-bold"> ${results[i].name} (${'$'+results[i].price}) </h4>
+                    </div>
+                </div>
+            </li>`);
+        }
+        $('.products_box').show(); // Show the product search results box
+    }
+    function updateSearchResultsNewCustomer(results) {
+        var resultList = $('#resultproductmodalNew');
+        resultList.empty(); // Clear previous search results
+        for (var i = 0; i < results.length; i++) {
+            // resultList.append(`<li>${results[i].name}</li>`); // Update HTML with search results
+
+            resultList.append(`<li onclick='setProductSearchModalNew("${results[i].name}")'>
+                <div class='client-name'>
+                    <div class="client-info">
+                        <h4 class="blue-bold"> ${results[i].name} (${'$'+results[i].price}) </h4>
+                    </div>
+                </div>
+            </li>`);
+        }
+        $('.products_box_new').show(); // Show the product search results box
+    }
+    function updateSearchResultsExistingCustomer(results) {
+        var resultList = $('#resultproductmodalExisting');
+        resultList.empty(); // Clear previous search results
+        for (var i = 0; i < results.length; i++) {
+            // resultList.append(`<li>${results[i].name}</li>`); // Update HTML with search results
+
+            resultList.append(`<li onclick='setProductSearchModalExisting("${results[i].name}")'>
+                <div class='client-name'>
+                    <div class="client-info">
+                        <h4 class="blue-bold"> ${results[i].name} (${'$'+results[i].price}) </h4>
+                    </div>
+                </div>
+            </li>`);
+        }
+        $('.products_box_existing').show(); // Show the product search results box
+    }
+
 </script>
 </html>
 @endsection

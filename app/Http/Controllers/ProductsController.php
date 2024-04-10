@@ -99,8 +99,8 @@ class ProductsController extends Controller
                 if ($request->has('locations') && is_array($request->locations) && in_array($in->id, $request->locations)) {
                     $final_array[] = [
                         'product_id' => $newProduct->id,
-                        'min' => $request->availability_min[$index],
-                        'max' => $request->availability_max[$index],
+                        'quantity' => $request->availability_quantity[$index],
+                        // 'max' => $request->availability_max[$index],
                         'price' => $price,
                         'location_name' => $in->id,
                         'availability' => 'Available'
@@ -150,8 +150,7 @@ class ProductsController extends Controller
         $product = Products::where('id',$id)->first();
         $productAvailability = ProductAvailabilities::where('product_id',$product->id)
         ->select(
-            'min',
-            'max',
+            'quantity',
             'price',
             'location_name',
             'availability'
@@ -202,8 +201,8 @@ class ProductsController extends Controller
                 if ($request->has('locations') && is_array($request->locations) && in_array($in->id, $request->locations)) {
                     $final_array[] = [
                         'product_id' => $updateProduct->id,
-                        'min' => $request->availability_min[$index] ?? null,
-                        'max' => $request->availability_max[$index] ?? null,
+                        'quantity' => $request->availability_quantity[$index] ?? null,
+                        // 'max' => $request->availability_max[$index] ?? null,
                         'price' => $price,
                         'location_name' => $in->id,
                         'availability' => 'Available'
@@ -211,8 +210,8 @@ class ProductsController extends Controller
                 } else {
                     $final_array[] = [
                         'product_id' => $updateProduct->id,
-                        'min' => '',//'' .for update min/max/price to 0 logic
-                        'max' => '',//'' .for update min/max/price to 0 logic
+                        'quantity' => '',//'' .for update min/max/price to 0 logic
+                        // 'max' => '',//'' .for update min/max/price to 0 logic
                         'price' => null,//null .for update min/max/price to 0 logic
                         'location_name' => $in->id,
                         'availability' => 'Not available'
@@ -226,8 +225,8 @@ class ProductsController extends Controller
             foreach ($final_array as $item) {
                 $updateData[] = [
                     'product_id' => $item['product_id'],
-                    'min' => $item['min'], // You commented this line out
-                    'max' => $item['max'],
+                    'quantity' => $item['quantity'], // You commented this line out
+                    // 'max' => $item['max'],
                     'price' => $item['price'],
                     'availability' => $item['availability'],
                     'location_name' => $item['location_name']
@@ -241,8 +240,8 @@ class ProductsController extends Controller
                         'location_name' => $data['location_name'],
                     ],
                     [
-                        'min' => $data['min'],
-                        'max' => $data['max'],
+                        'quantity' => $data['quantity'],
+                        // 'max' => $data['max'],
                         'price' => $data['price'],
                         'availability' => $data['availability']
                     ]
@@ -452,8 +451,8 @@ class ProductsController extends Controller
                         
                         // Update availability data
                         $availability_data->update([
-                            'min' => $isChecked ? $request->availability_min[$index] : null,
-                            'max' => $isChecked ? $request->availability_max[$index] : null,
+                            'quantity' => $isChecked ? $request->availability_quantity[$index] : null,
+                            // 'max' => $isChecked ? $request->availability_max[$index] : null,
                             'availability' => $availabilityStatus,
                         ]);
                 
@@ -628,15 +627,15 @@ class ProductsController extends Controller
                 $availabilityData = [];
                 
                 // Check if availability information is provided
-                if (!empty($row[14]) && !empty($row[15]) && !empty($row[16]) && !empty($row[17])) {
+                if (!empty($row[14]) && !empty($row[15]) && !empty($row[16])) {
 
                     
                     
                     // Explode the comma-separated values and store them in separate variables
                     $availabilityLocation = explode(',', $row[14]);
-                    $availabilityMinValues = explode(',', $row[15]);
-                    $availabilityMaxValues = explode(',', $row[16]);
-                    $availabilityPriceValues = explode(',', $row[17]);
+                    $availabilityQuantityValues = explode(',', $row[15]);
+                    // $availabilityMaxValues = explode(',', $row[16]);
+                    $availabilityPriceValues = explode(',', $row[16]);
 
                     // Check if any value in row[18] doesn't match any location name
                     foreach ($availabilityLocation as $locationName) {
@@ -653,23 +652,23 @@ class ProductsController extends Controller
                         }
                     }
                     
-                    if (!empty($availabilityMinValues)) {
-                        foreach ($availabilityMinValues as $value) {
+                    if (!empty($availabilityQuantityValues)) {
+                        foreach ($availabilityQuantityValues as $value) {
                             if (!is_numeric($value)) {
-                                $rowErrors[] = 'Availability min must be a numeric value.';
+                                $rowErrors[] = 'Availability quantity must be a numeric value.';
                                 // break; // exit the loop if error found for efficiency
                             }
                         }
                     }
                     
-                    if (!empty($availabilityMaxValues)) {
-                        foreach ($availabilityMaxValues as $value) {
-                            if (!is_numeric($value)) {
-                                $rowErrors[] = 'Availability max must be a numeric value.';
-                                // break; // exit the loop if error found for efficiency
-                            }
-                        }
-                    }
+                    // if (!empty($availabilityMaxValues)) {
+                    //     foreach ($availabilityMaxValues as $value) {
+                    //         if (!is_numeric($value)) {
+                    //             $rowErrors[] = 'Availability max must be a numeric value.';
+                    //             // break; // exit the loop if error found for efficiency
+                    //         }
+                    //     }
+                    // }
                     
                     if (!empty($availabilityPriceValues)) {
                         foreach ($availabilityPriceValues as $value) {
@@ -681,17 +680,17 @@ class ProductsController extends Controller
                     }
                     
                      // Check if availability information indices match
-                    if (count($availabilityLocation) !== count($availabilityMinValues) || 
-                        count($availabilityMinValues) !== count($availabilityMaxValues) ||
-                        count($availabilityMaxValues) !== count($availabilityPriceValues)) {
+                    if (count($availabilityLocation) !== count($availabilityQuantityValues) || 
+                        // count($availabilityMinValues) !== count($availabilityMaxValues) ||
+                        count($availabilityQuantityValues) !== count($availabilityPriceValues)) {
                         $rowErrors[] = 'Mismatch in availability data indices.';
                     }
 
                     // Loop through each location and assign availability data
                     foreach ($locations as $location) {
                         $locationName = $location->location_name;
-                        $availabilityMin = null;
-                        $availabilityMax = null;
+                        $availabilityQuantity = null;
+                        // $availabilityMax = null;
                         $availabilityPrice = null;
                         $availabilityStatus = 'Available'; // Default
 
@@ -699,8 +698,8 @@ class ProductsController extends Controller
                         $index = array_search($locationName, $availabilityLocation);
                         if ($index !== false) {
                             // Assign availability data if found
-                            $availabilityMin = isset($availabilityMinValues[$index]) ? $availabilityMinValues[$index] : null;
-                            $availabilityMax = isset($availabilityMaxValues[$index]) ? $availabilityMaxValues[$index] : null;
+                            $availabilityQuantity = isset($availabilityQuantityValues[$index]) ? $availabilityQuantityValues[$index] : null;
+                            // $availabilityMax = isset($availabilityMaxValues[$index]) ? $availabilityMaxValues[$index] : null;
                             $availabilityPrice = isset($availabilityPriceValues[$index]) ? $availabilityPriceValues[$index] : null;
 
                             // Determine availability status
@@ -710,8 +709,8 @@ class ProductsController extends Controller
                         // Add availability data to the array
                         $availabilityData[] = [
                             'location_name' => $location->id, // Use location ID
-                            'availability_min' => $availabilityMin,
-                            'availability_max' => $availabilityMax,
+                            'availability_quantity' => $availabilityQuantity,
+                            // 'availability_max' => $availabilityMax,
                             'availability_price' => $availabilityPrice,
                             'availability' => $availabilityStatus,
                         ];
@@ -721,8 +720,8 @@ class ProductsController extends Controller
                     foreach ($locations as $location) {
                         $availabilityData[] = [
                             'location_name' => $location->id,
-                            'availability_min' => null,
-                            'availability_max' => null,
+                            'availability_quantity' => null,
+                            // 'availability_max' => null,
                             'availability_price' => null,
                             'availability' => 'Available',
                         ];
@@ -784,8 +783,8 @@ class ProductsController extends Controller
                         ProductAvailabilities::create([
                             'product_id' => $product->id,
                             'location_name' => $availability['location_name'],
-                            'min' => $availability['availability_min'],
-                            'max' => $availability['availability_max'],
+                            'quantity' => $availability['availability_quantity'],
+                            // 'max' => $availability['availability_max'],
                             'price' => $availability['availability_price'],
                             'availability' => $availability['availability'],
                         ]);
