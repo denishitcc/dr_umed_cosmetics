@@ -658,7 +658,6 @@ var DU = {};
                         'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
                     },
                     success: function (data) {
-                        console.log(data.length);
                         // Update the FullCalendar resources with the retrieved data
                         context.calendar.setOption('resources', data);
                         context.calendar.refetchEvents(); // Refresh events if needed
@@ -702,7 +701,6 @@ var DU = {};
                     context.staffList();
                     context.calendar.changeView('resourceTimeGridDay');
                 }
-                console.log('test');
                 context.calendar.render();
             });
         },
@@ -738,7 +736,6 @@ var DU = {};
                     'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
                 },
                 success: function (response) {
-                    // console.log(response.data.client_data.first_name);return false;
                     $('#clientDetails').html(
                         `<div class="client-name">
                                 <div class="drop-cap" style="background: #D0D0D0; color:#fff;">${response.data.client_data.first_name.charAt(0).toUpperCase()}
