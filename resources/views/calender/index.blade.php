@@ -2544,9 +2544,7 @@
         `);
     });
     $(document).on('click','.add_discount',function(e){
-        debugger;
         $('.main_walkin .nav-item:visible').each(function() {
-            debugger;
             // Check if the current nav-item is active (visible)
             if ($(this).find('a.nav-link').hasClass('active')) {
                 var link = $(this).find('a.nav-link');
@@ -2570,7 +2568,6 @@
             $('#hdn_amt').val($('#amount').val());
             $('#hdn_dis_type').val($('input[name="discount_type"]:checked').val());
             // $('.main_walk_in').find('.add_discount').each(function() {
-                debugger;
                 // Update the HTML content of the element
                 // $(this).html('<i class="ico-percentage me-2 fs-5"></i>Edit discount / surcharge');
 
@@ -2579,7 +2576,6 @@
         }
     });
     $(document).on('click','.cancel_discount',function(e){
-        debugger;
         $('.main_discount').hide();
         $('.main_walk_in').show();
         $('#discount_surcharge').val($('#hdn_discount_surcharge').val());
@@ -2626,33 +2622,31 @@
         var cus_type = $('#customer_type').val();
         var edit_prod_id = $('#edit_product_id').val();
         $('.invo-notice').each(function(index, element) {
-            debugger;
             if($(this).attr('prod_id') == edit_prod_id)
             {
                 $(this).find('.inv-number').find('b').text($('.edit_product_price').text());
                 $(this).find('.inv-left').find('.dis').text('(' + $('#dynamic_discount').text() + ')');
                 $(this).find('.quantity').val($('.edit_product_quantity').text());
 
-                //
+                $(this).find('#product_price').val($('.edit_price_per_unit').val()); 
                 var productPrice = $(this).find('#product_price').val() // Get the text content of edit_product_price
                 var priceWithoutDollar = productPrice.replace('$', ''); // Remove the dollar sign
                 $(this).find('.product-name').attr('product_price', priceWithoutDollar); // Set the product_price attribute
-
-
+                $(this).find('#hdn_discount_surcharge').val($('#edit_discount_surcharge').val());
+                $(this).find('#hdn_discount_amount').val($('#edit_amount').val());
+                $(this).find('#discount_types').val($('input[name="edit_discount_type"]:checked').val());
+                $(this).find('#hdn_reason').val($('#edit_reason').val());
                 updateSubtotalAndTotal(cus_type); // Update Subtotal and Total
             }
         });
         $('#notes').append('\n' + $('#edit_reason').val() + ' - ' + '$'+$('#edit_amount').val() + ' on ' + $('.edit_product_name').text() + '\n');
     })
     $(document).on('click','.update_discount',function(e){
-
-        debugger;
         $('.main_discount').hide();
         $('.main_walk_in').show();
 
-        $('#hdn_discount_surcharge').val($('#discount_surcharge').val());
+        // $('#hdn_discount_surcharge').val($('#discount_surcharge').val());
         $('.main_walk_in').find('.add_discount').each(function() {
-            debugger;
             // Update the HTML content of the element
             $(this).html('<i class="ico-percentage me-2 fs-5"></i>Edit discount / surcharge');
 
@@ -2669,7 +2663,6 @@
         
     })
     $(document).on('click', '.c_minus', function(e) {
-        debugger;
         var type = "casual";
         var $currentDiv = $(this).closest('.product-info1'); // Reference to the current div
         var $input = $currentDiv.find('input.quantity');
@@ -2677,7 +2670,8 @@
         count = count < 1 ? 1 : count;
         $input.val(count);
 
-        var chk_dis_type = $('input[name="edit_discount_type"]:checked').val();
+        var chk_dis_type = $(this).parent().parent().parent().find('#discount_types').val();
+
         var main_price = parseFloat($currentDiv.find('#product_price').val());
         var price_amt;
         
@@ -2689,8 +2683,15 @@
             }
             else
             {
-                var discount = parseFloat($('#edit_amount').val());
-                price_amt = main_price - (main_price * (discount / 100));
+                var discount = parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
+                if($(this).parent().parent().parent().find('#hdn_discount_surcharge').val() == 'Credit Card Surcharge' || $(this).parent().parent().parent().find('#hdn_discount_surcharge').val() == 'Manual Surcharge')
+                {
+                    price_amt = main_price + (main_price * (discount / 100));
+                }
+                else
+                {
+                    price_amt = main_price - (main_price * (discount / 100));
+                }
             }
             
         } else {
@@ -2698,7 +2699,12 @@
             {
                 price_amt = parseFloat(main_price);
             }else{
-                price_amt = parseFloat(main_price - $('#edit_amount').val());
+                if($(this).parent().parent().parent().find('#hdn_discount_surcharge').val() == 'Manual Surcharge')
+                {
+                    price_amt = parseFloat(main_price) + parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
+                }else{
+                    price_amt = parseFloat(main_price) - parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
+                }
             }
         }
 
@@ -2720,10 +2726,16 @@
             // Calculate half of the discount amount
             if(chk_dis_type =='percent')
             {
-                var discount = (parseFloat(main_price) * parseFloat($('#edit_amount').val())) / 100;
+                var editAmountValue = $(this).parent().parent().parent().find('#hdn_discount_amount').val();
+                var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
+
+                var discount = (parseFloat(main_price) * parsedEditAmount) / 100;
                 var newDiscountAmount = discountAmount - discount;
             }else{
-                var newDiscountAmount = discountAmount - parseFloat($('#edit_amount').val());
+                var editAmountValue = $(this).parent().parent().parent().find('#hdn_discount_amount').val();
+                var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
+
+                var newDiscountAmount = discountAmount - parsedEditAmount;
             }
             // var final = discountAmount - newDiscountAmount;
 
@@ -2743,13 +2755,13 @@
     });
 
     $(document).on('click', '.c_plus', function(e) {
-        debugger;
         var type = "casual";
         var $currentDiv = $(this).closest('.product-info1'); // Reference to the current div
         var $input = $currentDiv.find('input.quantity');
         $input.val(parseInt($input.val()) + 1);
 
-        var chk_dis_type = $('input[name="edit_discount_type"]:checked').val();
+        var chk_dis_type = $(this).parent().parent().parent().find('#discount_types').val();
+
         var main_price = parseFloat($currentDiv.find('#product_price').val());
         var price_amt;
 
@@ -2761,8 +2773,17 @@
             }
             else
             {
-                var discount = parseFloat($('#edit_amount').val());
-                price_amt = main_price - (main_price * (discount / 100));
+                var discount = parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
+                if($(this).parent().parent().parent().find('#hdn_discount_surcharge').val() == 'Credit Card Surcharge' || $(this).parent().parent().parent().find('#hdn_discount_surcharge').val() == 'Manual Surcharge')
+                {
+                    var discount = parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
+                    price_amt = main_price + (main_price * (discount / 100));
+                }
+                else
+                {
+                    var discount = parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
+                    price_amt = main_price - (main_price * (discount / 100));
+                }
             }
             
         } else {
@@ -2770,7 +2791,12 @@
             {
                 price_amt = parseFloat(main_price);
             }else{
-                price_amt = parseFloat(main_price - $('#edit_amount').val());
+                if($(this).parent().parent().parent().find('#hdn_discount_surcharge').val() == 'Manual Surcharge')
+                {
+                    price_amt = parseFloat(main_price) + parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
+                }else{
+                    price_amt = parseFloat(main_price) - parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
+                }
             }
         }
 
@@ -2791,10 +2817,16 @@
             var newDiscountAmount;
             if(chk_dis_type =='percent')
             {
-                var discount = (parseFloat(main_price) * parseFloat($('#edit_amount').val())) / 100;
+                var editAmountValue = $(this).parent().parent().parent().find('#hdn_discount_amount').val();
+                var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
+
+                var discount = (parseFloat(main_price) * parsedEditAmount) / 100;
                 var newDiscountAmount = discountAmount + discount;
             }else{
-                var newDiscountAmount = discountAmount + parseFloat($('#edit_amount').val());
+                var editAmountValue = $(this).parent().parent().parent().find('#hdn_discount_amount').val();
+                var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
+                
+                var newDiscountAmount = discountAmount + parsedEditAmount;
             }
             newDiscountAmount = Math.max(newDiscountAmount, 0);
 
@@ -2814,7 +2846,8 @@
         count = count < 1 ? 1 : count;
         $input.val(count);
 
-        var chk_dis_type = $('input[name="edit_discount_type"]:checked').val();
+        var chk_dis_type = $(this).parent().parent().parent().find('#discount_types').val();
+
         var main_price = parseFloat($currentDiv.find('#product_price').val());
         var price_amt;
         
@@ -2826,8 +2859,15 @@
             }
             else
             {
-                var discount = parseFloat($('#edit_amount').val());
-                price_amt = main_price - (main_price * (discount / 100));
+                var discount = parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
+                if($(this).parent().parent().parent().find('#hdn_discount_surcharge').val() == 'Credit Card Surcharge' || $(this).parent().parent().parent().find('#hdn_discount_surcharge').val() == 'Manual Surcharge')
+                {
+                    price_amt = main_price + (main_price * (discount / 100));
+                }
+                else
+                {
+                    price_amt = main_price - (main_price * (discount / 100));
+                }
             }
             
         } else {
@@ -2835,7 +2875,12 @@
             {
                 price_amt = parseFloat(main_price);
             }else{
-                price_amt = parseFloat(main_price - $('#edit_amount').val());
+                if($(this).parent().parent().parent().find('#hdn_discount_surcharge').val() == 'Manual Surcharge')
+                {
+                    price_amt = parseFloat(main_price) + parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
+                }else{
+                    price_amt = parseFloat(main_price) - parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
+                }
             }
         }
 
@@ -2856,10 +2901,16 @@
             // Calculate half of the discount amount
             if(chk_dis_type =='percent')
             {
-                var discount = (parseFloat(main_price) * parseFloat($('#edit_amount').val())) / 100;
+                var editAmountValue = $(this).parent().parent().parent().find('#hdn_discount_amount').val();
+                var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
+
+                var discount = (parseFloat(main_price) * parsedEditAmount) / 100;
                 var newDiscountAmount = discountAmount - discount;
             }else{
-                var newDiscountAmount = discountAmount - parseFloat($('#edit_amount').val());
+                var editAmountValue = $(this).parent().parent().parent().find('#hdn_discount_amount').val();
+                var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
+
+                var newDiscountAmount = discountAmount - parsedEditAmount;
             }
             newDiscountAmount = Math.max(newDiscountAmount, 0);
 
@@ -2880,7 +2931,8 @@
         var $input = $currentDiv.find('input.quantity');
         $input.val(parseInt($input.val()) + 1);
 
-        var chk_dis_type = $('input[name="edit_discount_type"]:checked').val();
+        var chk_dis_type = $(this).parent().parent().parent().find('#discount_types').val();
+
         var main_price = parseFloat($currentDiv.find('#product_price').val());
         var price_amt;
 
@@ -2892,8 +2944,17 @@
             }
             else
             {
-                var discount = parseFloat($('#edit_amount').val());
-                price_amt = main_price - (main_price * (discount / 100));
+                var discount = parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
+                if($(this).parent().parent().parent().find('#hdn_discount_surcharge').val() == 'Credit Card Surcharge' || $(this).parent().parent().parent().find('#hdn_discount_surcharge').val() == 'Manual Surcharge')
+                {
+                    var discount = parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
+                    price_amt = main_price + (main_price * (discount / 100));
+                }
+                else
+                {
+                    var discount = parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
+                    price_amt = main_price - (main_price * (discount / 100));
+                }
             }
             
         } else {
@@ -2901,7 +2962,12 @@
             {
                 price_amt = parseFloat(main_price);
             }else{
-                price_amt = parseFloat(main_price - $('#edit_amount').val());
+                if($(this).parent().parent().parent().find('#hdn_discount_surcharge').val() == 'Manual Surcharge')
+                {
+                    price_amt = parseFloat(main_price) + parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
+                }else{
+                    price_amt = parseFloat(main_price) - parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
+                }
             }
         }
 
@@ -2922,17 +2988,20 @@
             // Calculate half of the discount amount
             if(chk_dis_type =='percent')
             {
-                var discount = (parseFloat(main_price) * parseFloat($('#edit_amount').val())) / 100;
+                var editAmountValue = $(this).parent().parent().parent().find('#hdn_discount_amount').val();
+                var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
+
+                var discount = (parseFloat(main_price) * parsedEditAmount) / 100;
                 var newDiscountAmount = discountAmount + discount;
             }else{
-                var newDiscountAmount = discountAmount + parseFloat($('#edit_amount').val());
+                var editAmountValue = $(this).parent().parent().parent().find('#hdn_discount_amount').val();
+                var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
+                
+                var newDiscountAmount = discountAmount + parsedEditAmount;
             }
             // var final = discountAmount - newDiscountAmount;
 
             newDiscountAmount = Math.max(newDiscountAmount, 0);
-            // var newDiscountAmount = discountAmount + parseFloat($('#edit_amount').val());
-            // var final = newDiscountAmount;
-
             $currentDiv.find('.dis').text("( Discount: $" + newDiscountAmount.toFixed(2) + ")");
             $('#dynamic_discount').text(' Discount: $' + newDiscountAmount.toFixed(2));
         }
@@ -2941,14 +3010,15 @@
     });
 
     $(document).on('click', '.e_minus', function(e) {
-        var type = "casual";
+        var type = "existing";
         var $currentDiv = $(this).closest('.product-info3'); // Reference to the current div
         var $input = $currentDiv.find('input.quantity');
         var count = parseInt($input.val()) - 1;
         count = count < 1 ? 1 : count;
         $input.val(count);
 
-        var chk_dis_type = $('input[name="edit_discount_type"]:checked').val();
+        var chk_dis_type = $(this).parent().parent().parent().find('#discount_types').val();
+
         var main_price = parseFloat($currentDiv.find('#product_price').val());
         var price_amt;
         
@@ -2960,8 +3030,15 @@
             }
             else
             {
-                var discount = parseFloat($('#edit_amount').val());
-                price_amt = main_price - (main_price * (discount / 100));
+                var discount = parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
+                if($(this).parent().parent().parent().find('#hdn_discount_surcharge').val() == 'Credit Card Surcharge' || $(this).parent().parent().parent().find('#hdn_discount_surcharge').val() == 'Manual Surcharge')
+                {
+                    price_amt = main_price + (main_price * (discount / 100));
+                }
+                else
+                {
+                    price_amt = main_price - (main_price * (discount / 100));
+                }
             }
             
         } else {
@@ -2969,7 +3046,12 @@
             {
                 price_amt = parseFloat(main_price);
             }else{
-                price_amt = parseFloat(main_price - $('#edit_amount').val());
+                if($(this).parent().parent().parent().find('#hdn_discount_surcharge').val() == 'Manual Surcharge')
+                {
+                    price_amt = parseFloat(main_price) + parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
+                }else{
+                    price_amt = parseFloat(main_price) - parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
+                }
             }
         }
 
@@ -2989,10 +3071,16 @@
             
             if(chk_dis_type =='percent')
             {
-                var discount = (parseFloat(main_price) * parseFloat($('#edit_amount').val())) / 100;
+                var editAmountValue = $(this).parent().parent().parent().find('#hdn_discount_amount').val();
+                var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
+
+                var discount = (parseFloat(main_price) * parsedEditAmount) / 100;
                 var newDiscountAmount = discountAmount - discount;
             }else{
-                var newDiscountAmount = discountAmount - parseFloat($('#edit_amount').val());
+                var editAmountValue = $(this).parent().parent().parent().find('#hdn_discount_amount').val();
+                var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
+
+                var newDiscountAmount = discountAmount - parsedEditAmount;
             }
             // var final = discountAmount - newDiscountAmount;
 
@@ -3010,12 +3098,13 @@
     });
 
     $(document).on('click', '.e_plus', function(e) {
-        var type = "casual";
+        var type = "existing";
         var $currentDiv = $(this).closest('.product-info3'); // Reference to the current div
         var $input = $currentDiv.find('input.quantity');
         $input.val(parseInt($input.val()) + 1);
 
-        var chk_dis_type = $('input[name="edit_discount_type"]:checked').val();
+        var chk_dis_type = $(this).parent().parent().parent().find('#discount_types').val();
+
         var main_price = parseFloat($currentDiv.find('#product_price').val());
         var price_amt;
 
@@ -3027,8 +3116,17 @@
             }
             else
             {
-                var discount = parseFloat($('#edit_amount').val());
-                price_amt = main_price - (main_price * (discount / 100));
+                var discount = parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
+                if($(this).parent().parent().parent().find('#hdn_discount_surcharge').val() == 'Credit Card Surcharge' || $(this).parent().parent().parent().find('#hdn_discount_surcharge').val() == 'Manual Surcharge')
+                {
+                    var discount = parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
+                    price_amt = main_price + (main_price * (discount / 100));
+                }
+                else
+                {
+                    var discount = parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
+                    price_amt = main_price - (main_price * (discount / 100));
+                }
             }
             
         } else {
@@ -3036,7 +3134,14 @@
             {
                 price_amt = parseFloat(main_price);
             }else{
-                price_amt = parseFloat(main_price - $('#edit_amount').val());
+
+                if($(this).parent().parent().parent().find('#hdn_discount_surcharge').val() == 'Manual Surcharge')
+                {
+                    price_amt = parseFloat(main_price) + parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
+                }else{
+                    price_amt = parseFloat(main_price) - parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
+                }
+                
             }
         }
 
@@ -3057,17 +3162,20 @@
             // Calculate half of the discount amount
             if(chk_dis_type =='percent')
             {
-                var discount = (parseFloat(main_price) * parseFloat($('#edit_amount').val())) / 100;
+                var editAmountValue = $(this).parent().parent().parent().find('#hdn_discount_amount').val();
+                var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
+
+                var discount = (parseFloat(main_price) * parsedEditAmount) / 100;
                 var newDiscountAmount = discountAmount + discount;
             }else{
-                var newDiscountAmount = discountAmount + parseFloat($('#edit_amount').val());
+                var editAmountValue = $(this).parent().parent().parent().find('#hdn_discount_amount').val();
+                var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
+                
+                var newDiscountAmount = discountAmount + parsedEditAmount;
             }
             // var final = discountAmount - newDiscountAmount;
 
             newDiscountAmount = Math.max(newDiscountAmount, 0);
-            
-            // var newDiscountAmount = discountAmount + parseFloat($('#edit_amount').val());
-            // var final = newDiscountAmount;
 
             $currentDiv.find('.dis').text("( Discount: $" + newDiscountAmount.toFixed(2) + ")");
             $('#dynamic_discount').text(' Discount: $' + newDiscountAmount.toFixed(2));
@@ -3097,7 +3205,6 @@
 
 
     $(document).on('click', '.casual_cus', function(e) {
-        debugger;
         e.preventDefault(); // Prevent default link behavior
         $('#customer_type').val('casual');
         $("#casual_customer").load(location.href + " #casual_customer");
@@ -3114,7 +3221,6 @@
         $('#reason').val('');
     });
     $(document).on('click', '.new_cus', function(e) {
-        debugger;
         e.preventDefault(); // Prevent default link behavior
         $('#customer_type').val('new');
         $("#new_customer").load(location.href + " #new_customer");
@@ -3131,7 +3237,6 @@
         $('#reason').val('');
     });
     $(document).on('click', '.existing_cus', function(e) {
-        debugger;
         e.preventDefault(); // Prevent default link behavior
         $('#customer_type').val('existing');
         $("#exist_customer").load(location.href + " #exist_customer");
@@ -3232,9 +3337,8 @@
         }
     });
     $(document).on('change', '#edit_discount_type, #edit_amount, .edit_price_per_unit, .edit_quantity', function() {
-        debugger;
-        var d_types = $('input[name="edit_discount_type"]:checked').val();
-        $('#discount_types').val(d_types);
+        // var d_types = $('input[name="edit_discount_type"]:checked').val();
+        // $('#discount_types').val(d_types);
         // var pricePerUnit = parseFloat($('.edit_price_per_unit').val());
         // var quantity = parseInt($('.edit_quantity').val());
         // var discountType = $('input[name="edit_discount_type"]:checked').val();
@@ -3261,15 +3365,17 @@
 
     
     $(document).on('click', '.product-name.clickable', function() {
-        debugger;
         var id = $(this).attr('product_id');
         var name = $(this).attr('product_name');
         var price = $(this).attr('product_price');//$('#product_price').val();
         var product_price = $(this).attr('product_price');
         var quanitity = $(this).parent().parent().find('.quantity').val();
 
-        var discountText = $('#dynamic_discount').text();
-        var dis_price = discountText.replace('Discount: $', '');
+        // var discountText = $('#dynamic_discount').text();
+        // var dis_price = discountText.replace('Discount: $', '');
+        var discountText = $(this).parent().parent().find('#hdn_discount_amount').val();
+        var dis_price = 'Discount: $' + discountText;
+
         dis_price = $.trim(dis_price);
         
         if (dis_price === '') {
@@ -3278,6 +3384,7 @@
 
         $('.edit_product').show();
         $('.main_walk_in').hide();
+        
         $('#edit_product_id').val(id);
         $('.edit_product_name').text(name);
         $('.edit_product_quantity').text(quanitity);
@@ -3289,17 +3396,54 @@
         $('#edit_sale_staff_id').val($(this).parent().parent().parent().parent().find('.credit_sale').find('#sale_staff_id').val());
 
         //by default this field is disabled bcs of no discount selected
-        $('#edit_discount_type, #edit_amount, #edit_reason').prop('disabled', true);
+        // $('#edit_discount_type, #edit_amount, #edit_reason').prop('disabled', true);
+        var dynamicValue = $(this).parent().parent().find('#discount_types').val();
+        $('input[name="edit_discount_type"][value="' + dynamicValue + '"]').prop('checked', true);
+        // if(dynamicValue == 'amount')
+        // {
+
+        // }
+        var ck_sur = $(this).parent().parent().find('#hdn_discount_surcharge').val();
+        if(ck_sur == 'No Discount')
+        {
+            $('#edit_discount_surcharge').val("No Discount");
+            $('#edit_amount').val(0);
+            $('#dynamic_discount').text()
+            $('#edit_discount_type, #edit_amount, #edit_reason').prop('disabled', true);
+            // $('#dynamic_discount').text('')
+            $('#dynamic_discount').text('');
+            $('#edit_reason').val('');
+        }else if(ck_sur == 'Manual Discount'){
+            $('#edit_discount_type, #edit_amount, #edit_reason').prop('disabled', false);
+            $('#edit_discount_surcharge').val($(this).parent().parent().find('#hdn_discount_surcharge').val());
+            $('#dynamic_discount').text('Discount: $' + $(this).parent().parent().find('#hdn_discount_amount').val());
+            $('#edit_amount').val($(this).parent().parent().find('#hdn_discount_amount').val());
+            $('#edit_reason').val($(this).parent().parent().find('#hdn_reason').val());
+        }else if(ck_sur == 'Manual Surcharge'){
+            $('#edit_discount_type, #edit_amount, #edit_reason').prop('disabled', false);
+            $('#edit_discount_surcharge').val($(this).parent().parent().find('#hdn_discount_surcharge').val());
+            $('#dynamic_discount').text('Discount: $' + $(this).parent().parent().find('#hdn_discount_amount').val());
+            $('#edit_amount').val($(this).parent().parent().find('#hdn_discount_amount').val());
+            $('#edit_reason').val($(this).parent().parent().find('#hdn_reason').val());
+        }
+        else{
+            $('#edit_discount_surcharge').val($(this).parent().parent().find('#hdn_discount_surcharge').val());
+            var totalPrice = parseFloat(price) * quanitity;
+            // Calculate surcharge amount (2% of the total price)
+            var surchargeAmount = totalPrice * 0.02;
+            $('#dynamic_discount').text('Discount: $' + surchargeAmount);
+            $('#edit_discount_type, #edit_amount, #edit_reason').prop('disabled', true);
+            $('#edit_amount').val($(this).parent().parent().find('#hdn_discount_amount').val());
+            $('#edit_reason').val('Credit Card Surcharge');
+        }
     });
 
     $(document).on('click','.remove_product',function() {
-        debugger;
         $(this).parent().remove();
         var type=$('#customer_type').val();
         updateSubtotalAndTotal(type); // Update Subtotal and Total
     })
     $(document).on('click','.remove_edit_product',function() {
-        debugger;
         $('.edit_product').hide();
         $('.main_walk_in').show();
 
@@ -3307,7 +3451,6 @@
         var type=$('#customer_type').val();
 
         $('.invo-notice').each(function(index, element) {
-            debugger;
             if($(this).attr('prod_id') == edit_prod_id)
             {
                 $(this).remove();
@@ -3320,7 +3463,6 @@
     //     $('.edit_product_price').text('$'+$(this).val());
     // });
     $(document).on('change keyup', '.edit_quantity', function() {
-        debugger;
         updateQuantity();
         // updatePrice();
         calculateAndUpdate();
@@ -3339,32 +3481,74 @@
         updatePrice(); 
     });
     function calculateAndUpdate() {
-        debugger;
         var pricePerUnit = parseFloat($('.edit_price_per_unit').val()) || 0;
         var quantity = parseInt($('.edit_quantity').val()) || 0;
         var discountType = $('input[name="edit_discount_type"]:checked').val();
         var amount = parseFloat($('#edit_amount').val());
         var discountAmount = 0;
-
+        var edit_dis_sur = $('#edit_discount_surcharge').val();
         if (discountType === "amount" && !isNaN(amount)) {
-            discountAmount = amount * quantity;
+            if(edit_dis_sur == 'Manual Surcharge')
+            {
+                discountAmount = amount * quantity;
+
+                var productPrice = pricePerUnit * quantity;
+                var newTotal = productPrice + discountAmount;
+            }else{
+                discountAmount = amount * quantity;
+
+                var productPrice = pricePerUnit * quantity;
+                var newTotal = productPrice - discountAmount;
+            }
+
         } else if (discountType === "percent" && !isNaN(amount)) {
-            var discountPercent = amount / 100;
-            discountAmount = (pricePerUnit * quantity) * discountPercent;
+                // if($(this).find('#hdn_discount_surcharge').val() == 'Credit Card Surcharge')
+                // {
+                //     var discountPercent = amount / 100;
+                //     discountAmount = (pricePerUnit * quantity) * discountPercent;
+                //     var newPrice = (pricePerUnit * quantity) + discountAmount;
+                //     var productPrice = pricePerUnit * quantity;
+                //     var newTotal = productPrice + discountAmount;
+                // }
+                // else
+                // {
+                    // var discountPercent = amount / 100;
+                    // discountAmount = (pricePerUnit * quantity) * discountPercent;
+                    // var newPrice = (pricePerUnit * quantity) - discountAmount;
+                    // var productPrice = pricePerUnit * quantity;
+                    // var newTotal = productPrice - discountAmount;
+                // }
+                if(edit_dis_sur == 'Manual Surcharge' || edit_dis_sur == "Credit Card Surcharge")
+                {
+                    var discountPercent = amount / 100;
+                    discountAmount = (pricePerUnit * quantity) * discountPercent;
+                    var newPrice = (pricePerUnit * quantity) - discountAmount;
+                    var productPrice = pricePerUnit * quantity;
+                    var newTotal = productPrice + discountAmount;
+                }
+                else{
+                    var discountPercent = amount / 100;
+                    discountAmount = (pricePerUnit * quantity) * discountPercent;
+                    var newPrice = (pricePerUnit * quantity) - discountAmount;
+                    var productPrice = pricePerUnit * quantity;
+                    var newTotal = productPrice - discountAmount;
+                }
+        }else{
+            var productPrice = pricePerUnit * quantity;
+            var newTotal = productPrice + discountAmount;
         }
 
         // Calculate new price after discount
-        var newPrice = (pricePerUnit * quantity) - discountAmount;
+        
 
         // Update edit_product_price
-        $('.edit_product_price').text('$' + newPrice.toFixed(2));
+        // $('.edit_product_price').text('$' + newPrice.toFixed(2));
 
         // Update dynamic discount display
         $('#dynamic_discount').text(' Discount: $' + discountAmount.toFixed(2));
 
         // Calculate new total after discount
-        var productPrice = pricePerUnit * quantity;
-        var newTotal = productPrice - discountAmount;
+        
 
         // Update edit_product_price
         $('.edit_product_price').text('$' + newTotal.toFixed(2));
@@ -3382,7 +3566,6 @@
     }
 
     function updateQuantity() {
-        debugger;
         var newQuantity = parseInt($('.edit_quantity').val());
         // $('.edit_product_quantity').text(newQuantity);
     }
@@ -3394,8 +3577,6 @@
     }
 
     function checkDiscountSelection() {
-        debugger;
-        
         var selectedOption = $('#discount_surcharge').val();
         
         if (selectedOption === 'No Discount') {
@@ -4185,7 +4366,6 @@
         }
     }
     function setProductSearchModal(value) {
-        debugger;
         $('#search_products').val(value); // Set selected value to input field
         $('.products_box').hide();
         
@@ -4208,7 +4388,10 @@
                             <input type='hidden' id="product_id" name='product_id' value='${product.id}'>
                             <input type='hidden' id="product_price" name='product_price' value='${product.price}'>
                             <input type='hidden' id="product_gst" name='product_gst' value='${product.gst}'>
-                            <input type='hidden' id="discount_types" name='discount_types' value=''>
+                            <input type='hidden' id="discount_types" name='discount_types' value='amount'>
+                            <input type='hidden' id="hdn_discount_surcharge" name='hdn_discount_surcharge' value='No Discount'>
+                            <input type='hidden' id="hdn_discount_amount" name='hdn_discount_amount' value='0'>
+                            <input type='hidden' id="hdn_reason" name='hdn_reason' value='0'>
                             <div class="inv-left"><b>${product.name} </b><span class="dis"></span></div>
                             <div class="inv-center">
                                 <div class="number-input walk_number_input safari_only form-group mb-0 number">
@@ -4231,7 +4414,6 @@
         }
     }
     function setProductSearchModalNew(value) {
-        debugger;
         $('#search_products_new_customer').val(value); // Set selected value to input field
         $('.products_box_new').hide();
         
@@ -4254,7 +4436,10 @@
                             <input type='hidden' id="product_id" name='product_id' value='${product.id}'>
                             <input type='hidden' id="product_price" name='product_price' value='${product.price}'>
                             <input type='hidden' id="product_gst" name='product_gst' value='${product.gst}'>
-                            <input type='hidden' id="discount_types" name='discount_types' value=''>
+                            <input type='hidden' id="discount_types" name='discount_types' value='amount'>
+                            <input type='hidden' id="hdn_discount_surcharge" name='hdn_discount_surcharge' value='No Discount'>
+                            <input type='hidden' id="hdn_discount_amount" name='hdn_discount_amount' value='0'>
+                            <input type='hidden' id="hdn_reason" name='hdn_reason' value='0'>
                             <div class="inv-left"><b>${product.name} </b><span class="dis"></span></div>
                             <div class="inv-center">
                                 <div class="number-input walk_number_input safari_only form-group mb-0 number">
@@ -4298,7 +4483,10 @@
                             <input type='hidden' id="product_id" name='product_id' value='${product.id}'>
                             <input type='hidden' id="product_price" name='product_price' value='${product.price}'>
                             <input type='hidden' id="product_gst" name='product_gst' value='${product.gst}'>
-                            <input type='hidden' id="discount_types" name='discount_types' value=''>
+                            <input type='hidden' id="hdn_discount_surcharge" name='hdn_discount_surcharge' value='No Discount'>
+                            <input type='hidden' id="hdn_discount_amount" name='hdn_discount_amount' value='0'>
+                            <input type='hidden' id="hdn_reason" name='hdn_reason' value='0'>
+                            <input type='hidden' id="discount_types" name='discount_types' value='amount'>
                             <div class="inv-left"><b>${product.name} </b><span class="dis"></span></div>
                             <div class="inv-center">
                                 <div class="number-input walk_number_input safari_only form-group mb-0 number">
@@ -4320,10 +4508,7 @@
         }
     }
     function updateSubtotalAndTotal(type) {
-        debugger;
-
         if(type === 'casual') {
-            debugger;
             var subtotal = 0;
             var discount = 0;
             var discount_type = $('input[name="discount_type"]:checked').val();
@@ -4337,14 +4522,25 @@
                 }
                 else
                 {
-                    var chk_dis_type = $('input[name="edit_discount_type"]:checked').val();
+                    var chk_dis_type = $(this).find('#discount_types').val();
                     if(chk_dis_type == 'amount')
                     {
-                        var price = parseFloat($(this).find('#product_price').val()) - $('#edit_amount').val();    
+                        if($(this).find('#hdn_discount_surcharge').val() == 'Manual Surcharge')
+                        {
+                            var price = parseFloat($(this).find('#product_price').val()) + parseFloat($(this).find('#hdn_discount_amount').val());    
+                        }else{
+                            var price = parseFloat($(this).find('#product_price').val()) - parseFloat($(this).find('#hdn_discount_amount').val());    
+                        }
                     }
                     else
                     {
-                        var price = parseFloat($(this).find('#product_price').val()) - (parseFloat($(this).find('#product_price').val()) * ($('#edit_amount').val() / 100));
+                        if($(this).find('#hdn_discount_surcharge').val() == 'Credit Card Surcharge' || $(this).find('#hdn_discount_surcharge').val() == 'Manual Surcharge')
+                        {
+                            var price = parseFloat($(this).find('#product_price').val()) + (parseFloat($(this).find('#product_price').val()) * ($(this).find('#hdn_discount_amount').val() / 100));    
+                        }
+                        else{
+                            var price = parseFloat($(this).find('#product_price').val()) - (parseFloat($(this).find('#product_price').val()) * ($(this).find('#hdn_discount_amount').val() / 100));
+                        }
                     }                    
                 }
                 var quantity = parseInt($(this).find('.quantity').val());
@@ -4404,6 +4600,7 @@
             // $('.grand-total').text('$' + grandTotal.toFixed(2));
         }
         else if(type === 'new') {
+            
             var subtotal = 0;
             var discount = 0;
             var discount_type = $('input[name="discount_type"]:checked').val();
@@ -4417,14 +4614,25 @@
                 }
                 else
                 {
-                    var chk_dis_type = $('input[name="edit_discount_type"]:checked').val();
+                    var chk_dis_type = $(this).find('#discount_types').val();
                     if(chk_dis_type == 'amount')
                     {
-                        var price = parseFloat($(this).find('#product_price').val()) - $('#edit_amount').val();    
+                        if($(this).find('#hdn_discount_surcharge').val() == 'Manual Surcharge')
+                        {
+                            var price = parseFloat($(this).find('#product_price').val()) + parseFloat($(this).find('#hdn_discount_amount').val());    
+                        }else{
+                            var price = parseFloat($(this).find('#product_price').val()) - parseFloat($(this).find('#hdn_discount_amount').val());    
+                        }
                     }
                     else
                     {
-                        var price = parseFloat($(this).find('#product_price').val()) - (parseFloat($(this).find('#product_price').val()) * ($('#edit_amount').val() / 100));
+                        if($(this).find('#hdn_discount_surcharge').val() == 'Credit Card Surcharge' || $(this).find('#hdn_discount_surcharge').val() == 'Manual Surcharge')
+                        {
+                            var price = parseFloat($(this).find('#product_price').val()) + (parseFloat($(this).find('#product_price').val()) * ($(this).find('#hdn_discount_amount').val() / 100));    
+                        }
+                        else{
+                            var price = parseFloat($(this).find('#product_price').val()) - (parseFloat($(this).find('#product_price').val()) * ($(this).find('#hdn_discount_amount').val() / 100));
+                        }
                     }
                 }
                 var quantity = parseInt($(this).find('.quantity').val());
@@ -4463,9 +4671,17 @@
             } else if (discount_type === 'amount') {
                 discount = amount; // Use the entered amount as the discount
             }
-            var total = subtotal - discount; // Calculate total after discount
-            var gst = total * 0.05; // Assuming GST is 5% of total
-            var grandTotal = total + gst; // Calculate total including GST
+
+            var dis_sur = $('#discount_surcharge').val();
+            if(dis_sur == 'Credit Card Surcharge' || dis_sur == 'Manual Surcharge')
+            {
+                var total = subtotal + discount; // Calculate total after discount
+            }else{
+                var total = subtotal - discount; // Calculate total after discount
+            }
+            // var total = subtotal - discount; // Calculate total after discount
+            // var gst = total * 0.05; // Assuming GST is 5% of total
+            // var grandTotal = total + gst; // Calculate total including GST
 
             // Update the displayed values on the page
             $('.subtotal').text('$' + subtotal.toFixed(2));
@@ -4488,14 +4704,25 @@
                 }
                 else
                 {
-                    var chk_dis_type = $('input[name="edit_discount_type"]:checked').val();
+                    var chk_dis_type = $(this).find('#discount_types').val();
                     if(chk_dis_type == 'amount')
                     {
-                        var price = parseFloat($(this).find('#product_price').val()) - $('#edit_amount').val();    
+                        if($(this).find('#hdn_discount_surcharge').val() == 'Manual Surcharge')
+                        {
+                            var price = parseFloat($(this).find('#product_price').val()) + parseFloat($(this).find('#hdn_discount_amount').val());    
+                        }else{
+                            var price = parseFloat($(this).find('#product_price').val()) - parseFloat($(this).find('#hdn_discount_amount').val());    
+                        }
                     }
                     else
                     {
-                        var price = parseFloat($(this).find('#product_price').val()) - (parseFloat($(this).find('#product_price').val()) * ($('#edit_amount').val() / 100));
+                        if($(this).find('#hdn_discount_surcharge').val() == 'Credit Card Surcharge' || $(this).find('#hdn_discount_surcharge').val() == 'Manual Surcharge')
+                        {
+                            var price = parseFloat($(this).find('#product_price').val()) + (parseFloat($(this).find('#product_price').val()) * ($(this).find('#hdn_discount_amount').val() / 100));    
+                        }
+                        else{
+                            var price = parseFloat($(this).find('#product_price').val()) - (parseFloat($(this).find('#product_price').val()) * ($(this).find('#hdn_discount_amount').val() / 100));
+                        }
                     }
                 }
                 // var price = parseFloat($(this).find('.price').text().replace('$', ''));
@@ -4531,12 +4758,6 @@
                 } else {
                     gst += 0; // GST is 0 when the condition is not met
                 }
-
-                if($(this).find('#product_gst').val() == 'yes'){
-                    gst += price / 11; // Assuming GST is 11% of total
-                } else {
-                    gst += 0; // GST is 0 when the condition is not met
-                }
             });
 
             // Calculate discount based on discount type
@@ -4545,7 +4766,14 @@
             } else if (discount_type === 'amount') {
                 discount = amount; // Use the entered amount as the discount
             }
-            var total = subtotal - discount; // Calculate total after discount
+            var dis_sur = $('#discount_surcharge').val();
+            if(dis_sur == 'Credit Card Surcharge' || dis_sur == 'Manual Surcharge')
+            {
+                var total = subtotal + discount; // Calculate total after discount
+            }else{
+                var total = subtotal - discount; // Calculate total after discount
+            }
+            // var total = subtotal - discount; // Calculate total after discount
             // var gst = total * 0.05; // Assuming GST is 5% of total
             // var grandTotal = total + gst; // Calculate total including GST
 
