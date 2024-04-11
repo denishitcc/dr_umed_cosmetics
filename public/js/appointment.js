@@ -90,11 +90,14 @@ var DU = {};
                 },
 
                 datesSet: function (info) {
+                    const resources = context.calendar.getOption('resources');
+
                     // info.start and info.end represent the new date range resourceTimeGridWeek
                     var start_date  = moment(info.startStr).format('YYYY-MM-DD'),
                         end_date    = moment(info.endStr).format('YYYY-MM-DD');
 
                     // Make an AJAX call to fetch events for the new date range
+                    console.log('function calling');
                     context.eventsList(start_date, end_date);
                 },
                 loading: function (isLoading) {
@@ -689,7 +692,22 @@ var DU = {};
                 {
                     const filteredResources = resources.filter(resource => resource.id === resourceId);
 
+                    // resources.filter(function(resource) {
+                    //     // For example, filter only resources with certain criteria
+                    //     return resource.id === resourceId;
+                    //   }).map(function(filteredResource) {
+                    //     console.log(filteredResource);
+                    //     // Map the filtered resources to include only id and title
+                    //     return { id: filteredResource.id, title: filteredResource.title };
+                    //   });
+                    context.calendar.setOption('resources', filteredResources.map(function(resource) {
+                    console.log(resource);
+
+                        return { id: resource.id, title: resource.title };
+                      }));
+
                     context.calendar.setOption('resources', filteredResources);
+                    console.log(resources);
                     context.calendar.changeView('timeGridWeek');
 
                     // var start_date = moment(context.calendar.currentData.dateProfile.currentRange.start).format('YYYY-MM-DD');
