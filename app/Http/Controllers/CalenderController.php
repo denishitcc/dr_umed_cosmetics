@@ -1451,16 +1451,23 @@ class CalenderController extends Controller
             WalkInDiscountSurcharge::create($walk_in_discount_surcharge);
 
             // Storing walk-in payment details
-            $walk_in_payment = [
-                'walk_in_id' => $walkInSale->id,
-                'payment_type' => 'Cash',
-                'amount' => $request->hdn_total,
-                'date' => date('d-m-y'),
-                'total' => $request->hdn_total,
-                'remaining_balance' => $request->hdn_total
-            ];
-
-            Payment::create($walk_in_payment);
+            foreach($request->payment_types as $index => $paymentType) {
+                // Access payment details using the same index
+                $paymentAmount = $request->payment_amounts[$index];
+                $paymentDate = $request->payment_dates[$index];
+            
+                // Now you can create your payment record
+                $walk_in_payment = [
+                    'walk_in_id' => $walkInSale->id,
+                    'payment_type' => $paymentType,
+                    'amount' => $paymentAmount,
+                    'date' => $paymentDate,
+                    'total' => $paymentTotal = str_replace('$', '', $request->payment_total),
+                    'remaining_balance' => str_replace('$', '', $request->remaining_balance),
+                ];
+            
+                Payment::create($walk_in_payment);
+            }
         }
         else if($request->hdn_customer_type == 'existing')
         {
@@ -1512,16 +1519,23 @@ class CalenderController extends Controller
             WalkInDiscountSurcharge::create($walk_in_discount_surcharge);
 
             // Storing walk-in payment details
-            $walk_in_payment = [
-                'walk_in_id' => $walkInSale->id,
-                'payment_type' => 'Cash',
-                'amount' => $request->hdn_total,
-                'date' => date('d-m-y'),
-                'total' => $request->hdn_total,
-                'remaining_balance' => $request->hdn_total
-            ];
-
-            Payment::create($walk_in_payment);
+            foreach($request->payment_types as $index => $paymentType) {
+                // Access payment details using the same index
+                $paymentAmount = $request->payment_amounts[$index];
+                $paymentDate = $request->payment_dates[$index];
+            
+                // Now you can create your payment record
+                $walk_in_payment = [
+                    'walk_in_id' => $walkInSale->id,
+                    'payment_type' => $paymentType,
+                    'amount' => $paymentAmount,
+                    'date' => $paymentDate,
+                    'total' => $paymentTotal = str_replace('$', '', $request->payment_total),
+                    'remaining_balance' => str_replace('$', '', $request->remaining_balance),
+                ];
+            
+                Payment::create($walk_in_payment);
+            }
         }
         else{
             // Storing walk-in sale details
@@ -1572,16 +1586,23 @@ class CalenderController extends Controller
             WalkInDiscountSurcharge::create($walk_in_discount_surcharge);
 
             // Storing walk-in payment details
-            $walk_in_payment = [
-                'walk_in_id' => $walkInSale->id,
-                'payment_type' => 'Cash',
-                'amount' => $request->hdn_total,
-                'date' => date('d-m-y'),
-                'total' => $request->hdn_total,
-                'remaining_balance' => $request->hdn_total
-            ];
-
-            Payment::create($walk_in_payment);
+            foreach($request->payment_types as $index => $paymentType) {
+                // Access payment details using the same index
+                $paymentAmount = $request->payment_amounts[$index];
+                $paymentDate = $request->payment_dates[$index];
+            
+                // Now you can create your payment record
+                $walk_in_payment = [
+                    'walk_in_id' => $walkInSale->id,
+                    'payment_type' => $paymentType,
+                    'amount' => $paymentAmount,
+                    'date' => $paymentDate,
+                    'total' => $paymentTotal = str_replace('$', '', $request->payment_total),
+                    'remaining_balance' => str_replace('$', '', $request->remaining_balance),
+                ];
+            
+                Payment::create($walk_in_payment);
+            }
         }
         
 

@@ -1016,7 +1016,7 @@
                     </div>
                     <div class="mod-ft-right">
                         <button type="button" class="btn btn-light btn-md">Cancel</button>
-                        <button type="submit" class="btn btn-primary btn-md take_payment">Take Payment</button>
+                        <button type="submit" class="btn btn-primary btn-md take_payment" main_total="">Take Payment</button>
                     </div>
                 </div>
                 </form>
@@ -1184,6 +1184,77 @@
             
         </div>
     </div>
+    <div class="modal fade" id="take_payment" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h4 class="modal-title">Take Payment</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row payment_details">
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label">Payment</label>
+                                <select class="form-select form-control" name="payment_type[]" id="payment_type">
+                                    <option>Card</option>
+                                    <option>Afterpay</option>
+                                    <option>Bank Transfer</option>
+                                    <option>Cash</option>
+                                    <option>Humm payment</option>
+                                    <option>Voucher</option>
+                                    <option>Zip Pay</option>
+                                </select>
+                                </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label">Amount</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="ico-dollar fs-4"></i></span>
+                                    <input type="text" class="form-control payment_amount" name="payment_amount[]" placeholder="0">
+                                    
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label">Date</label>
+                                <input type="date" id="datePicker4" name="payment_date[]" class="form-control" id="payment_date" placeholder="date" value="<?php echo date('Y-m-d'); ?>" readonly>
+                            </div>
+                        </div>
+                        <div class="remove_payment">
+                            <a href="#" class="remove_payment_btn"><button class="btn-close close_waitlist"></button></a>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <a href="#" class="btn btn-dashed w-100 btn-blue icon-btn-center mb-2 add_another_payment"><i class="ico-ticket-discount me-2 fs-5"></i> Add another payment</a>
+                        <div class="form-text d-flex align-items-center"><span class="ico-danger fs-5 me-2"></span> Not all payment type supported</div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <table width="100%">
+                        <tbody>
+                            <tr>
+                                <td><b>Total</b></td>
+                                <td class="text-end blue payment_total"><b>$250.00</b></td>
+                            </tr>
+                            <tr>
+                                <td>Remaining balance</td>
+                                <td class="text-end remaining_balance">$0.00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light btn-md back_to_sale">Back to Sale</button>
+                    <button type="button" class="btn btn-primary btn-md complete_sale">Complete Sale</button>                                    
+                </div>
+            </div>
+        </div>
+    </div>
     @include('calender.partials.client-modal')
     @include('calender.partials.repeat-appointment-modal')
 </div>
@@ -1220,6 +1291,8 @@
         document.getElementById("datePicker1").setAttribute("max", today.toISOString().split('T')[0]);
         document.getElementById("datePicker2").setAttribute("max", today.toISOString().split('T')[0]);
         document.getElementById("datePicker3").setAttribute("max", today.toISOString().split('T')[0]);
+        document.getElementById("datePicker4").setAttribute("min", today.toISOString().split('T')[0]);
+        document.getElementById("datePicker4").setAttribute("max", today.toISOString().split('T')[0]);
         
         $("#edit_waitlist_client").validate({
             rules: {
@@ -2194,7 +2267,12 @@
             // Check if the form is valid
             if ($("#create_walkin").valid()) {
                 var data = new FormData(this);
-                SubmitWalkIn(data);
+                
+                $('#Walkin_Retail').modal('hide');
+                $('#take_payment').modal('show');
+                $('.payment_amount').val($('.take_payment').attr('main_total')); 
+                $('.payment_total').text('$' + $('.take_payment').attr('main_total'));
+                // SubmitWalkIn(data);
             }
         });
 
@@ -3577,6 +3655,101 @@
         updateQuantity();
         updatePrice(); 
     });
+
+    $(document).on('click','.back_to_sale',function(){
+        $('#take_payment').modal('hide');
+        $('#Walkin_Retail').modal('show');
+    })
+    $(document).on('click','.add_another_payment',function(){
+        var paymentDetailsClone = $('.payment_details').first().clone(); // Clone the first .payment_details div
+        console.log('paymentDetailsClone',paymentDetailsClone);
+        paymentDetailsClone.find('.payment_amount').val('0');
+
+        $('.payment_details:last').after(paymentDetailsClone); // Append the cloned div after the last .payment_details div
+        
+        updateRemoveIconVisibility(); // Update remove icon visibility
+        updateRemainingBalance(); // Update remaining balance
+    })
+
+    $(document).on('click', '.remove_payment_btn', function() {
+        $(this).closest('.payment_details').remove(); // Remove the closest .payment_details div
+        updateRemoveIconVisibility(); // Update remove icon visibility
+        updateRemainingBalance(); // Update remaining balance
+    });
+    $(document).on('input', '.payment_amount', function() {
+        updateRemainingBalance(); // Update remaining balance when payment amount changes
+    });
+
+    $(document).on('click', '.complete_sale', function() {
+        var payment_total = $('.payment_total').text();
+        var remaining_balance = $('.remaining_balance').text();
+
+        var paymentTypes = []; // Array to store selected payment types
+        $('select[name="payment_type[]"] option:selected').each(function() {
+            paymentTypes.push($(this).val()); // Push each selected payment type into the array
+        });
+
+        var paymentAmounts = []; // Array to store payment amounts
+        $('.payment_amount').each(function() {
+            paymentAmounts.push($(this).val()); // Push each payment amount into the array
+        });
+
+        var paymentDates = [];
+        $('input[name="payment_date[]"]').each(function() {
+            paymentDates.push($(this).val());
+        });
+
+        var formData = new FormData($('#create_walkin')[0]);
+
+        // Append each payment type separately to FormData
+        paymentTypes.forEach(function(paymentType) {
+            formData.append('payment_types[]', paymentType);
+        });
+
+        paymentAmounts.forEach(function(paymentAmount) {
+            formData.append('payment_amounts[]', paymentAmount);
+        });
+
+        paymentDates.forEach(function(paymentDate) {
+            formData.append('payment_dates[]', paymentDate);
+        });
+
+        // formData.append('payment_amounts[]', paymentAmounts);
+        // formData.append('payment_dates[]', paymentDates);
+        formData.append('payment_total', payment_total);
+        formData.append('remaining_balance', remaining_balance);
+
+        SubmitWalkIn(formData);
+    });
+
+    
+    updateRemoveIconVisibility();
+    // updateRemainingBalance();
+
+    function updateRemoveIconVisibility() {
+        var paymentDetailsCount = $('.payment_details').length;
+        if (paymentDetailsCount === 1) {
+            $('.remove_payment_btn').hide();
+        } else {
+            $('.remove_payment_btn').show();
+        }
+    }
+    function updateRemainingBalance() {
+        
+        var total = parseFloat($('.payment_total').text().replace('$', '')); // Get the total amount
+        var totalPayments = 0;
+
+        // Sum up all payment amounts
+        $('.payment_amount').each(function() {
+            var paymentAmount = parseFloat($(this).val());
+            if (!isNaN(paymentAmount)) {
+                totalPayments += paymentAmount;
+            }
+        });
+        var remainingBalance = total - totalPayments; // Calculate the remaining balance
+        $('.remaining_balance').text('$' + remainingBalance.toFixed(2)); // Update the remaining balance
+    }
+    
     function calculateAndUpdate() {
         var pricePerUnit = parseFloat($('.edit_price_per_unit').val()) || 0;
         var quantity = parseInt($('.edit_quantity').val()) || 0;
@@ -4701,6 +4874,7 @@
             $('#hdn_discount').val(discount.toFixed(2));
             $('#hdn_total').val(total.toFixed(2));
             $('#hdn_gst').val(gst.toFixed(2));
+            $('.take_payment').attr('main_total',total.toFixed(2));
             // Update the displayed values on the page
             $('.subtotal').text('$' + subtotal.toFixed(2));
             $('.discount').text('$' + discount.toFixed(2));
@@ -4797,6 +4971,8 @@
             $('#hdn_discount').val(discount.toFixed(2));
             $('#hdn_total').val(total.toFixed(2));
             $('#hdn_gst').val(gst.toFixed(2));
+
+            $('.take_payment').attr('main_total',total.toFixed(2));
 
             $('.subtotal').text('$' + subtotal.toFixed(2));
             $('.discount').text('$' + discount.toFixed(2));
@@ -4897,6 +5073,8 @@
             $('#hdn_total').val(total.toFixed(2));
             $('#hdn_gst').val(gst.toFixed(2));
 
+            $('.take_payment').attr('main_total',total.toFixed(2));
+            
             $('.subtotal').text('$' + subtotal.toFixed(2));
             $('.discount').text('$' + discount.toFixed(2));
             $('.total').text('$' + total.toFixed(2));
@@ -5172,12 +5350,12 @@
         }
         $('.products_box_existing').show(); // Show the product search results box
     }
-    function SubmitWalkIn(data){
+    function SubmitWalkIn(formData){
 		$.ajax({
 			headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
 			url: "{{ route('calendar.store-walk-in') }}",
 			type: "post",
-			data: data,
+			data: formData,
             contentType: false, // The content type used when sending data to the server. Default is: "application/x-www-form-urlencoded"
             processData: false, // To send DOMDocument or non processed data file it is set to false (i.e. data should not be in the form of string)
             cache: false, // To unable request pages to be cached
