@@ -169,10 +169,11 @@ var DU = {};
                         service_id          = info.event.extendedProps.service_id,
                         category_id         = info.event.extendedProps.category_id,
                         duration            = info.event.extendedProps.duration,
+                        location_id         = info.event.extendedProps.location_id,
                         start_time          = moment(info.event.startStr).format('YYYY-MM-DDTHH:mm:ss'),
                         end_time            = moment(start_time).add(duration,'minutes').format('YYYY-MM-DDTHH:mm:ss');
                         app_id              = info.event.extendedProps.app_id,
-                        context.createAppointmentDetails(resourceId,start_date,start_time,end_time,duration,client_id,service_id,category_id,app_id);
+                        context.createAppointmentDetails(resourceId,start_date,start_time,end_time,duration,client_id,service_id,category_id,app_id,location_id);
                 },
                 eventDrop: function (events) {
                     var resourceId          = events.event._def.resourceIds[0],
@@ -181,6 +182,7 @@ var DU = {};
                         // duration            = events.event.extendedProps.duration,
                         start_time          = moment(events.event.startStr).format('YYYY-MM-DDTHH:mm:ss'),
                         end_time            = moment(events.event.endStr).format('YYYY-MM-DDTHH:mm:ss'),
+                        location_id         = events.event.extendedProps.location_id,
                         client_id           = events.event.extendedProps.client_id,
                         service_id          = events.event.extendedProps.service_id,
                         category_id         = events.event.extendedProps.category_id;
@@ -200,6 +202,7 @@ var DU = {};
                             'service_id'  : service_id,
                             'category_id' : category_id,
                             'event_id'    : eventId,
+                            'location_id' : location_id
                         };
 
                         context.updateAppointmentDetails(data);
@@ -211,6 +214,7 @@ var DU = {};
                         // duration            = events.event.extendedProps.duration,
                         start_time          = moment(events.event.startStr).format('YYYY-MM-DDTHH:mm:ss'),
                         end_time            = moment(events.event.endStr).format('YYYY-MM-DDTHH:mm:ss'),
+                        location_id         = events.event.extendedProps.location_id,
                         client_id           = events.event.extendedProps.client_id,
                         service_id          = events.event.extendedProps.service_id;
                         category_id         = events.event.extendedProps.category_id;
@@ -229,6 +233,7 @@ var DU = {};
                             'service_id'  : service_id,
                             'category_id' : category_id,
                             'event_id'    : eventId,
+                            'location_id' : location_id
                         };
 
                         context.updateAppointmentDetails(data);
@@ -614,7 +619,8 @@ var DU = {};
                             client_id   :dataset.client_id,
                             category_id :dataset.category_id,
                             duration    :dataset.duration,
-                            app_id:dataset.app_id
+                            app_id      :dataset.app_id,
+                            location_id :dataset.location_id
                         }
                     };
                 }
@@ -1009,7 +1015,7 @@ var DU = {};
         },
 
         // For create appointment
-        createAppointmentDetails: function(resourceId,start_date,start_time,end_time,durationInMinutes,client_id,service_id,category_id,app_id){
+        createAppointmentDetails: function(resourceId,start_date,start_time,end_time,durationInMinutes,client_id,service_id,category_id,app_id,location_id){
             $.ajax({
                 url: moduleConfig.createAppointment,
                 type: 'POST',
@@ -1025,7 +1031,8 @@ var DU = {};
                     'client_id'   : client_id,
                     'service_id'  : service_id,
                     'category_id' : category_id,
-                    'app_id'      : app_id
+                    'app_id'      : app_id,
+                    'location_id' : location_id
                 },
                 success: function (data) {
                     if (data.success) {
@@ -1085,6 +1092,7 @@ var DU = {};
             context.selectors.newAppointmentBtn.on('click', function(e)
             {
                 var locationId = jQuery('#locations').val();
+                $('#appointmentlocationId').val(locationId);
                 // get all the services related to location
                 context.selectors.appointmentModal.modal('show');
             });
@@ -1376,8 +1384,9 @@ var DU = {};
 
             $('#appointmentSaveBtn').on('click' ,function(e){
                 var clientselectedServicesCount = $('#selected_services').children("li").length,
-                    clientName                  = $('#clientDetailsModal').text();
-                // console.log(clientName);
+                    clientName                  = $('#clientDetailsModal').text(),
+                    locationId                  = $('#appointmentlocationId').val();
+                // console.log(locationId);
 
                 if($('#check_client').val() == 'new_client')
                 {
@@ -1409,10 +1418,10 @@ var DU = {};
                             $("#selected_services > li").each(function(){
                                 var $this           = $(this),
                                 eventName           = $(this).text(),
-                                eventId             = $(this).data('services_id');
-                                categoryId          = $(this).data('category_id');
-                                duration            = $(this).data('duration');
-                                clientName          = $('#clientDetails').find('input:hidden[name=client_name]').val();
+                                eventId             = $(this).data('services_id'),
+                                categoryId          = $(this).data('category_id'),
+                                duration            = $(this).data('duration'),
+                                clientName          = $('#clientDetails').find('input:hidden[name=client_name]').val(),
                                 clientId            = $('#clientDetails').find('input:hidden[name=client_id]').val();
                                 // Increment the counter
                                 count++;
@@ -1423,12 +1432,12 @@ var DU = {};
                                         <div class="drag-box mb-3">
                                             <div class="head mb-2"><b>Drag and drop on</b> to a day on the appointment book
                                                 <i class="ico-noun-arrow"></i></div>
-                                            <div class="treatment fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event" data-service_id="${eventId}" data-service_name="${eventName}" data-client_name="${clientName}" data-duration="${duration}" data-client_id="${clientId}" data-category_id="${categoryId}">
+                                            <div class="treatment fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event" data-service_id="${eventId}" data-service_name="${eventName}" data-client_name="${clientName}" data-duration="${duration}" data-location_id="${locationId}" data-client_id="${clientId}" data-category_id="${categoryId}">
                                                 ${eventName}
                                             </div>
                                         </div>
                                         <div class="btns mb-3">
-                                            <button class="btn btn-secondary btn-sm" id="edit_created_appointment" event_id="${eventId}" service_name="${eventName}" services_id="${eventId}"  category_id="${categoryId}"  duration="${duration}"  client-id="${clientId}" client-name="${clientName}" edit-service-name="${eventId}">Edit Appt</button>
+                                            <button class="btn btn-secondary btn-sm" id="edit_created_appointment" event_id="${eventId}" service_name="${eventName}" services_id="${eventId}"  category_id="${categoryId}"  duration="${duration}" data-location_id="${locationId}"  client_id="${clientId}" client-name="${clientName}" edit-service-name="${eventId}">Edit Appt</button>
                                             <button class="btn btn-secondary btn-sm">Repeat appt</button>
                                             <button class="btn btn-secondary btn-sm">Messages</button>
                                         </div>
@@ -1437,7 +1446,7 @@ var DU = {};
                                         </div>`);
                                 } else if (count > 1) {
                                     $('.drag-box').append(`
-                                            <div class="treatment fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event" data-service_id="${eventId}" data-service_name="${eventName}" data-client_name="${clientName}" data-duration="${duration}" data-client_id="${clientId}" data-category_id="${categoryId}">
+                                            <div class="treatment fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event" data-service_id="${eventId}" data-service_name="${eventName}" data-client_name="${clientName}" data-duration="${duration}" data-location_id="${locationId}" data-client_id="${clientId}" data-category_id="${categoryId}">
                                                 ${eventName}
                                             </div>
                                         `);
@@ -1480,10 +1489,10 @@ var DU = {};
                         $("#selected_services > li").each(function(){
                             var $this           = $(this),
                             eventName           = $(this).text(),
-                            eventId             = $(this).data('services_id');
-                            categoryId          = $(this).data('category_id');
-                            duration            = $(this).data('duration');
-                            clientName          = $('#clientDetails').find('input:hidden[name=client_name]').val();
+                            eventId             = $(this).data('services_id'),
+                            categoryId          = $(this).data('category_id'),
+                            duration            = $(this).data('duration'),
+                            clientName          = $('#clientDetails').find('input:hidden[name=client_name]').val(),
                             clientId            = $('#clientDetails').find('input:hidden[name=client_id]').val();
                             // Increment the counter
                             count++;
@@ -1494,12 +1503,12 @@ var DU = {};
                                     <div class="drag-box mb-3">
                                         <div class="head mb-2"><b>Drag and drop on</b> to a day on the appointment book
                                             <i class="ico-noun-arrow"></i></div>
-                                        <div class="treatment fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event" data-service_name="${eventName}" data-service_id="${eventId}" data-client_name="${clientName}" data-duration="${duration}" data-client_id="${clientId}" data-category_id="${categoryId}">
+                                        <div class="treatment fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event" data-service_name="${eventName}" data-service_id="${eventId}" data-client_name="${clientName}" data-duration="${duration}" data-location_id="${locationId}" data-client_id="${clientId}" data-category_id="${categoryId}">
                                             ${eventName}
                                         </div>
                                     </div>
                                     <div class="btns mb-3">
-                                        <button class="btn btn-secondary btn-sm" id="edit_created_appointment" event_id="${eventId}" service_name="${eventName}" services_id="${eventId}"  category_id="${categoryId}"  duration="${duration}"  client-id="${clientId}" client-name="${clientName}" edit-service-name="${eventId}">Edit Appt</button>
+                                        <button class="btn btn-secondary btn-sm" id="edit_created_appointment" event_id="${eventId}" service_name="${eventName}" services_id="${eventId}"  category_id="${categoryId}"  duration="${duration}" data-location_id="${locationId}" client-id="${clientId}" client-name="${clientName}" edit-service-name="${eventId}">Edit Appt</button>
                                         <button class="btn btn-secondary btn-sm">Repeat appt</button>
                                         <button class="btn btn-secondary btn-sm">Messages</button>
                                     </div>
@@ -1508,7 +1517,7 @@ var DU = {};
                                     </div>`);
                             } else if (count > 1) {
                                 $('.drag-box').append(`
-                                            <div class="treatment fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event" data-service_name="${eventName}" data-service_id="${eventId}" data-client_name="${clientName}" data-duration="${duration}" data-client_id="${clientId}" data-category_id="${categoryId}">
+                                            <div class="treatment fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event" data-service_name="${eventName}" data-service_id="${eventId}" data-client_name="${clientName}" data-duration="${duration}" data-location_id="${locationId}" data-client_id="${clientId}" data-category_id="${categoryId}">
                                                 ${eventName}
                                             </div>
                                         `);

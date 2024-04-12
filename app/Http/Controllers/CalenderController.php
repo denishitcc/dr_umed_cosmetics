@@ -240,6 +240,7 @@ class CalenderController extends Controller
      */
     public function createAppointments(Request $request)
     {
+        // dd($request->all());
         if(isset($request->app_id)) {
             $service_ex = explode(',',$request->service_id);
             $duration_ex = explode(',',$request->duration);
@@ -269,7 +270,8 @@ class CalenderController extends Controller
                         'end_date'      => $formattedEndDateTime,
                         'duration'      => $duration,
                         'status'        => Appointment::BOOKED,
-                        'current_date'  => $request->start_date
+                        'current_date'  => $request->start_date,
+                        'location_id'   => $request->location_id
                     ];
         
                     Appointment::create($appointmentsData);
@@ -313,7 +315,8 @@ class CalenderController extends Controller
                 'end_date'      => $request->end_time,
                 'duration'      => $request->duration,
                 'status'        => Appointment::BOOKED,
-                'current_date'  => $request->start_date
+                'current_date'  => $request->start_date,
+                'location_id'   => $request->location_id
             ];
     
             try {

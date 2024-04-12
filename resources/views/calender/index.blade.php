@@ -180,6 +180,7 @@
             <form id="create_client" name="create_client" class="form" method="post">
                 @csrf
                 <input type="hidden" name="check_client" id="check_client" value="selected_client">
+                <input type="text" name="appointmentlocationId" id="appointmentlocationId">
                 <div class="modal-header">
                     <h4 class="modal-title">Please add new appointment here</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
