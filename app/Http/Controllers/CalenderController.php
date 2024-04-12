@@ -1473,6 +1473,7 @@ class CalenderController extends Controller
         {
             // Storing walk-in sale details
             $walk_in_table = [
+                'client_id' => $request->walk_in_client_id,
                 'customer_type' => $request->hdn_customer_type,
                 'invoice_date' => $request->existing_invoice_date,
                 'subtotal' => $request->hdn_subtotal,
@@ -1540,6 +1541,7 @@ class CalenderController extends Controller
         else{
             // Storing walk-in sale details
             $walk_in_table = [
+                'client_id' => null,
                 'customer_type' => $request->hdn_customer_type,
                 'invoice_date' => $request->new_invoice_date,
                 'subtotal' => $request->hdn_subtotal,

@@ -756,6 +756,7 @@
                 </div>
                 <form id="create_walkin" name="create_walkin" class="form" method="post">
                 @csrf
+                <input type="hidden" name="walk_in_client_id" id="walk_in_client_id">
                 <input type="hidden" name="hdn_customer_type" id="hdn_customer_type" value="casual">
                 <input type='hidden' id="hdn_subtotal" name='hdn_subtotal' value='0'>
                 <input type='hidden' id="hdn_total" name='hdn_total' value='0'>
@@ -888,10 +889,10 @@
                                 <div class="col-lg-3">
                                     <label class="form-label">Send promotions</label>
                                     <div class="toggle mb-0">
-                                        <input type="radio" name="send_promotions" value="1" id="yes" checked="checked">
-                                        <label for="yes">Yes <i class="ico-tick"></i></label>
-                                        <input type="radio" name="send_promotions" value="0" id="no">
-                                        <label for="no">No <i class="ico-tick"></i></label>
+                                        <input type="radio" name="send_promotions" value="1" id="walkin_yes" checked="checked">
+                                        <label for="walkin_yes">Yes <i class="ico-tick"></i></label>
+                                        <input type="radio" name="send_promotions" value="0" id="walkin_no">
+                                        <label for="walkin_no">No <i class="ico-tick"></i></label>
                                     </div>
                                 </div>
                             </div>
@@ -949,10 +950,21 @@
                             </div>
                         </div>
                         <div class="tab-pane fade show" id="exist_customer" role="tabpanel">
-                            <div class="form-group icon">
-                                <input type="text" id="search1" class="form-control" placeholder="Search for a client">
+                            <div class="form-group icon client_search_bar">
+                                <input type="text" id="search_exist_customer" class="form-control " autocomplete="off" placeholder="Search for a client" onkeyup="changeExistingCutomerInput(this.value)">
                                 <i class="ico-search"></i>
                                 <div id="result1" class="list-group"></div>
+                            </div>
+                            <div class="existing_client_list_box" style="display:none;">
+                                <ul class="drop-list" id="resultexistingmodal"></ul>
+                            </div>
+                            <div class="mb-5" id="existingclientmodal"  style="display:none;">
+                                <div class="one-inline align-items-center mb-2">
+                                    <span class="custname me-3" id="existingclientDetailsModal"> </span>
+                                    <input type="hidden" name="clientname" id="clientName">
+                                    <button type="button" class="btn btn-primary btn-md existing_client_change">Change</button>
+                                </div>
+                                <em class="d-grey font-12 btn-light">No recent appointments found</em>
                             </div>
                             <div class="form-group icon">
                                 <label>Invoice Date</label>
@@ -3721,6 +3733,11 @@
 
         SubmitWalkIn(formData);
     });
+    $(document).on('click', '.existing_client_change', function() {
+        debugger;
+        $('.client_search_bar').show();
+        $('#existingclientmodal').hide();
+    })
 
     
     updateRemoveIconVisibility();
@@ -4291,6 +4308,126 @@
             }
         }
     });
+
+    //change input event
+    const changeExistingCutomerInput = debounce((val) =>
+    {
+        $('#clientDetails').empty();
+        // $('.upcoming_appointments').empty();
+        // $('.history_appointments').empty();
+
+        // ajax call
+        $.ajax({
+            type: "POST",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: "{{route('calendar.get-all-clients')}}",
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content'),
+                name: $('#search_exist_customer').val(),
+            },
+            dataType: "json",
+            success: function(res) {
+                if (res.length > 0) {
+                    $('.existing_client_list_box').show();
+                    for (var i = 0; i < res.length; ++i) {
+                        // Check if the record with the same id already exists in the array
+                        var existingRecordIndex = client_details.findIndex(record => record.id === res[i].id);
+
+                        // If the record doesn't exist in the array, add it
+                        if (existingRecordIndex === -1) {
+                            // Push client details to the client_details array
+                            client_details.push({
+                                id: res[i].id,
+                                name: res[i].first_name,
+                                lastname: res[i].last_name,
+                                email: res[i].email,
+                                mobile_number: res[i].mobile_no,
+                                date_of_birth: res[i].date_of_birth,
+                                gender: res[i].gender,
+                                home_phone: res[i].home_phone,
+                                work_phone: res[i].work_phone,
+                                contact_method: res[i].contact_method,
+                                send_promotions: res[i].send_promotions,
+                                street_address: res[i].street_address,
+                                suburb: res[i].suburb,
+                                city: res[i].city,
+                                postcode: res[i].postcode,
+                                client_photos:res[i].client_photos,
+                                client_documents: [], // Initialize an empty array for client documents
+                                service_name: res[i].last_appointment.service_name,
+                                staff_name: res[i].last_appointment.staff_name,
+                                start_date: res[i].last_appointment.appointment_date,
+                                status: res[i].last_appointment.status,
+                                location_name: res[i].last_appointment.location_name
+                            });
+                        }
+                        // Iterate over client documents and push only doc_name and created_at
+                        if (res[i].documents && res[i].documents.length > 0) {
+                            for (var j = 0; j < res[i].documents.length; j++) {
+                                // If the record with the same doc_id already exists in the array, skip
+                                if (existingRecordIndex !== -1 && client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].documents[j].doc_id)) {
+                                    continue;
+                                }
+                                // If the record doesn't exist in the array or the doc_id doesn't exist in the documents array, add it
+                                if (existingRecordIndex === -1 || !client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].documents[j].doc_id)) {
+                                    client_details[existingRecordIndex !== -1 ? existingRecordIndex : i].client_documents.push({
+                                        doc_id: res[i].documents[j].doc_id,
+                                        doc_name: res[i].documents[j].doc_name,
+                                        created_at: res[i].documents[j].created_at
+                                    });
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    $('.table-responsive').empty();
+                }
+            },
+            error: function(jqXHR, exception) {
+                // Handle error
+            }
+        });
+
+        var autoCompleteResult = matchClient(val);
+        var resultElement = document.getElementById("resultexistingmodal"); 
+        if (val.trim() === "") {
+            resultElement.innerHTML = ""; // Clear the result if search box is empty
+        } else {
+            if (autoCompleteResult.length === 0) {
+                resultElement.innerHTML = "<p>No records found</p>";
+            } else {
+                resultElement.innerHTML = ""; // Clear previous message if records are found
+                for (var i = 0, limit = 10, len = autoCompleteResult.length; i < len && i < limit; i++) {
+                    var person = autoCompleteResult[i];
+                    var firstCharacter = person.name.charAt(0).toUpperCase();
+                    if(person.service_name == null)
+                    {
+                        var appointment = `No Visit history`;
+                    }
+                    else
+                    {
+                        var appointment = `<p>last appt at ${person.location_name} on ${person.start_date} </p>
+                                <p> ${person.service_name} with ${person.staff_name}(${person.status})</p>`;
+                    }
+                    resultElement.innerHTML = `<li onclick='setSearchExistingModal("${person.name}")'>
+                            <div class='client-name'>
+                                <div class='drop-cap' style='background: #D0D0D0; color: #000;'>${firstCharacter}</div>
+                                <div class="client-info">
+                                    <h4 class="blue-bold">${person.name} ${person.lastname}</h4>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <a href="#" class="river-bed"><b> ${person.mobile_number} </b></a><br>
+                                <a href="#" class="river-bed"><b> ${person.email} </b></a>
+                            </div>
+                            ${appointment}
+                        </li>`;
+                }
+            }
+        }
+    });
     
     //change input modal
     const changeWaitListInputModal = debounce((val) =>
@@ -4488,8 +4625,8 @@
     //search and set clients modal
     function setSearchModal(value) {
         $('.client_list_box').hide();
-        document.getElementById('searchmodel').value = value;
-        document.getElementById("resultmodal").innerHTML = "";
+        document.getElementById('search_exist_customer').value = value;//searchmodel
+        document.getElementById("resultexistingmodal").innerHTML = "";
 
         // Iterate over client_details to find a matching value
         for (const key in client_details) {
@@ -4527,7 +4664,37 @@
                             </div>
                             <hr>`
                     );
-                    document.getElementById('searchmodel').value = '';
+                    document.getElementById('search_exist_customer').value = '';
+                    // Trigger the click event of the history button
+                    // $('.history').click();
+                    break; // Stop iterating once a match is found
+                }
+            }
+        }
+    }
+    function setSearchExistingModal(value) {
+        debugger;
+        $('.existing_client_list_box').hide();
+        document.getElementById('resultexistingmodal').value = value;
+        document.getElementById("resultexistingmodal").innerHTML = "";
+
+        // Iterate over client_details to find a matching value
+        for (const key in client_details) {
+            console.log(client_details);
+            if (client_details.hasOwnProperty(key)) {
+                const client = client_details[key];
+                // Check if value matches any field in the client object
+                if (client.email === value || client.mobile_number === value || client.name === value) {
+                    console.log(client);
+                    // If a match is found, dynamically bind HTML to clientDetails element
+                    $('#existingclientmodal').show();
+                    $('.existingclientmodal').hide();
+                    $("#clientName").val(client.name+client.lastname);
+                    $('.client_search_bar').hide();
+                    $("#existingclientDetailsModal").html(
+                        `<i class='ico-user2 me-2 fs-6'></i>  ${client.name}  ${client.lastname}`);
+                    document.getElementById('search_exist_customer').value = '';
+                    $('#walk_in_client_id').val(client.id);
                     // Trigger the click event of the history button
                     // $('.history').click();
                     break; // Stop iterating once a match is found
