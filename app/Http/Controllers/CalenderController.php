@@ -1400,7 +1400,6 @@ class CalenderController extends Controller
     }
     public function StoreWalkIn(Request $request)
     {
-        // dd($request->all());
         if($request->hdn_customer_type == 'casual')
         {
             // Storing walk-in sale details
@@ -1539,9 +1538,22 @@ class CalenderController extends Controller
             }
         }
         else{
+            //store client details
+            $newUser = Clients::create([
+                'firstname' => $request->walkin_first_name,
+                'lastname' => $request->walkin_last_name,
+                'email' => $request->walkin_email,
+                'gender' => $request->walkin_gender,
+                'mobile_number' => $request->walkin_phone_type == 'Mobile' ? $request->walkin_phone_no : null,
+                'home_phone' => $request->walkin_phone_type == 'Home' ? $request->walkin_phone_no : null,
+                'work_phone' => $request->walkin_phone_type == 'Work' ? $request->walkin_phone_no : null,
+                'contact_method' => $request->walkin_contact_method,
+                'send_promotions' => $request->walkin_send_promotions
+            ]);
+            
             // Storing walk-in sale details
             $walk_in_table = [
-                'client_id' => null,
+                'client_id' => $newUser->id,
                 'customer_type' => $request->hdn_customer_type,
                 'invoice_date' => $request->new_invoice_date,
                 'subtotal' => $request->hdn_subtotal,

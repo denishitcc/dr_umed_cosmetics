@@ -838,21 +838,21 @@
                             <div class="row">
                                 <div class="form-group icon col-lg-4">
                                     <label>First Name</label>
-                                    <input type="text" id="first_name" class="form-control" placeholder="First">
+                                    <input type="text" id="walkin_first_name" name="walkin_first_name" class="form-control" placeholder="First">
                                 </div>
                                 <div class="form-group icon col-lg-4">
                                     <label>Last Name</label>
-                                    <input type="text" id="last_name" class="form-control" placeholder="Last">
+                                    <input type="text" id="walkin_last_name" name="walkin_last_name" class="form-control" placeholder="Last">
                                 </div>
                                 <div class="form-group icon col-lg-4">
                                     <label>Email</label>
-                                    <input type="text" id="email" class="form-control" placeholder="Email">
+                                    <input type="text" id="walkin_email" name="walkin_email" class="form-control" placeholder="Email">
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="form-group icon col-lg-4">
                                     <label>Phone</label>
-                                        <select class="form-select form-control" name="phone_type" id="phone_type">
+                                        <select class="form-select form-control" name="walkin_phone_type" id="walkin_phone_type">
                                             <option selected="" value=""> -- select an option -- </option>
                                             <option>Mobile</option>
                                             <option>Home</option>
@@ -861,14 +861,14 @@
                                 </div>
                                 <div class="form-group icon col-lg-4">
                                     <label></label>
-                                    <input type="text" id="phone_no" name="phone_no" class="form-control">
+                                    <input type="text" id="walkin_phone_no" name="walkin_phone_no" class="form-control">
                                 </div>
                                 <div class="col-lg-3">
                                     <label class="form-label">Gender</label>
                                     <div class="toggle form-group">
-                                        <input type="radio" name="gender" value="Male" id="males" checked="checked" />
+                                        <input type="radio" name="walkin_gender" value="Male" id="males" checked="checked" />
                                         <label for="males">Male <i class="ico-tick"></i></label>
-                                        <input type="radio" name="gender" value="Female" id="females" />
+                                        <input type="radio" name="walkin_gender" value="Female" id="females" />
                                         <label for="females">Female <i class="ico-tick"></i></label>
                                     </div>
                                 </div>
@@ -876,7 +876,7 @@
                             <div class="row">
                                 <div class="form-group">
                                     <label class="form-label">Preferred contact method</label>
-                                        <select class="form-select form-control" name="contact_method" id="contact_method_client">
+                                        <select class="form-select form-control" name="walkin_contact_method" id="walkin_contact_method">
                                             <option selected="" value=""> -- select an option -- </option>
                                             <option>Text message (SMS)</option>
                                             <option>Email</option>
@@ -889,9 +889,9 @@
                                 <div class="col-lg-3">
                                     <label class="form-label">Send promotions</label>
                                     <div class="toggle mb-0">
-                                        <input type="radio" name="send_promotions" value="1" id="walkin_yes" checked="checked">
+                                        <input type="radio" name="walkin_send_promotions" value="1" id="walkin_yes" checked="checked">
                                         <label for="walkin_yes">Yes <i class="ico-tick"></i></label>
-                                        <input type="radio" name="send_promotions" value="0" id="walkin_no">
+                                        <input type="radio" name="walkin_send_promotions" value="0" id="walkin_no">
                                         <label for="walkin_no">No <i class="ico-tick"></i></label>
                                     </div>
                                 </div>
@@ -1363,7 +1363,42 @@
             },
             existing_staff: {
                 required: true
-            }
+            },
+            walkin_first_name: {
+                required:true
+            },
+            walkin_last_name: {
+                required:true
+            },
+            walkin_email: {
+                required:true,
+                email: true,
+                    remote: {
+                        url: "../clients/checkClientEmail",
+                        type: "post",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: {
+                            email: function () {
+                                return $("#walkin_email").val();
+                            }
+                        },
+                        dataFilter: function (data) {
+                            var json = $.parseJSON(data);
+                            return json.exists ? '"Email already exists!"' : '"true"';
+                        }
+                    }
+            },
+            walkin_phone_type: {
+                required:true
+            },
+            walkin_phone_no: {
+                required:true
+            },
+            walkin_contact_method: {
+                required:true
+            },
         };
 
         $("#create_walkin").validate({
@@ -3734,7 +3769,6 @@
         SubmitWalkIn(formData);
     });
     $(document).on('click', '.existing_client_change', function() {
-        debugger;
         $('.client_search_bar').show();
         $('#existingclientmodal').hide();
     })
@@ -4673,7 +4707,6 @@
         }
     }
     function setSearchExistingModal(value) {
-        debugger;
         $('.existing_client_list_box').hide();
         document.getElementById('resultexistingmodal').value = value;
         document.getElementById("resultexistingmodal").innerHTML = "";
