@@ -160,5 +160,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('calender/update-waitlist-client',[CalenderController::class, 'UpdateWaitListClient'])->name('calendar/update-waitlist-client');
     Route::delete('calender/delete-waitlist-client/{id}',[CalenderController::class, 'deleteWaitlistClient'])->name('calendar.delete-waitlist-client');
     Route::post('calender/get-all-products-services',[CalenderController::class, 'getAllProductsServices'])->name('calendar.get-all-products-services');
+    // Route::post('calender/calender.store-walk-in',[CalenderController::class, 'StoreWalkIn'])->name('calendar.store-walk-in');
+    Route::post('calendar/store-walk-in', [CalenderController::class, 'StoreWalkIn'])->name('calendar.store-walk-in');
 });
 Route::post('/get-staff-list', [CalenderController::class,'getStaffList'])->name('get-staff-list');

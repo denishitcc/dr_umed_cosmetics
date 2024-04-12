@@ -750,6 +750,19 @@
                 <h4 class="modal-title">Walk-in retail sale @ Hope Island</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+                <form id="create_walkin" name="create_walkin" class="form" method="post">
+                @csrf
+                <input type="hidden" name="hdn_customer_type" id="hdn_customer_type" value="casual">
+                <input type='hidden' id="hdn_subtotal" name='hdn_subtotal' value='0'>
+                <input type='hidden' id="hdn_total" name='hdn_total' value='0'>
+                <input type='hidden' id="hdn_gst" name='hdn_gst' value='0'>
+                <input type='hidden' id="hdn_discount" name='hdn_discount' value='0'>
+
+                <!--discount hidden fields-->
+                <input type='hidden' id="hdn_main_discount_surcharge" name='hdn_main_discount_surcharge' value='No Discount'>
+                <input type='hidden' id="hdn_main_discount_type" name='hdn_main_discount_type' value='amount'>
+                <input type='hidden' id="hdn_main_discount_amount" name='hdn_main_discount_amount' value='0'>
+                <input type='hidden' id="hdn_main_discount_reason" name='hdn_main_discount_reason' value=''>
                 <div class="modal-body">
                         <ul class="nav nav-pills nav-fill nav-group mb-3 main_walkin" role="tablist">
                             <li class="nav-item" role="presentation">
@@ -766,10 +779,10 @@
                         <div class="tab-pane fade show active" id="casual_customer" role="tabpanel">
                             <div class="form-group icon">
                                 <label>Invoice Date</label>
-                                <input type="date" id="datePicker1" name="datePicker1" class="form-control" placeholder="date" value="<?php echo date('Y-m-d'); ?>">
+                                <input type="date" id="datePicker1" name="casual_invoice_date" class="form-control" placeholder="date" value="<?php echo date('Y-m-d'); ?>">
                             </div>
                             <div class="form-group icon">
-                                <input type="text" id="search_products" class="form-control " autocomplete="off" placeholder="Search for services, products or scan barcode" onkeyup="changeProductInput(this.value)">
+                                <input type="text" id="search_products" class="form-control " autocomplete="off" placeholder="Search for services or products" onkeyup="changeProductInput(this.value)">
                                 <i class="ico-search"></i>
                                 <div id="result1" class="list-group"></div>
                                 <div class="products_box" style="display:none;">
@@ -804,8 +817,8 @@
                             <hr class="my-4">
                             <div class="form-group credit_sale">
                                 <label class="form-label">Credit Sale to <span class="d-grey font-13">(required)</span></label>
-                                <select class="form-select form-control" name="sale_staff_id" id="sale_staff_id">
-                                    <option>Please select</option>
+                                <select class="form-select form-control" name="casual_staff" id="sale_staff_id">
+                                    <option value="">Please select</option>
                                     @foreach($staffs as $staff)
                                         <option value="{{$staff->id}}">{{$staff->first_name.' '.$staff->last_name}}</option>
                                     @endforeach
@@ -881,10 +894,10 @@
                             <hr class="my-4">
                             <div class="form-group icon">
                                 <label>Invoice Date</label>
-                                <input type="date" id="datePicker2" name="datePicker2" class="form-control" value="<?php echo date('Y-m-d'); ?>">
+                                <input type="date" id="datePicker2" name="new_invoice_date" class="form-control" value="<?php echo date('Y-m-d'); ?>">
                             </div>
                             <div class="form-group icon">
-                                <input type="text" id="search_products_new_customer" class="form-control " autocomplete="off" placeholder="Search for services, products or scan barcode" onkeyup="changeProductInputNewCustomer(this.value)">
+                                <input type="text" id="search_products_new_customer" class="form-control " autocomplete="off" placeholder="Search for services or products" onkeyup="changeProductInputNewCustomer(this.value)">
                                 <i class="ico-search"></i>
                                 <div id="result1" class="list-group"></div>
                                 <div class="products_box_new" style="display:none;">
@@ -919,8 +932,8 @@
                             <hr class="my-4">
                             <div class="form-group credit_sale">
                                 <label class="form-label">Credit Sale to <span class="d-grey font-13">(required)</span></label>
-                                <select class="form-select form-control" name="sale_staff_id" id="sale_staff_id">
-                                    <option>Please select</option>
+                                <select class="form-select form-control" name="new_staff" id="sale_staff_id">
+                                    <option value="">Please select</option>
                                     @foreach($staffs as $staff)
                                         <option value="{{$staff->id}}">{{$staff->first_name.' '.$staff->last_name}}</option>
                                     @endforeach
@@ -939,10 +952,10 @@
                             </div>
                             <div class="form-group icon">
                                 <label>Invoice Date</label>
-                                <input type="date" id="datePicker3" name="datePicker3" class="form-control" value="<?php echo date('Y-m-d'); ?>">
+                                <input type="date" id="datePicker3" name="existing_invoice_date" class="form-control" value="<?php echo date('Y-m-d'); ?>">
                             </div>
                             <div class="form-group icon">
-                                <input type="text" id="search_products_existing_customer" class="form-control " autocomplete="off" placeholder="Search for services, products or scan barcode" onkeyup="changeProductInputExistingCustomer(this.value)">
+                                <input type="text" id="search_products_existing_customer" class="form-control " autocomplete="off" placeholder="Search for services or products" onkeyup="changeProductInputExistingCustomer(this.value)">
                                 <i class="ico-search"></i>
                                 <div id="result1" class="list-group"></div>
                                 <div class="products_box_existing" style="display:none;">
@@ -977,8 +990,8 @@
                             <hr class="my-4">
                             <div class="form-group credit_sale">
                                 <label class="form-label">Credit Sale to <span class="d-grey font-13">(required)</span></label>
-                                <select class="form-select form-control" name="sale_staff_id" id="sale_staff_id">
-                                    <option>Please select</option>
+                                <select class="form-select form-control" name="existing_staff" id="sale_staff_id">
+                                    <option value="">Please select</option>
                                     @foreach($staffs as $staff)
                                         <option value="{{$staff->id}}">{{$staff->first_name.' '.$staff->last_name}}</option>
                                     @endforeach
@@ -995,13 +1008,14 @@
                 <div class="modal-footer justify-content-between">
                     <div class="mod-ft-left d-flex gap-2">
                         <button type="button" class="btn btn-light-outline-grey btn-md icon-btn-left"><i class="ico-print3 me-2 fs-6"></i> Print Quote</button>
-                        <button type="button" class="btn btn-light-outline-grey btn-md icon-btn-left"><i class="ico-draft me-2 fs-6"></i> Save sale as a draft</button>
+                        <!-- <button type="button" class="btn btn-light-outline-grey btn-md icon-btn-left"><i class="ico-draft me-2 fs-6"></i> Save sale as a draft</button> -->
                     </div>
                     <div class="mod-ft-right">
                         <button type="button" class="btn btn-light btn-md">Cancel</button>
-                        <button type="button" class="btn btn-primary btn-md">Take Payment</button>
+                        <button type="submit" class="btn btn-primary btn-md take_payment">Take Payment</button>
                     </div>
                 </div>
+                </form>
             </div>
             <div class="modal-content edit_product" style="display:none;">
                 <div class="modal-header" id="edit_product">
@@ -1249,6 +1263,56 @@
                 }
             },
         });
+
+        // Define validation rules
+        var validationRules = {
+            casual_staff: {
+                required: true
+            },
+            new_staff: {
+                required: true
+            },
+            existing_staff: {
+                required: true
+            }
+        };
+
+        $("#create_walkin").validate({
+            rules: validationRules,
+            messages: {
+                casual_staff: {
+                    required: "Please select credit sale."
+                },
+                new_staff: {
+                    required: "Please select credit sale."
+                },
+                existing_staff: {
+                    required: "Please select credit sale."
+                }
+            },
+            errorPlacement: function(error, element) {
+                // Custom error placement
+                error.insertAfter(element); // Display error message after the element
+            }
+        });
+
+         // Switch tabs and validate on tab change
+        // $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function(e) {
+        //     var target = $(e.target).attr("href");
+        //     var $target = $(target);
+        //     // Check if the tab has validation rules defined
+        //     if (validationRules[target]) {
+        //         // Remove previous validation rules
+        //         validator.resetForm();
+        //         // Add new validation rules for the current tab
+        //         $target.find('input, select, textarea').each(function() {
+        //             $(this).rules('remove'); // Remove previous rules
+        //         });
+        //         $target.find('input, select, textarea').each(function() {
+        //             $(this).rules('add', validationRules[target][$(this).attr('name')]); // Add new rules
+        //         });
+        //     }
+        // });
 
         $('#waitlistUpdateBtn').on('click' ,function(e){
             var clientselectedServicesCount = $('#edit_waitlist_selected_services').children("li").length,
@@ -2119,6 +2183,15 @@
             });
         });
 
+        $(document).on('submit', '#create_walkin', function(e) {
+            e.preventDefault();
+            // Check if the form is valid
+            if ($("#create_walkin").valid()) {
+                var data = new FormData(this);
+                SubmitWalkIn(data);
+            }
+        });
+
         $(document).on('change', '.all_staffs', function(e) {
             // Get the selected option value
             var selectedValue = $(this).val();
@@ -2636,12 +2709,17 @@
                 $(this).find('#hdn_discount_amount').val($('#edit_amount').val());
                 $(this).find('#discount_types').val($('input[name="edit_discount_type"]:checked').val());
                 $(this).find('#hdn_reason').val($('#edit_reason').val());
+                $(this).find('.who_did_work').text('Sold by '+ $('#edit_sale_staff_id option:selected').text());
+                $(this).find('#hdn_who_did_work').val($('#edit_sale_staff_id').val());
+                $(this).find('#hdn_edit_amount').val($('#edit_amount').val());
+                
                 updateSubtotalAndTotal(cus_type); // Update Subtotal and Total
             }
         });
         $('#notes').append('\n' + $('#edit_reason').val() + ' - ' + '$'+$('#edit_amount').val() + ' on ' + $('.edit_product_name').text() + '\n');
     })
     $(document).on('click','.update_discount',function(e){
+
         $('.main_discount').hide();
         $('.main_walk_in').show();
 
@@ -2660,7 +2738,10 @@
         }else{
             $('#notes').text($('#reason').val() + ' - ' +$('#amount').val()+'%' + ' applied to invoice.');
         }
-        
+        $('#hdn_main_discount_surcharge').val($('#discount_surcharge').val());
+        $('#hdn_main_discount_type').val($('input[name="discount_type"]:checked').val());
+        $('#hdn_main_discount_amount').val($('#amount').val());
+        $('#hdn_main_discount_reason').val($('#reason').val());
     })
     $(document).on('click', '.c_minus', function(e) {
         var type = "casual";
@@ -3206,6 +3287,7 @@
 
     $(document).on('click', '.casual_cus', function(e) {
         e.preventDefault(); // Prevent default link behavior
+        $('#hdn_customer_type').val('casual');
         $('#customer_type').val('casual');
         $("#casual_customer").load(location.href + " #casual_customer");
         $('.add_dis').find('.subtotal').text('$0.00');
@@ -3222,6 +3304,7 @@
     });
     $(document).on('click', '.new_cus', function(e) {
         e.preventDefault(); // Prevent default link behavior
+        $('#hdn_customer_type').val('new');
         $('#customer_type').val('new');
         $("#new_customer").load(location.href + " #new_customer");
         $('.add_dis').find('.subtotal').text('$0.00');
@@ -3238,6 +3321,7 @@
     });
     $(document).on('click', '.existing_cus', function(e) {
         e.preventDefault(); // Prevent default link behavior
+        $('#hdn_customer_type').val('existing');
         $('#customer_type').val('existing');
         $("#exist_customer").load(location.href + " #exist_customer");
         $('.add_dis').find('.subtotal').text('$0.00');
@@ -3393,7 +3477,7 @@
         
         $('.edit_price_per_unit').val(price);
         $('.edit_quantity').val(quanitity);
-        $('#edit_sale_staff_id').val($(this).parent().parent().parent().parent().find('.credit_sale').find('#sale_staff_id').val());
+        // $('#edit_sale_staff_id').val($(this).parent().parent().parent().parent().find('.credit_sale').find('#sale_staff_id').val());
 
         //by default this field is disabled bcs of no discount selected
         // $('#edit_discount_type, #edit_amount, #edit_reason').prop('disabled', true);
@@ -3413,18 +3497,22 @@
             // $('#dynamic_discount').text('')
             $('#dynamic_discount').text('');
             $('#edit_reason').val('');
+            $('#edit_sale_staff_id').val($(this).parent().parent().find('#hdn_who_did_work').val())
+            
         }else if(ck_sur == 'Manual Discount'){
             $('#edit_discount_type, #edit_amount, #edit_reason').prop('disabled', false);
             $('#edit_discount_surcharge').val($(this).parent().parent().find('#hdn_discount_surcharge').val());
             $('#dynamic_discount').text('Discount: $' + $(this).parent().parent().find('#hdn_discount_amount').val());
             $('#edit_amount').val($(this).parent().parent().find('#hdn_discount_amount').val());
             $('#edit_reason').val($(this).parent().parent().find('#hdn_reason').val());
+            $('#edit_sale_staff_id').val($(this).parent().parent().find('#hdn_who_did_work').val())
         }else if(ck_sur == 'Manual Surcharge'){
             $('#edit_discount_type, #edit_amount, #edit_reason').prop('disabled', false);
             $('#edit_discount_surcharge').val($(this).parent().parent().find('#hdn_discount_surcharge').val());
             $('#dynamic_discount').text('Discount: $' + $(this).parent().parent().find('#hdn_discount_amount').val());
             $('#edit_amount').val($(this).parent().parent().find('#hdn_discount_amount').val());
             $('#edit_reason').val($(this).parent().parent().find('#hdn_reason').val());
+            $('#edit_sale_staff_id').val($(this).parent().parent().find('#hdn_who_did_work').val())
         }
         else{
             $('#edit_discount_surcharge').val($(this).parent().parent().find('#hdn_discount_surcharge').val());
@@ -3435,6 +3523,7 @@
             $('#edit_discount_type, #edit_amount, #edit_reason').prop('disabled', true);
             $('#edit_amount').val($(this).parent().parent().find('#hdn_discount_amount').val());
             $('#edit_reason').val('Credit Card Surcharge');
+            $('#edit_sale_staff_id').val($(this).parent().parent().find('#hdn_who_did_work').val())
         }
     });
 
@@ -4384,19 +4473,22 @@
                     $('#productDetails').append(
                         `<div class="invo-notice mb-4 closed product-info1" prod_id='${product.id}'>
                             <a href="#" class="btn cross remove_product"><i class="ico-close"></i></a>
-                            <input type='hidden' name='product_name' value='${product.name}'>
-                            <input type='hidden' id="product_id" name='product_id' value='${product.id}'>
-                            <input type='hidden' id="product_price" name='product_price' value='${product.price}'>
+                            <input type='hidden' name='casual_product_name[]' value='${product.name}'>
+                            <input type='hidden' id="product_id" name='casual_product_id[]' value='${product.id}'>
+                            <input type='hidden' id="product_price" name='casual_product_price[]' value='${product.price}'>
                             <input type='hidden' id="product_gst" name='product_gst' value='${product.gst}'>
-                            <input type='hidden' id="discount_types" name='discount_types' value='amount'>
-                            <input type='hidden' id="hdn_discount_surcharge" name='hdn_discount_surcharge' value='No Discount'>
-                            <input type='hidden' id="hdn_discount_amount" name='hdn_discount_amount' value='0'>
-                            <input type='hidden' id="hdn_reason" name='hdn_reason' value='0'>
-                            <div class="inv-left"><b>${product.name} </b><span class="dis"></span></div>
+                            <input type='hidden' id="discount_types" name='casual_discount_types[]' value='amount'>
+                            <input type='hidden' id="hdn_discount_surcharge" name='casual_discount_surcharge[]' value='No Discount'>
+                            <input type='hidden' id="hdn_discount_amount" name='casual_discount_amount[]' value='0'>
+                            <input type='hidden' id="hdn_reason" name='casual_reason[]' value=''>
+                            <input type='hidden' id="hdn_who_did_work" name='casual_who_did_work[]' value='no one'>
+                            <input type='hidden' id="hdn_edit_amount" name='casual_edit_amount[]' value='0'>
+                            <input type='hidden' id="product_type" name='product_type[]' value='${product.product_type}'>
+                            <div class="inv-left"><b>${product.name} </b><span class="who_did_work"></span><span class="dis"></span></div>
                             <div class="inv-center">
                                 <div class="number-input walk_number_input safari_only form-group mb-0 number">
                                     <button class="c_minus"></button>
-                                    <input class="quantity form-control" min="0" name="product_quanitity" value="1" type="number">
+                                    <input class="quantity form-control" min="0" name="casual_product_quanitity[]" value="1" type="number">
                                     <button class="c_plus"></button>
                                 </div>
                             </div>
@@ -4432,19 +4524,22 @@
                     $('#NewproductDetails').append(
                         `<div class="invo-notice mb-4 closed product-info2" prod_id='${product.id}'>
                             <a href="#" class="btn cross remove_product"><i class="ico-close"></i></a>
-                            <input type='hidden' name='product_name' value='${product.name}'>
-                            <input type='hidden' id="product_id" name='product_id' value='${product.id}'>
-                            <input type='hidden' id="product_price" name='product_price' value='${product.price}'>
+                            <input type='hidden' name='new_product_name[]' value='${product.name}'>
+                            <input type='hidden' id="product_id" name='new_product_id[]' value='${product.id}'>
+                            <input type='hidden' id="product_price" name='new_product_price[]' value='${product.price}'>
                             <input type='hidden' id="product_gst" name='product_gst' value='${product.gst}'>
-                            <input type='hidden' id="discount_types" name='discount_types' value='amount'>
-                            <input type='hidden' id="hdn_discount_surcharge" name='hdn_discount_surcharge' value='No Discount'>
-                            <input type='hidden' id="hdn_discount_amount" name='hdn_discount_amount' value='0'>
-                            <input type='hidden' id="hdn_reason" name='hdn_reason' value='0'>
-                            <div class="inv-left"><b>${product.name} </b><span class="dis"></span></div>
+                            <input type='hidden' id="discount_types" name='new_discount_types[]' value='amount'>
+                            <input type='hidden' id="hdn_discount_surcharge" name='new_discount_surcharge[]' value='No Discount'>
+                            <input type='hidden' id="hdn_discount_amount" name='new_discount_amount[]' value='0'>
+                            <input type='hidden' id="hdn_reason" name='new_reason[]' value=''>
+                            <input type='hidden' id="hdn_who_did_work" name='new_who_did_work[]' value='no one'>
+                            <input type='hidden' id="hdn_edit_amount" name='new_edit_amount[]' value='0'>
+                            <input type='hidden' id="product_type" name='product_type[]' value='${product.product_type}'>
+                            <div class="inv-left"><b>${product.name} </b><span class="who_did_work"></span><span class="dis"></span></div>
                             <div class="inv-center">
                                 <div class="number-input walk_number_input safari_only form-group mb-0 number">
                                     <button class="n_minus"></button>
-                                    <input class="quantity form-control" min="0" name="product_quanitity" value="1" type="number">
+                                    <input class="quantity form-control" min="0" name="new_product_quanitity[]" value="1" type="number">
                                     <button class="n_plus"></button>
                                 </div>
                             </div>
@@ -4479,19 +4574,22 @@
                     $('#ExistingproductDetails').append(
                         `<div class="invo-notice mb-4 closed product-info3" prod_id='${product.id}'>
                             <a href="#" class="btn cross remove_product"><i class="ico-close"></i></a>
-                            <input type='hidden' name='product_name' value='${product.name}'>
-                            <input type='hidden' id="product_id" name='product_id' value='${product.id}'>
-                            <input type='hidden' id="product_price" name='product_price' value='${product.price}'>
+                            <input type='hidden' name='existing_product_name[]' value='${product.name}'>
+                            <input type='hidden' id="product_id" name='existing_product_id[]' value='${product.id}'>
+                            <input type='hidden' id="product_price" name='existing_product_price[]' value='${product.price}'>
                             <input type='hidden' id="product_gst" name='product_gst' value='${product.gst}'>
-                            <input type='hidden' id="hdn_discount_surcharge" name='hdn_discount_surcharge' value='No Discount'>
-                            <input type='hidden' id="hdn_discount_amount" name='hdn_discount_amount' value='0'>
-                            <input type='hidden' id="hdn_reason" name='hdn_reason' value='0'>
-                            <input type='hidden' id="discount_types" name='discount_types' value='amount'>
-                            <div class="inv-left"><b>${product.name} </b><span class="dis"></span></div>
+                            <input type='hidden' id="hdn_discount_surcharge" name='existing_discount_surcharge[]' value='No Discount'>
+                            <input type='hidden' id="hdn_discount_amount" name='existing_discount_amount[]' value='0'>
+                            <input type='hidden' id="hdn_reason" name='existing_reason[]' value=''>
+                            <input type='hidden' id="discount_types" name='existing_discount_types[]' value='amount'>
+                            <input type='hidden' id="hdn_who_did_work" name='existing_who_did_work[]' value='no one'>
+                            <input type='hidden' id="hdn_edit_amount" name='existing_edit_amount[]' value='0'>
+                            <input type='hidden' id="product_type" name='product_type[]' value='${product.product_type}'>
+                            <div class="inv-left"><b>${product.name} </b><span class="who_did_work"></span><span class="dis"></span></div>
                             <div class="inv-center">
                                 <div class="number-input walk_number_input safari_only form-group mb-0 number">
                                     <button class="e_minus"></button>
-                                    <input class="quantity form-control" min="0" name="product_quanitity" value="1" type="number">
+                                    <input class="quantity form-control" min="0" name="existing_product_quanitity[]" value="1" type="number">
                                     <button class="e_plus"></button>
                                 </div>
                             </div>
@@ -4591,7 +4689,10 @@
             
             
             var grandTotal = total + gst; // Calculate total including GST
-
+            $('#hdn_subtotal').val(subtotal.toFixed(2));
+            $('#hdn_discount').val(discount.toFixed(2));
+            $('#hdn_total').val(total.toFixed(2));
+            $('#hdn_gst').val(gst.toFixed(2));
             // Update the displayed values on the page
             $('.subtotal').text('$' + subtotal.toFixed(2));
             $('.discount').text('$' + discount.toFixed(2));
@@ -4684,6 +4785,11 @@
             // var grandTotal = total + gst; // Calculate total including GST
 
             // Update the displayed values on the page
+            $('#hdn_subtotal').val(subtotal.toFixed(2));
+            $('#hdn_discount').val(discount.toFixed(2));
+            $('#hdn_total').val(total.toFixed(2));
+            $('#hdn_gst').val(gst.toFixed(2));
+
             $('.subtotal').text('$' + subtotal.toFixed(2));
             $('.discount').text('$' + discount.toFixed(2));
             $('.total').text('$' + total.toFixed(2));
@@ -4778,6 +4884,11 @@
             // var grandTotal = total + gst; // Calculate total including GST
 
             // Update the displayed values on the page
+            $('#hdn_subtotal').val(subtotal.toFixed(2));
+            $('#hdn_discount').val(discount.toFixed(2));
+            $('#hdn_total').val(total.toFixed(2));
+            $('#hdn_gst').val(gst.toFixed(2));
+
             $('.subtotal').text('$' + subtotal.toFixed(2));
             $('.discount').text('$' + discount.toFixed(2));
             $('.total').text('$' + total.toFixed(2));
@@ -5053,6 +5164,39 @@
         }
         $('.products_box_existing').show(); // Show the product search results box
     }
+    function SubmitWalkIn(data){
+		$.ajax({
+			headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+			url: "{{ route('calendar.store-walk-in') }}",
+			type: "post",
+			data: data,
+            contentType: false, // The content type used when sending data to the server. Default is: "application/x-www-form-urlencoded"
+            processData: false, // To send DOMDocument or non processed data file it is set to false (i.e. data should not be in the form of string)
+            cache: false, // To unable request pages to be cached
+			success: function(response) {
+				
+				// Show a Sweet Alert message after the form is submitted.
+				if (response.success) {
+					
+					Swal.fire({
+						title: "Walk-In!",
+						text: "Your Walk-In created successfully.",
+						type: "success",
+					}).then((result) => {
+                        window.location = "{{url('calender')}}"//'/player_detail?username=' + name;
+                    });
+					
+				} else {
+					
+					Swal.fire({
+						title: "Error!",
+						text: response.message,
+						type: "error",
+					});
+				}
+			},
+		});
+	}
 
 </script>
 </html>

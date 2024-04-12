@@ -28,6 +28,10 @@ use DateTime;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Support\Facades\Auth;
 use PhpParser\Node\Stmt\Foreach_;
+use App\Models\WalkInRetailSale;
+use App\Models\WalkInProducts;
+use App\Models\WalkInDiscountSurcharge;
+use App\Models\Payment;
 
 class CalenderController extends Controller
 {
@@ -69,7 +73,8 @@ class CalenderController extends Controller
                 'id'    => $service->id,
                 'name'  => $service->service_name,
                 'price' => $service->standard_price,
-                'gst'   =>'yes'
+                'gst'   =>'yes',
+                'product_type' =>'service'
             ];
         }
         // Extract and format products data
@@ -80,7 +85,8 @@ class CalenderController extends Controller
                 'id'    => $product->id,
                 'name'  => $product->product_name,
                 'price' => $product->price,
-                'gst'   => $gst
+                'gst'   => $gst,
+                'product_type' =>'product'
             ];
         }
 
@@ -1389,4 +1395,194 @@ class CalenderController extends Controller
         $products = Products::where('product_name', 'like', '%' .$request->name. '%')->get();
         return response()->json($products);
     }
+    public function StoreWalkIn(Request $request)
+    {
+        // dd($request->all());
+        if($request->hdn_customer_type == 'casual')
+        {
+            // Storing walk-in sale details
+            $walk_in_table = [
+                'customer_type' => $request->hdn_customer_type,
+                'invoice_date' => $request->casual_invoice_date,
+                'subtotal' => $request->hdn_subtotal,
+                'discount' => $request->hdn_discount,
+                'gst' => $request->hdn_gst,
+                'total' => $request->hdn_total,
+                'user_id' => $request->casual_staff,
+                'note' => $request->notes
+            ];  
+            // dd($walk_in_table);
+
+            $walkInSale = WalkInRetailSale::create($walk_in_table);
+
+            // Storing walk-in sale products
+            foreach ($request->casual_product_id as $index => $productId) {
+                $walk_in_product = [
+                    'walk_in_id' => $walkInSale->id,
+                    'product_id' => $productId,
+                    'product_name' => $request->casual_product_name[$index],
+                    'product_price' => $request->casual_product_price[$index],
+                    'product_quantity' => $request->casual_product_quanitity[$index],
+                    'product_type' => $request->product_type[$index],
+                    'who_did_work' => ($request->casual_who_did_work[$index] && $request->casual_who_did_work[$index] == 'no one' || $request->casual_who_did_work[$index] == 'Please select') ? null : $request->casual_who_did_work[$index],
+                    'product_discount_surcharge' => $request->casual_discount_surcharge[$index],
+                    'discount_type' => $request->casual_discount_types[$index],
+                    'discount_amount' => $request->casual_discount_amount[$index],
+                    // 'edit_amount' => $request->casual_edit_amount[$index],
+                    'discount_reason' => $request->casual_reason[$index],
+                ];
+
+                WalkInProducts::create($walk_in_product);
+            }
+            // dd($walk_in_product);
+
+            // Storing walk-in sale discount/surcharge details
+            $walk_in_discount_surcharge = [
+                'walk_in_id' => $walkInSale->id,
+                'discount_surcharge' => $request->hdn_main_discount_surcharge,
+                'discount_type' => $request->hdn_main_discount_type,
+                'discount_amount' => $request->hdn_main_discount_amount,
+                'discount_reason' => $request->hdn_main_discount_reason,
+            ];
+            // dd($walk_in_discount_surcharge);
+            WalkInDiscountSurcharge::create($walk_in_discount_surcharge);
+
+            // Storing walk-in payment details
+            $walk_in_payment = [
+                'walk_in_id' => $walkInSale->id,
+                'payment_type' => 'Cash',
+                'amount' => $request->hdn_total,
+                'date' => date('d-m-y'),
+                'total' => $request->hdn_total,
+                'remaining_balance' => $request->hdn_total
+            ];
+
+            Payment::create($walk_in_payment);
+        }
+        else if($request->hdn_customer_type == 'existing')
+        {
+            // Storing walk-in sale details
+            $walk_in_table = [
+                'customer_type' => $request->hdn_customer_type,
+                'invoice_date' => $request->existing_invoice_date,
+                'subtotal' => $request->hdn_subtotal,
+                'discount' => $request->hdn_discount,
+                'gst' => $request->hdn_gst,
+                'total' => $request->hdn_total,
+                'user_id' => $request->existing_staff,
+                'note' => $request->notes
+            ];  
+            // dd($walk_in_table);
+
+            $walkInSale = WalkInRetailSale::create($walk_in_table);
+
+            // Storing walk-in sale products
+            foreach ($request->existing_product_id as $index => $productId) {
+                $walk_in_product = [
+                    'walk_in_id' => $walkInSale->id,
+                    'product_id' => $productId,
+                    'product_name' => $request->existing_product_name[$index],
+                    'product_price' => $request->existing_product_price[$index],
+                    'product_quantity' => $request->existing_product_quanitity[$index],
+                    'product_type' => $request->product_type[$index],
+                    'who_did_work' => ($request->existing_who_did_work[$index] && $request->existing_who_did_work[$index] == 'no one' || $request->existing_who_did_work[$index] == 'Please select') ? null : $request->existing_who_did_work[$index],
+                    'product_discount_surcharge' => $request->existing_discount_surcharge[$index],
+                    'discount_type' => $request->existing_discount_types[$index],
+                    'discount_amount' => $request->existing_discount_amount[$index],
+                    // 'edit_amount' => $request->casual_edit_amount[$index],
+                    'discount_reason' => $request->existing_reason[$index],
+                ];
+
+                WalkInProducts::create($walk_in_product);
+            }
+            // dd($walk_in_product);
+
+            // Storing walk-in sale discount/surcharge details
+            $walk_in_discount_surcharge = [
+                'walk_in_id' => $walkInSale->id,
+                'discount_surcharge' => $request->hdn_main_discount_surcharge,
+                'discount_type' => $request->hdn_main_discount_type,
+                'discount_amount' => $request->hdn_main_discount_amount,
+                'discount_reason' => $request->hdn_main_discount_reason,
+            ];
+            // dd($walk_in_discount_surcharge);
+            WalkInDiscountSurcharge::create($walk_in_discount_surcharge);
+
+            // Storing walk-in payment details
+            $walk_in_payment = [
+                'walk_in_id' => $walkInSale->id,
+                'payment_type' => 'Cash',
+                'amount' => $request->hdn_total,
+                'date' => date('d-m-y'),
+                'total' => $request->hdn_total,
+                'remaining_balance' => $request->hdn_total
+            ];
+
+            Payment::create($walk_in_payment);
+        }
+        else{
+            // Storing walk-in sale details
+            $walk_in_table = [
+                'customer_type' => $request->hdn_customer_type,
+                'invoice_date' => $request->new_invoice_date,
+                'subtotal' => $request->hdn_subtotal,
+                'discount' => $request->hdn_discount,
+                'gst' => $request->hdn_gst,
+                'total' => $request->hdn_total,
+                'user_id' => $request->new_staff,
+                'note' => $request->notes
+            ];  
+            // dd($walk_in_table);
+
+            $walkInSale = WalkInRetailSale::create($walk_in_table);
+
+            // Storing walk-in sale products
+            foreach ($request->new_product_id as $index => $productId) {
+                $walk_in_product = [
+                    'walk_in_id' => $walkInSale->id,
+                    'product_id' => $productId,
+                    'product_name' => $request->new_product_name[$index],
+                    'product_price' => $request->new_product_price[$index],
+                    'product_type' => $request->product_type[$index],
+                    'product_quantity' => $request->new_product_quanitity[$index],
+                    'who_did_work' => ($request->new_who_did_work[$index] && $request->new_who_did_work[$index] == 'no one' || $request->new_who_did_work[$index] == 'Please select') ? null : $request->new_who_did_work[$index],
+                    'product_discount_surcharge' => $request->new_discount_surcharge[$index],
+                    'discount_type' => $request->new_discount_types[$index],
+                    'discount_amount' => $request->new_discount_amount[$index],
+                    // 'edit_amount' => $request->casual_edit_amount[$index],
+                    'discount_reason' => $request->new_reason[$index],
+                ];
+
+                WalkInProducts::create($walk_in_product);
+            }
+            // dd($walk_in_product);
+
+            // Storing walk-in sale discount/surcharge details
+            $walk_in_discount_surcharge = [
+                'walk_in_id' => $walkInSale->id,
+                'discount_surcharge' => $request->hdn_main_discount_surcharge,
+                'discount_type' => $request->hdn_main_discount_type,
+                'discount_amount' => $request->hdn_main_discount_amount,
+                'discount_reason' => $request->hdn_main_discount_reason,
+            ];
+            // dd($walk_in_discount_surcharge);
+            WalkInDiscountSurcharge::create($walk_in_discount_surcharge);
+
+            // Storing walk-in payment details
+            $walk_in_payment = [
+                'walk_in_id' => $walkInSale->id,
+                'payment_type' => 'Cash',
+                'amount' => $request->hdn_total,
+                'date' => date('d-m-y'),
+                'total' => $request->hdn_total,
+                'remaining_balance' => $request->hdn_total
+            ];
+
+            Payment::create($walk_in_payment);
+        }
+        
+
+        return response()->json(['success' => true, 'message' => 'Walk-In created successfully']);
+    }
+
 }
