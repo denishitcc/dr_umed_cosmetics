@@ -4,8 +4,10 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <div class="card">
     <div class="card-head">
-        <h4 class="small-title mb-0">Appointments</h4>
-        @include('calender.partials.appointment-dropdown')
+        <div class="toolbar">
+            <div class="tool-left"><h4 class="small-title mb-0">Appointments</h4></div>
+            <div class="tool-right">@include('calender.partials.appointment-dropdown')</div>
+        </div>
     </div>
 
     <div class="card-body">
@@ -13,7 +15,7 @@
             <div class="col-lg-3">
                 <div class="main_calendar">
                 <div class="mb-3 d-flex">
-                    <div class="dropdown">
+                    <div class="dropdown d-flex w-100">
                         <button class="btn btn-primary btn-md me-3 w-100 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Add
                         </button>
@@ -38,9 +40,10 @@
                 </div>
                 <div id="mycalendar"> </div>
                 <div class="waitlist" id="waitlist" style="display:none;">
-
-                    <h5 class="mb-3">Waitlist</h5>
-                    <button class="btn-close close_waitlist"></button>
+                    <div class="d-flex justify-content-between mb-3">
+                        <h5 class="mb-3">Waitlist</h5>
+                        <button class="btn-close close_waitlist"></button>
+                    </div>
                     <div class="mb-3">
                         <label class="cst-check d-flex align-items-center"><input type="checkbox" value="" class="current_date_checked" checked><span class="checkmark me-2"></span>Filter waitlist by current calendar date</label>
                     </div>
@@ -2085,8 +2088,10 @@
 
                         let htmlContent = `
                             <div class="waitlist" id="waitlist">
-                                <h5 class="mb-3">Waitlist</h5>
-                                <button class="btn-close close_waitlist"></button>
+                                <div class="d-flex justify-content-between mb-3">
+                                    <h5 class="mb-3">Waitlist</h5>
+                                    <button class="btn-close close_waitlist"></button>
+                                </div>
                                 <div class="mb-3">
                                     <label class="cst-check d-flex align-items-center">
                                         <input type="checkbox" value="" class="current_date_checked">
@@ -2239,8 +2244,10 @@
 
                         let htmlContent = `
                             <div class="waitlist" id="waitlist">
-                                <h5 class="mb-3">Waitlist</h5>
-                                <button class="btn-close close_waitlist"></button>
+                                <div class="d-flex justify-content-between mb-3">
+                                    <h5 class="mb-3">Waitlist</h5>
+                                    <button class="btn-close close_waitlist"></button>
+                                </div>
                                 <div class="mb-3">
                                     <label class="cst-check d-flex align-items-center">
                                         <input type="checkbox" value="" class="current_date_checked">
