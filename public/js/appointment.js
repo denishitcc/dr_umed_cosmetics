@@ -655,8 +655,8 @@ var DU = {};
         staffchangeafterlocation: function(){
             var context = this;
             jQuery('#locations').on('change', function(e) {
-                var location_id           = $(this).val()
-
+                var location_id           = $(this).val();
+                sessionStorage.setItem("loc_ids", location_id);
                 var selected_loc_id = $('#locations').val();
                 var selected_loc_name = $('#locations option:selected').text();
                 $('.walkin_loc_name').text(selected_loc_name);
@@ -688,6 +688,22 @@ var DU = {};
                     },
                     error: function (error) {
                         console.error('Error fetching resources:', error);
+                    }
+                });
+                $.ajax({
+                    url: moduleConfig.getSelectedLocation,
+                    type: 'POST',
+                    data: { loc_id: selected_loc_id },
+                    headers: {
+                        'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function (response) {
+                        debugger;
+                        console.log('Location ID fetched successfully.');
+                        product_details = response;
+                    },
+                    error: function (error) {
+                        console.error('Error storing location ID:', error);
                     }
                 });
             });
@@ -752,6 +768,24 @@ var DU = {};
                     var selected_loc_name = $('#locations option:selected').text();
                     $('.walkin_loc_name').text(selected_loc_name);
                     $('#walk_in_location_id').val(selected_loc_id);
+
+                    // Send the selected location ID to the server
+                    $.ajax({
+                        url: moduleConfig.getSelectedLocation,
+                        type: 'POST',
+                        data: { loc_id: selected_loc_id },
+                        headers: {
+                            'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function (response) {
+                            console.log('Location ID fetched successfully.');
+                            product_details = response;
+                        },
+                        error: function (error) {
+                            console.error('Error storing location ID:', error);
+                        }
+                    });
+                    // sessionStorage.setItem("loc_ids", selected_loc_id);
                 },
                 error: function (error) {
                     console.error('Error fetching resources:', error);

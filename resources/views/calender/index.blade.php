@@ -1143,7 +1143,7 @@
                                     <option>No Discount</option>
                                     <option selected>Manual Discount</option>
                                     <option>Manual Surcharge</option>
-                                    <option>Credit Card Surcharge</option>
+                                    <!-- <option>Credit Card Surcharge</option> -->
                                 </select>
                             </div>
                         </div>
@@ -1215,7 +1215,7 @@
                                     <option>Bank Transfer</option>
                                     <option>Cash</option>
                                     <option>Humm payment</option>
-                                    <option>Voucher</option>
+                                    <!-- <option>Voucher</option> -->
                                     <option>Zip Pay</option>
                                 </select>
                                 </div>
@@ -1291,7 +1291,8 @@
         updateAppointmentStatus:      "{!! route('calendar.update-appointment-status') !!}",
         DeleteAppointment:            "{!! route('calendar.delete-appointment', ':ID') !!}",
         repeatAppointment:            "{!! route('calendar.repeat-appointment') !!}",
-        getLocation:                  "{!! route('get-all-locations') !!}"
+        getLocation:                  "{!! route('get-all-locations') !!}",
+        getSelectedLocation:          "{!! route('calendar.get-selected-location') !!}"
     };
 
     $(document).ready(function()
@@ -2602,7 +2603,8 @@
 
     var client_details = [];
     // var product_details = [];
-    var product_details = @json($productServiceJson);
+    // var product_details = @json($productServiceJson);
+    // console.log('product_details',product_details);
     // var service_details = @json($services);
 
     // Assuming you have a function to trigger opening the modal with a specific client id

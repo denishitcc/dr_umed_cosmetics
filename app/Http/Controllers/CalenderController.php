@@ -61,39 +61,6 @@ class CalenderController extends Controller
             ->where('preferred_from_date',$todayDate)
             ->get();
 
-        $all_services = Services::select('id','service_name', 'standard_price')->with(['appearoncalender'])->get();
-        $all_products = Products::select('id','product_name', 'price','gst_code')->get();
-
-        // Initialize an empty array to store the merged data
-        $mergedArray = [];
-
-        // Extract and format services data
-        foreach ($all_services as $service) {
-            $mergedArray[] = [
-                'id'    => $service->id,
-                'name'  => $service->service_name,
-                'price' => $service->standard_price,
-                'gst'   =>'yes',
-                'product_type' =>'service'
-            ];
-        }
-        // Extract and format products data
-        foreach ($all_products as $product) {
-            $gst = $product->gst_code === 'Standard' ? 'yes' : 'no';
-
-            $mergedArray[] = [
-                'id'    => $product->id,
-                'name'  => $product->product_name,
-                'price' => $product->price,
-                'gst'   => $gst,
-                'product_type' =>'product'
-            ];
-        }
-
-        // Convert the merged array to JSON format
-        $mergedProductService = $mergedArray;
-
-
         foreach($waitlist as $wait)
         {
             $ser_id = explode(',',$wait->service_id);
@@ -122,7 +89,7 @@ class CalenderController extends Controller
                 'services'   => $services,
                 'waitlist'   => $waitlist,
                 'staffs'     => $staffs,
-                'productServiceJson'   => $mergedProductService
+                'productServiceJson'   => ''
             ]
         );
     }
@@ -1622,5 +1589,53 @@ class CalenderController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Walk-In created successfully']);
     }
+    public function GetLocation(Request $request)
+    {
+        $location_id = $request->loc_id;
 
+        $all_services = Services::select('services.id', 'services.service_name', 'services.standard_price')
+            ->with(['appearoncalender'])
+            ->join('services_availabilities', 'services.id', '=', 'services_availabilities.service_id')
+            ->where('services_availabilities.availability', 'Available')
+            ->where('services_availabilities.location_name', $location_id)
+            ->get();
+
+        $all_products = DB::table('products')
+        ->select('products.id', 'products.product_name', 'products.price AS p_price', 'products.gst_code', 'product_availabilities.price AS availability_price', 'product_availabilities.*')
+        ->join('product_availabilities', 'products.id', '=', 'product_availabilities.product_id')
+        ->where('product_availabilities.availability', 'Available')
+        ->where('products.type','Retail')
+        ->where('product_availabilities.location_name', $location_id)
+        ->get();
+
+        // Initialize an empty array to store the merged data
+        $mergedArray = [];
+
+        // Extract and format services data
+        foreach ($all_services as $service) {
+            $mergedArray[] = [
+                'id'    => $service->id,
+                'name'  => $service->service_name,
+                'price' => $service->standard_price,
+                'gst'   =>'yes',
+                'product_type' =>'service'
+            ];
+        }
+        // Extract and format products data
+        foreach ($all_products as $product) {
+            $gst = $product->gst_code === 'Standard' ? 'yes' : 'no';
+
+            $mergedArray[] = [
+                'id'    => $product->id,
+                'name'  => $product->product_name,
+                'price' => $product->availability_price != null ? $product->availability_price : $product->p_price,
+                'gst'   => $gst,
+                'product_type' =>'product'
+            ];
+        }
+
+        // Convert the merged array to JSON format
+        $mergedProductService = $mergedArray;
+        return response()->json($mergedProductService);
+    }
 }
