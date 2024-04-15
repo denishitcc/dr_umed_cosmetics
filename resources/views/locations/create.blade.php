@@ -1602,6 +1602,62 @@
                             
                         </div>
                     </div>
+                <h5 class="small-title mt-3">Discount</h5>
+                <div class="container py-4">
+                    <div class="row">
+                        <div class="col-md-12 form_sec_outer_task">
+                        <div class="col-md-12 p-0">
+                            <div class="col-md-12 form_field_outer p-0">
+                            <div class="row form_field_outer_row">
+                                <div class="form-group col-md-6">
+                                <input type="text" class="form-control w_90" name="discount_type[]" id="type" placeholder="Text" />
+                                </div>
+                                <div class="form-group col-md-4">
+                                <input type="text" class="form-control w_90" name="discount_percentage[]" id="percentage" placeholder="Percentage" />
+                                </div>
+                                <div class="form-group col-md-2 add_del_btn_outer">
+                                <span class="btn_round add_node_btn_frm_field" title="Copy or clone this row">
+                                    <i class="fas fa-copy"></i>
+                                </span>
+
+                                <button class="btn_round remove_node_btn_frm_field" disabled>
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                <h5 class="small-title mt-3">Surcharge</h5>
+                <div class="container py-4">
+                    <div class="row">
+                        <div class="col-md-12 form_sec_outer_task">
+                        <div class="col-md-12 p-0">
+                            <div class="col-md-12 form_field_outer p-0">
+                            <div class="row form_field_outer_row">
+                                <div class="form-group col-md-6">
+                                <input type="text" class="form-control w_90" name="surcharge_type[]" id="type" placeholder="Text" />
+                                </div>
+                                <div class="form-group col-md-4">
+                                <input type="text" class="form-control w_90" name="surcharge_percentage[]" id="percentage" placeholder="Percentage" />
+                                </div>
+                                <div class="form-group col-md-2 add_del_btn_outer">
+                                <span class="btn_round add_node_btn_frm_field" title="Copy or clone this row">
+                                    <i class="fas fa-copy"></i>
+                                </span>
+
+                                <button class="btn_round remove_node_btn_frm_field" disabled>
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-lg-12 text-lg-end mt-4">
                     <button type="button" class="btn btn-light me-2" onclick="window.location='{{ url("locations") }}'">Discard</button>
                     <button type="submit" class="btn btn-primary">Save Changes</button>
@@ -1635,6 +1691,37 @@
     //     console.log(place.geometry.location.lng())
     // }
     $(document).ready(function() {
+        $("body").on("click", ".add_node_btn_frm_field", function (e) {
+            var index = $(this).closest(".form_field_outer").find(".form_field_outer_row").length + 1;
+            var cloned_el = $(this).closest(".form_field_outer").find(".form_field_outer_row").first().clone(true);
+
+            // Clear input values in the cloned element
+            cloned_el.find('input[type="text"]').val('');
+
+            $(this).closest(".form_field_outer").append(cloned_el);
+            
+            // Enable all remove buttons
+            $(this).closest(".form_field_outer").find(".remove_node_btn_frm_field").prop("disabled", false);
+            
+            // Disable the remove button for the first row
+            $(this).closest(".form_field_outer").find(".remove_node_btn_frm_field").first().prop("disabled", true);
+
+            // Change IDs of cloned elements
+            cloned_el.find("input[type='text']").attr("id", "mobileb_no_" + index);
+            cloned_el.find("select").attr("id", "no_type_" + index);
+
+            console.log(cloned_el);
+            //count++;
+        });
+
+
+        //===== delete the form fieed row
+        $("body").on("click", ".remove_node_btn_frm_field", function () {
+            $(this).closest(".form_field_outer_row").remove();
+            console.log("success");
+        });
+        
+        
 		$("#create_location").validate({
             rules: {
                 location_name: {
