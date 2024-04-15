@@ -657,6 +657,10 @@ var DU = {};
             jQuery('#locations').on('change', function(e) {
                 var location_id           = $(this).val()
 
+                var selected_loc_id = $('#locations').val();
+                var selected_loc_name = $('#locations option:selected').text();
+                $('.walkin_loc_name').text(selected_loc_name);
+                $('#walk_in_location_id').val(selected_loc_id);
                 $.ajax({
                     url: moduleConfig.getStaffList,
                     type: 'POST',
@@ -744,6 +748,10 @@ var DU = {};
                             $('#locations').append($('<option>', { value: location.id, text: location.location_name }));
                         });
                     }
+                    var selected_loc_id = $('#locations').val();
+                    var selected_loc_name = $('#locations option:selected').text();
+                    $('.walkin_loc_name').text(selected_loc_name);
+                    $('#walk_in_location_id').val(selected_loc_id);
                 },
                 error: function (error) {
                     console.error('Error fetching resources:', error);

@@ -1404,12 +1404,14 @@ class CalenderController extends Controller
         {
             // Storing walk-in sale details
             $walk_in_table = [
+                'location_id' =>$request->walk_in_location_id,
                 'customer_type' => $request->hdn_customer_type,
                 'invoice_date' => $request->casual_invoice_date,
                 'subtotal' => $request->hdn_subtotal,
                 'discount' => $request->hdn_discount,
                 'gst' => $request->hdn_gst,
                 'total' => $request->hdn_total,
+                'remaining_balance' => str_replace('$', '', $request->remaining_balance),
                 'user_id' => $request->casual_staff,
                 'note' => $request->notes
             ];  
@@ -1461,8 +1463,6 @@ class CalenderController extends Controller
                     'payment_type' => $paymentType,
                     'amount' => $paymentAmount,
                     'date' => $paymentDate,
-                    'total' => $paymentTotal = str_replace('$', '', $request->payment_total),
-                    'remaining_balance' => str_replace('$', '', $request->remaining_balance),
                 ];
             
                 Payment::create($walk_in_payment);
@@ -1473,12 +1473,14 @@ class CalenderController extends Controller
             // Storing walk-in sale details
             $walk_in_table = [
                 'client_id' => $request->walk_in_client_id,
+                'location_id' =>$request->walk_in_location_id,
                 'customer_type' => $request->hdn_customer_type,
                 'invoice_date' => $request->existing_invoice_date,
                 'subtotal' => $request->hdn_subtotal,
                 'discount' => $request->hdn_discount,
                 'gst' => $request->hdn_gst,
                 'total' => $request->hdn_total,
+                'remaining_balance' => str_replace('$', '', $request->remaining_balance),
                 'user_id' => $request->existing_staff,
                 'note' => $request->notes
             ];  
@@ -1530,8 +1532,6 @@ class CalenderController extends Controller
                     'payment_type' => $paymentType,
                     'amount' => $paymentAmount,
                     'date' => $paymentDate,
-                    'total' => $paymentTotal = str_replace('$', '', $request->payment_total),
-                    'remaining_balance' => str_replace('$', '', $request->remaining_balance),
                 ];
             
                 Payment::create($walk_in_payment);
@@ -1554,12 +1554,14 @@ class CalenderController extends Controller
             // Storing walk-in sale details
             $walk_in_table = [
                 'client_id' => $newUser->id,
+                'location_id' =>$request->walk_in_location_id,
                 'customer_type' => $request->hdn_customer_type,
                 'invoice_date' => $request->new_invoice_date,
                 'subtotal' => $request->hdn_subtotal,
                 'discount' => $request->hdn_discount,
                 'gst' => $request->hdn_gst,
                 'total' => $request->hdn_total,
+                'remaining_balance' => str_replace('$', '', $request->remaining_balance),
                 'user_id' => $request->new_staff,
                 'note' => $request->notes
             ];  
@@ -1611,8 +1613,6 @@ class CalenderController extends Controller
                     'payment_type' => $paymentType,
                     'amount' => $paymentAmount,
                     'date' => $paymentDate,
-                    'total' => $paymentTotal = str_replace('$', '', $request->payment_total),
-                    'remaining_balance' => str_replace('$', '', $request->remaining_balance),
                 ];
             
                 Payment::create($walk_in_payment);

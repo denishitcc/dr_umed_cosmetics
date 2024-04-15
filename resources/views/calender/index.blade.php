@@ -751,11 +751,12 @@
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content main_walk_in">
                 <div class="modal-header">
-                <h4 class="modal-title">Walk-in retail sale @ Hope Island</h4>
+                <h4 class="modal-title">Walk-in retail sale @ <span class="walkin_loc_name">Hope Island</span></h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="create_walkin" name="create_walkin" class="form" method="post">
                 @csrf
+                <input type="hidden" name="walk_in_location_id" id="walk_in_location_id">
                 <input type="hidden" name="walk_in_client_id" id="walk_in_client_id">
                 <input type="hidden" name="hdn_customer_type" id="hdn_customer_type" value="casual">
                 <input type='hidden' id="hdn_subtotal" name='hdn_subtotal' value='0'>
@@ -3769,6 +3770,10 @@
         SubmitWalkIn(formData);
     });
     $(document).on('click', '.existing_client_change', function() {
+        $('.client_search_bar').show();
+        $('#existingclientmodal').hide();
+    })
+    $(document).on('click', '#locations', function() {
         $('.client_search_bar').show();
         $('#existingclientmodal').hide();
     })

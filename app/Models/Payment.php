@@ -21,7 +21,5 @@ class Payment extends Model
         'payment_type',
         'amount',
         'date',
-        'total',
-        'remaining_balance'
     ];
 }

@@ -17,8 +17,6 @@ return new class extends Migration
             $table->string('payment_type', 50)->nullable();
             $table->decimal('amount', 10, 2)->nullable();
             $table->date('date')->nullable();
-            $table->decimal('total', 10, 2)->nullable(); // Assuming product_discount is a decimal
-            $table->decimal('remaining_balance', 10, 2)->nullable(); // Assuming product_discount is a decimal
 
             $table->softDeletes();
             $table->timestamps();
@@ -33,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('payment_');
+        Schema::dropIfExists('payment');
     }
 };

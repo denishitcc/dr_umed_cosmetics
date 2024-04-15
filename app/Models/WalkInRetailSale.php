@@ -18,11 +18,13 @@ class WalkInRetailSale extends Model
     protected $fillable = [
         'id',
         'client_id',
+        'location_id',
         'invoice_date',
         'subtotal',
         'discount',
         'gst',
         'total',
+        'remaining_balance',
         'user_id',
         'note',
         'customer_type'
