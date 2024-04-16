@@ -32,6 +32,7 @@ use App\Models\WalkInRetailSale;
 use App\Models\WalkInProducts;
 use App\Models\WalkInDiscountSurcharge;
 use App\Models\Payment;
+use App\Models\ServicesAvailability;
 
 class CalenderController extends Controller
 {
@@ -360,7 +361,6 @@ class CalenderController extends Controller
         //     $events->where
         // }
         $events = $events->get();
-        // dd($events);
         return response()->json(AppointmentListResource::collection($events));
     }
 
@@ -1637,5 +1637,48 @@ class CalenderController extends Controller
         // Convert the merged array to JSON format
         $mergedProductService = $mergedArray;
         return response()->json($mergedProductService);
+    }
+
+    /**
+     * Method getCategoriesAndServices
+     *
+     * @param Request $request [explicite description]
+     *
+     * @return void
+     */
+    public function getCategoriesAndServices(Request $request)
+    {
+        $services   = ServicesAvailability::select()->with([
+            'service',
+            'category',
+            // 'service.appearoncalender',
+            'appearoncalender'
+        ]);
+
+        if ($request->location_id) {
+            $services->where('location_name', $request->location_id)->where('availability','Available');
+        }
+
+        $services               = $services->get();
+        $availablecategories    = $services->pluck('category_id')->unique();
+
+        $categories             = Category::whereIn('id',$availablecategories)->get();
+
+        $categorieshtml    = view('calender.partials.categories' , [
+            'categories'        => $categories
+        ])->render();
+
+        // dd($services);
+
+        $serviceshtml    = view('calender.partials.services' , [
+            'services'        => $services
+        ])->render();
+
+        return response()->json([
+            'status'                => true,
+            'message'               => 'Details found.',
+            'categorieshtml'        => $categorieshtml,
+            'serviceshtml'          => $serviceshtml
+        ], 200);
     }
 }

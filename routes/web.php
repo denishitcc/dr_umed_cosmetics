@@ -163,5 +163,6 @@ Route::middleware(['auth'])->group(function () {
     // Route::post('calender/calender.store-walk-in',[CalenderController::class, 'StoreWalkIn'])->name('calendar.store-walk-in');
     Route::post('calendar/store-walk-in', [CalenderController::class, 'StoreWalkIn'])->name('calendar.store-walk-in');
     Route::post('calendar/get-selected-location', [CalenderController::class, 'GetLocation'])->name('calendar.get-selected-location');
+    Route::post('calendar/get-categories-and-services', [CalenderController::class, 'getCategoriesAndServices'])->name('calendar.get-categories-and-services');
 });
 Route::post('/get-staff-list', [CalenderController::class,'getStaffList'])->name('get-staff-list');

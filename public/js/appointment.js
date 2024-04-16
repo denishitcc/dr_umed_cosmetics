@@ -41,7 +41,6 @@ var DU = {};
             $('#service_error').hide();
             $('#client').hide();
             $("#repeat_error").hide();
-            // $("#external-events").draggable()
         },
 
         initialCalender: function(){
@@ -87,18 +86,6 @@ var DU = {};
                     left: 'prev,today,next',
                     center: 'title',
                     right: 'resourceTimeGridDay,dayGridMonth,resourceTimelineYear'
-                },
-
-                datesSet: function (info) {
-                    const resources = context.calendar.getOption('resources');
-
-                    // info.start and info.end represent the new date range resourceTimeGridWeek
-                    var start_date  = moment(info.startStr).format('YYYY-MM-DD'),
-                        end_date    = moment(info.endStr).format('YYYY-MM-DD');
-
-                    // Make an AJAX call to fetch events for the new date range
-                    console.log('function calling');
-                    context.eventsList(start_date, end_date);
                 },
                 loading: function (isLoading) {
                     // console.log(isLoading);
@@ -261,6 +248,18 @@ var DU = {};
                 dayMaxEvents: true,
                 select: function(start, end, allDays){
                     $('#New_appointment').modal('toggle');
+                },
+                datesSet: function (info) {
+                    const resources = context.calendar.getOption('resources');
+                    console.log('dataset calling');
+                    console.log(info.getResources);
+                    // info.start and info.end represent the new date range resourceTimeGridWeek
+                    var start_date  = moment(info.startStr).format('YYYY-MM-DD'),
+                        end_date    = moment(info.endStr).format('YYYY-MM-DD');
+
+                    // Make an AJAX call to fetch events for the new date range
+                    console.log('function calling');
+                    context.eventsList(start_date, end_date);
                 },
             });
             context.appointmentDraggable();
@@ -698,7 +697,6 @@ var DU = {};
                         'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
                     },
                     success: function (response) {
-                        debugger;
                         console.log('Location ID fetched successfully.');
                         product_details = response;
                     },
@@ -1096,7 +1094,6 @@ var DU = {};
                 }
             });
         },
-        // dharit:function(...$this)
 
         // For update appointment
         updateAppointmentDetails: function(data){
@@ -1135,6 +1132,7 @@ var DU = {};
             {
                 var locationId = jQuery('#locations').val();
                 $('#appointmentlocationId').val(locationId);
+                context.getCategoriesAndServices(locationId);
                 // get all the services related to location
                 context.selectors.appointmentModal.modal('show');
             });
@@ -1149,14 +1147,46 @@ var DU = {};
             // }
         },
 
+        getCategoriesAndServices: function(locationId){
+
+            var context = this;
+            $.ajax({
+                url: moduleConfig.getCategoriesAndServices, // Replace with your actual API endpoint
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    'location_id' : locationId
+                },
+                success: function (data) {
+                    $('#main_row').find('#categories').empty();
+                    $('#main_row').find('#categories').prepend(data.categorieshtml);
+
+                    $('#main_row').find('.catservices').empty();
+                    $('#main_row').find('.catservices').prepend(data.serviceshtml);
+
+                    // $('#subcategory_text').text(categoryTitle);
+                    // $('#sub_services').empty();
+                    // $.each(data, function(index, item) {
+                    //     $("#sub_services").append(`<li><a href='javascript:void(0);' class='services' data-services_id=${item.id} data-category_id=${item.category_id} data-duration=${item.duration}>${item.service_name}</a></li>`);
+                    // });
+                },
+                error: function (error) {
+                    console.error('Error fetching categories:', error);
+                }
+            });
+        },
+
         changeServices: function(){
             var context = this;
-            jQuery('.parent_category_id').on('click', function(e) {
+            $(document).on('click','.parent_category_id', function(e){
                 e.preventDefault();
                 var $this           = $(this),
                     categoryId      = $this.data('category_id'),
                     duration        = $this.data('duration'),
                     categoryTitle   = $this.text();
+
                 $(this).closest('li').addClass('selected');
                 $.ajax({
                     url: moduleConfig.categotyByservices, // Replace with your actual API endpoint
@@ -1245,7 +1275,8 @@ var DU = {};
         selecedServices: function(){
             var context = this;
             $(document).ready(function() {
-                $('#sub_services').on('click', '.services', function(e) {
+                $(document).on('click','#sub_services .services', function(e){
+                // $(document)('#sub_services').on('click', '.services', function(e) {
                     e.preventDefault();
                     var $this           = $(this),
                         serviceId       = $this.data('services_id'),
@@ -1257,7 +1288,6 @@ var DU = {};
                 });
 
                 $('#edit_sub_services').on('click', '.services', function(e) {
-
  
                     e.preventDefault();
                     var $this           = $(this),
