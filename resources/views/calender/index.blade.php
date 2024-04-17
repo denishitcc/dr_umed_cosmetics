@@ -889,7 +889,7 @@
                                 <label class="form-label">Quantity</label>
                                 <div class="number-input safari_only">
                                     <button class="minus"></button>
-                                    <input class="quantity form-control edit_quantity" min="0" name="quantity" value="1" type="number">
+                                    <input  type="number" class="quantity form-control edit_quantity" min="0" name="quantity">
                                     <button class="plus"></button>
                                 </div>
                                 </div>
@@ -913,7 +913,7 @@
                             <div class="form-group">
                                 <label class="form-label">Select discount / surcharge</label>
                                 <select class="form-select form-control" id="edit_discount_surcharge" name="edit_discount_surcharge">
-                                    <option selected>No Discount</option>
+                                    <!-- <option selected>No Discount</option>
                                     <optgroup label="Discount">
                                         <option>Manual Discount</option>
                                         @if(count($loc_dis)>0)
@@ -929,7 +929,7 @@
                                                 <option value="{{$sur->surcharge_percentage}}">{{$sur->surcharge_type}}</option>
                                             @endforeach
                                         @endif
-                                    </optgroup>
+                                    </optgroup> -->
                                 </select>
                             </div>
                         </div>
@@ -946,7 +946,7 @@
                             <div class="form-group">
                                 <label class="form-label">Amount</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" id="edit_amount" placeholder="0">
+                                    <input type="number" class="form-control" id="edit_amount" placeholder="0" min="0">
                                     <span class="input-group-text"><i class="ico-percentage fs-4"></i></span>
                                     </div>
                                 </div>
@@ -980,9 +980,9 @@
                             <div class="form-group">
                                 <label class="form-label">Select discount / surcharge</label>
                                 <select class="form-select form-control" id="discount_surcharge" name="discount_surcharge">
-                                    <option selected>No Discount</option>
+                                    <!-- <option >No Discount</option>
                                     <optgroup label="Discount">
-                                        <option>Manual Discount</option>
+                                        <option selected>Manual Discount</option>
                                         @if(count($loc_dis)>0)
                                             @foreach($loc_dis as $dis)
                                                 <option value="{{$dis->discount_percentage}}">{{$dis->discount_type}}</option>
@@ -996,7 +996,7 @@
                                                 <option value="{{$sur->surcharge_percentage}}">{{$sur->surcharge_type}}</option>
                                             @endforeach
                                         @endif
-                                    </optgroup>
+                                    </optgroup> -->
                                 </select>
                             </div>
                         </div>
@@ -1013,7 +1013,7 @@
                         <div class="form-group">
                             <label class="form-label">Amount</label>
                             <div class="input-group">
-                                <input type="text" class="form-control" id="amount" placeholder="0">
+                                <input type="number" class="form-control" id="amount" placeholder="0" min="0">
                                 <span class="input-group-text"><i class="ico-percentage fs-4"></i></span>
                             </div>
                         </div>
@@ -3359,6 +3359,7 @@
     });
 
     $(document).on('change', '#edit_discount_surcharge', function() {
+        debugger;
         var selectedOption = $(this).val();
         var $discountType = $('#edit_discount_type');
         var $amount = $('#edit_amount');
@@ -3370,16 +3371,6 @@
         
         if(optgroupLabel == 'Discount')
         {
-            if($(this).find('option:selected').text() == 'Manual Discount')
-            {
-                $discountType.prop('disabled', false);
-                $reason.val('');
-
-            }else{
-                $discountType.prop('disabled', true);
-                $reason.val($('#edit_discount_surcharge').find('option:selected').text());
-            }
-            
             $('input[name="edit_discount_type"][value="percent"]').prop('checked', true);
 
             // Set the discount amount dynamically based on the selected dropdown value
@@ -3405,23 +3396,21 @@
             $('.edit_product_price').text('$' + newPrice.toFixed(2));
 
             // Re-enable disabled fields
-            $amount.prop('disabled', false);
-            $reason.prop('disabled', false);
-        }
-        else if(optgroupLabel == 'Surcharge'){
-            if($(this).find('option:selected').text() == 'Manual Surcharge')
+            // $amount.prop('disabled', false);
+            $reason.prop('disabled', true);
+            if($(this).find('option:selected').text() == 'Manual Discount')
             {
-                // $discountType.prop('disabled', false);
-                $('input[name="edit_discount_type"]').prop('disabled', false);
+                $discountType.prop('disabled', false);
                 $reason.val('');
+                $amount.prop('disabled', false);
+                $reason.prop('disabled', false);
             }else{
                 $discountType.prop('disabled', true);
                 $reason.val($('#edit_discount_surcharge').find('option:selected').text());
-                $('input[name="edit_discount_type"][value="percent"]').prop('checked', true).prop('disabled', true);
+                $amount.prop('disabled', true);
             }
-
-            
-
+        }
+        else if(optgroupLabel == 'Surcharge'){
             // Set the discount amount dynamically based on the selected dropdown value
             var discountValue = parseFloat($(this).val());
             if (isNaN(discountValue)) {
@@ -3445,8 +3434,21 @@
             $('.edit_product_price').text('$' + newPrice.toFixed(2));
 
             // Re-enable disabled fields
-            $amount.prop('disabled', false);
-            $reason.prop('disabled', false);
+            // $amount.prop('disabled', false);
+            $reason.prop('disabled', true);
+            if($(this).find('option:selected').text() == 'Manual Surcharge')
+            {
+                // $discountType.prop('disabled', false);
+                $('input[name="edit_discount_type"]').prop('disabled', false);
+                $reason.val('');
+                $amount.prop('disabled', false);
+                $reason.prop('disabled', false);
+            }else{
+                $discountType.prop('disabled', true);
+                $reason.val($('#edit_discount_surcharge').find('option:selected').text());
+                $('input[name="edit_discount_type"][value="percent"]').prop('checked', true).prop('disabled', true);
+                $amount.prop('disabled', true);
+            }
         }
         else{
             $discountType.prop('disabled', true);
@@ -3801,16 +3803,6 @@
 
         if(optgroupLabel == 'Discount')
         {
-            if($('#discount_surcharge').find('option:selected').text() == 'Manual Discount')
-            {
-                $discountType.prop('disabled', false);
-                $reason.val('');
-
-            }else{
-                $discountType.prop('disabled', true);
-                $reason.val($('#discount_surcharge').find('option:selected').text());
-            }
-            
             $('input[name="discount_type"][value="percent"]').prop('checked', true);
 
             // Set the discount amount dynamically based on the selected dropdown value
@@ -3837,18 +3829,20 @@
 
             // Re-enable disabled fields
             $amount.prop('disabled', false);
-            $reason.prop('disabled', false);
-        }else if(optgroupLabel == 'Surcharge'){
-            if($('#discount_surcharge').find('option:selected').text() == 'Manual Surcharge')
+            $reason.prop('disabled', true);
+            if($('#discount_surcharge').find('option:selected').text() == 'Manual Discount')
             {
-                $discountType.prop('disabled', false);
+                $('input[name="discount_type"]').prop('disabled', false);
                 $reason.val('');
+                $amount.prop('disabled', false);
+                $reason.prop('disabled', false);
             }else{
                 $discountType.prop('disabled', true);
                 $reason.val($('#discount_surcharge').find('option:selected').text());
                 $('input[name="discount_type"][value="percent"]').prop('checked', true).prop('disabled', true);
+                $amount.prop('disabled', true);
             }
-
+        }else if(optgroupLabel == 'Surcharge'){
             // Set the discount amount dynamically based on the selected dropdown value
             var discountValue = parseFloat($('#discount_surcharge').val());
             if (isNaN(discountValue)) {
@@ -3873,7 +3867,19 @@
 
             // Re-enable disabled fields
             $amount.prop('disabled', false);
-            $reason.prop('disabled', false);
+            $reason.prop('disabled', true);
+            if($('#discount_surcharge').find('option:selected').text() == 'Manual Surcharge')
+            {
+                $('input[name="discount_type"]').prop('disabled', false);
+                $reason.val('');
+                $amount.prop('disabled', false);
+                $reason.prop('disabled', false);
+            }else{
+                $discountType.prop('disabled', true);
+                $reason.val($('#discount_surcharge').find('option:selected').text());
+                $('input[name="discount_type"][value="percent"]').prop('checked', true).prop('disabled', true);
+                $amount.prop('disabled', true);
+            }
         }
         else{
             $discountType.prop('disabled', true);
@@ -4805,7 +4811,7 @@
                             <div class="inv-center">
                                 <div class="number-input walk_number_input safari_only form-group mb-0 number">
                                     <button class="c_minus"></button>
-                                    <input class="quantity form-control" min="0" name="casual_product_quanitity[]" value="1" type="number">
+                                    <input  type="number" class="quantity form-control" min="0" name="casual_product_quanitity[]"  value="1">
                                     <button class="c_plus"></button>
                                 </div>
                             </div>
@@ -4858,7 +4864,7 @@
                             <div class="inv-center">
                                 <div class="number-input walk_number_input safari_only form-group mb-0 number">
                                     <button class="n_minus"></button>
-                                    <input class="quantity form-control" min="0" name="new_product_quanitity[]" value="1" type="number">
+                                    <input type="number" class="quantity form-control" min="0" name="new_product_quanitity[]" value="1">
                                     <button class="n_plus"></button>
                                 </div>
                             </div>
@@ -4910,7 +4916,7 @@
                             <div class="inv-center">
                                 <div class="number-input walk_number_input safari_only form-group mb-0 number">
                                     <button class="e_minus"></button>
-                                    <input class="quantity form-control" min="0" name="existing_product_quanitity[]" value="1" type="number">
+                                    <input type="number" class="quantity form-control" min="0" name="existing_product_quanitity[]" value="1">
                                     <button class="e_plus"></button>
                                 </div>
                             </div>
