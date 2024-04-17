@@ -96,7 +96,7 @@ class Appointment extends Model
      */
     public function staff(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'staff_id', 'id');
+        return $this->belongsTo(User::class, 'staff_id', 'id')->withTrashed();
     }
 
     /**
