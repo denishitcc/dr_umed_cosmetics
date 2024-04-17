@@ -332,8 +332,8 @@ $(document).ready(function() {
                     return parseFloat(data).toFixed(2); // Format to 2 decimal places
                 }
             },
-            {"defaultContent": ""},//{data: 'id', name: 'id'},//appointment date
-            {"defaultContent": ""},//{data: 'id', name: 'id'},//appointment date
+            {data: 'on_hand', name: 'on_hand'},
+            {data: 'on_hand_price', name: 'on_hand_price'},
             {data: 'supplier_name', name: 'supplier_name'},
             { data: 'supplier_code', name: 'supplier_code'},
             {data: 'category_name', name: 'category_name'},

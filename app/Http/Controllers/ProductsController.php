@@ -52,7 +52,21 @@ class ProductsController extends Controller
                 } else {
                     return 'N/A'; // Or any other appropriate value to handle division by zero
                 }
-            })            
+            })   
+
+            ->addIndexColumn()
+            ->addColumn('on_hand', function ($row) {
+                $totalOnHand = ProductAvailabilities::where('product_id', $row->id)->sum('quantity');
+                return $totalOnHand;
+            })
+
+            ->addIndexColumn()
+            ->addColumn('on_hand_price', function ($row) {
+                $product = Products::findOrFail($row->id); // Retrieve product details
+                $totalOnHand = ProductAvailabilities::where('product_id', $row->id)->sum('quantity');
+                $totalCost = $product->cost * $totalOnHand; // Calculate total cost of on-hand products
+                return '$' . number_format($totalCost, 2); // Format and return total cost
+            })
 
 
 

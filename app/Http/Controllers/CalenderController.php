@@ -35,6 +35,7 @@ use App\Models\Payment;
 use App\Models\LocationDiscount;
 use App\Models\LocationSurcharge;
 use App\Models\ServicesAvailability;
+use App\Models\ProductAvailabilities;
 
 class CalenderController extends Controller
 {
@@ -1378,6 +1379,7 @@ class CalenderController extends Controller
     }
     public function StoreWalkIn(Request $request)
     {
+        // dd($request->all());
         if($request->hdn_customer_type == 'casual')
         {
             // Storing walk-in sale details
@@ -1413,8 +1415,28 @@ class CalenderController extends Controller
                     // 'edit_amount' => $request->casual_edit_amount[$index],
                     'discount_reason' => $request->casual_reason[$index],
                 ];
-
                 WalkInProducts::create($walk_in_product);
+
+                if($request->product_type[$index] == 'product')
+                {
+                    //product quanitity minus logic
+                    $p_availbility = ProductAvailabilities::where('product_id', $productId)
+                    ->where('location_name', $request->walk_in_location_id)
+                    ->first(); // Retrieve product availability record
+
+                    if ($p_availbility) {
+                    // Calculate the new quantity by subtracting the requested quantity
+                    $newQuantity = $p_availbility->quantity - $request->casual_product_quanitity[$index];
+
+                    // Update the quantity in the database
+                    ProductAvailabilities::where('product_id', $productId)
+                        ->where('location_name', $request->walk_in_location_id)
+                        ->update(['quantity' => $newQuantity]);
+                    } else {
+                    // dd('Product availability record not found'); // Handle the case where the product availability record doesn't exist
+                    }
+                }
+                
             }
             // dd($walk_in_product);
 
@@ -1482,8 +1504,26 @@ class CalenderController extends Controller
                     // 'edit_amount' => $request->casual_edit_amount[$index],
                     'discount_reason' => $request->existing_reason[$index],
                 ];
-
                 WalkInProducts::create($walk_in_product);
+                if($request->product_type[$index] == 'product')
+                {
+                    //product quanitity minus logic
+                    $p_availbility = ProductAvailabilities::where('product_id', $productId)
+                        ->where('location_name', $request->walk_in_location_id)
+                        ->first(); // Retrieve product availability record
+                    
+                    if ($p_availbility) {
+                        // Calculate the new quantity by subtracting the requested quantity
+                        $newQuantity = $p_availbility->quantity - $request->existing_product_quanitity[$index];
+
+                        // Update the quantity in the database
+                        ProductAvailabilities::where('product_id', $productId)
+                            ->where('location_name', $request->walk_in_location_id)
+                            ->update(['quantity' => $newQuantity]);
+                    } else {
+                        // dd('Product availability record not found'); // Handle the case where the product availability record doesn't exist
+                    }
+                }
             }
             // dd($walk_in_product);
 
@@ -1565,6 +1605,25 @@ class CalenderController extends Controller
                 ];
 
                 WalkInProducts::create($walk_in_product);
+                if($request->product_type[$index] == 'product')
+                {
+                    //product quanitity minus logic
+                    $p_availbility = ProductAvailabilities::where('product_id', $productId)
+                        ->where('location_name', $request->walk_in_location_id)
+                        ->first(); // Retrieve product availability record
+                    
+                    if ($p_availbility) {
+                        // Calculate the new quantity by subtracting the requested quantity
+                        $newQuantity = $p_availbility->quantity - $request->new_product_quanitity[$index];
+
+                        // Update the quantity in the database
+                        ProductAvailabilities::where('product_id', $productId)
+                            ->where('location_name', $request->walk_in_location_id)
+                            ->update(['quantity' => $newQuantity]);
+                    } else {
+                        // dd('Product availability record not found'); // Handle the case where the product availability record doesn't exist
+                    }
+                }
             }
             // dd($walk_in_product);
 
@@ -1637,7 +1696,7 @@ class CalenderController extends Controller
             $gst = $product->gst_code === 'Standard' ? 'yes' : 'no';
 
             $mergedArray[] = [
-                'id'    => $product->id,
+                'id'    => $product->product_id,
                 'name'  => $product->product_name,
                 'price' => $product->availability_price != null ? $product->availability_price : $product->p_price,
                 'gst'   => $gst,
@@ -1647,7 +1706,7 @@ class CalenderController extends Controller
 
         // Convert the merged array to JSON format
         $mergedProductService = $mergedArray;
-
+        // dd($mergedProductService);
         $loc_dis = LocationDiscount::where('location_id',$location_id)->get();
         $loc_sur = LocationSurcharge::where('location_id',$location_id)->get();
 
