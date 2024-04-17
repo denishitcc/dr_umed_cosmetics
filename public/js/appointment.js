@@ -696,7 +696,61 @@ var DU = {};
                         'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
                     },
                     success: function (response) {
-                        product_details = response;
+                        product_details = response.mergedProductService;
+                        discount_types_details = response.loc_dis;
+                        surcharge_types_details = response.loc_sur;
+                        console.log('discount_types_details1',discount_types_details);
+                        console.log('surcharge_types_details',surcharge_types_details);
+                        
+                        // Clear existing options
+                         $('#discount_surcharge').empty();
+
+                         // Add default options
+                         $('#discount_surcharge').append($('<option>', { value: '', text: 'No Discount' }));
+                         $('#discount_surcharge').append($('<optgroup label="Discount"><option value="0">Manual Discount</option></optgroup>'));
+                         $('#discount_surcharge').append($('<optgroup label="Surcharge"><option value="0">Manual Surcharge</option></optgroup>'));
+
+                         // Add options based on the received arrays
+                         if (discount_types_details && discount_types_details.length > 0) {
+                             // Add discount options
+                             var discountOptgroup = $('#discount_surcharge optgroup[label="Discount"]');
+                             discount_types_details.forEach(function (discount) {
+                                 discountOptgroup.append($('<option>', { value: discount.discount_percentage, text: discount.discount_type }));
+                             });
+                         }
+
+                         if (surcharge_types_details && surcharge_types_details.length > 0) {
+                             // Add surcharge options
+                             var surchargeOptgroup = $('#discount_surcharge optgroup[label="Surcharge"]');
+                             surcharge_types_details.forEach(function (surcharge) {
+                                 surchargeOptgroup.append($('<option>', { value: surcharge.surcharge_percentage, text: surcharge.surcharge_type }));
+                             });
+                         }
+
+                         // Clear existing options
+                         $('#edit_discount_surcharge').empty();
+
+                         // Add default options
+                         $('#edit_discount_surcharge').append($('<option>', { value: '', text: 'No Discount' }));
+                         $('#edit_discount_surcharge').append($('<optgroup label="Discount"><option value="0">Manual Discount</option></optgroup>'));
+                         $('#edit_discount_surcharge').append($('<optgroup label="Surcharge"><option value="0">Manual Surcharge</option></optgroup>'));
+
+                         // Add options based on the received arrays
+                         if (discount_types_details && discount_types_details.length > 0) {
+                             // Add discount options
+                             var discountOptgroup = $('#edit_discount_surcharge optgroup[label="Discount"]');
+                             discount_types_details.forEach(function (discount) {
+                                 discountOptgroup.append($('<option>', { value: discount.discount_percentage, text: discount.discount_type }));
+                             });
+                         }
+
+                         if (surcharge_types_details && surcharge_types_details.length > 0) {
+                             // Add surcharge options
+                             var surchargeOptgroup = $('#edit_discount_surcharge optgroup[label="Surcharge"]');
+                             surcharge_types_details.forEach(function (surcharge) {
+                                 surchargeOptgroup.append($('<option>', { value: surcharge.surcharge_percentage, text: surcharge.surcharge_type }));
+                             });
+                         }
                     },
                     error: function (error) {
                         console.error('Error storing location ID:', error);
@@ -765,7 +819,61 @@ var DU = {};
                         },
                         success: function (response) {
                             console.log('Location ID fetched successfully.');
-                            product_details = response;
+                            product_details = response.mergedProductService;
+                            discount_types_details = response.loc_dis;
+                            surcharge_types_details = response.loc_sur;
+                            console.log('discount_types_details1',discount_types_details);
+                            console.log('surcharge_types_details',surcharge_types_details);
+
+                             // Clear existing options
+                             $('#discount_surcharge').empty();
+
+                            // Add default options
+                            $('#discount_surcharge').append($('<option>', { value: '', text: 'No Discount' }));
+                            $('#discount_surcharge').append($('<optgroup label="Discount"><option value="0">Manual Discount</option></optgroup>'));
+                            $('#discount_surcharge').append($('<optgroup label="Surcharge"><option value="0">Manual Surcharge</option></optgroup>'));
+
+                            // Add options based on the received arrays
+                            if (discount_types_details && discount_types_details.length > 0) {
+                                // Add discount options
+                                var discountOptgroup = $('#discount_surcharge optgroup[label="Discount"]');
+                                discount_types_details.forEach(function (discount) {
+                                    discountOptgroup.append($('<option>', { value: discount.discount_percentage, text: discount.discount_type }));
+                                });
+                            }
+
+                            if (surcharge_types_details && surcharge_types_details.length > 0) {
+                                // Add surcharge options
+                                var surchargeOptgroup = $('#discount_surcharge optgroup[label="Surcharge"]');
+                                surcharge_types_details.forEach(function (surcharge) {
+                                    surchargeOptgroup.append($('<option>', { value: surcharge.surcharge_percentage, text: surcharge.surcharge_type }));
+                                });
+                            }
+
+                            // Clear existing options
+                            $('#edit_discount_surcharge').empty();
+
+                            // Add default options
+                            $('#edit_discount_surcharge').append($('<option>', { value: '', text: 'No Discount' }));
+                            $('#edit_discount_surcharge').append($('<optgroup label="Discount"><option value="0">Manual Discount</option></optgroup>'));
+                            $('#edit_discount_surcharge').append($('<optgroup label="Surcharge"><option value="0">Manual Surcharge</option></optgroup>'));
+
+                            // Add options based on the received arrays
+                            if (discount_types_details && discount_types_details.length > 0) {
+                                // Add discount options
+                                var discountOptgroup = $('#edit_discount_surcharge optgroup[label="Discount"]');
+                                discount_types_details.forEach(function (discount) {
+                                    discountOptgroup.append($('<option>', { value: discount.discount_percentage, text: discount.discount_type }));
+                                });
+                            }
+
+                            if (surcharge_types_details && surcharge_types_details.length > 0) {
+                                // Add surcharge options
+                                var surchargeOptgroup = $('#edit_discount_surcharge optgroup[label="Surcharge"]');
+                                surcharge_types_details.forEach(function (surcharge) {
+                                    surchargeOptgroup.append($('<option>', { value: surcharge.surcharge_percentage, text: surcharge.surcharge_type }));
+                                });
+                            }
                         },
                         error: function (error) {
                             console.error('Error storing location ID:', error);

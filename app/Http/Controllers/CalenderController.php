@@ -32,6 +32,8 @@ use App\Models\WalkInRetailSale;
 use App\Models\WalkInProducts;
 use App\Models\WalkInDiscountSurcharge;
 use App\Models\Payment;
+use App\Models\LocationDiscount;
+use App\Models\LocationSurcharge;
 use App\Models\ServicesAvailability;
 
 class CalenderController extends Controller
@@ -49,6 +51,9 @@ class CalenderController extends Controller
      */
     public function index(Request $request)
     {
+        // dd($request->locs);
+        // $loc_id = $request->input('locs');
+        // dd($loc_id);
         $categories = Category::with([
                             'children'
                         ])->whereNull('parent_category')->get();
@@ -83,6 +88,10 @@ class CalenderController extends Controller
             $wait->servid = $serv_id;
             $wait->duration = $service_durations;
         }
+        //discount /surcharge data get
+        $loc_dis = LocationDiscount::all();
+        $loc_sur = LocationSurcharge::all();
+        
 
         return view('calender.index')->with(
             [
@@ -90,7 +99,9 @@ class CalenderController extends Controller
                 'services'   => $services,
                 'waitlist'   => $waitlist,
                 'staffs'     => $staffs,
-                'productServiceJson'   => ''
+                'productServiceJson'   => '',
+                'loc_dis'    =>$loc_dis,
+                'loc_sur'    =>$loc_sur
             ]
         );
     }
@@ -1592,7 +1603,7 @@ class CalenderController extends Controller
     public function GetLocation(Request $request)
     {
         $location_id = $request->loc_id;
-
+        
         $all_services = Services::select('services.id', 'services.service_name', 'services.standard_price')
             ->with(['appearoncalender'])
             ->join('services_availabilities', 'services.id', '=', 'services_availabilities.service_id')
@@ -1636,7 +1647,17 @@ class CalenderController extends Controller
 
         // Convert the merged array to JSON format
         $mergedProductService = $mergedArray;
-        return response()->json($mergedProductService);
+
+        $loc_dis = LocationDiscount::where('location_id',$location_id)->get();
+        $loc_sur = LocationSurcharge::where('location_id',$location_id)->get();
+
+        $data = [
+            'mergedProductService' => $mergedProductService,
+            'loc_dis' => $loc_dis,
+            'loc_sur' => $loc_sur
+        ];
+
+        return response()->json($data);
     }
 
     /**
