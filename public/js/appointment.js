@@ -634,7 +634,7 @@ var DU = {};
                 itemSelector: '.fc-event',
                 eventData: function (eventEl2) {
                     var dataset = eventEl2.dataset;
-                    console.log('dataset',dataset);
+
                     return {
                         title: eventEl2.innerText,
                         extendedProps:{
@@ -697,7 +697,6 @@ var DU = {};
                         'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
                     },
                     success: function (response) {
-                        console.log('Location ID fetched successfully.');
                         product_details = response;
                     },
                     error: function (error) {
@@ -716,27 +715,17 @@ var DU = {};
                 {
                     const filteredResources = resources.filter(resource => resource.id === resourceId);
 
-                    // resources.filter(function(resource) {
-                    //     // For example, filter only resources with certain criteria
-                    //     return resource.id === resourceId;
-                    //   }).map(function(filteredResource) {
-                    //     console.log(filteredResource);
-                    //     // Map the filtered resources to include only id and title
-                    //     return { id: filteredResource.id, title: filteredResource.title };
-                    //   });
                     context.calendar.setOption('resources', filteredResources.map(function(resource) {
-                    console.log(resource);
-
                         return { id: resource.id, title: resource.title };
                       }));
 
                     context.calendar.setOption('resources', filteredResources);
-                    console.log(resources);
-                    context.calendar.changeView('timeGridWeek');
 
-                    // var start_date = moment(context.calendar.currentData.dateProfile.currentRange.start).format('YYYY-MM-DD');
-                    // var end_date   = moment(context.calendar.currentData.dateProfile.currentRange.end).format('YYYY-MM-DD');
-                    // context.eventsList(start_date, end_date);
+                    context.calendar.changeView('timeGridWeek');
+                    var start_date = moment(context.calendar.currentData.dateProfile.currentRange.start).format('YYYY-MM-DD');
+                    var end_date   = moment(context.calendar.currentData.dateProfile.currentRange.end).format('YYYY-MM-DD');
+                    context.eventsList(start_date, end_date,resourceId);
+
                 }
                 else{
                     // context.calendar.setOption('resources', resources);
@@ -996,7 +985,7 @@ var DU = {};
         },
 
         // For events list
-        eventsList: function(start_date, end_date){
+        eventsList: function(start_date, end_date,resourceId){
             var context = this,
                 todayDt = moment(context.calendar.currentData.dateProfile.currentDate).format('YYYY-MM-DD');
 
@@ -1008,7 +997,8 @@ var DU = {};
                 },
                 data: {
                     'start_date'  : start_date,
-                    'end_date'    : end_date
+                    'end_date'    : end_date,
+                    'resourceId'  : resourceId
                 },
                 success: function (data) {
                     // Update the FullCalendar resources with the retrieved data

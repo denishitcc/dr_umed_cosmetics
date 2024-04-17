@@ -356,10 +356,10 @@ class CalenderController extends Controller
         if ($request->start_date) {
             $events->whereBetween(DB::raw('DATE(start_date)'), array($request->start_date, $request->end_date));
         }
-        // if($location)
-        // {
-        //     $events->where
-        // }
+        if ($request->resourceId) {
+            $events->where('staff_id', $request->resourceId);
+        }
+
         $events = $events->get();
         return response()->json(AppointmentListResource::collection($events));
     }
