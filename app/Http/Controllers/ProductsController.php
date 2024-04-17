@@ -41,9 +41,14 @@ class ProductsController extends Controller
                 if ($row->cost != 0) {
                     $dis = $row->price / 11;
                     $dis1 = $row->price - $dis;
-
+            
                     $margin = (($dis1 - $row->cost) / $dis1) * 100;
-                    return number_format($margin, 2) . '%';
+                    $margin = min($margin, 100);
+            
+                    // Round up the margin to the nearest integer value
+                    $margin = ceil($margin);
+            
+                    return $margin . '%';
                 } else {
                     return 'N/A'; // Or any other appropriate value to handle division by zero
                 }
