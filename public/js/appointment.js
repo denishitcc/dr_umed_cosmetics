@@ -251,15 +251,14 @@ var DU = {};
                 },
                 datesSet: function (info) {
                     const resources = context.calendar.getOption('resources');
-                    console.log('dataset calling');
-                    console.log(info.getResources);
+                    var resourceId  = $('#staff').find(":selected").val();
+
                     // info.start and info.end represent the new date range resourceTimeGridWeek
                     var start_date  = moment(info.startStr).format('YYYY-MM-DD'),
                         end_date    = moment(info.endStr).format('YYYY-MM-DD');
 
                     // Make an AJAX call to fetch events for the new date range
-                    console.log('function calling');
-                    context.eventsList(start_date, end_date);
+                    context.eventsList(start_date, end_date,resourceId);
                 },
             });
             context.appointmentDraggable();
