@@ -46,7 +46,7 @@ class ProductsController extends Controller
                     $margin = min($margin, 100);
             
                     // Round up the margin to the nearest integer value
-                    $margin = ceil($margin);
+                    $margin = round($margin);
             
                     return $margin . '%';
                 } else {

@@ -363,7 +363,7 @@ $(document).ready(function() {
             },
             cost:{
                 required: true,
-                costLessThanEqualPrice: true
+                // costLessThanEqualPrice: true
             },
             gst_code:{
                 required: true,
