@@ -1668,8 +1668,6 @@ class CalenderController extends Controller
             'categories'        => $categories
         ])->render();
 
-        // dd($services);
-
         $serviceshtml    = view('calender.partials.services' , [
             'services'        => $services
         ])->render();

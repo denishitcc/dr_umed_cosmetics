@@ -1288,7 +1288,7 @@ var DU = {};
                 });
 
                 $('#edit_sub_services').on('click', '.services', function(e) {
- 
+
                     e.preventDefault();
                     var $this           = $(this),
                         serviceId       = $this.data('services_id'),
