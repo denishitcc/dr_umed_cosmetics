@@ -39,7 +39,10 @@ class ProductsController extends Controller
             ->addIndexColumn()
             ->addColumn('margin', function ($row) {
                 if ($row->cost != 0) {
-                    $margin = (($row->price - $row->cost) / $row->cost) * 100;
+                    $dis = $row->price / 11;
+                    $dis1 = $row->price - $dis;
+
+                    $margin = (($dis1 - $row->cost) / $dis1) * 100;
                     return number_format($margin, 2) . '%';
                 } else {
                     return 'N/A'; // Or any other appropriate value to handle division by zero
