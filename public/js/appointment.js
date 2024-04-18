@@ -707,8 +707,8 @@ var DU = {};
 
                          // Add default options
                          $('#discount_surcharge').append($('<option>', { value: '', text: 'No Discount' }));
-                         $('#discount_surcharge').append($('<optgroup label="Discount"><option value="0">Manual Discount</option></optgroup>'));
-                         $('#discount_surcharge').append($('<optgroup label="Surcharge"><option value="0">Manual Surcharge</option></optgroup>'));
+                         $('#discount_surcharge').append($('<optgroup label="Discount"><option>Manual Discount</option></optgroup>'));
+                         $('#discount_surcharge').append($('<optgroup label="Surcharge"><option>Manual Surcharge</option></optgroup>'));
 
                          // Add options based on the received arrays
                          if (discount_types_details && discount_types_details.length > 0) {
@@ -830,8 +830,8 @@ var DU = {};
 
                             // Add default options
                             $('#discount_surcharge').append($('<option>', { value: '', text: 'No Discount' }));
-                            $('#discount_surcharge').append($('<optgroup label="Discount"><option value="0">Manual Discount</option></optgroup>'));
-                            $('#discount_surcharge').append($('<optgroup label="Surcharge"><option value="0">Manual Surcharge</option></optgroup>'));
+                            $('#discount_surcharge').append($('<optgroup label="Discount"><option>Manual Discount</option></optgroup>'));
+                            $('#discount_surcharge').append($('<optgroup label="Surcharge"><option>Manual Surcharge</option></optgroup>'));
 
                             // Add options based on the received arrays
                             if (discount_types_details && discount_types_details.length > 0) {

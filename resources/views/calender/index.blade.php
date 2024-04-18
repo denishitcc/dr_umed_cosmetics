@@ -627,7 +627,7 @@
                             <div class="mb-3">
                                 <a href="#" class="btn btn-dashed w-100 btn-blue icon-btn-center add_discount"><i class="ico-percentage me-2 fs-5"></i> Add discount / surcharge</a>
                             </div>
-                            <table width="100%">
+                            <table width="100%" class="main_table">
                                 <tbody>
                                     <tr>
                                         <td>Subtotal</td>
@@ -855,7 +855,7 @@
                         <!-- <button type="button" class="btn btn-light-outline-grey btn-md icon-btn-left"><i class="ico-draft me-2 fs-6"></i> Save sale as a draft</button> -->
                     </div>
                     <div class="mod-ft-right">
-                        <button type="button" class="btn btn-light btn-md">Cancel</button>
+                        <button type="button" class="btn btn-light btn-md cancel_payment">Cancel</button>
                         <button type="submit" class="btn btn-primary btn-md take_payment" main_total="">Take Payment</button>
                     </div>
                 </div>
@@ -873,6 +873,7 @@
                         <span id="dynamic_discount"></span>
                         <div class="inv-number edit_product_quantity"><b>1</b></div>
                         <div class="inv-number edit_product_price"><b>$60.00</b></div>
+                        <span class="main_detail_price" style="display:none;">($60.00)</span>
                     </div>
                     <div class="row">
                         <div class="col-lg-4">
@@ -2683,15 +2684,24 @@
         var quantity = parseInt(productInfo.find('.edit_quantity').val());
         var productPrice = pricePerUnit * quantity;
         $('.productDetail .edit_product_price').text('$' + productPrice.toFixed(2));
+        $('.productDetail .main_detail_price').text('$' + productPrice.toFixed(2) + 'ea');
         var cus_type = $('#customer_type').val();
         var edit_prod_id = $('#edit_product_id').val();
         $('.invo-notice').each(function(index, element) {
             if($(this).attr('prod_id') == edit_prod_id)
             {
                 $(this).find('.inv-number').find('b').text($('.edit_product_price').text());
+                // $(this).find('.inv-number').find('b').text($('.main_detail_price').text());
+                $(this).find('.inv-number').find('b').next().text($('.main_detail_price').text());
                 $(this).find('.inv-left').find('.dis').text('(' + $('#dynamic_discount').text() + ')');
                 $(this).find('.quantity').val($('.edit_product_quantity').text());
 
+                if($('.edit_product_quantity').text() > 1)
+                {
+                    $(this).find('.main_p_price').show();
+                }else{
+                    $(this).find('.main_p_price').hide();
+                }
                 $(this).find('#product_price').val($('.edit_price_per_unit').val()); 
                 var productPrice = $(this).find('#product_price').val() // Get the text content of edit_product_price
                 var priceWithoutDollar = productPrice.replace('$', ''); // Remove the dollar sign
@@ -2758,6 +2768,10 @@
         var $currentDiv = $(this).closest('.product-info1'); // Reference to the current div
         var $input = $currentDiv.find('input.quantity');
         var count = parseInt($input.val()) - 1;
+        if(count == 1)
+        {
+            $(this).parent().parent().next().find('.main_p_price').hide();
+        }
         count = count < 1 ? 1 : count;
         $input.val(count);
 
@@ -2821,12 +2835,14 @@
                 var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
 
                 var discount = (parseFloat(main_price) * parsedEditAmount) / 100;
-                var newDiscountAmount = discountAmount - discount;
+                // var newDiscountAmount = discountAmount - discount;
+                var newDiscountAmount = discountAmount;
             }else{
                 var editAmountValue = $(this).parent().parent().parent().find('#hdn_discount_amount').val();
                 var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
 
-                var newDiscountAmount = discountAmount - parsedEditAmount;
+                // var newDiscountAmount = discountAmount - parsedEditAmount;
+                var newDiscountAmount = discountAmount;
             }
             // var final = discountAmount - newDiscountAmount;
 
@@ -2837,8 +2853,15 @@
 
             // $(".dis").text("( Discount: $" + newDiscountAmount.toFixed(2) + ")");
             // Inside the click event handler for c_minus and c_plus
-            $currentDiv.find('.dis').text("( Discount: $" + newDiscountAmount.toFixed(2) + ")");
-            $('#dynamic_discount').text(' Discount: $' + newDiscountAmount.toFixed(2));
+            // Update the displayed discount value
+            if($(this).parent().parent().parent().find('#hdn_discount_surcharge_type').val() == 'Surcharge')
+            {
+                $currentDiv.find('.dis').text("( Surcharge: $" + newDiscountAmount.toFixed(2) + ")");
+                $('#dynamic_discount').text(' Surcharge: $' + newDiscountAmount.toFixed(2));
+            }else{
+                $currentDiv.find('.dis').text("( Discount: $" + newDiscountAmount.toFixed(2) + ")");
+                $('#dynamic_discount').text(' Discount: $' + newDiscountAmount.toFixed(2));
+            }
         }
 
         updateSubtotalAndTotal(type);
@@ -2850,7 +2873,10 @@
         var $currentDiv = $(this).closest('.product-info1'); // Reference to the current div
         var $input = $currentDiv.find('input.quantity');
         $input.val(parseInt($input.val()) + 1);
-
+        if(parseInt($input.val()) >= 1)
+        {
+            $(this).parent().parent().next().find('.main_p_price').show();
+        }
         var chk_dis_type = $(this).parent().parent().parent().find('#discount_types').val();
 
         var main_price = parseFloat($currentDiv.find('#product_price').val());
@@ -2912,29 +2938,89 @@
                 var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
 
                 var discount = (parseFloat(main_price) * parsedEditAmount) / 100;
-                var newDiscountAmount = discountAmount + discount;
+                // var newDiscountAmount = discountAmount + discount;
+                var newDiscountAmount = discountAmount;
             }else{
                 var editAmountValue = $(this).parent().parent().parent().find('#hdn_discount_amount').val();
                 var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
                 
-                var newDiscountAmount = discountAmount + parsedEditAmount;
+                // var newDiscountAmount = discountAmount + parsedEditAmount;
+                var newDiscountAmount = discountAmount;
             }
             newDiscountAmount = Math.max(newDiscountAmount, 0);
 
             // Update the displayed discount value
-            $currentDiv.find('.dis').text("( Discount: $" + newDiscountAmount.toFixed(2) + ")");
-            $('#dynamic_discount').text(' Discount: $' + newDiscountAmount.toFixed(2));
+            if($(this).parent().parent().parent().find('#hdn_discount_surcharge_type').val() == 'Surcharge')
+            {
+                $currentDiv.find('.dis').text("( Surcharge: $" + newDiscountAmount.toFixed(2) + ")");
+                $('#dynamic_discount').text(' Surcharge: $' + newDiscountAmount.toFixed(2));
+            }else{
+                $currentDiv.find('.dis').text("( Discount: $" + newDiscountAmount.toFixed(2) + ")");
+                $('#dynamic_discount').text(' Discount: $' + newDiscountAmount.toFixed(2));
+            }
         }
         updateSubtotalAndTotal(type);
         return false;
     });
 
+    $(document).on('keyup', '.casual_quantity', function(e) {
+        var type = 'casual';
+        var $currentDiv = $(this).closest('.product-info1'); // Reference to the current div
+        var quantity = parseInt($(this).val());
+        var mainPrice = parseFloat($currentDiv.find('#product_price').val());
+        var discountAmount = parseFloat($currentDiv.find('.dis').text().replace(/[^\d.]/g, '')) || 0;
+
+        // Calculate the total price based on quantity and discounts
+        var totalPrice = mainPrice * quantity - discountAmount;
+
+        // Update the displayed price
+        $currentDiv.find('.inv-number b').text('$' + totalPrice.toFixed(2));
+
+        // Trigger subtotal update
+        updateSubtotalAndTotal(type);
+    });
+    $(document).on('keyup', '.new_quantity', function(e) {
+        var type = 'new';
+        var $currentDiv = $(this).closest('.product-info2'); // Reference to the current div
+        var quantity = parseInt($(this).val());
+        var mainPrice = parseFloat($currentDiv.find('#product_price').val());
+        var discountAmount = parseFloat($currentDiv.find('.dis').text().replace(/[^\d.]/g, '')) || 0;
+
+        // Calculate the total price based on quantity and discounts
+        var totalPrice = mainPrice * quantity - discountAmount;
+
+        // Update the displayed price
+        $currentDiv.find('.inv-number b').text('$' + totalPrice.toFixed(2));
+
+        // Trigger subtotal update
+        updateSubtotalAndTotal(type);
+    });
+    $(document).on('keyup', '.existing_quantity', function(e) {
+        var type = 'existing';
+        var $currentDiv = $(this).closest('.product-info3'); // Reference to the current div
+        var quantity = parseInt($(this).val());
+        var mainPrice = parseFloat($currentDiv.find('#product_price').val());
+        var discountAmount = parseFloat($currentDiv.find('.dis').text().replace(/[^\d.]/g, '')) || 0;
+
+        // Calculate the total price based on quantity and discounts
+        var totalPrice = mainPrice * quantity - discountAmount;
+
+        // Update the displayed price
+        $currentDiv.find('.inv-number b').text('$' + totalPrice.toFixed(2));
+
+        // Trigger subtotal update
+        updateSubtotalAndTotal(type);
+    });
     $(document).on('click', '.n_minus', function(e) {
         var type="new";
         var $currentDiv = $(this).closest('.product-info2'); // Reference to the current div
         var $input = $currentDiv.find('input.quantity');
         var count = parseInt($input.val()) - 1;
         count = count < 1 ? 1 : count;
+        if(count == 1)
+        {
+            $(this).parent().parent().next().find('.main_p_price').hide();
+        }
         $input.val(count);
 
         var chk_dis_type = $(this).parent().parent().parent().find('#discount_types').val();
@@ -2996,12 +3082,14 @@
                 var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
 
                 var discount = (parseFloat(main_price) * parsedEditAmount) / 100;
-                var newDiscountAmount = discountAmount - discount;
+                // var newDiscountAmount = discountAmount - discount;
+                var newDiscountAmount = discountAmount;
             }else{
                 var editAmountValue = $(this).parent().parent().parent().find('#hdn_discount_amount').val();
                 var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
 
-                var newDiscountAmount = discountAmount - parsedEditAmount;
+                // var newDiscountAmount = discountAmount - parsedEditAmount;
+                var newDiscountAmount = discountAmount;
             }
             newDiscountAmount = Math.max(newDiscountAmount, 0);
 
@@ -3009,8 +3097,14 @@
             // $(".dis").text("( Discount: $" + newDiscountAmount.toFixed(2) + ")");
             // $('#dynamic_discount').text(' Discount: $' + newDiscountAmount.toFixed(2));
 
-            $currentDiv.find('.dis').text("( Discount: $" + newDiscountAmount.toFixed(2) + ")");
-            $('#dynamic_discount').text(' Discount: $' + newDiscountAmount.toFixed(2));
+            if($(this).parent().parent().parent().find('#hdn_discount_surcharge_type').val() == 'Surcharge')
+            {
+                $currentDiv.find('.dis').text("( Surcharge: $" + newDiscountAmount.toFixed(2) + ")");
+                $('#dynamic_discount').text(' Surcharge: $' + newDiscountAmount.toFixed(2));
+            }else{
+                $currentDiv.find('.dis').text("( Discount: $" + newDiscountAmount.toFixed(2) + ")");
+                $('#dynamic_discount').text(' Discount: $' + newDiscountAmount.toFixed(2));
+            }
         }
         updateSubtotalAndTotal(type);
         return false;
@@ -3021,7 +3115,10 @@
         var $currentDiv = $(this).closest('.product-info2'); // Reference to the current div
         var $input = $currentDiv.find('input.quantity');
         $input.val(parseInt($input.val()) + 1);
-
+        if(parseInt($input.val()) >= 1)
+        {
+            $(this).parent().parent().next().find('.main_p_price').show();
+        }
         var chk_dis_type = $(this).parent().parent().parent().find('#discount_types').val();
 
         var main_price = parseFloat($currentDiv.find('#product_price').val());
@@ -3083,18 +3180,26 @@
                 var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
 
                 var discount = (parseFloat(main_price) * parsedEditAmount) / 100;
-                var newDiscountAmount = discountAmount + discount;
+                // var newDiscountAmount = discountAmount + discount;
+                var newDiscountAmount = discountAmount;
             }else{
                 var editAmountValue = $(this).parent().parent().parent().find('#hdn_discount_amount').val();
                 var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
                 
-                var newDiscountAmount = discountAmount + parsedEditAmount;
+                // var newDiscountAmount = discountAmount + parsedEditAmount;
+                var newDiscountAmount = discountAmount;
             }
             // var final = discountAmount - newDiscountAmount;
 
             newDiscountAmount = Math.max(newDiscountAmount, 0);
-            $currentDiv.find('.dis').text("( Discount: $" + newDiscountAmount.toFixed(2) + ")");
-            $('#dynamic_discount').text(' Discount: $' + newDiscountAmount.toFixed(2));
+            if($(this).parent().parent().parent().find('#hdn_discount_surcharge_type').val() == 'Surcharge')
+            {
+                $currentDiv.find('.dis').text("( Surcharge: $" + newDiscountAmount.toFixed(2) + ")");
+                $('#dynamic_discount').text(' Surcharge: $' + newDiscountAmount.toFixed(2));
+            }else{
+                $currentDiv.find('.dis').text("( Discount: $" + newDiscountAmount.toFixed(2) + ")");
+                $('#dynamic_discount').text(' Discount: $' + newDiscountAmount.toFixed(2));
+            }
         }
         updateSubtotalAndTotal(type);
         return false;
@@ -3106,6 +3211,10 @@
         var $input = $currentDiv.find('input.quantity');
         var count = parseInt($input.val()) - 1;
         count = count < 1 ? 1 : count;
+        if(count == 1)
+        {
+            $(this).parent().parent().next().find('.main_p_price').hide();
+        }
         $input.val(count);
 
         var chk_dis_type = $(this).parent().parent().parent().find('#discount_types').val();
@@ -3166,12 +3275,14 @@
                 var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
 
                 var discount = (parseFloat(main_price) * parsedEditAmount) / 100;
-                var newDiscountAmount = discountAmount - discount;
+                // var newDiscountAmount = discountAmount - discount;
+                var newDiscountAmount = discountAmount;
             }else{
                 var editAmountValue = $(this).parent().parent().parent().find('#hdn_discount_amount').val();
                 var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
 
-                var newDiscountAmount = discountAmount - parsedEditAmount;
+                // var newDiscountAmount = discountAmount - parsedEditAmount;
+                var newDiscountAmount = discountAmount;
             }
             // var final = discountAmount - newDiscountAmount;
 
@@ -3181,8 +3292,14 @@
             // $(".dis").text("( Discount: $" + newDiscountAmount.toFixed(2) + ")");
             // $('#dynamic_discount').text(' Discount: $' + newDiscountAmount.toFixed(2));
 
-            $currentDiv.find('.dis').text("( Discount: $" + newDiscountAmount.toFixed(2) + ")");
-            $('#dynamic_discount').text(' Discount: $' + newDiscountAmount.toFixed(2));
+            if($(this).parent().parent().parent().find('#hdn_discount_surcharge_type').val() == 'Surcharge')
+            {
+                $currentDiv.find('.dis').text("( Surcharge: $" + newDiscountAmount.toFixed(2) + ")");
+                $('#dynamic_discount').text(' Surcharge: $' + newDiscountAmount.toFixed(2));
+            }else{
+                $currentDiv.find('.dis').text("( Discount: $" + newDiscountAmount.toFixed(2) + ")");
+                $('#dynamic_discount').text(' Discount: $' + newDiscountAmount.toFixed(2));
+            }
         }
         updateSubtotalAndTotal(type);
         return false;
@@ -3192,6 +3309,10 @@
         var type = "existing";
         var $currentDiv = $(this).closest('.product-info3'); // Reference to the current div
         var $input = $currentDiv.find('input.quantity');
+        if(parseInt($input.val()) >= 1)
+        {
+            $(this).parent().parent().next().find('.main_p_price').show();
+        }
         $input.val(parseInt($input.val()) + 1);
 
         var chk_dis_type = $(this).parent().parent().parent().find('#discount_types').val();
@@ -3257,19 +3378,27 @@
                 var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
 
                 var discount = (parseFloat(main_price) * parsedEditAmount) / 100;
-                var newDiscountAmount = discountAmount + discount;
+                // var newDiscountAmount = discountAmount + discount;
+                var newDiscountAmount = discountAmount;
             }else{
                 var editAmountValue = $(this).parent().parent().parent().find('#hdn_discount_amount').val();
                 var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
                 
-                var newDiscountAmount = discountAmount + parsedEditAmount;
+                // var newDiscountAmount = discountAmount + parsedEditAmount;
+                var newDiscountAmount = discountAmount;
             }
             // var final = discountAmount - newDiscountAmount;
 
             newDiscountAmount = Math.max(newDiscountAmount, 0);
 
-            $currentDiv.find('.dis').text("( Discount: $" + newDiscountAmount.toFixed(2) + ")");
-            $('#dynamic_discount').text(' Discount: $' + newDiscountAmount.toFixed(2));
+            if($(this).parent().parent().parent().find('#hdn_discount_surcharge_type').val() == 'Surcharge')
+            {
+                $currentDiv.find('.dis').text("( Surcharge: $" + newDiscountAmount.toFixed(2) + ")");
+                $('#dynamic_discount').text(' Surcharge: $' + newDiscountAmount.toFixed(2));
+            }else{
+                $currentDiv.find('.dis').text("( Discount: $" + newDiscountAmount.toFixed(2) + ")");
+                $('#dynamic_discount').text(' Discount: $' + newDiscountAmount.toFixed(2));
+            }
         }
         updateSubtotalAndTotal(type);
         return false;
@@ -3281,6 +3410,10 @@
         if (currentQuantity > 1) {
             quantityInput.val(currentQuantity - 1);
             $('.edit_product_quantity').text(currentQuantity - 1);
+            if(currentQuantity - 1 >= 1)
+            {
+                $('.main_detail_price').hide();
+            }
             calculateAndUpdate(); // Update total and recalculate
         }
     });
@@ -3291,6 +3424,10 @@
         var currentQuantity = parseInt(quantityInput.val());
         quantityInput.val(currentQuantity + 1);
         $('.edit_product_quantity').text(currentQuantity + 1);
+        if(currentQuantity + 1 >= 1)
+        {
+            $('.main_detail_price').show();
+        }
         calculateAndUpdate(); // Update total and recalculate
     });
 
@@ -3359,7 +3496,6 @@
     });
 
     $(document).on('change', '#edit_discount_surcharge', function() {
-        debugger;
         var selectedOption = $(this).val();
         var $discountType = $('#edit_discount_type');
         var $amount = $('#edit_amount');
@@ -3394,6 +3530,7 @@
 
             // Update edit_product_price
             $('.edit_product_price').text('$' + newPrice.toFixed(2));
+            $('.main_detail_price').text('$' + newPrice.toFixed(2) + 'ea');
 
             // Re-enable disabled fields
             // $amount.prop('disabled', false);
@@ -3422,7 +3559,7 @@
             var discountAmount = totalAmount * (discountValue / 100); // Calculate discount based on selected dropdown value
 
             // Update dynamic discount display
-            $dynamicDiscount.text(' Discount: $' + discountAmount.toFixed(2));
+            $dynamicDiscount.text(' Surcharge: $' + discountAmount.toFixed(2));
 
             $amount.val(discountValue).prop('disabled', true); // Set the dropdown value to the discount field
             // $reason.val('Credit Card Surcharge').prop('disabled', true);
@@ -3432,6 +3569,8 @@
 
             // Update edit_product_price
             $('.edit_product_price').text('$' + newPrice.toFixed(2));
+            $('.main_detail_price').text('$' + newPrice.toFixed(2) + 'ea');
+            
 
             // Re-enable disabled fields
             // $amount.prop('disabled', false);
@@ -3465,6 +3604,11 @@
         }
     });
     $(document).on('change', '#edit_discount_type, #edit_amount, .edit_price_per_unit, .edit_quantity', function() {
+        var quantityInput = $('.edit_quantity');
+        var currentQuantity = parseInt(quantityInput.val());
+        quantityInput.val(currentQuantity);
+        $('.edit_product_quantity').text(currentQuantity);
+        
         calculateAndUpdate();
     });
 
@@ -3489,13 +3633,18 @@
 
         $('.edit_product').show();
         $('.main_walk_in').hide();
-        
+        if(quanitity > 1)
+        {
+            $('.main_detail_price').show();
+        }else{
+            $('.main_detail_price').hide();
+        }
         $('#edit_product_id').val(id);
         $('.edit_product_name').text(name);
         $('.edit_product_quantity').text(quanitity);
         // $('.edit_product_price').text('$' + (price * quanitity - dis_price));
         $('.edit_product_price').text($(this).parent().find('b').text());
-        
+        $('.main_detail_price').text('($' + price + ' ea)');
         $('.edit_price_per_unit').val(price);
         $('.edit_quantity').val(quanitity);
         // $('#edit_sale_staff_id').val($(this).parent().parent().parent().parent().find('.credit_sale').find('#sale_staff_id').val());
@@ -3536,7 +3685,7 @@
             $('#edit_discount_surcharge').val($('#edit_discount_surcharge option').filter(function() {
                 return $(this).text() === searchText;
             }).val());
-            $('#dynamic_discount').text('Discount: $' + $(this).parent().parent().find('#hdn_discount_text').val());
+            $('#dynamic_discount').text('Surcharge: $' + $(this).parent().parent().find('#hdn_discount_text').val());
             $('#edit_amount').val($(this).parent().parent().find('#hdn_discount_amount').val());
             $('#edit_reason').val($(this).parent().parent().find('#hdn_reason').val());
             $('#edit_sale_staff_id').val($(this).parent().parent().find('#hdn_who_did_work').val())
@@ -3599,6 +3748,34 @@
     $(document).on('click','.back_to_sale',function(){
         $('#take_payment').modal('hide');
         $('#Walkin_Retail').modal('show');
+    })
+    $(document).on('click','.cancel_payment',function(){
+        $('#Walkin_Retail').modal('hide');
+        $('#productDetails').empty();
+        $('.subtotal').text('$0.00');
+        $('.discount').text('$0.00');
+        $('.total').text('$0.00');
+        $('.gst_total').text('(Includes GST of $0.00)');
+        $('#create_walkin')[0].reset();
+        $('.main_walk_in').find('.add_discount').each(function() {
+            // Update the HTML content of the element
+            $(this).html('<i class="ico-percentage me-2 fs-5"></i>Add discount / surcharge');
+
+            // Your additional code logic here for each element with the class 'add_discount'
+        });
+        $('input[name="discount_type"]').prop('disabled', false);
+        $('#amount').prop('disabled', false);
+        $('#amount').val(0);
+        $('#reason').prop('disabled',false);
+        $('#reason').val('');
+        $('.discount').each(function() {
+            var parentTd = $(this).parent().find('td');
+            parentTd.text('Discount');
+
+            var parentTds = $(this).parent().find('.discount');
+            parentTds.text('$0.00');
+        });
+        $('#notes').text('');
     })
     $(document).on('click','.add_another_payment',function(){
         var paymentDetailsClone = $('.payment_details').first().clone(); // Clone the first .payment_details div
@@ -3710,16 +3887,19 @@
             var optgroupLabel = selectedOption.parent().attr('label');
             if(optgroupLabel == 'Surcharge')
             {
-                discountAmount = amount * quantity;
+                discountAmount = amount * 1;//quantity;
 
                 var productPrice = pricePerUnit * quantity;
-                var newTotal = productPrice + discountAmount;
+                var newTotal = productPrice + (discountAmount * quantity);
+                // Update dynamic discount display
+                $('#dynamic_discount').text(' Surcharge: $' + discountAmount.toFixed(2));
             }else if(optgroupLabel == 'Discount'){
-                discountAmount = amount * quantity;
+                discountAmount = amount * 1;//quantity;
 
                 var productPrice = pricePerUnit * quantity;
-                var newTotal = productPrice - discountAmount;
+                var newTotal = productPrice - (discountAmount * quantity);
                 $('input[name="edit_discount_type"][value="percent"]').prop('disabled', false);
+                $('#dynamic_discount').text(' Discount: $' + discountAmount.toFixed(2));
             }else{
                 var productPrice = pricePerUnit * quantity;
                 var newTotal = productPrice + discountAmount;
@@ -3730,17 +3910,21 @@
                 var optgroupLabel = selectedOption.parent().attr('label');
                 if(optgroupLabel == 'Surcharge'){
                     var discountPercent = amount / 100;
-                    discountAmount = (pricePerUnit * quantity) * discountPercent;
+                    discountAmount = (pricePerUnit * 1) * discountPercent;
+                    // discountAmount = (pricePerUnit * quantity) * discountPercent;
                     var newPrice = (pricePerUnit * quantity) - discountAmount;
                     var productPrice = pricePerUnit * quantity;
-                    var newTotal = productPrice + discountAmount;
+                    var newTotal = productPrice + (discountAmount * quantity);
+                    $('#dynamic_discount').text(' Surcharge: $' + discountAmount.toFixed(2));
                 }
                 else if(optgroupLabel == 'Discount'){
                     var discountPercent = amount / 100;
-                    discountAmount = (pricePerUnit * quantity) * discountPercent;
+                    discountAmount = (pricePerUnit * 1) * discountPercent;
+                    // discountAmount = (pricePerUnit * quantity) * discountPercent;
                     var newPrice = (pricePerUnit * quantity) - discountAmount;
                     var productPrice = pricePerUnit * quantity;
-                    var newTotal = productPrice - discountAmount;
+                    var newTotal = productPrice - (discountAmount * quantity);
+                    $('#dynamic_discount').text(' Discount: $' + discountAmount.toFixed(2));
                 }else{
                     var discountPercent = amount / 100;
                     discountAmount = (pricePerUnit * quantity) * discountPercent;
@@ -3759,14 +3943,14 @@
         // Update edit_product_price
         // $('.edit_product_price').text('$' + newPrice.toFixed(2));
 
-        // Update dynamic discount display
-        $('#dynamic_discount').text(' Discount: $' + discountAmount.toFixed(2));
+        
 
         // Calculate new total after discount
         
 
         // Update edit_product_price
         $('.edit_product_price').text('$' + newTotal.toFixed(2));
+        $('.main_detail_price').text('($' + pricePerUnit + ' ea)');
     }
 
     function calculatePrice() {
@@ -3778,6 +3962,7 @@
 
         // Update edit_product_price
         $('.edit_product_price').text('$' + newPrice.toFixed(2));
+        $('.main_detail_price').text('($' + newPrice + ' ea)');
     }
 
     function updateQuantity() {
@@ -3789,6 +3974,7 @@
         var quantity = parseInt($('.edit_quantity').val());
         var totalPrice = pricePerUnit * quantity;
         $('.edit_product_price').text('$' + totalPrice.toFixed(2));
+        $('.main_detail_price').text('($' + totalPrice + ' ea)');
     }
 
     function checkDiscountSelection() {
@@ -3826,6 +4012,7 @@
 
             // Update edit_product_price
             $('.edit_product_price').text('$' + newPrice.toFixed(2));
+            $('.main_detail_price').text('($' + newPrice + ' ea)');
 
             // Re-enable disabled fields
             $amount.prop('disabled', false);
@@ -4811,11 +4998,12 @@
                             <div class="inv-center">
                                 <div class="number-input walk_number_input safari_only form-group mb-0 number">
                                     <button class="c_minus"></button>
-                                    <input  type="number" class="quantity form-control" min="0" name="casual_product_quanitity[]"  value="1">
+                                    <input  type="number" class="casual_quantity quantity form-control" min="0" name="casual_product_quanitity[]"  value="1">
                                     <button class="c_plus"></button>
                                 </div>
                             </div>
-                            <div class="inv-number go price"><b>${'$'+product.price}</b> <a href="#" class="btn btn-sm px-0 product-name clickable" product_id="${product.id}" product_name="${product.name}" product_price="${product.price}"><i class="ico-right-arrow fs-2 ms-3"></i></a></div>
+                            <div class="inv-number go price"><b>${'$'+product.price}</b><div class="main_p_price" style="display:none;">(${'$'+product.price} ea)</div><a href="#" class="btn btn-sm px-0 product-name clickable" product_id="${product.id}" product_name="${product.name}" product_price="${product.price}"><i class="ico-right-arrow fs-2 ms-3"></i></a>
+                            </div>
                         </div>`
                     );
                     var type='casual';
@@ -4864,11 +5052,11 @@
                             <div class="inv-center">
                                 <div class="number-input walk_number_input safari_only form-group mb-0 number">
                                     <button class="n_minus"></button>
-                                    <input type="number" class="quantity form-control" min="0" name="new_product_quanitity[]" value="1">
+                                    <input type="number" class="new_quantity quantity form-control" min="0" name="new_product_quanitity[]" value="1">
                                     <button class="n_plus"></button>
                                 </div>
                             </div>
-                            <div class="inv-number go price"><b>${'$'+product.price}</b> <a href="#" class="btn btn-sm px-0 product-name clickable" product_id="${product.id}" product_name="${product.name}" product_price="${product.price}"><i class="ico-right-arrow fs-2 ms-3"></i></a></div>
+                            <div class="inv-number go price"><b>${'$'+product.price}</b><div class="main_p_price" style="display:none;">(${'$'+product.price} ea)</div> <a href="#" class="btn btn-sm px-0 product-name clickable" product_id="${product.id}" product_name="${product.name}" product_price="${product.price}"><i class="ico-right-arrow fs-2 ms-3"></i></a></div>
                         </div>`
                     );
                     var type='new';
@@ -4916,11 +5104,11 @@
                             <div class="inv-center">
                                 <div class="number-input walk_number_input safari_only form-group mb-0 number">
                                     <button class="e_minus"></button>
-                                    <input type="number" class="quantity form-control" min="0" name="existing_product_quanitity[]" value="1">
+                                    <input type="number" class="existing_quantity quantity form-control" min="0" name="existing_product_quanitity[]" value="1">
                                     <button class="e_plus"></button>
                                 </div>
                             </div>
-                            <div class="inv-number go price"><b>${'$'+product.price}</b> <a href="#" class="btn btn-sm px-0 product-name clickable" product_id="${product.id}" product_name="${product.name}" product_price="${product.price}"><i class="ico-right-arrow fs-2 ms-3"></i></a></div>
+                            <div class="inv-number go price"><b>${'$'+product.price}</b><div class="main_p_price" style="display:none;">(${'$'+product.price} ea)</div> <a href="#" class="btn btn-sm px-0 product-name clickable" product_id="${product.id}" product_name="${product.name}" product_price="${product.price}"><i class="ico-right-arrow fs-2 ms-3"></i></a></div>
                         </div>`
                     );
                     var type='existing';
@@ -5024,6 +5212,13 @@
             $('.take_payment').attr('main_total',total.toFixed(2));
             // Update the displayed values on the page
             $('.subtotal').text('$' + subtotal.toFixed(2));
+
+            $('.discount').each(function() {
+                var parentTd = $(this).parent().find('td');
+                parentTd.text($('#discount_surcharge').find(':selected').parent().attr('label'));
+            });
+
+
             $('.discount').text('$' + discount.toFixed(2));
             $('.total').text('$' + total.toFixed(2));
             $('.gst_total').text('(Includes GST of $' + gst.toFixed(2) + ')');
@@ -5122,6 +5317,12 @@
             $('.take_payment').attr('main_total',total.toFixed(2));
 
             $('.subtotal').text('$' + subtotal.toFixed(2));
+            
+            $('.discount').each(function() {
+                var parentTd = $(this).parent().find('td');
+                parentTd.text($('#discount_surcharge').find(':selected').parent().attr('label'));
+            });
+
             $('.discount').text('$' + discount.toFixed(2));
             $('.total').text('$' + total.toFixed(2));
             $('.gst_total').text('(Includes GST of $' + gst.toFixed(2) + ')');
@@ -5214,6 +5415,12 @@
             $('.take_payment').attr('main_total',total.toFixed(2));
             
             $('.subtotal').text('$' + subtotal.toFixed(2));
+            
+            $('.discount').each(function() {
+                var parentTd = $(this).parent().find('td');
+                parentTd.text($('#discount_surcharge').find(':selected').parent().attr('label'));
+            });
+
             $('.discount').text('$' + discount.toFixed(2));
             $('.total').text('$' + total.toFixed(2));
             $('.gst_total').text('(Includes GST of $' + gst.toFixed(2) + ')');
