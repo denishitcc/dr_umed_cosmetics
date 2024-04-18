@@ -583,6 +583,7 @@
                 </div>
                 <form id="create_walkin" name="create_walkin" class="form" method="post">
                 @csrf
+                <input type="hidden" name="total_selected_product" id="total_selected_product" value="0">
                 <input type="hidden" name="walk_in_location_id" id="walk_in_location_id">
                 <input type="hidden" name="walk_in_client_id" id="walk_in_client_id">
                 <input type="hidden" name="hdn_customer_type" id="hdn_customer_type" value="casual">
@@ -856,7 +857,7 @@
                     </div>
                     <div class="mod-ft-right">
                         <button type="button" class="btn btn-light btn-md cancel_payment">Cancel</button>
-                        <button type="submit" class="btn btn-primary btn-md take_payment" main_total="">Take Payment</button>
+                        <button type="submit" class="btn btn-primary btn-md take_payment" main_total="" disabled>Take Payment</button>
                     </div>
                 </div>
                 </form>
@@ -1079,7 +1080,7 @@
                                 <label class="form-label">Amount</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="ico-dollar fs-4"></i></span>
-                                    <input type="text" class="form-control payment_amount" name="payment_amount[]" placeholder="0">
+                                    <input type="number" class="form-control payment_amount" name="payment_amount[]" placeholder="0">
                                     
                                     </div>
                                 </div>
@@ -3432,8 +3433,13 @@
     });
 
 
-    $(document).on('click', '.casual_cus', function(e) {
+    $(document).on('click', '.casual_cus', function(e) {debugger;
         e.preventDefault(); // Prevent default link behavior
+        $('#total_selected_product').val('0');
+        if($('#total_selected_product').val() == 0)
+        {
+            $('.take_payment').prop('disabled', true);
+        }
         $('#hdn_customer_type').val('casual');
         $('#customer_type').val('casual');
         $("#casual_customer").load(location.href + " #casual_customer");
@@ -3451,6 +3457,11 @@
     });
     $(document).on('click', '.new_cus', function(e) {
         e.preventDefault(); // Prevent default link behavior
+        $('#total_selected_product').val('0');
+        if($('#total_selected_product').val() == 0)
+        {
+            $('.take_payment').prop('disabled', true);
+        }
         $('#hdn_customer_type').val('new');
         $('#customer_type').val('new');
         $("#new_customer").load(location.href + " #new_customer");
@@ -3468,6 +3479,11 @@
     });
     $(document).on('click', '.existing_cus', function(e) {
         e.preventDefault(); // Prevent default link behavior
+        $('#total_selected_product').val('0');
+        if($('#total_selected_product').val() == 0)
+        {
+            $('.take_payment').prop('disabled', true);
+        }
         $('#hdn_customer_type').val('existing');
         $('#customer_type').val('existing');
         $("#exist_customer").load(location.href + " #exist_customer");
@@ -3708,6 +3724,11 @@
     $(document).on('click','.remove_product',function() {
         $(this).parent().remove();
         var type=$('#customer_type').val();
+        $('#total_selected_product').val($('#total_selected_product').val() - 1);
+        if($('#total_selected_product').val() == 0)
+        {
+            $('.take_payment').prop('disabled', true);
+        }
         updateSubtotalAndTotal(type); // Update Subtotal and Total
     })
     $(document).on('click','.remove_edit_product',function() {
@@ -3776,6 +3797,8 @@
             parentTds.text('$0.00');
         });
         $('#notes').text('');
+        //payment
+        $('#payment_type option:first').prop('selected',true);
     })
     $(document).on('click','.add_another_payment',function(){
         var paymentDetailsClone = $('.payment_details').first().clone(); // Clone the first .payment_details div
@@ -4963,6 +4986,7 @@
         }
     }
     function setProductSearchModal(value) {
+        debugger;
         $('#search_products').val(value); // Set selected value to input field
         $('.products_box').hide();
         
@@ -5007,7 +5031,11 @@
                         </div>`
                     );
                     var type='casual';
-
+                    $('#total_selected_product').val(parseFloat($('#total_selected_product').val()) + 1);
+                    if($('#total_selected_product').val() > 0)
+                    {
+                        $('.take_payment').prop('disabled', false);
+                    }
                     updateSubtotalAndTotal(type); // Update Subtotal and Total
 
                     document.getElementById('search_products').value = '';
@@ -5060,7 +5088,11 @@
                         </div>`
                     );
                     var type='new';
-
+                    $('#total_selected_product').val(parseFloat($('#total_selected_product').val()) + 1);
+                    if($('#total_selected_product').val() > 0)
+                    {
+                        $('.take_payment').prop('disabled', false);
+                    }
                     updateSubtotalAndTotal(type); // Update Subtotal and Total
                     document.getElementById('search_products_new_customer').value = '';
                     break; // Stop iterating once a match is found
@@ -5112,7 +5144,11 @@
                         </div>`
                     );
                     var type='existing';
-
+                    $('#total_selected_product').val(parseFloat($('#total_selected_product').val()) + 1);
+                    if($('#total_selected_product').val() > 0)
+                    {
+                        $('.take_payment').prop('disabled', false);
+                    }
                     updateSubtotalAndTotal(type); // Update Subtotal and Total
                     document.getElementById('search_products_existing_customer').value = '';
                     break; // Stop iterating once a match is found
