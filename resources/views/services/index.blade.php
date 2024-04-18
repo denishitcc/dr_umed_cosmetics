@@ -1,4 +1,5 @@
-@extends('layouts/sidebar')
+@extends('layouts.sidebar')
+@section('title', 'Services')
 @section('content')
 <meta name="csrf-token" content="{{ csrf_token() }}" />
 <div class="card">
@@ -98,7 +99,6 @@
             <form id="create_category" name="create_category" class="form">
             @csrf
             <div class="modal-body">
-
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="form-group">
@@ -106,17 +106,6 @@
                             <input type="text" class="form-control" id="category_name" name="category_name" maxlength="50">
                         </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Parent Category</label>
-                    <select class="form-select form-control" id="parent_category" name="parent_category" maxlength="50">
-                        <option selected value=""> (top-level) </option>
-                        <!-- @if(count($categories)>0)
-                            @foreach($categories as $cats)
-                                <option value="{{$cats->id}}">{{$cats->category_name}}</option>
-                            @endforeach
-                        @endif -->
-                    </select>
                 </div>
                 <div class="form-group">
                     <label class="cst-check"><input type="checkbox" value="1" name="show_business_summary" checked><span class="checkmark me-2"></span>Show on Business Summary in Dr. Umed</label>
@@ -151,17 +140,6 @@
                             <input type="text" class="form-control edit_category_name" id="edit_category_name" name="category_name" maxlength="50">
                         </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Parent Category</label>
-                    <select class="form-select form-control edit_parent_category_name" id="parent_category_edit" name="parent_category" maxlength="50">
-                        <option selected value="" > (top-level) </option>
-                        <!-- @if(count($categories)>0)
-                            @foreach($categories as $cats)
-                                <option value="{{$cats->id}}">{{$cats->category_name}}</option>
-                            @endforeach
-                        @endif -->
-                    </select>
                 </div>
                 <div class="form-group">
                     <label class="cst-check"><input type="checkbox" value="1" name="show_business_summary" checked><span class="checkmark me-2"></span>Show on Business Summary in Dr. Umed</label>

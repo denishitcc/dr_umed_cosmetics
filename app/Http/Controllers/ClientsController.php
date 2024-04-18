@@ -119,9 +119,7 @@ class ClientsController extends Controller
         ->select('clients.id', 'clients.firstname', 'clients.lastname', 'appointment.start_date', 'appointment.end_date')
         ->get();
 
-        $categories = Category::with([
-            'children'
-        ])->whereNull('parent_category')->get();
+        $categories = Category::get();
 
         $services   = Services::with(['appearoncalender'])->get();
         $users = User::all();

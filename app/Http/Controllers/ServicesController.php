@@ -18,9 +18,7 @@ class ServicesController extends Controller
     public function index()
     {
         // Fetch all distinct parent categories
-        $categories = Category::with([
-            'children'
-        ])->whereNull('parent_category')->get();
+        $categories = Category::get();
 
         // Fetch all categories for display
         $list_cat = Category::get();
@@ -43,7 +41,7 @@ class ServicesController extends Controller
         $locations = Locations::get();
         $services = Services::get();
         $users = User::get();
-        $list_parent_cat = Category::whereNull('parent_category')->get();
+        $list_parent_cat = Category::get();
         return view('services.create',compact('list_cat','locations','services','users','list_parent_cat'));
     }
 
@@ -113,7 +111,7 @@ class ServicesController extends Controller
     public function show(string $id)
     {
         $list_cat = Category::get();
-        $list_parent_cat = Category::whereNull('parent_category')->get();
+        $list_parent_cat = Category::get();
         $locations = Locations::get();
         // $services = Services::where('id',$id)->first();
         // $services = Services::join('services_appear_on_calendars', 'services.id', '=', 'services_appear_on_calendars.service_id')
@@ -242,7 +240,6 @@ class ServicesController extends Controller
         // dd($request->all());
         $newCategory = Category::create([
             'category_name' => $request->category_name,
-            'parent_category' => $request->parent_category,
             'show_business_summary' => $request->show_business_summary ?? 0,
             'trigger_when_sold' => $request->trigger_when_sold ?? 0
         ]);
@@ -268,7 +265,6 @@ class ServicesController extends Controller
         // dd($request->all());
         $updateCategory = Category::updateOrCreate(['id' => $request->cat_hdn_id],[
             'category_name' => $request->category_name,
-            'parent_category' => $request->parent_category,
             'show_business_summary' => $request->show_business_summary ?? 0,
             'trigger_when_sold' => $request->trigger_when_sold ?? 0
         ]);

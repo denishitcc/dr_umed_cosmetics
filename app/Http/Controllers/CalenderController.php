@@ -52,12 +52,7 @@ class CalenderController extends Controller
      */
     public function index(Request $request)
     {
-        // dd($request->locs);
-        // $loc_id = $request->input('locs');
-        // dd($loc_id);
-        $categories = Category::with([
-                            'children'
-                        ])->whereNull('parent_category')->get();
+        $categories = Category::get();
 
         $services   = Services::with(['appearoncalender'])->get();
         $staffs     = User::all();
@@ -220,13 +215,12 @@ class CalenderController extends Controller
      */
     public function createAppointments(Request $request)
     {
-        // dd($request->all());
         if(isset($request->app_id)) {
             $service_ex = explode(',',$request->service_id);
             $duration_ex = explode(',',$request->duration);
             $category_ex = explode(',',$request->category_id);
             $data = []; // Initialize an array to store response data
-        
+
             try {
                 DB::beginTransaction(); // Begin a transaction
                 foreach($service_ex as $key => $ser) {
@@ -253,7 +247,7 @@ class CalenderController extends Controller
                         'current_date'  => $request->start_date,
                         'location_id'   => $request->location_id
                     ];
-        
+
                     Appointment::create($appointmentsData);
                     $data[] = [
                         'success' => true,
@@ -262,20 +256,19 @@ class CalenderController extends Controller
                         'data'    => $appointmentsData, // Store prepared data for reference
                     ];
                 }
-        
+
                 DB::commit();
 
                 // Delete waitlist data corresponding to this appointment
                 WaitlistClient::where('id', $request->app_id)
                 ->delete();
-                
+
                 $data = [
                     'success' => true,
                     'message' => 'Appointment booked successfully!',
                     'type'    => 'success',
                 ];
             } catch (\Throwable $th) {
-                dd($th);
                 DB::rollback(); // Rollback the transaction on exception
                 $data[] = [
                     'success' => false,
@@ -283,7 +276,7 @@ class CalenderController extends Controller
                     'type'    => 'fail',
                 ];
             }
-        } 
+        }
         else
         {
             $appointmentsData = [
@@ -298,25 +291,25 @@ class CalenderController extends Controller
                 'current_date'  => $request->start_date,
                 'location_id'   => $request->location_id
             ];
-    
+
             try {
                 $findAppointment = Appointment::where('id',$request->app_id)->first();
-                
+
                 if( isset($findAppointment->id) ){
                     $findAppointment->update($appointmentsData);
                 }
                 else
                 {
-                Appointment::create($appointmentsData);
+                    Appointment::create($appointmentsData);
                 }
-    
+
                 DB::commit();
                 $data = [
                     'success' => true,
                     'message' => 'Appointment booked successfully!',
                     'type'    => 'success',
                 ];
-    
+
             } catch (\Throwable $th) {
                 //throw $th;
                 DB::rollback();
@@ -368,7 +361,7 @@ class CalenderController extends Controller
         if ($request->start_date) {
             $events->whereBetween(DB::raw('DATE(start_date)'), array($request->start_date, $request->end_date));
         }
-        if ($request->resourceId) {
+        if ($request->resourceId != 'all') {
             $events->where('staff_id', $request->resourceId);
         }
 

@@ -24,18 +24,7 @@ class Category extends Model
     protected $fillable = [
         'id',
         'category_name',
-        'parent_category',
         'show_business_summary',
         'trigger_when_sold'
     ];
-
-    /**
-     * Get all of the children for the Category
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function children(): HasMany
-    {
-        return $this->hasMany(Category::class, 'parent_category', 'id');
-    }
 }

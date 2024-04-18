@@ -1299,6 +1299,7 @@ var DU = {};
                         $('#subcategory_text').text(categoryTitle);
                         $('#sub_services').empty();
                         $.each(data, function(index, item) {
+                            console.log(item);
                             $("#sub_services").append(`<li><a href='javascript:void(0);' class='services' data-services_id=${item.id} data-category_id=${item.category_id} data-duration=${item.duration}>${item.service_name}</a></li>`);
                         });
                     },
@@ -1594,6 +1595,7 @@ var DU = {};
                                 clientId            = $('#clientDetails').find('input:hidden[name=client_id]').val();
                                 // Increment the counter
                                 count++;
+                                console.log(categoryId);
                                 // $('#mycalendar').remove();
                                 $('#external-events').removeAttr('style');
                                 if (count === 1) {
@@ -1665,6 +1667,7 @@ var DU = {};
                             clientId            = $('#clientDetails').find('input:hidden[name=client_id]').val();
                             // Increment the counter
                             count++;
+                            console.log(categoryId);
                             // $('#mycalendar').remove();
                             $('#external-events').removeAttr('style');
                             if (count === 1) {
