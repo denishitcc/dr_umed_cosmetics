@@ -2158,6 +2158,7 @@
             $('#productDetails').empty();
             $('#NewproductDetails').empty();
             $('#ExistingproductDetails').empty();
+            $('#existingclientmodal').hide();
             $('.subtotal').text('$0.00');
             $('.discount').text('$0.00');
             $('.total').text('$0.00');
@@ -2192,6 +2193,7 @@
             $('#productDetails').empty();
             $('#NewproductDetails').empty();
             $('#ExistingproductDetails').empty();
+            $('#existingclientmodal').hide();
             $('.subtotal').text('$0.00');
             $('.discount').text('$0.00');
             $('.total').text('$0.00');
@@ -4020,6 +4022,7 @@ if (text !== null) {
         $('#productDetails').empty();
         $('#NewproductDetails').empty();
         $('#ExistingproductDetails').empty();
+        $('#existingclientmodal').hide();
         $('.subtotal').text('$0.00');
         $('.discount').text('$0.00');
         $('.total').text('$0.00');
