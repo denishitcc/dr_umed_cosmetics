@@ -2156,6 +2156,8 @@
         $(document).on('click', '.close_payment', function(e) {
             $('#payment_completed').modal('hide');
             $('#productDetails').empty();
+            $('#NewproductDetails').empty();
+            $('#ExistingproductDetails').empty();
             $('.subtotal').text('$0.00');
             $('.discount').text('$0.00');
             $('.total').text('$0.00');
@@ -2185,8 +2187,11 @@
             $('.send_email').val('');
         })
         $(document).on('click', '.cancel_invoice', function(e) {
+            debugger;
             $('#paid_Invoice').modal('hide');
             $('#productDetails').empty();
+            $('#NewproductDetails').empty();
+            $('#ExistingproductDetails').empty();
             $('.subtotal').text('$0.00');
             $('.discount').text('$0.00');
             $('.total').text('$0.00');
@@ -4013,6 +4018,8 @@ if (text !== null) {
     $(document).on('click','.cancel_payment',function(){
         $('#Walkin_Retail').modal('hide');
         $('#productDetails').empty();
+        $('#NewproductDetails').empty();
+        $('#ExistingproductDetails').empty();
         $('.subtotal').text('$0.00');
         $('.discount').text('$0.00');
         $('.total').text('$0.00');
