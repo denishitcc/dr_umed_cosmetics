@@ -8,7 +8,7 @@
                 @foreach ($services as $service)
                     <li class="service_selected">
                         @php
-                        $duration = $service->appearoncalender->duration ? $service->appearoncalender->duration : 0
+                        $duration = isset($service->appearoncalender->duration) ? $service->appearoncalender->duration : 0
                         @endphp
                         <a href="javascript:void(0);" class="services" data-services_id="{{ $service->id }}"
                             data-category_id="{{ $service->category_id }}"
