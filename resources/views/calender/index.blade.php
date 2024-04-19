@@ -1249,7 +1249,7 @@
                 </div>
                 <!-- Modal footer -->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light btn-md cancel_invoice" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-light btn-md cancel_invoice">Cancel</button>
                     <button type="button" class="btn btn-primary btn-md">Print</button>
                 </div>
             </div>
