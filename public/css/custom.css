@@ -80,7 +80,7 @@ img{ max-width: 100%;}
 .form-group{ margin-bottom: 25px; position: relative;}
 
 .form-group.icon .form-control{padding-right: 2.2rem;}
-.form-group.icon i{ position: absolute; right: 12px; top: calc(50% - 11px ); color: #888C9F; font-size: 20px; }
+.form-group.icon i{ position: absolute; right: 12px; top: 12px; color: #888C9F; font-size: 20px; }
 
 .auth-outr .form-group label {color: #181C32; font-size: 14px; margin-bottom:5px;}
 .auth-outr .form-control{border-radius: 12px; background: #EEF1F5; border-color: #EEF1F5; display: block;  padding: 0.775rem 1rem; font-size: 14px; color: #8B8B8B; box-shadow: none; height: 62px;}
@@ -100,6 +100,8 @@ img{ max-width: 100%;}
 .form-group .form-control{border-radius: 5px; border: 1px solid #D1D1D1; color:#666; font-size: 15px; min-height: 45px; padding: .5rem 1.2rem; }
 .form-group .form-control[readonly]{ background-color: #e9ecef;}
 
+.closed-stip{padding-right: 40px; position: relative;}
+.closed-stip .cross{position: absolute; right: 0; bottom: 36px; width: auto;}
 
 .btn-primary{background: #0747A6; border-color:#0747A6;}
 .btn-primary:hover{background: #232323; border-color:#232323;}
@@ -487,13 +489,16 @@ div.dataTables_filter { text-align: right; float: right;}
 
 .invo-notice{border-radius: 8px; background: rgba(14, 165, 233, 0.05); padding: 15px; display: flex; justify-content: space-between; align-items: center;}
 .inv-left{ color: var(--black);}
-.inv-number{font-size: 18px; }
+/* .inv-number{font-size: 18px; } */
 .inv-number span{font-weight: 600;}
 
 .inv-number.go{ display: flex; justify-content: space-between; align-items: center;}
 
 .invo-notice.closed{ padding-left: 3.2rem; position: relative;}
 .invo-notice.closed .btn.cross{ padding: 1rem; position: absolute; left: 0; color: #282828;}
+
+.success-pop{border-radius: 8px; background: rgba(14, 165, 233, 0.05); padding: 15px; text-align: center;}
+.success-pop img{max-width: 12%; margin-bottom: 1rem;}
 
 /* working hour popup */
 
@@ -1005,6 +1010,10 @@ html .hasDatepicker .ui-button.ui-state-disabled:active{ border: 0; background: 
 .user-appnt{ margin-top: 15px;}
 .user-appnt:first-child{ margin-top: 0;}
 .user-appnt em{color:#9d9797;}
+
+.clinet-lists{list-style: none; margin: 0; padding: 0; background: #EEF1F5;}
+.clinet-lists li{ padding: 10px 20px; font-weight: 500; color: #464E5F; border-bottom: 1px solid #00000012; cursor: pointer; display: flex; justify-content: space-between;}
+.clinet-lists li:hover{ background: #ffffff85;} 
 
 /*  Responsive  */
 

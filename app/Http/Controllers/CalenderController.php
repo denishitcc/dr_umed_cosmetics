@@ -1768,6 +1768,14 @@ class CalenderController extends Controller
         $invoice = DB::table('walk_in_retail_sale')
             ->where('id', $walk_ids)
             ->first();
+            
+            $client_name = ''; // Default value is an empty string
+            if ($invoice->client_id !== null) {
+                $client_details = Clients::where('id', $invoice->client_id)->first();
+                $client_name = $client_details->firstname . ' ' . $client_details->lastname;
+            }
+            
+            $invoice->client_name = $client_name;
 
         // Check if the invoice exists
         if ($invoice) {

@@ -611,7 +611,7 @@
                         </ul>
                         <div class="tab-content">
                         <div class="tab-pane fade show active" id="casual_customer" role="tabpanel">
-                            <div class="form-group icon">
+                            <div class="form-group">
                                 <label>Invoice Date</label>
                                 <input type="date" id="datePicker1" name="casual_invoice_date" class="form-control" placeholder="date" value="<?php echo date('Y-m-d'); ?>">
                             </div>
@@ -620,7 +620,7 @@
                                 <i class="ico-search"></i>
                                 <div id="result1" class="list-group"></div>
                                 <div class="products_box" style="display:none;">
-                                    <ul class="drop-list" id="resultproductmodal"></ul>
+                                    <ul id="resultproductmodal" class="clinet-lists"></ul>
                                 </div>
                             </div>
                             <div id="productDetails" class="detaild-theos pt-3"></div>
@@ -726,7 +726,7 @@
                                 </div>
                             </div>
                             <hr class="my-4">
-                            <div class="form-group icon">
+                            <div class="form-group">
                                 <label>Invoice Date</label>
                                 <input type="date" id="datePicker2" name="new_invoice_date" class="form-control" value="<?php echo date('Y-m-d'); ?>">
                             </div>
@@ -735,7 +735,7 @@
                                 <i class="ico-search"></i>
                                 <div id="result1" class="list-group"></div>
                                 <div class="products_box_new" style="display:none;">
-                                    <ul class="drop-list" id="resultproductmodalNew"></ul>
+                                    <ul id="resultproductmodalNew"  class="clinet-lists"></ul>
                                 </div>
                             </div>
                             <div id="NewproductDetails" class="detaild-theos pt-3"></div>
@@ -795,7 +795,7 @@
                                 </div>
                                 <em class="d-grey font-12 btn-light">No recent appointments found</em>
                             </div>
-                            <div class="form-group icon">
+                            <div class="form-group">
                                 <label>Invoice Date</label>
                                 <input type="date" id="datePicker3" name="existing_invoice_date" class="form-control" value="<?php echo date('Y-m-d'); ?>">
                             </div>
@@ -804,7 +804,7 @@
                                 <i class="ico-search"></i>
                                 <div id="result1" class="list-group"></div>
                                 <div class="products_box_existing" style="display:none;">
-                                    <ul class="drop-list" id="resultproductmodalExisting"></ul>
+                                    <ul id="resultproductmodalExisting"  class="clinet-lists"></ul>
                                 </div>
                             </div>
                             <div id="ExistingproductDetails" class="detaild-theos pt-3"></div>
@@ -868,13 +868,14 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="invo-notice mb-4 closed">
+                    <div class="invo-notice mb-4">
                         <input type="hidden" name="edit_product_id" id="edit_product_id">
-                        <div class="inv-left"><b class="edit_product_name">VIP Skin treatment</b></div>
-                        <span id="dynamic_discount"></span>
+                        <div class="inv-left"><b class="edit_product_name">VIP Skin treatment</b><div id="dynamic_discount"></div></div>
                         <div class="inv-number edit_product_quantity"><b>1</b></div>
-                        <div class="inv-number edit_product_price"><b>$60.00</b></div>
-                        <span class="main_detail_price" style="display:none;">($60.00)</span>
+                        <div class="inv-number edit_product_price"><b>$60.00</b>
+                            <div class="main_detail_price" style="display:none;">($60.00)</div>
+                        </div>
+                        
                     </div>
                     <div class="row">
                         <div class="col-lg-4">
@@ -890,9 +891,9 @@
                             <div class="form-group">
                                 <label class="form-label">Quantity</label>
                                 <div class="number-input safari_only">
-                                    <button class="minus"></button>
+                                    <button class="minus edit_minus"></button>
                                     <input  type="number" class="quantity form-control edit_quantity" min="0" name="quantity">
-                                    <button class="plus"></button>
+                                    <button class="plus edit_plus"></button>
                                 </div>
                                 </div>
                         </div>
@@ -1060,7 +1061,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row payment_details">
+                    <div class="row payment_details closed-stip">
                         <div class="col-lg-4">
                             <div class="form-group">
                                 <label class="form-label">Payment</label>
@@ -1091,7 +1092,7 @@
                                 <input type="date" id="datePicker4" name="payment_date[]" class="form-control" id="payment_date" placeholder="date" value="<?php echo date('Y-m-d'); ?>" readonly>
                             </div>
                         </div>
-                        <div class="remove_payment">
+                        <div class="remove_payment cross">
                             <a href="#" class="remove_payment_btn"><button class="btn-close close_waitlist"></button></a>
                         </div>
                     </div>
@@ -1107,7 +1108,7 @@
                         <tbody>
                             <tr>
                                 <td><b>Total</b></td>
-                                <td class="text-end blue payment_total"><b>$250.00</b></td>
+                                <td class="text-end blue-bold payment_total"><b>$250.00</b></td>
                             </tr>
                             <tr>
                                 <td>Remaining balance</td>
@@ -1131,17 +1132,17 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="invo-notice mb-4">
-                        <div class="inv-left"><b>Payment Completed</b></div>
-                    </div>
-                    <div class="invo-notice mb-4">
-                        <div class="inv-left payment_complete_message"><b>Payment of $250 has been processed by Praharsh test on 3 Apr 2024</b></div>
-                    </div>
+                <div class="success-pop p-5 mb-4" style="
+                    text-align: center;">
+                        <img src="{{ asset('img/success-icon.png') }}" alt="" class="mb-3" style="
+                    max-width: 12%;">
+                    <span id="paymentMessage"></span>
+                </div>
                     <div class="form-group mb-3">
                         <label class="form-label"><strong>Send receipt by email</strong></label>
                         <div class="row">
                             <div class="col-lg-10">
-                                <input type="text" class="form-control" placeholder="admin@tenderresponse.com.au">
+                                <input type="text" class="form-control send_email" placeholder="admin@tenderresponse.com.au">
                             </div>
                             <div class="col-auto">
                                 <button type="button" class="btn btn-primary btn-md">Send</button>
@@ -1151,7 +1152,7 @@
 
                 </div>
                 <div class="modal-footer">
-                <button type="button" class="btn btn-light btn-md">Close</button>
+                <button type="button" class="btn btn-light btn-md close_payment">Close</button>
                 <button type="button" class="btn btn-primary btn-md">Print</button>
                 <button type="button" class="btn btn-primary btn-md view_invoice" walk_in_ids="">View Invoice</button>
                 </div>
@@ -1238,7 +1239,7 @@
                         <label class="form-label"><strong>Send receipt by email</strong></label>
                         <div class="row">
                             <div class="col-lg-10">
-                                <input type="text" class="form-control" placeholder="admin@tenderresponse.com.au">
+                                <input type="text" class="form-control send_email" placeholder="admin@tenderresponse.com.au">
                             </div>
                             <div class="col-auto">
                                 <button type="button" class="btn btn-primary btn-md">Send</button>
@@ -1248,7 +1249,7 @@
                 </div>
                 <!-- Modal footer -->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light btn-md" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-light btn-md cancel_invoice" data-bs-dismiss="modal">Cancel</button>
                     <button type="button" class="btn btn-primary btn-md">Print</button>
                 </div>
             </div>
@@ -2152,6 +2153,70 @@
             $('#clientDetails').show();
             $('.history_appointments').show();
         })
+        $(document).on('click', '.close_payment', function(e) {
+            $('#payment_completed').modal('hide');
+            $('#productDetails').empty();
+            $('.subtotal').text('$0.00');
+            $('.discount').text('$0.00');
+            $('.total').text('$0.00');
+            $('.gst_total').text('(Includes GST of $0.00)');
+            $('#create_walkin')[0].reset();
+            $('.main_walk_in').find('.add_discount').each(function() {
+                // Update the HTML content of the element
+                $(this).html('<i class="ico-percentage me-2 fs-5"></i>Add discount / surcharge');
+
+                // Your additional code logic here for each element with the class 'add_discount'
+            });
+            $('input[name="discount_type"]').prop('disabled', false);
+            $('#amount').prop('disabled', false);
+            $('#amount').val(0);
+            $('#reason').prop('disabled',false);
+            $('#reason').val('');
+            $('.discount').each(function() {
+                var parentTd = $(this).parent().find('td');
+                parentTd.text('Discount');
+
+                var parentTds = $(this).parent().find('.discount');
+                parentTds.text('$0.00');
+            });
+            $('#notes').text('');
+            //payment
+            $('#payment_type option:first').prop('selected',true);
+            $('.send_email').val('');
+        })
+        $(document).on('click', '.cancel_invoice', function(e) {
+            $('#paid_Invoice').modal('hide');
+            $('#productDetails').empty();
+            $('.subtotal').text('$0.00');
+            $('.discount').text('$0.00');
+            $('.total').text('$0.00');
+            $('.gst_total').text('(Includes GST of $0.00)');
+            $('#create_walkin')[0].reset();
+            $('.main_walk_in').find('.add_discount').each(function() {
+                // Update the HTML content of the element
+                $(this).html('<i class="ico-percentage me-2 fs-5"></i>Add discount / surcharge');
+
+                // Your additional code logic here for each element with the class 'add_discount'
+            });
+            $('input[name="discount_type"]').prop('disabled', false);
+            $('#amount').prop('disabled', false);
+            $('#amount').val(0);
+            $('#reason').prop('disabled',false);
+            $('#reason').val('');
+            $('.discount').each(function() {
+                var parentTd = $(this).parent().find('td');
+                parentTd.text('Discount');
+
+                var parentTds = $(this).parent().find('.discount');
+                parentTds.text('$0.00');
+            });
+            $('#notes').text('');
+            //payment
+            $('#payment_type option:first').prop('selected',true);
+            $('.send_email').val('');
+        })
+        
+        
         $(document).on('click', '.show_notes', function(e) {
             e.preventDefault();
             var notesDiv = $(this).closest('li').find('.additional_notes');
@@ -2816,16 +2881,16 @@
         var pricePerUnit = parseFloat(productInfo.find('.edit_price_per_unit').val());
         var quantity = parseInt(productInfo.find('.edit_quantity').val());
         var productPrice = pricePerUnit * quantity;
-        $('.productDetail .edit_product_price').text('$' + productPrice.toFixed(2));
+        $('.productDetail .edit_product_price').find('b').text('$' + productPrice.toFixed(2));
         $('.productDetail .main_detail_price').text('$' + productPrice.toFixed(2) + 'ea');
         var cus_type = $('#customer_type').val();
         var edit_prod_id = $('#edit_product_id').val();
         $('.invo-notice').each(function(index, element) {
             if($(this).attr('prod_id') == edit_prod_id)
             {
-                $(this).find('.inv-number').find('b').text($('.edit_product_price').text());
+                $(this).find('.inv-number').find('.m_p').text($('.edit_product_price').find('b').text());
                 // $(this).find('.inv-number').find('b').text($('.main_detail_price').text());
-                $(this).find('.inv-number').find('b').next().text($('.main_detail_price').text());
+                $(this).find('.inv-number').find('.m_p').next().text($('.main_detail_price').text());
                 $(this).find('.inv-left').find('.dis').text('(' + $('#dynamic_discount').text() + ')');
                 $(this).find('.quantity').val($('.edit_product_quantity').text());
 
@@ -2947,7 +3012,7 @@
         }
 
         var price_mul = price_amt * parseInt($input.val());
-        $currentDiv.find('.inv-number b').text('$' + price_mul);
+        $currentDiv.find('.inv-number .m_p').text('$' + price_mul);
         // $(this).parent().parent().parent().find('.product-name').attr('product_price',price_amt);
         $input.change();
         
@@ -3051,7 +3116,7 @@
         }
 
         var price_mul = price_amt * parseInt($input.val());
-        $currentDiv.find('.inv-number b').text('$' + price_mul);
+        $currentDiv.find('.inv-number .m_p').text('$' + price_mul); 
         $input.change();
         var textValue = $currentDiv.find('.dis').text();
 
@@ -3107,7 +3172,7 @@
         var totalPrice = mainPrice * quantity - discountAmount;
 
         // Update the displayed price
-        $currentDiv.find('.inv-number b').text('$' + totalPrice.toFixed(2));
+        $currentDiv.find('.inv-number .m_p').text('$' + totalPrice.toFixed(2));
 
         // Trigger subtotal update
         updateSubtotalAndTotal(type);
@@ -3123,7 +3188,7 @@
         var totalPrice = mainPrice * quantity - discountAmount;
 
         // Update the displayed price
-        $currentDiv.find('.inv-number b').text('$' + totalPrice.toFixed(2));
+        $currentDiv.find('.inv-number .m_p').text('$' + totalPrice.toFixed(2));
 
         // Trigger subtotal update
         updateSubtotalAndTotal(type);
@@ -3139,7 +3204,7 @@
         var totalPrice = mainPrice * quantity - discountAmount;
 
         // Update the displayed price
-        $currentDiv.find('.inv-number b').text('$' + totalPrice.toFixed(2));
+        $currentDiv.find('.inv-number .m_p').text('$' + totalPrice.toFixed(2));
 
         // Trigger subtotal update
         updateSubtotalAndTotal(type);
@@ -3195,7 +3260,7 @@
         }
 
         var price_mul = price_amt * parseInt($input.val());
-        $currentDiv.find('.inv-number b').text('$' + price_mul);
+        $currentDiv.find('.inv-number .m_p').text('$' + price_mul);
 
         $input.change();
         var textValue = $(this).parent().parent().parent().find('.dis').text();
@@ -3293,7 +3358,7 @@
         }
 
         var price_mul = price_amt * parseInt($input.val());
-        $currentDiv.find('.inv-number b').text('$' + price_mul);
+        $currentDiv.find('.inv-number .m_p').text('$' + price_mul);
 
         $input.change();
         var textValue = $(this).parent().parent().parent().find('.dis').text();
@@ -3389,7 +3454,7 @@
         }
 
         var price_mul = price_amt * parseInt($input.val());
-        $currentDiv.find('.inv-number b').text('$' + price_mul);
+        $currentDiv.find('.inv-number .m_p').text('$' + price_mul);
         
         $input.change();
         var textValue = $(this).parent().parent().parent().find('.dis').text();
@@ -3491,7 +3556,7 @@
         }
 
         var price_mul = price_amt * parseInt($input.val());
-        $currentDiv.find('.inv-number b').text('$' + price_mul);
+        $currentDiv.find('.inv-number .m_p').text('$' + price_mul);
 
         $input.change();
         var textValue = $(this).parent().parent().parent().find('.dis').text();
@@ -3536,14 +3601,14 @@
         updateSubtotalAndTotal(type);
         return false;
     });
-    $(document).on('click', '.minus', function() {
+    $(document).on('click', '.edit_minus', function() {
         // Decrement quantity if greater than 1
         var quantityInput = $('.edit_quantity');
         var currentQuantity = parseInt(quantityInput.val());
         if (currentQuantity > 1) {
             quantityInput.val(currentQuantity - 1);
             $('.edit_product_quantity').text(currentQuantity - 1);
-            if(currentQuantity - 1 >= 1)
+            if(currentQuantity - 1 == 1)
             {
                 $('.main_detail_price').hide();
             }
@@ -3551,7 +3616,7 @@
         }
     });
 
-    $(document).on('click', '.plus', function() {
+    $(document).on('click', '.edit_plus', function() {
         // Increment quantity
         var quantityInput = $('.edit_quantity');
         var currentQuantity = parseInt(quantityInput.val());
@@ -3559,6 +3624,22 @@
         $('.edit_product_quantity').text(currentQuantity + 1);
         if(currentQuantity + 1 >= 1)
         {
+            var text = $('#dynamic_discount').text();
+            // Use a regular expression to extract the number
+            var text = $('#dynamic_discount').text();
+            var number = 0; // Default value is 0
+            // Check if text is not null and matches the regular expression
+            if (text !== null) {
+                var match = text.match(/\d+\.\d+/);
+                // If the match is found, parse the number
+                if (match !== null) {
+                    number = parseFloat(match[0]);
+                }
+            }
+
+            var pricePerUnit = parseFloat($('.edit_price_per_unit').val());
+            var discountedPrice = pricePerUnit - number;
+            $('.main_detail_price').text('$' + discountedPrice.toFixed(2) + 'ea');
             $('.main_detail_price').show();
         }
         calculateAndUpdate(); // Update total and recalculate
@@ -3677,8 +3758,21 @@
             var newPrice = totalAmount - discountAmount;
 
             // Update edit_product_price
-            $('.edit_product_price').text('$' + newPrice.toFixed(2));
-            $('.main_detail_price').text('$' + newPrice.toFixed(2) + 'ea');
+            $('.edit_product_price').find('b').text('$' + newPrice.toFixed(2));
+            var text = $('#dynamic_discount').text();
+            // Use a regular expression to extract the number
+            var text = $('#dynamic_discount').text();
+var number = 0; // Default value is 0
+// Check if text is not null and matches the regular expression
+if (text !== null) {
+    var match = text.match(/\d+\.\d+/);
+    // If the match is found, parse the number
+    if (match !== null) {
+        number = parseFloat(match[0]);
+    }
+}
+
+            $('.main_detail_price').text('$' + (pricePerUnit - number).toFixed(2) + 'ea');
 
             // Re-enable disabled fields
             // $amount.prop('disabled', false);
@@ -3716,8 +3810,22 @@
             var newPrice = totalAmount + discountAmount;
 
             // Update edit_product_price
-            $('.edit_product_price').text('$' + newPrice.toFixed(2));
-            $('.main_detail_price').text('$' + newPrice.toFixed(2) + 'ea');
+            $('.edit_product_price').find('b').text('$' + newPrice.toFixed(2));
+
+            var text = $('#dynamic_discount').text();
+            // Use a regular expression to extract the number
+            var text = $('#dynamic_discount').text();
+var number = 0; // Default value is 0
+// Check if text is not null and matches the regular expression
+if (text !== null) {
+    var match = text.match(/\d+\.\d+/);
+    // If the match is found, parse the number
+    if (match !== null) {
+        number = parseFloat(match[0]);
+    }
+}
+
+            $('.main_detail_price').text('$' + (pricePerUnit + number).toFixed(2) + 'ea');
             
 
             // Re-enable disabled fields
@@ -3791,7 +3899,7 @@
         $('.edit_product_name').text(name);
         $('.edit_product_quantity').text(quanitity);
         // $('.edit_product_price').text('$' + (price * quanitity - dis_price));
-        $('.edit_product_price').text($(this).parent().find('b').text());
+        $('.edit_product_price').find('b').text($(this).parent().find('.m_p').text());
         $('.main_detail_price').text('($' + price + ' ea)');
         $('.edit_price_per_unit').val(price);
         $('.edit_quantity').val(quanitity);
@@ -4028,9 +4136,8 @@
     updateRemoveIconVisibility();
     // updateRemainingBalance();
     function populateInvoiceModal(invoiceData, subtotal, discount, total) {
-        debugger;
         // Update the modal content with the retrieved invoice data
-        $('#modalTitle').text('Paid invoice for ' + invoiceData.customer_name);
+        $('#modalTitle').text('Paid invoice for ' + invoiceData.client_name);
         $('#invoiceDate').text(invoiceData.invoice_date);
         $('#invoiceNumber').text('INV' + invoiceData.id);
 
@@ -4040,10 +4147,10 @@
         invoiceData.products.forEach(function (product) {
             if(product.type == 'Surcharge')
             {
-                var p_price = product.discount_value + product.product_price;
+                var p_price = product.product_price + product.discount_value;
             }else if(product.type == 'Discount')
             {
-                var p_price = product.discount_value - product.product_price;
+                var p_price = product.product_price - product.discount_value;
             }else
             {
                 var p_price = product.product_price;
@@ -4199,8 +4306,24 @@
         
 
         // Update edit_product_price
-        $('.edit_product_price').text('$' + newTotal.toFixed(2));
-        $('.main_detail_price').text('($' + pricePerUnit + ' ea)');
+        $('.edit_product_price').find('b').text('$' + newTotal.toFixed(2));
+
+        var text = $('#dynamic_discount').text();
+        // Use a regular expression to extract the number
+        var text = $('#dynamic_discount').text();
+var number = 0; // Default value is 0
+// Check if text is not null and matches the regular expression
+if (text !== null) {
+    var match = text.match(/\d+\.\d+/);
+    // If the match is found, parse the number
+    if (match !== null) {
+        number = parseFloat(match[0]);
+    }
+}
+
+        $('.main_detail_price').text('$' + (pricePerUnit - number).toFixed(2) + 'ea');
+        
+        // $('.main_detail_price').text('($' + pricePerUnit + ' ea)');
     }
 
     function calculatePrice() {
@@ -4211,7 +4334,7 @@
         var newPrice = pricePerUnit * quantity;
 
         // Update edit_product_price
-        $('.edit_product_price').text('$' + newPrice.toFixed(2));
+        $('.edit_product_price').find('b').text('$' + newPrice.toFixed(2));
         $('.main_detail_price').text('($' + newPrice + ' ea)');
     }
 
@@ -4223,7 +4346,7 @@
         var pricePerUnit = parseFloat($('.edit_price_per_unit').val());
         var quantity = parseInt($('.edit_quantity').val());
         var totalPrice = pricePerUnit * quantity;
-        $('.edit_product_price').text('$' + totalPrice.toFixed(2));
+        $('.edit_product_price').find('b').text('$' + totalPrice.toFixed(2));
         $('.main_detail_price').text('($' + totalPrice + ' ea)');
     }
 
@@ -4261,7 +4384,7 @@
             var newPrice = totalAmount - discountAmount;
 
             // Update edit_product_price
-            $('.edit_product_price').text('$' + newPrice.toFixed(2));
+            $('.edit_product_price').find('b').text('$' + newPrice.toFixed(2));
             $('.main_detail_price').text('($' + newPrice + ' ea)');
 
             // Re-enable disabled fields
@@ -5244,15 +5367,21 @@
                             <input type='hidden' id="hdn_who_did_work" name='casual_who_did_work[]' value='no one'>
                             <input type='hidden' id="hdn_edit_amount" name='casual_edit_amount[]' value='0'>
                             <input type='hidden' id="product_type" name='product_type[]' value='${product.product_type}'>
-                            <div class="inv-left"><b>${product.name} </b><span class="who_did_work"></span><span class="dis"></span></div>
+                            <div class="inv-left"><div><b>${product.name} </b><div class="who_did_work"></div><span class="dis"></div></span></div>
                             <div class="inv-center">
                                 <div class="number-input walk_number_input safari_only form-group mb-0 number">
-                                    <button class="c_minus"></button>
-                                    <input  type="number" class="casual_quantity quantity form-control" min="0" name="casual_product_quanitity[]"  value="1">
-                                    <button class="c_plus"></button>
+                                    <button class="c_minus minus"></button>
+                                    <input type="number" class="casual_quantity quantity form-control" min="0" name="casual_product_quanitity[]" value="1">
+                                    <button class="c_plus plus"></button>
                                 </div>
                             </div>
-                            <div class="inv-number go price"><b>${'$'+product.price}</b><div class="main_p_price" style="display:none;">(${'$'+product.price} ea)</div><a href="#" class="btn btn-sm px-0 product-name clickable" product_id="${product.id}" product_name="${product.name}" product_price="${product.price}"><i class="ico-right-arrow fs-2 ms-3"></i></a>
+                            <div class="inv-number go price">
+                                <div>
+                                    <div class="m_p">${'$'+product.price}</div>
+                                        <div class="main_p_price" style="display:none;">(${'$'+product.price} ea)
+                                    </div>
+                                </div>
+                                <a href="#" class="btn btn-sm px-0 product-name clickable" product_id="${product.id}" product_name="${product.name}" product_price="${product.price}"><i class="ico-right-arrow fs-2 ms-3"></i></a>
                             </div>
                         </div>`
                     );
@@ -5302,15 +5431,22 @@
                             <input type='hidden' id="hdn_who_did_work" name='new_who_did_work[]' value='no one'>
                             <input type='hidden' id="hdn_edit_amount" name='new_edit_amount[]' value='0'>
                             <input type='hidden' id="product_type" name='product_type[]' value='${product.product_type}'>
-                            <div class="inv-left"><b>${product.name} </b><span class="who_did_work"></span><span class="dis"></span></div>
+                            <div class="inv-left"><div><b>${product.name} </b><div class="who_did_work"></div><span class="dis"></div></span></div>
                             <div class="inv-center">
                                 <div class="number-input walk_number_input safari_only form-group mb-0 number">
-                                    <button class="n_minus"></button>
+                                    <button class="n_minus minus"></button>
                                     <input type="number" class="new_quantity quantity form-control" min="0" name="new_product_quanitity[]" value="1">
-                                    <button class="n_plus"></button>
+                                    <button class="n_plus plus"></button>
                                 </div>
                             </div>
-                            <div class="inv-number go price"><b>${'$'+product.price}</b><div class="main_p_price" style="display:none;">(${'$'+product.price} ea)</div> <a href="#" class="btn btn-sm px-0 product-name clickable" product_id="${product.id}" product_name="${product.name}" product_price="${product.price}"><i class="ico-right-arrow fs-2 ms-3"></i></a></div>
+                            <div class="inv-number go price">
+                                <div>
+                                    <div class="m_p">${'$'+product.price}</div>
+                                        <div class="main_p_price" style="display:none;">(${'$'+product.price} ea)
+                                    </div>
+                                </div>
+                                    <a href="#" class="btn btn-sm px-0 product-name clickable" product_id="${product.id}" product_name="${product.name}" product_price="${product.price}"><i class="ico-right-arrow fs-2 ms-3"></i></a>
+                                </div>
                         </div>`
                     );
                     var type='new';
@@ -5358,15 +5494,22 @@
                             <input type='hidden' id="hdn_who_did_work" name='existing_who_did_work[]' value='no one'>
                             <input type='hidden' id="hdn_edit_amount" name='existing_edit_amount[]' value='0'>
                             <input type='hidden' id="product_type" name='product_type[]' value='${product.product_type}'>
-                            <div class="inv-left"><b>${product.name} </b><span class="who_did_work"></span><span class="dis"></span></div>
+                            <div class="inv-left"><div><b>${product.name} </b><div class="who_did_work"></div><span class="dis"></div></span></div>
                             <div class="inv-center">
                                 <div class="number-input walk_number_input safari_only form-group mb-0 number">
-                                    <button class="e_minus"></button>
+                                    <button class="e_minus minus"></button>
                                     <input type="number" class="existing_quantity quantity form-control" min="0" name="existing_product_quanitity[]" value="1">
-                                    <button class="e_plus"></button>
+                                    <button class="e_plus plus"></button>
                                 </div>
                             </div>
-                            <div class="inv-number go price"><b>${'$'+product.price}</b><div class="main_p_price" style="display:none;">(${'$'+product.price} ea)</div> <a href="#" class="btn btn-sm px-0 product-name clickable" product_id="${product.id}" product_name="${product.name}" product_price="${product.price}"><i class="ico-right-arrow fs-2 ms-3"></i></a></div>
+                            <div class="inv-number go price">
+                                <div>
+                                    <div class="m_p">${'$'+product.price}</div>
+                                        <div class="main_p_price" style="display:none;">(${'$'+product.price} ea)
+                                    </div>
+                                </div>
+                                <a href="#" class="btn btn-sm px-0 product-name clickable" product_id="${product.id}" product_name="${product.name}" product_price="${product.price}"><i class="ico-right-arrow fs-2 ms-3"></i></a>
+                            </div>
                         </div>`
                     );
                     var type='existing';
@@ -5482,7 +5625,7 @@
 
 
             $('.discount').text('$' + discount.toFixed(2));
-            $('.total').text('$' + total.toFixed(2));
+            $('.total').html('<b>$' + total.toFixed(2) + '</b>');
             $('.gst_total').text('(Includes GST of $' + gst.toFixed(2) + ')');
             // $('.grand-total').text('$' + grandTotal.toFixed(2));
         }
@@ -5586,7 +5729,7 @@
             });
 
             $('.discount').text('$' + discount.toFixed(2));
-            $('.total').text('$' + total.toFixed(2));
+            $('.total').html('<b>$' + total.toFixed(2) + '</b>');
             $('.gst_total').text('(Includes GST of $' + gst.toFixed(2) + ')');
             // $('.grand-total').text('$' + grandTotal.toFixed(2));
         }
@@ -5684,7 +5827,7 @@
             });
 
             $('.discount').text('$' + discount.toFixed(2));
-            $('.total').text('$' + total.toFixed(2));
+            $('.total').html('<b>$' + total.toFixed(2) + '</b>');
             $('.gst_total').text('(Includes GST of $' + gst.toFixed(2) + ')');
             // $('.grand-total').text('$' + grandTotal.toFixed(2));
         }
@@ -5916,11 +6059,7 @@
             // resultList.append(`<li>${results[i].name}</li>`); // Update HTML with search results
 
             resultList.append(`<li onclick='setProductSearchModal("${results[i].name}")'>
-                <div class='client-name'>
-                    <div class="client-info">
-                        <h4 class="blue-bold"> ${results[i].name} (${'$'+results[i].price}) </h4>
-                    </div>
-                </div>
+                <aside>${results[i].name}</aside> <aside>${'$'+results[i].price}</aside>
             </li>`);
         }
         $('.products_box').show(); // Show the product search results box
@@ -5932,11 +6071,7 @@
             // resultList.append(`<li>${results[i].name}</li>`); // Update HTML with search results
 
             resultList.append(`<li onclick='setProductSearchModalNew("${results[i].name}")'>
-                <div class='client-name'>
-                    <div class="client-info">
-                        <h4 class="blue-bold"> ${results[i].name} (${'$'+results[i].price}) </h4>
-                    </div>
-                </div>
+                <aside>${results[i].name}</aside> <aside>${'$'+results[i].price}</aside>
             </li>`);
         }
         $('.products_box_new').show(); // Show the product search results box
@@ -5948,11 +6083,7 @@
             // resultList.append(`<li>${results[i].name}</li>`); // Update HTML with search results
 
             resultList.append(`<li onclick='setProductSearchModalExisting("${results[i].name}")'>
-                <div class='client-name'>
-                    <div class="client-info">
-                        <h4 class="blue-bold"> ${results[i].name} (${'$'+results[i].price}) </h4>
-                    </div>
-                </div>
+                <aside>${results[i].name}</aside> <aside>${'$'+results[i].price}</aside>
             </li>`);
         }
         $('.products_box_existing').show(); // Show the product search results box
@@ -5983,8 +6114,16 @@
                     // Format the date
                     var formattedDate = today.getDate() + ' ' + monthNames[today.getMonth()] + ' ' + today.getFullYear();
 
-                    var message = 'Payment of $' + amount + ' has been processed by Praharsh test on ' + formattedDate;
-                    $('.payment_complete_message').text(message);
+                    // var message = 'Payment of $' + amount + ' has been processed by Praharsh test on ' + formattedDate;
+                    // var message = '<h4>Payment Completed</h4>Payment of $' + amount + ' has been processed by Praharsh test on ' + formattedDate;
+                    // $('.payment_complete_message').text(message);
+
+                    var message = '<h4>Payment Completed</h4>Payment of $' + amount + ' has been processed by Praharsh test on ' + formattedDate;
+
+                    // Assuming you're using jQuery to update an element with id "paymentMessage"
+                    $('#paymentMessage').html(message);
+
+
 
 				} else {
 					
