@@ -24,6 +24,8 @@ return new class extends Migration
             $table->string('discount_type', 50)->nullable(); // Assuming product_discount is a decimal
             $table->decimal('discount_amount', 10, 2)->nullable(); // Example decimal type, adjust as needed
             $table->text('discount_reason')->nullable(); // Example decimal type, adjust as needed
+            $table->string('type',50)->nullable(); // Example decimal type, adjust as needed
+            $table->decimal('discount_value', 10, 2)->nullable(); // Example decimal type, adjust as needed
             $table->softDeletes();
             $table->timestamps();
 

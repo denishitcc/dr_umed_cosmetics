@@ -28,5 +28,7 @@ class WalkInProducts extends Model
         'discount_type',
         'discount_amount',
         'discount_reason',
+        'type',
+        'discount_value',
     ];
 }

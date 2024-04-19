@@ -852,7 +852,7 @@
                 
                 <div class="modal-footer justify-content-between">
                     <div class="mod-ft-left d-flex gap-2">
-                        <button type="button" class="btn btn-light-outline-grey btn-md icon-btn-left"><i class="ico-print3 me-2 fs-6"></i> Print Quote</button>
+                        <button type="button" class="btn btn-light-outline-grey btn-md icon-btn-left print_quote"><i class="ico-print3 me-2 fs-6"></i> Print Quote</button>
                         <!-- <button type="button" class="btn btn-light-outline-grey btn-md icon-btn-left"><i class="ico-draft me-2 fs-6"></i> Save sale as a draft</button> -->
                     </div>
                     <div class="mod-ft-right">
@@ -1123,6 +1123,138 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="payment_completed" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h4 class="modal-title">Sale Complete</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="invo-notice mb-4">
+                        <div class="inv-left"><b>Payment Completed</b></div>
+                    </div>
+                    <div class="invo-notice mb-4">
+                        <div class="inv-left payment_complete_message"><b>Payment of $250 has been processed by Praharsh test on 3 Apr 2024</b></div>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label"><strong>Send receipt by email</strong></label>
+                        <div class="row">
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" placeholder="admin@tenderresponse.com.au">
+                            </div>
+                            <div class="col-auto">
+                                <button type="button" class="btn btn-primary btn-md">Send</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-light btn-md">Close</button>
+                <button type="button" class="btn btn-primary btn-md">Print</button>
+                <button type="button" class="btn btn-primary btn-md view_invoice" walk_in_ids="">View Invoice</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="paid_Invoice" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="modalTitle">Paid invoice for <span id="customerName"></span></h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="invo-notice mb-4">
+                        <div class="inv-left"><b id="invoiceDate"></b></div>
+                        <div class="inv-number">Invoice number: <span id="invoiceNumber"></span></div>
+                    </div>
+                    <div class="table-responsive mb-2">
+                        <!-- Product table -->
+                        <table class="table all-db-table align-middle mb-4" id="productTable">
+                            <!-- Table header -->
+                            <thead>
+                                <tr>
+                                    <th class="mine-shaft" width="55%">Items</th>
+                                    <th class="mine-shaft" width="20%">Quantity</th>
+                                    <th class="mine-shaft" width="25%">Price</th>
+                                </tr>
+                            </thead>
+                            <!-- Table body -->
+                            <tbody id="productTableBody">
+                                <!-- Product rows will be dynamically added here -->
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="2"><b>Subtotal</b></td>
+                                    <td id="subtotalProductPrice">
+                                        <span class="blue-bold">$2,217.00 </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"><b class="prd_dis">Discount</b></td>
+                                    <td id="discountProductPrice">
+                                        <span class="blue-bold">$2,217.00 </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"><b>Total</b></td>
+                                    <td id="totalProductPrice">
+                                        <span class="blue-bold">$2,217.00 </span><br>
+                                        <span class="d-grey font-13" id="totalProductPriceGST">Includes GST of $20.55</span>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <!-- Payment table -->
+                    <div class="table-responsive mb-2">
+                        <table class="table all-db-table align-middle mb-4" id="paymentTable">
+                            <!-- Table header -->
+                            <thead>
+                                <tr>
+                                    <th class="mine-shaft" width="55%">Payments</th>
+                                    <th class="mine-shaft" width="20%">Date</th>
+                                    <th class="mine-shaft" width="25%">Price</th>
+                                </tr>
+                            </thead>
+                            <!-- Table body -->
+                            <tbody>
+                                <!-- Payment rows will be dynamically added here -->
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="2"><b>Total paid</b></td>
+                                    <td id="totalPaid">
+                                        <span class="blue-bold">$2,217.00 </span>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <!-- Receipt form -->
+                    <div class="form-group mb-3">
+                        <label class="form-label"><strong>Send receipt by email</strong></label>
+                        <div class="row">
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" placeholder="admin@tenderresponse.com.au">
+                            </div>
+                            <div class="col-auto">
+                                <button type="button" class="btn btn-primary btn-md">Send</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light btn-md" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary btn-md">Print</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     @include('calender.partials.client-modal')
     @include('calender.partials.repeat-appointment-modal')
 </div>
@@ -3433,7 +3565,7 @@
     });
 
 
-    $(document).on('click', '.casual_cus', function(e) {debugger;
+    $(document).on('click', '.casual_cus', function(e) {
         e.preventDefault(); // Prevent default link behavior
         $('#total_selected_product').val('0');
         if($('#total_selected_product').val() == 0)
@@ -3869,10 +4001,105 @@
         $('.client_search_bar').show();
         $('#existingclientmodal').hide();
     })
-
+    $(document).on('click', '.print_quote', function() {
+        // window.print();
+    })
+    $(document).on('click', '.view_invoice', function() {
+        $('#payment_completed').modal('hide');
+        $('#paid_Invoice').modal('show');
+        var walk_ids = $(this).attr('walk_in_ids');
+        //ajax for invoice data
+        $.ajax({
+            headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            url: "{{ route('calendar.paid-invoice') }}",
+            type: "POST",
+            data: {'walk_ids': walk_ids},
+            success: function (response) {
+                if (response.success) {
+                    console.log('data',response.invoice)
+                    // response.invoice.invoice_date;
+                    // populateInvoiceModal(response.invoice);
+                    populateInvoiceModal(response.invoice, response.invoice.subtotal, response.invoice.discount, response.invoice.total);
+                }
+            }
+        });
+    });
     
     updateRemoveIconVisibility();
     // updateRemainingBalance();
+    function populateInvoiceModal(invoiceData, subtotal, discount, total) {
+        debugger;
+        // Update the modal content with the retrieved invoice data
+        $('#modalTitle').text('Paid invoice for ' + invoiceData.customer_name);
+        $('#invoiceDate').text(invoiceData.invoice_date);
+        $('#invoiceNumber').text('INV' + invoiceData.id);
+
+        // Populate product table
+        var productTableBody = $('#productTableBody');
+        productTableBody.empty();
+        invoiceData.products.forEach(function (product) {
+            if(product.type == 'Surcharge')
+            {
+                var p_price = product.discount_value + product.product_price;
+            }else if(product.type == 'Discount')
+            {
+                var p_price = product.discount_value - product.product_price;
+            }else
+            {
+                var p_price = product.product_price;
+            }
+            productTableBody.append('<tr><td><b>' + product.product_name + '</b><br><span class="d-grey">' + product.user_full_name + '</span></td><td><b>' + product.product_quantity + '</b></td><td><b>$' + p_price + '</b></td></tr>');
+        });
+
+        // Calculate GST
+        var gst = invoiceData.gst;
+
+        // Populate payment table
+        var paymentTableBody = $('#paymentTable tbody');
+        paymentTableBody.empty();
+        invoiceData.payments.forEach(function (payment) {
+            paymentTableBody.append('<tr><td><b>' + payment.payment_type + '</b></td><td class="d-grey">' + payment.date + '</td><td><b>$' + payment.amount + '</b></td></tr>');
+        });
+
+        // Populate subtotal, discount, total, and total paid
+        $('#subtotalProductPrice').html('<span class="blue-bold">$' + subtotal + '</span>');
+        $('#discountProductPrice').html('<span class="blue-bold">$' + discount + '</span>');
+        $('#totalProductPrice').html('<span class="blue-bold">$' + total + '</span><br><span class="d-grey font-13" id="totalProductPriceGST">Includes GST of $' + gst + '</span>');
+
+        // Calculate total paid amount including payments
+        var totalPaid = 0;
+        invoiceData.payments.forEach(function (payment) {
+            totalPaid += parseFloat(payment.amount);
+        });
+
+        // Populate total paid amount
+        $('#totalPaid').html('$' + totalPaid.toFixed(2));
+    }
+
+    // Example data
+    var invoiceData = {
+        customer_name: "John Doe",
+        invoice_date: "2024-04-19",
+        id: 123,
+        gst: 20.55,
+        products: [
+            { product_name: "Product A", user_full_name: "User A", product_quantity: 2, product_price: 1000 },
+            { product_name: "Product B", user_full_name: "User B", product_quantity: 1, product_price: 500 }
+        ],
+        payments: [
+            { payment_type: "Cash", date: "2024-04-19", amount: 1000 },
+            { payment_type: "Card", date: "2024-04-19", amount: 500 }
+        ]
+    };
+
+    // Subtotal, discount, and total values from walk_in_retail_sale table
+    var subtotal = 2000; // Example subtotal
+    var discount = 100; // Example discount
+    var total = subtotal - discount; // Example total
+
+    // Populate the invoice modal with example data and subtotal, discount, total values
+    populateInvoiceModal(invoiceData, subtotal, discount, total);
+
 
     function updateRemoveIconVisibility() {
         var paymentDetailsCount = $('.payment_details').length;
@@ -4986,7 +5213,6 @@
         }
     }
     function setProductSearchModal(value) {
-        debugger;
         $('#search_products').val(value); // Set selected value to input field
         $('.products_box').hide();
         
@@ -5744,15 +5970,22 @@
 				
 				// Show a Sweet Alert message after the form is submitted.
 				if (response.success) {
-					
-					Swal.fire({
-						title: "Walk-In!",
-						text: "Your Walk-In created successfully.",
-						type: "success",
-					}).then((result) => {
-                        window.location = "{{url('calender')}}"//'/player_detail?username=' + name;
-                    });
-					
+                    console.log("res",response);
+                    var amount = response.amount;
+                    var walk_in_id = response.walk_in_id;
+                    $('#take_payment').modal('hide');
+                    $("#payment_completed").modal('show');
+                    $('.view_invoice').attr('walk_in_ids',walk_in_id);
+                    // Get today's date
+                    var today = new Date();
+                    // Define month names
+                    var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                    // Format the date
+                    var formattedDate = today.getDate() + ' ' + monthNames[today.getMonth()] + ' ' + today.getFullYear();
+
+                    var message = 'Payment of $' + amount + ' has been processed by Praharsh test on ' + formattedDate;
+                    $('.payment_complete_message').text(message);
+
 				} else {
 					
 					Swal.fire({

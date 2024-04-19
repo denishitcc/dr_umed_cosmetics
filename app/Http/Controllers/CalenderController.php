@@ -1373,6 +1373,8 @@ class CalenderController extends Controller
     public function StoreWalkIn(Request $request)
     {
         // dd($request->all());
+        // hdn_discount_surcharge_type
+        // casual_discount_text
         if($request->hdn_customer_type == 'casual')
         {
             // Storing walk-in sale details
@@ -1406,6 +1408,8 @@ class CalenderController extends Controller
                     'discount_type' => $request->casual_discount_types[$index],
                     'discount_amount' => $request->casual_discount_amount[$index],
                     // 'edit_amount' => $request->casual_edit_amount[$index],
+                    'type' => $request->hdn_discount_surcharge_type[$index],
+                    'discount_value' => $request->casual_discount_text[$index],
                     'discount_reason' => $request->casual_reason[$index],
                 ];
                 WalkInProducts::create($walk_in_product);
@@ -1494,6 +1498,8 @@ class CalenderController extends Controller
                     'product_discount_surcharge' => $request->existing_discount_surcharge[$index],
                     'discount_type' => $request->existing_discount_types[$index],
                     'discount_amount' => $request->existing_discount_amount[$index],
+                    'type' => $request->hdn_discount_surcharge_type[$index],
+                    'discount_value' => $request->existing_discount_text[$index],
                     // 'edit_amount' => $request->casual_edit_amount[$index],
                     'discount_reason' => $request->existing_reason[$index],
                 ];
@@ -1593,6 +1599,8 @@ class CalenderController extends Controller
                     'product_discount_surcharge' => $request->new_discount_surcharge[$index],
                     'discount_type' => $request->new_discount_types[$index],
                     'discount_amount' => $request->new_discount_amount[$index],
+                    'type' => $request->hdn_discount_surcharge_type[$index],
+                    'discount_value' => $request->new_discount_text[$index],
                     // 'edit_amount' => $request->casual_edit_amount[$index],
                     'discount_reason' => $request->new_reason[$index],
                 ];
@@ -1650,7 +1658,7 @@ class CalenderController extends Controller
         }
         
 
-        return response()->json(['success' => true, 'message' => 'Walk-In created successfully']);
+        return response()->json(['success' => true, 'message' => 'Walk-In created successfully','amount' => $paymentAmount,'walk_in_id' =>$walkInSale->id]);
     }
     public function GetLocation(Request $request)
     {
@@ -1752,4 +1760,51 @@ class CalenderController extends Controller
             'serviceshtml'          => $serviceshtml
         ], 200);
     }
+    public function paidInvoice(Request $request)
+    {
+        $walk_ids = $request->input('walk_ids');
+
+        // Retrieve the main invoice data
+        $invoice = DB::table('walk_in_retail_sale')
+            ->where('id', $walk_ids)
+            ->first();
+
+        // Check if the invoice exists
+        if ($invoice) {
+            // Retrieve all products associated with the invoice
+            $products = WalkInProducts::where('walk_in_id', $walk_ids)->get();
+            
+            // Loop through each product to attach user_full_name
+            foreach ($products as $prd) {
+                $user_id = $prd->who_did_work;
+                if($user_id==null)
+                {
+                    $prd->user_full_name='';
+                }else{
+                    $user = User::where('id', $user_id)->first();
+                    // Add user_full_name to each product object
+                    $prd->user_full_name = "With " .$user->first_name . ' ' . $user->last_name;
+                }
+            }
+            
+            // Attach the products to the invoice
+            $invoice->products = $products;
+
+            // Retrieve all discount surcharges associated with the invoice
+            $discount_surcharge = WalkInDiscountSurcharge::where('walk_in_id', $walk_ids)->get();
+            
+            // Attach the discount surcharges to the invoice
+            $invoice->discount_surcharges = $discount_surcharge;
+
+            // Retrieve all payments associated with the invoice
+            $payment = Payment::where('walk_in_id', $walk_ids)->get();
+            
+            // Attach the payments to the invoice
+            $invoice->payments = $payment;
+        }
+        // dd($invoice);
+        // Now $invoice contains the main invoice data along with its associated products
+        return response()->json(['success' => true, 'invoice' => $invoice]);
+    }
+
 }
