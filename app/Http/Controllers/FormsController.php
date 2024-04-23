@@ -18,7 +18,7 @@ class FormsController extends Controller
         if ($request->ajax()) {
             $data = FormSummary::select('*');
             return Datatables::of($data)
-                
+
             ->addIndexColumn()
             ->addColumn('action', function($row){
                     $btn = '<div class="action-box"><button type="button" class="btn btn-sm black-btn round-6 dt-edit" ids='.$row->id.'><i class="ico-edit"></i></button><button type="button" class="btn btn-sm black-btn round-6 dt-delete" ids='.$row->id.'><i class="ico-trash"></i></button></div>';
@@ -73,7 +73,8 @@ class FormsController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $forms = FormSummary::find($id);
+        return view('forms.edit',compact('forms'));
     }
 
     /**
@@ -98,5 +99,47 @@ class FormsController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    /**
+     * Method formUpdate
+     *
+     * @param Request $request [explicite description]
+     *
+     * @return void
+     */
+    public function formUpdate(Request $request)
+    {
+        $user = Auth::user();
+        $forms = FormSummary::find($request->form_id);
+
+        if($forms)
+        {
+            $data = [
+                'title' => $request->title,
+                'description' => $request->description,
+                'status' => $request->status,
+                'by_whom' => $user->first_name.' '.$user->last_name
+            ];
+
+            $updateForms = $forms->update($data);
+
+            if($updateForms){
+
+                $response = [
+                    'success' => true,
+                    'message' => 'Form updated successfully!',
+                    'type' => 'success',
+                    'data_id' => $forms->id
+                ];
+            }else{
+                $response = [
+                    'error' => true,
+                    'message' => 'Error !',
+                    'type' => 'error',
+                ];
+            }
+            return response()->json($response);
+        }
     }
 }

@@ -9,16 +9,13 @@
                 <a href="#" class="btn btn-primary btn-md me-2" data-bs-toggle="modal" data-bs-target="#new_form">New Form</a>
                 <!-- <a href="#" class="btn btn-primary btn-md">Import Form</a> -->
             </div>
-            <div class="tool-right">
-                <a href="#" class="btn tag icon-btn-left btn-md btn-light-grey"><i class="ico-filter me-2 fs-6"></i> Filter By</a>
-            </div>
         </div>
-        
+
         </div>
 
     <div class="card-head">
         <h4 class="small-title mb-3">Forms Summary</h4>
-        
+
         <ul class="taskinfo-row">
             <li>
                 <div class="font-24 mb-1">{{count($forms)}}</div>
@@ -32,10 +29,6 @@
             <li>
                 <div class="font-24 mb-1">{{ $liveForms->count() }}</div>
                 <b class="text-succes-light">Live Forms </b>
-            </li>
-            <li>
-                <div class="font-24 mb-1">05</div>
-                <b class="text-danger">Inactive Forms</b>
             </li>
             @php
                 $draftsForms = $forms->filter(function($form) {
@@ -64,11 +57,6 @@
         </tbody>
     </table>
     </div>
-    
-    
-    
-    
-    
 </div>
 <!-- Modal -->
 <div class="modal fade" id="new_form" tabindex="-1">
@@ -115,8 +103,6 @@
                 <div class="info-light invo-notice">
                     <em class="d-grey font-13">This form can now be added to client appointments by selecting the Forms button to the left of the Dr. Umed Portal appointment book.</em>
                 </div>
-                
-                
             </div>
             <div class="modal-footer">
             <button type="button" class="btn btn-light" onclick="window.location='{{ url("forms") }}'">Cancel</button>
@@ -191,7 +177,6 @@ $(document).ready(function() {
                 }else{
                     return '<span class="badge text-bg-grey badge-md">'+statusClass+'</span>';
                 }
-                
             }
         },
         {data: 'action', name: 'action'},
@@ -229,13 +214,12 @@ $(document).ready(function() {
             page_info = api.rows( {page:'current'} ).data().page.info(),
             length = page_info.length,
             start = 0;
-            
 
         var pageInfoHtml = `
             <div class="dt-page-jump">
                 <select name="pagelist" id="pagelist" class="pagelist">
         `;
-        
+
         for(var count = 1; count <= page_info.pages; count++)
         {
             var page_number = count - 1;
@@ -244,11 +228,11 @@ $(document).ready(function() {
 
             start = start + page_info.length;
         }
-        
+
         pageInfoHtml += `</select></div>`;
-            
+
         dtFilter.find('label').remove();
-        
+
         dtFilter.html(
         `
         <label>
@@ -260,7 +244,7 @@ $(document).ready(function() {
             </div>
         </label>
         `);
-        
+
         $(pageInfoHtml).insertAfter(dtInfo);
 
         btns.addClass('btn-group');
@@ -294,7 +278,7 @@ $(document).ready(function() {
     });
     table.select.info( false);
     $('.status').change(function(){
-        
+
         if ($("input[name='status'][value='1']").prop("checked"))
         {
             $('.form_live').show();
@@ -304,11 +288,12 @@ $(document).ready(function() {
             $('.form_live').hide();
         }
     });
+
     $(document).on('input', '.dt-search', function()
     {
         table.search($(this).val()).draw() ;
     });
-    
+
     $(document).on('change', '#pagelist', function()
     {
         var page_no = $('#pagelist').find(":selected").text();
@@ -327,7 +312,7 @@ $(document).on('submit','#create_forms',function(e){
     }
 });
 function submitCreateForms(data){
-    
+
     $.ajax({
         headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
         url: "{{route('forms.store')}}",
@@ -338,10 +323,10 @@ function submitCreateForms(data){
         processData: false,
         data: data,
         success: function(response) {
-            
+
             // Show a Sweet Alert message after the form is submitted.
             if (response.success) {
-                
+
                 Swal.fire({
                     title: "Form!",
                     text: "Form created successfully.",
@@ -349,9 +334,9 @@ function submitCreateForms(data){
                 }).then((result) => {
                     window.location = "{{url('forms')}}"//'/player_detail?username=' + name;
                 });
-                
+
             } else {
-                
+
                 Swal.fire({
                     title: "Error!",
                     text: response.message,

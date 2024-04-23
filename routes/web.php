@@ -69,7 +69,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('users/checkEmail', [UsersController::class, 'checkEmail']);
     Route::post('users/update_info', [UsersController::class, 'update_info'])->name('update_info');
     Route::post('users/updateStatus', [UsersController::class, 'updateStatus']);
-    
+
     //User Role
     Route::resource('users-roles', UserRoleController::class);
     Route::post('users-roles/table',[UserRoleController::class, 'index'])->name('users-roles.table');
@@ -84,11 +84,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/update-administration', [AccessLevelController::class, 'update_administration'])->name('update-administration');
 
     //Email Templates
-    Route::resource('/email-templates', EmailTemplatesController::class); 
+    Route::resource('/email-templates', EmailTemplatesController::class);
     Route::post('email-templates/table',[EmailTemplatesController::class, 'index'])->name('email-templates.table');
 
     //Clients
-    Route::resource('/clients', ClientsController::class); 
+    Route::resource('/clients', ClientsController::class);
     Route::post('clients/table',[ClientsController::class, 'index'])->name('clients.table');
     Route::post('clients/checkClientEmail', [ClientsController::class, 'checkClientEmail']);
     Route::post('clients/updateStatus', [ClientsController::class, 'updateStatus']);
@@ -101,17 +101,17 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/sms-templates', SMSTemplatesController::class);
 
     //Enquiries
-    Route::resource('/enquiries', EnquiriesController::class); 
+    Route::resource('/enquiries', EnquiriesController::class);
     Route::post('enquiries/table',[EnquiriesController::class, 'index'])->name('enquiries.table');
 
     //Get All Location
     Route::post('/get-all-locations', [UsersController::class, 'get_all_locations'])->name('get-all-locations');
 
     //Suppliers
-    Route::resource('/suppliers', SuppliersController::class); 
+    Route::resource('/suppliers', SuppliersController::class);
     Route::post('suppliers/table',[SuppliersController::class, 'index'])->name('suppliers.table');
     Route::post('suppliers/checkSupplierEmail', [SuppliersController::class, 'checkSupplierEmail']);
-    
+
     //Services
     Route::resource('/services', ServicesController::class);
     Route::post('services/store-category',[ServicesController::class, 'store_category'])->name('services.store-category');
@@ -132,6 +132,7 @@ Route::middleware(['auth'])->group(function () {
     //forms
     Route::resource('/forms', FormsController::class);
     Route::post('forms/table',[FormsController::class, 'index'])->name('forms.table');
+    Route::post('forms/update',[FormsController::class, 'formUpdate'])->name('serviceforms.formUpdate');
 
     //Product Categories
     Route::resource('/products-categories', ProductCategoriesController::class);
