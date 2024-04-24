@@ -3777,7 +3777,30 @@ if (text !== null) {
         $('#existingclientmodal').hide();
     })
     $(document).on('click', '.print_quote', function() {
+        // window.print();
+
+        var originalContent = document.body.innerHTML;
+        var html = `<h1>Test</h1>
+                    <div>Milan Soni</div>
+                    <table>
+                        <thead>
+                            <th>Product Name</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Test</td>
+                                <td>2</td>
+                                <td>$100</td>
+                            </tr>
+                        </tbody>
+                    </table>`;
+        document.body.innerHTML = html;
+
         window.print();
+
+        document.body.innerHTML = originalContent;
     })
     $(document).on('click', '.view_invoice', function() {
         $('#payment_completed').modal('hide');
