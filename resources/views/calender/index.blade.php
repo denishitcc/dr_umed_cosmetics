@@ -575,28 +575,14 @@
     </div>
     <div class="modal fade" id="Walkin_Retail" tabindex="-1">
         <input type="hidden" id="customer_type" value="casual">
+        <input type="hidden" class="edited_total" value="0">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content main_walk_in">
                 <div class="modal-header">
                 <h4 class="modal-title">Walk-in retail sale @ <span class="walkin_loc_name">Hope Island</span></h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="create_walkin" name="create_walkin" class="form" method="post">
-                @csrf
-                <input type="hidden" name="total_selected_product" id="total_selected_product" value="0">
-                <input type="hidden" name="walk_in_location_id" id="walk_in_location_id">
-                <input type="hidden" name="walk_in_client_id" id="walk_in_client_id">
-                <input type="hidden" name="hdn_customer_type" id="hdn_customer_type" value="casual">
-                <input type='hidden' id="hdn_subtotal" name='hdn_subtotal' value='0'>
-                <input type='hidden' id="hdn_total" name='hdn_total' value='0'>
-                <input type='hidden' id="hdn_gst" name='hdn_gst' value='0'>
-                <input type='hidden' id="hdn_discount" name='hdn_discount' value='0'>
-
-                <!--discount hidden fields-->
-                <input type='hidden' id="hdn_main_discount_surcharge" name='hdn_main_discount_surcharge' value='No Discount'>
-                <input type='hidden' id="hdn_main_discount_type" name='hdn_main_discount_type' value='amount'>
-                <input type='hidden' id="hdn_main_discount_amount" name='hdn_main_discount_amount' value='0'>
-                <input type='hidden' id="hdn_main_discount_reason" name='hdn_main_discount_reason' value=''>
+                
                 <div class="modal-body">
                         <ul class="nav nav-pills nav-fill nav-group mb-3 main_walkin" role="tablist">
                             <li class="nav-item" role="presentation">
@@ -610,244 +596,148 @@
                             </li>
                         </ul>
                         <div class="tab-content">
-                        <div class="tab-pane fade show active" id="casual_customer" role="tabpanel">
-                            <div class="form-group">
-                                <label>Invoice Date</label>
-                                <input type="date" id="datePicker1" name="casual_invoice_date" class="form-control" placeholder="date" value="<?php echo date('Y-m-d'); ?>">
+                        <form id="create_walkin_casual" name="create_walkin_casual" class="form casual_tab" method="post">
+                            @csrf
+                            <input type="hidden" id="invoice_id" name="invoice_id" value="" class="invoice_id">
+                            <input type="hidden" name="total_selected_product" id="total_selected_product" value="0" class="total_selected_product">
+                            <input type="hidden" name="walk_in_location_id" id="walk_in_location_id" class="walk_in_location_id">
+                            <input type="hidden" name="walk_in_client_id" id="walk_in_client_id" class="walk_in_client_id">
+                            <input type="hidden" name="hdn_customer_type" id="hdn_customer_type" value="casual">
+                            <input type='hidden' id="hdn_subtotal" name='hdn_subtotal' value='0' class="hdn_subtotal">
+                            <input type='hidden' id="hdn_total" name='hdn_total' value='0' class="hdn_total">
+                            <input type='hidden' id="hdn_gst" name='hdn_gst' value='0' class="hdn_gst">
+                            <input type='hidden' id="hdn_discount" name='hdn_discount' value='0' class="hdn_discount">
+
+                            <!--discount hidden fields-->
+                            <input type='hidden' id="hdn_main_discount_surcharge" name='hdn_main_discount_surcharge' class="hdn_main_discount_surcharge" value='No Discount'>
+                            <input type='hidden' id="hdn_main_discount_type" name='hdn_main_discount_type' class="hdn_main_discount_type" value='amount'>
+                            <input type='hidden' id="hdn_main_discount_amount" name='hdn_main_discount_amount' class="hdn_main_discount_amount" value='0'>
+                            <input type='hidden' id="hdn_main_discount_reason" name='hdn_main_discount_reason' value='' class="hdn_main_discount_reason">
+                            <div class="tab-pane fade show active" id="casual_customer" role="tabpanel">
+                                @include('calender.partials.walk-in')
                             </div>
-                            <div class="form-group icon">
-                                <input type="text" id="search_products" class="form-control " autocomplete="off" placeholder="Search for services or products" onkeyup="changeProductInput(this.value)">
-                                <i class="ico-search"></i>
-                                <div id="result1" class="list-group"></div>
-                                <div class="products_box" style="display:none;">
-                                    <ul id="resultproductmodal" class="clinet-lists"></ul>
-                                </div>
-                            </div>
-                            <div id="productDetails" class="detaild-theos pt-3"></div>
-                            
-                            <div class="mb-3">
-                                <a href="#" class="btn btn-dashed w-100 btn-blue icon-btn-center add_discount"><i class="ico-percentage me-2 fs-5"></i> Add discount / surcharge</a>
-                            </div>
-                            <table width="100%" class="main_table">
-                                <tbody>
-                                    <tr>
-                                        <td>Subtotal</td>
-                                        <td class="text-end subtotal">$0.00</td>
-                                    </tr>
-                                    <tr class="discount-row">
-                                        <td>Discount</td>
-                                        <td class="text-end discount">$0.00</td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Total</b></td>
-                                        <td class="text-end total"><b>$0.00</b></td>
-                                    </tr>
-                                    <tr>
-                                        <td></td>
-                                        <td class="text-end d-grey font-13 gst_total">(Includes GST of $0.00)</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <hr class="my-4">
-                            <div class="form-group credit_sale">
-                                <label class="form-label">Credit Sale to <span class="d-grey font-13">(required)</span></label>
-                                <select class="form-select form-control" name="casual_staff" id="sale_staff_id">
-                                    <option value="">Please select</option>
-                                    @foreach($staffs as $staff)
-                                        <option value="{{$staff->id}}">{{$staff->first_name.' '.$staff->last_name}}</option>
-                                    @endforeach
-                                </select>
-                                </div>
-                                <div class="form-group mb-0">
-                                <label class="form-label">Note</label>
-                                <textarea class="form-control" rows="3" placeholder="Add a note" name="notes" id="notes"></textarea>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade show" id="new_customer" role="tabpanel">
-                            <div class="row">
-                                <div class="form-group icon col-lg-4">
-                                    <label>First Name</label>
-                                    <input type="text" id="walkin_first_name" name="walkin_first_name" class="form-control" placeholder="First">
-                                </div>
-                                <div class="form-group icon col-lg-4">
-                                    <label>Last Name</label>
-                                    <input type="text" id="walkin_last_name" name="walkin_last_name" class="form-control" placeholder="Last">
-                                </div>
-                                <div class="form-group icon col-lg-4">
-                                    <label>Email</label>
-                                    <input type="text" id="walkin_email" name="walkin_email" class="form-control" placeholder="Email">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="form-group icon col-lg-4">
-                                    <label>Phone</label>
-                                        <select class="form-select form-control" name="walkin_phone_type" id="walkin_phone_type">
-                                            <option selected="" value=""> -- select an option -- </option>
-                                            <option>Mobile</option>
-                                            <option>Home</option>
-                                            <option>Work</option>
-                                        </select>
-                                </div>
-                                <div class="form-group icon col-lg-4">
-                                    <label></label>
-                                    <input type="text" id="walkin_phone_no" name="walkin_phone_no" class="form-control">
-                                </div>
-                                <div class="col-lg-3">
-                                    <label class="form-label">Gender</label>
-                                    <div class="toggle form-group">
-                                        <input type="radio" name="walkin_gender" value="Male" id="males" checked="checked" />
-                                        <label for="males">Male <i class="ico-tick"></i></label>
-                                        <input type="radio" name="walkin_gender" value="Female" id="females" />
-                                        <label for="females">Female <i class="ico-tick"></i></label>
+                        </form>
+                        <form id="create_walkin_new" name="create_walkin_new" class="form new_tab" method="post" style="display:none;">
+                            @csrf
+                            <input type="hidden" id="invoice_id" name="invoice_id" value="" class="invoice_id">
+                            <input type="hidden" name="total_selected_product" id="total_selected_product" value="0" class="total_selected_product">
+                            <input type="hidden" name="walk_in_location_id" id="walk_in_location_id" class="walk_in_location_id">
+                            <input type="hidden" name="walk_in_client_id" id="walk_in_client_id" class="walk_in_client_id">
+                            <input type="hidden" name="hdn_customer_type" id="hdn_customer_type" value="casual">
+                            <input type='hidden' id="hdn_subtotal" name='hdn_subtotal' value='0' class="hdn_subtotal">
+                            <input type='hidden' id="hdn_total" name='hdn_total' value='0' class="hdn_total">
+                            <input type='hidden' id="hdn_gst" name='hdn_gst' value='0' class="hdn_gst">
+                            <input type='hidden' id="hdn_discount" name='hdn_discount' value='0' class="hdn_discount">
+
+                            <!--discount hidden fields-->
+                            <input type='hidden' id="hdn_main_discount_surcharge" name='hdn_main_discount_surcharge' class="hdn_main_discount_surcharge" value='No Discount'>
+                            <input type='hidden' id="hdn_main_discount_type" name='hdn_main_discount_type' value='amount' class="hdn_main_discount_type">
+                            <input type='hidden' id="hdn_main_discount_amount" name='hdn_main_discount_amount' value='0' class="hdn_main_discount_amount">
+                            <input type='hidden' id="hdn_main_discount_reason" name='hdn_main_discount_reason' value='' class="hdn_main_discount_reason">
+                            <div class="tab-pane fade show" id="new_customer" role="tabpanel">
+                                <div class="row">
+                                    <div class="form-group icon col-lg-4">
+                                        <label>First Name</label>
+                                        <input type="text" id="walkin_first_name" name="walkin_first_name" class="form-control" placeholder="First">
+                                    </div>
+                                    <div class="form-group icon col-lg-4">
+                                        <label>Last Name</label>
+                                        <input type="text" id="walkin_last_name" name="walkin_last_name" class="form-control" placeholder="Last">
+                                    </div>
+                                    <div class="form-group icon col-lg-4">
+                                        <label>Email</label>
+                                        <input type="text" id="walkin_email" name="walkin_email" class="form-control" placeholder="Email">
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="form-group">
-                                    <label class="form-label">Preferred contact method</label>
-                                        <select class="form-select form-control" name="walkin_contact_method" id="walkin_contact_method">
-                                            <option selected="" value=""> -- select an option -- </option>
-                                            <option>Text message (SMS)</option>
-                                            <option>Email</option>
-                                            <option>Phone call</option>
-                                            <option>Post</option>
-                                            <option>No preference</option>
-                                            <option>Don't send reminders</option>
-                                        </select>
-                                </div>
-                                <div class="col-lg-3">
-                                    <label class="form-label">Send promotions</label>
-                                    <div class="toggle mb-0">
-                                        <input type="radio" name="walkin_send_promotions" value="1" id="walkin_yes" checked="checked">
-                                        <label for="walkin_yes">Yes <i class="ico-tick"></i></label>
-                                        <input type="radio" name="walkin_send_promotions" value="0" id="walkin_no">
-                                        <label for="walkin_no">No <i class="ico-tick"></i></label>
+                                <div class="row">
+                                    <div class="form-group icon col-lg-4">
+                                        <label>Phone</label>
+                                            <select class="form-select form-control" name="walkin_phone_type" id="walkin_phone_type">
+                                                <option selected="" value=""> -- select an option -- </option>
+                                                <option>Mobile</option>
+                                                <option>Home</option>
+                                                <option>Work</option>
+                                            </select>
+                                    </div>
+                                    <div class="form-group icon col-lg-4">
+                                        <label></label>
+                                        <input type="text" id="walkin_phone_no" name="walkin_phone_no" class="form-control">
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <label class="form-label">Gender</label>
+                                        <div class="toggle form-group">
+                                            <input type="radio" name="walkin_gender" value="Male" id="males" checked="checked" />
+                                            <label for="males">Male <i class="ico-tick"></i></label>
+                                            <input type="radio" name="walkin_gender" value="Female" id="females" />
+                                            <label for="females">Female <i class="ico-tick"></i></label>
+                                        </div>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label class="form-label">Preferred contact method</label>
+                                            <select class="form-select form-control" name="walkin_contact_method" id="walkin_contact_method">
+                                                <option selected="" value=""> -- select an option -- </option>
+                                                <option>Text message (SMS)</option>
+                                                <option>Email</option>
+                                                <option>Phone call</option>
+                                                <option>Post</option>
+                                                <option>No preference</option>
+                                                <option>Don't send reminders</option>
+                                            </select>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <label class="form-label">Send promotions</label>
+                                        <div class="toggle mb-0">
+                                            <input type="radio" name="walkin_send_promotions" value="1" id="walkin_yes" checked="checked">
+                                            <label for="walkin_yes">Yes <i class="ico-tick"></i></label>
+                                            <input type="radio" name="walkin_send_promotions" value="0" id="walkin_no">
+                                            <label for="walkin_no">No <i class="ico-tick"></i></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr class="my-4">
+                                @include('calender.partials.walk-in')
                             </div>
-                            <hr class="my-4">
-                            <div class="form-group">
-                                <label>Invoice Date</label>
-                                <input type="date" id="datePicker2" name="new_invoice_date" class="form-control" value="<?php echo date('Y-m-d'); ?>">
-                            </div>
-                            <div class="form-group icon">
-                                <input type="text" id="search_products_new_customer" class="form-control " autocomplete="off" placeholder="Search for services or products" onkeyup="changeProductInputNewCustomer(this.value)">
-                                <i class="ico-search"></i>
-                                <div id="result1" class="list-group"></div>
-                                <div class="products_box_new" style="display:none;">
-                                    <ul id="resultproductmodalNew"  class="clinet-lists"></ul>
+                        </form>
+                        <form id="create_walkin_existing" name="create_walkin_existing" class="form existing_tab" method="post" style="display:none;">
+                            @csrf
+                            <input type="hidden" id="invoice_id" name="invoice_id" value="" class="invoice_id">
+                            <input type="hidden" name="total_selected_product" id="total_selected_product" value="0" class="total_selected_product">
+                            <input type="hidden" name="walk_in_location_id" id="walk_in_location_id" class="walk_in_location_id">
+                            <input type="hidden" name="walk_in_client_id" id="walk_in_client_id" class="walk_in_client_id">
+                            <input type="hidden" name="hdn_customer_type" id="hdn_customer_type" value="casual">
+                            <input type='hidden' id="hdn_subtotal" name='hdn_subtotal' value='0' class="hdn_subtotal">
+                            <input type='hidden' id="hdn_total" name='hdn_total' value='0' class="hdn_total">
+                            <input type='hidden' id="hdn_gst" name='hdn_gst' value='0' class="hdn_gst">
+                            <input type='hidden' id="hdn_discount" name='hdn_discount' value='0' class="hdn_discount">
+
+                            <!--discount hidden fields-->
+                            <input type='hidden' id="hdn_main_discount_surcharge" name='hdn_main_discount_surcharge' class="hdn_main_discount_surcharge" value='No Discount'>
+                            <input type='hidden' id="hdn_main_discount_type" name='hdn_main_discount_type' value='amount' class="hdn_main_discount_type">
+                            <input type='hidden' id="hdn_main_discount_amount" name='hdn_main_discount_amount' value='0' class="hdn_main_discount_amount">
+                            <input type='hidden' id="hdn_main_discount_reason" name='hdn_main_discount_reason' value='' class="hdn_main_discount_reason">
+                            <div class="tab-pane fade show" id="exist_customer" role="tabpanel">
+                                <div class="form-group icon client_search_bar">
+                                    <input type="text" id="search_exist_customer" class="form-control " autocomplete="off" placeholder="Search for a client" onkeyup="changeExistingCutomerInput(this.value)">
+                                    <i class="ico-search"></i>
+                                    <div id="result1" class="list-group"></div>
+                                </div>
+                                <div class="existing_client_list_box" style="display:none;">
+                                    <ul class="drop-list" id="resultexistingmodal"></ul>
+                                </div>
+                                <div class="mb-5" id="existingclientmodal"  style="display:none;">
+                                    <div class="one-inline align-items-center mb-2">
+                                        <span class="custname me-3" id="existingclientDetailsModal"> </span>
+                                        <input type="hidden" name="clientname" id="clientName">
+                                        <button type="button" class="btn btn-primary btn-md existing_client_change">Change</button>
+                                    </div>
+                                    <em class="d-grey font-12 btn-light">No recent appointments found</em>
+                                </div>
+                                @include('calender.partials.walk-in')
                                 </div>
                             </div>
-                            <div id="NewproductDetails" class="detaild-theos pt-3"></div>
-                            
-                            <div class="mb-3">
-                                <a href="#" class="btn btn-dashed w-100 btn-blue icon-btn-center add_discount"><i class="ico-percentage me-2 fs-5"></i> Add discount / surcharge</a>
-                            </div>
-                            <table width="100%">
-                                <tbody>
-                                    <tr>
-                                        <td>Subtotal</td>
-                                        <td class="text-end subtotal">$0.00</td>
-                                    </tr>
-                                    <tr class="discount-row">
-                                        <td>Discount</td>
-                                        <td class="text-end discount">$0.00</td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Total</b></td>
-                                        <td class="text-end total"><b>$0.00</b></td>
-                                    </tr>
-                                    <tr>
-                                        <td></td>
-                                        <td class="text-end d-grey font-13 gst_total">(Includes GST of $0.00)</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <hr class="my-4">
-                            <div class="form-group credit_sale">
-                                <label class="form-label">Credit Sale to <span class="d-grey font-13">(required)</span></label>
-                                <select class="form-select form-control" name="new_staff" id="sale_staff_id">
-                                    <option value="">Please select</option>
-                                    @foreach($staffs as $staff)
-                                        <option value="{{$staff->id}}">{{$staff->first_name.' '.$staff->last_name}}</option>
-                                    @endforeach
-                                </select>
-                                </div>
-                                <div class="form-group mb-0">
-                                <label class="form-label">Note</label>
-                                <textarea class="form-control" rows="3" placeholder="Add a note"></textarea>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade show" id="exist_customer" role="tabpanel">
-                            <div class="form-group icon client_search_bar">
-                                <input type="text" id="search_exist_customer" class="form-control " autocomplete="off" placeholder="Search for a client" onkeyup="changeExistingCutomerInput(this.value)">
-                                <i class="ico-search"></i>
-                                <div id="result1" class="list-group"></div>
-                            </div>
-                            <div class="existing_client_list_box" style="display:none;">
-                                <ul class="drop-list" id="resultexistingmodal"></ul>
-                            </div>
-                            <div class="mb-5" id="existingclientmodal"  style="display:none;">
-                                <div class="one-inline align-items-center mb-2">
-                                    <span class="custname me-3" id="existingclientDetailsModal"> </span>
-                                    <input type="hidden" name="clientname" id="clientName">
-                                    <button type="button" class="btn btn-primary btn-md existing_client_change">Change</button>
-                                </div>
-                                <em class="d-grey font-12 btn-light">No recent appointments found</em>
-                            </div>
-                            <div class="form-group">
-                                <label>Invoice Date</label>
-                                <input type="date" id="datePicker3" name="existing_invoice_date" class="form-control" value="<?php echo date('Y-m-d'); ?>">
-                            </div>
-                            <div class="form-group icon">
-                                <input type="text" id="search_products_existing_customer" class="form-control " autocomplete="off" placeholder="Search for services or products" onkeyup="changeProductInputExistingCustomer(this.value)">
-                                <i class="ico-search"></i>
-                                <div id="result1" class="list-group"></div>
-                                <div class="products_box_existing" style="display:none;">
-                                    <ul id="resultproductmodalExisting"  class="clinet-lists"></ul>
-                                </div>
-                            </div>
-                            <div id="ExistingproductDetails" class="detaild-theos pt-3"></div>
-                            
-                            <div class="mb-3">
-                                <a href="#" class="btn btn-dashed w-100 btn-blue icon-btn-center add_discount"><i class="ico-percentage me-2 fs-5"></i> Add discount / surcharge</a>
-                            </div>
-                            <table width="100%">
-                                <tbody>
-                                    <tr>
-                                        <td>Subtotal</td>
-                                        <td class="text-end subtotal">$0.00</td>
-                                    </tr>
-                                    <tr class="discount-row">
-                                        <td>Discount</td>
-                                        <td class="text-end discount">$0.00</td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Total</b></td>
-                                        <td class="text-end total"><b>$0.00</b></td>
-                                    </tr>
-                                    <tr>
-                                        <td></td>
-                                        <td class="text-end d-grey font-13 gst_total">(Includes GST of $0.00)</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <hr class="my-4">
-                            <div class="form-group credit_sale">
-                                <label class="form-label">Credit Sale to <span class="d-grey font-13">(required)</span></label>
-                                <select class="form-select form-control" name="existing_staff" id="sale_staff_id">
-                                    <option value="">Please select</option>
-                                    @foreach($staffs as $staff)
-                                        <option value="{{$staff->id}}">{{$staff->first_name.' '.$staff->last_name}}</option>
-                                    @endforeach
-                                </select>
-                                </div>
-                                <div class="form-group mb-0">
-                                <label class="form-label">Note</label>
-                                <textarea class="form-control" rows="3" placeholder="Add a note"></textarea>
-                            </div>
-                            </div>
-                        </div>
+                        </form>
                 </div>
                 
                 <div class="modal-footer justify-content-between">
@@ -860,7 +750,6 @@
                         <button type="submit" class="btn btn-primary btn-md take_payment" main_total="" disabled>Take Payment</button>
                     </div>
                 </div>
-                </form>
             </div>
             <div class="modal-content edit_product" style="display:none;">
                 <div class="modal-header" id="edit_product">
@@ -1163,7 +1052,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="modalTitle">Paid invoice for <span id="customerName"></span></h4>
+                    <h4 class="modal-title" id="modalTitle">Paid invoice</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -1249,6 +1138,8 @@
                 </div>
                 <!-- Modal footer -->
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-light btn-md delete_invoice" delete_id="">Delete</button>   
+                    <button type="button" class="btn btn-light btn-md edit_invoice" edit_id="">Edit</button>   
                     <button type="button" class="btn btn-light btn-md cancel_invoice">Cancel</button>
                     <button type="button" class="btn btn-primary btn-md">Print</button>
                 </div>
@@ -1294,8 +1185,8 @@
         
         // Set the max attribute of the date pickers to yesterday
         document.getElementById("datePicker1").setAttribute("max", today.toISOString().split('T')[0]);
-        document.getElementById("datePicker2").setAttribute("max", today.toISOString().split('T')[0]);
-        document.getElementById("datePicker3").setAttribute("max", today.toISOString().split('T')[0]);
+        // document.getElementById("datePicker2").setAttribute("max", today.toISOString().split('T')[0]);
+        // document.getElementById("datePicker3").setAttribute("max", today.toISOString().split('T')[0]);
         document.getElementById("datePicker4").setAttribute("min", today.toISOString().split('T')[0]);
         document.getElementById("datePicker4").setAttribute("max", today.toISOString().split('T')[0]);
         
@@ -1394,15 +1285,33 @@
             },
         };
 
-        $("#create_walkin").validate({
+        $("#create_walkin_casual").validate({
             rules: validationRules,
             messages: {
                 casual_staff: {
                     required: "Please select credit sale."
-                },
+                }
+            },
+            errorPlacement: function(error, element) {
+                // Custom error placement
+                error.insertAfter(element); // Display error message after the element
+            }
+        });
+        $("#create_walkin_new").validate({
+            rules: validationRules,
+            messages: {
                 new_staff: {
                     required: "Please select credit sale."
-                },
+                }
+            },
+            errorPlacement: function(error, element) {
+                // Custom error placement
+                error.insertAfter(element); // Display error message after the element
+            }
+        });
+        $("#create_walkin_existing").validate({
+            rules: validationRules,
+            messages: {
                 existing_staff: {
                     required: "Please select credit sale."
                 }
@@ -2155,15 +2064,17 @@
         })
         $(document).on('click', '.close_payment', function(e) {
             $('#payment_completed').modal('hide');
-            $('#productDetails').empty();
-            $('#NewproductDetails').empty();
-            $('#ExistingproductDetails').empty();
+            $('.productDetails').empty();
+            $('.NewproductDetails').empty();
+            $('.ExistingproductDetails').empty();
             $('#existingclientmodal').hide();
             $('.subtotal').text('$0.00');
             $('.discount').text('$0.00');
             $('.total').text('$0.00');
             $('.gst_total').text('(Includes GST of $0.00)');
-            $('#create_walkin')[0].reset();
+            $('#create_walkin_casual')[0].reset();
+            $('#create_walkin_new')[0].reset();
+            $('#create_walkin_existing')[0].reset();
             $('.main_walk_in').find('.add_discount').each(function() {
                 // Update the HTML content of the element
                 $(this).html('<i class="ico-percentage me-2 fs-5"></i>Add discount / surcharge');
@@ -2188,17 +2099,18 @@
             $('.send_email').val('');
         })
         $(document).on('click', '.cancel_invoice', function(e) {
-            debugger;
             $('#paid_Invoice').modal('hide');
-            $('#productDetails').empty();
-            $('#NewproductDetails').empty();
-            $('#ExistingproductDetails').empty();
+            $('.productDetails').empty();
+            $('.NewproductDetails').empty();
+            $('.ExistingproductDetails').empty();
             $('#existingclientmodal').hide();
             $('.subtotal').text('$0.00');
             $('.discount').text('$0.00');
             $('.total').text('$0.00');
             $('.gst_total').text('(Includes GST of $0.00)');
-            $('#create_walkin')[0].reset();
+            $('#create_walkin_casual')[0].reset();
+            $('#create_walkin_new')[0].reset();
+            $('#create_walkin_existing')[0].reset();
             $('.main_walk_in').find('.add_discount').each(function() {
                 // Update the HTML content of the element
                 $(this).html('<i class="ico-percentage me-2 fs-5"></i>Add discount / surcharge');
@@ -2222,8 +2134,72 @@
             $('#payment_type option:first').prop('selected',true);
             $('.send_email').val('');
         })
-        
-        
+        $(document).on('click', '.delete_invoice', function(e) {
+            var id = $(this).attr('delete_id');
+            var url = 'calender/delete-walk-in/' + id; // Corrected the URL construction
+
+            if (confirm("Are you sure to delete this walk-in?")) {
+                $.ajax({
+                    url: url,
+                    type: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function (data) {
+                        if (data.success) {
+                            Swal.fire({
+                                title: "Walk-In Sale!",
+                                text: data.message,
+                                icon: "success", // Changed 'info' to 'icon'
+                            });
+                            location.reload();
+                        } else {
+                            Swal.fire({
+                                title: "Error!",
+                                text: data.message,
+                                icon: "error", // Changed 'info' to 'icon'
+                            });
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Error fetching resources:', error);
+                    }
+                });
+            }
+        })
+        $(document).on('click', '.edit_invoice', function(e) {
+            
+            
+            var id = $(this).attr('edit_id');
+            $.ajax({
+                headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                url: "{{ route('calendar.edit-invoice') }}",
+                type: "POST",
+                data: {'walk_ids': id},
+                success: function (response) {
+                    if (response.success) {
+                        console.log('data',response.invoice);
+                        $('#paid_Invoice').modal('hide');
+                        $('#Walkin_Retail').modal('show');
+                        var type_cus = response.invoice.customer_type;
+                        if(type_cus =='new')
+                        {
+                            $('.existing_cus').click();
+                            $('.nav-link').removeClass('active');
+                            $('.existing_cus').addClass('active');
+                            $('#existingclientmodal').show();
+                            $('.walk_in_client_id').val(response.invoice.client_id);
+                            $('#existingclientDetailsModal').append('<i class="ico-user2 me-2 fs-6"></i>' + response.invoice.client_name);
+                        }
+                        $('.invoice_id').val(response.invoice.id);
+                        $('.invoice_date').hide();
+                        $('.edit_invoice_date').text(response.invoice.invoice_date);
+                        $('.edit_invoice_number').text('Invoice number: '+ 'INV' +response.invoice.id)
+                        $('.edited_total').val(response.invoice.total);
+                    }
+                }
+            });
+        });
         $(document).on('click', '.show_notes', function(e) {
             e.preventDefault();
             var notesDiv = $(this).closest('li').find('.additional_notes');
@@ -2372,20 +2348,44 @@
                 }
             });
         });
-
-        $(document).on('submit', '#create_walkin', function(e) {
+        $(document).on('click', '.take_payment', function(e) {
             e.preventDefault();
-            // Check if the form is valid
-            if ($("#create_walkin").valid()) {
-                var data = new FormData(this);
-                
+            
+            // Check if the form is valid based on the active tab
+            var activeTabId = $('.tab-pane.show.active').attr('id');
+            var formIsValid = false;
+            var formElement;
+
+            if (activeTabId === 'casual_customer') {
+                formIsValid = $("#create_walkin_casual").valid();
+                formElement = document.getElementById("create_walkin_casual");
+            } else if (activeTabId === 'new_customer') {
+                formIsValid = $("#create_walkin_new").valid();
+                formElement = document.getElementById("create_walkin_new");
+            } else if (activeTabId === 'exist_customer') {
+                formIsValid = $("#create_walkin_existing").valid();
+                formElement = document.getElementById("create_walkin_existing");
+            }
+            
+            if (formIsValid) {
+                var data = new FormData(formElement); // Pass the correct form element
                 $('#Walkin_Retail').modal('hide');
                 $('#take_payment').modal('show');
-                $('.payment_amount').val($('.take_payment').attr('main_total')); 
-                $('.payment_total').text('$' + $('.take_payment').attr('main_total'));
+
+                if($('.edit_invoice_number:first').text()=='')
+                {
+                    $('.payment_total').text('$' + $('.take_payment').attr('main_total'));
+                }
+                else
+                {
+                    $('.payment_total').text('$' + $('.hdn_total').val());
+                }
+                $('.payment_amount').val($('.take_payment').attr('main_total'));
+                
                 // SubmitWalkIn(data);
             }
         });
+
 
         $(document).on('change', '.all_staffs', function(e) {
             // Get the selected option value
@@ -2815,6 +2815,7 @@
         `);
     });
     $(document).on('click','.add_discount',function(e){
+        
         $('.main_walkin .nav-item:visible').each(function() {
             // Check if the current nav-item is active (visible)
             if ($(this).find('a.nav-link').hasClass('active')) {
@@ -2842,13 +2843,14 @@
             $('#hdn_amt').val($('#amount').val());
             $('#hdn_dis_type').val($('input[name="discount_type"]:checked').val());
 
-            $('#discount_surcharge').val($('#hdn_main_discount_surcharge').val());
+            $('#discount_surcharge').val($('.hdn_main_discount_surcharge').val());
         }
     });
     $(document).on('click','.cancel_discount',function(e){
+        
         $('.main_discount').hide();
         $('.main_walk_in').show();
-        $('#discount_surcharge').val($('#hdn_discount_surcharge').val());
+        // $('#discount_surcharge').val($('#hdn_discount_surcharge').val());
         // $('#discount_surcharge').val($('#discount_surcharge').val());
         $('#amount').prop('disabled', false);
         $('#discount_type').prop('disabled', false);
@@ -2861,7 +2863,7 @@
         //cancel 
         if($('#main_discount').find('h4').text() != 'Edit discount / surcharge')
         {
-            $('#amount').val(0);
+            // $('#amount').val(0);
         }
         else
         {
@@ -2898,7 +2900,7 @@
                 $(this).find('.inv-number').find('.m_p').text($('.edit_product_price').find('b').text());
                 // $(this).find('.inv-number').find('b').text($('.main_detail_price').text());
                 $(this).find('.inv-number').find('.m_p').next().text($('.main_detail_price').text());
-                $(this).find('.inv-left').find('.dis').text('(' + $('#dynamic_discount').text() + ')');
+                $(this).find('.inv-left').find('.dis').text($('#dynamic_discount').text());
                 $(this).find('.quantity').val($('.edit_product_quantity').text());
 
                 if($('.edit_product_quantity').text() > 1)
@@ -2963,107 +2965,116 @@
         }else{
             $('#notes').text($('#reason').val() + ' - ' +$('#amount').val()+'%' + ' applied to invoice.');
         }
-        $('#hdn_main_discount_surcharge').val($('#discount_surcharge').val());
-        $('#hdn_main_discount_type').val($('input[name="discount_type"]:checked').val());
-        $('#hdn_main_discount_amount').val($('#amount').val());
-        $('#hdn_main_discount_reason').val($('#reason').val());
+        $('.hdn_main_discount_surcharge').val($('#discount_surcharge').val());
+        $('.hdn_main_discount_type').val($('input[name="discount_type"]:checked').val());
+        $('.hdn_main_discount_amount').val($('#amount').val());
+        $('.hdn_main_discount_reason').val($('#reason').val());
     })
     $(document).on('click', '.c_minus', function(e) {
         var type = "casual";
-        var $currentDiv = $(this).closest('.product-info1'); // Reference to the current div
-        var $input = $currentDiv.find('input.quantity');
-        var count = parseInt($input.val()) - 1;
-        if(count == 1)
-        {
-            $(this).parent().parent().next().find('.main_p_price').hide();
-        }
-        count = count < 1 ? 1 : count;
-        $input.val(count);
-
-        var chk_dis_type = $(this).parent().parent().parent().find('#discount_types').val();
+        var $currentDiv = $(this).closest('.product-info1');
+        var chk_dis_type = $currentDiv.find('#discount_types').val();
 
         var main_price = parseFloat($currentDiv.find('#product_price').val());
         var price_amt;
-        
+
+        // Calculate price based on discount type
         if (chk_dis_type == 'percent') {
-            if($(this).parent().parent().parent().find('.inv-left').find('.dis').text() == '')
-            {
-                var discount = 0;
-                price_amt = main_price - (main_price * (discount / 100));
-            }
-            else
-            {
-                var discount = parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
-                if($(this).parent().parent().parent().find('#hdn_discount_surcharge_type').val() == 'Surcharge')
-                {
+            var discount = parseFloat($currentDiv.find('#hdn_discount_amount').val() || 0);
+            if ($currentDiv.find('.inv-left .dis').text() == '') {
+                price_amt = main_price;
+            } else {
+                if ($currentDiv.find('#hdn_discount_surcharge_type').val() == 'Surcharge') {
                     price_amt = main_price + (main_price * (discount / 100));
-                }
-                else
-                {
+                } else {
                     price_amt = main_price - (main_price * (discount / 100));
                 }
             }
-            
         } else {
-            if($(this).parent().parent().parent().find('.inv-left').find('.dis').text() == '')
-            {
+            var discount = parseFloat($currentDiv.find('#hdn_discount_amount').val() || 0);
+            if ($currentDiv.find('.inv-left .dis').text() == '') {
                 price_amt = parseFloat(main_price);
-            }else{
-                if($(this).parent().parent().parent().find('#hdn_discount_surcharge_type').val() == 'Surcharge')
-                {
-                    price_amt = parseFloat(main_price) + parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
-                }else{
-                    price_amt = parseFloat(main_price) - parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
+            } else {
+                if ($currentDiv.find('#hdn_discount_surcharge_type').val() == 'Surcharge') {
+                    price_amt = parseFloat(main_price) + discount;
+                } else {
+                    price_amt = parseFloat(main_price) - discount;
                 }
             }
         }
 
-        var price_mul = price_amt * parseInt($input.val());
-        $currentDiv.find('.inv-number .m_p').text('$' + price_mul);
-        // $(this).parent().parent().parent().find('.product-name').attr('product_price',price_amt);
-        $input.change();
-        
-        var textValue = $(this).parent().parent().parent().find('.dis').text();
+        // Update quantity for the current product
+        var $input = $currentDiv.find('input.quantity');
+        var newQuantity = parseInt($input.val()) - 1;
+        newQuantity = newQuantity < 1 ? 1 : newQuantity; // Ensure quantity doesn't go below 1
+        $input.val(newQuantity);
 
-        // Extract the number from the text using regular expressions
+        // Update price for the current product
+        var newPrice = price_amt * newQuantity;
+        $currentDiv.find('.m_p').text('$' + newPrice);
+
+        // Show the main_p_price if quantity is greater than or equal to 1
+        if (newQuantity == 1) {
+            $currentDiv.find('.main_p_price').hide();
+        }else{
+            $currentDiv.find('.main_p_price').show();
+        }
+        
+
+        // Update quantity and price in other tabs
+        $('.tab-pane').not($currentDiv.closest('.tab-pane')).each(function() {
+            var $otherTab = $(this);
+            $otherTab.find('.product-info1').each(function() {
+                var $otherProduct = $(this);
+                var productId = $otherProduct.attr('prod_id');
+
+                if ($currentDiv.attr('prod_id') === productId) {
+                    var $quantity = $otherProduct.find('.quantity');
+                    var $price = $otherProduct.find('.m_p');
+
+                    if ($quantity.length > 0) {
+                        var newQuantity = parseInt($quantity.val()) - 1;
+                        newQuantity = newQuantity < 1 ? 1 : newQuantity; // Ensure quantity doesn't go below 1
+                        $quantity.val(newQuantity);
+
+                        var nPrice = price_amt;
+                        $price.text('$' + nPrice * newQuantity);
+                    }
+                    // Exit the loop once the product is found
+                    return false;
+                }
+            });
+        });
+
+        // Update discount display
+        var textValue = $currentDiv.find('.dis').text();
         var regex = /\$([\d.]+)/;
         var match = textValue.match(regex);
 
         if (match && match.length > 1) {
-            // Extracted number from the text
             var discountAmount = parseFloat(match[1]);
-            
-            // Calculate half of the discount amount
-            if(chk_dis_type =='percent')
-            {
-                var editAmountValue = $(this).parent().parent().parent().find('#hdn_discount_amount').val();
+
+            // Calculate new discount amount based on discount type
+            var newDiscountAmount = discountAmount;
+            if (chk_dis_type == 'percent') {
+                var editAmountValue = $currentDiv.find('#hdn_discount_amount').val();
                 var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
 
                 var discount = (parseFloat(main_price) * parsedEditAmount) / 100;
-                // var newDiscountAmount = discountAmount - discount;
-                var newDiscountAmount = discountAmount;
-            }else{
-                var editAmountValue = $(this).parent().parent().parent().find('#hdn_discount_amount').val();
+                newDiscountAmount = discountAmount + discount;
+            } else {
+                var editAmountValue = $currentDiv.find('#hdn_discount_amount').val();
                 var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
 
-                // var newDiscountAmount = discountAmount - parsedEditAmount;
-                var newDiscountAmount = discountAmount;
+                newDiscountAmount = discountAmount + parsedEditAmount;
             }
-            // var final = discountAmount - newDiscountAmount;
-
             newDiscountAmount = Math.max(newDiscountAmount, 0);
-            // Replace the text with the new discount amount
-            // $(".dis").text("( Discount: $" + newDiscountAmount.toFixed(2) + ")");
-            // $('#dynamic_discount').text(' Discount: $' + newDiscountAmount.toFixed(2));
 
-            // $(".dis").text("( Discount: $" + newDiscountAmount.toFixed(2) + ")");
-            // Inside the click event handler for c_minus and c_plus
-            // Update the displayed discount value
-            if($(this).parent().parent().parent().find('#hdn_discount_surcharge_type').val() == 'Surcharge')
-            {
+            // Update displayed discount value
+            if ($currentDiv.find('#hdn_discount_surcharge_type').val() == 'Surcharge') {
                 $currentDiv.find('.dis').text("( Surcharge: $" + newDiscountAmount.toFixed(2) + ")");
                 $('#dynamic_discount').text(' Surcharge: $' + newDiscountAmount.toFixed(2));
-            }else{
+            } else {
                 $currentDiv.find('.dis').text("( Discount: $" + newDiscountAmount.toFixed(2) + ")");
                 $('#dynamic_discount').text(' Discount: $' + newDiscountAmount.toFixed(2));
             }
@@ -3074,99 +3085,122 @@
     });
 
     $(document).on('click', '.c_plus', function(e) {
+        
         var type = "casual";
-        var $currentDiv = $(this).closest('.product-info1'); // Reference to the current div
-        var $input = $currentDiv.find('input.quantity');
-        $input.val(parseInt($input.val()) + 1);
-        if(parseInt($input.val()) >= 1)
-        {
-            $(this).parent().parent().next().find('.main_p_price').show();
-        }
-        var chk_dis_type = $(this).parent().parent().parent().find('#discount_types').val();
+        var $currentDiv = $(this).closest('.product-info1');
+        var chk_dis_type = $currentDiv.find('#discount_types').val();
 
         var main_price = parseFloat($currentDiv.find('#product_price').val());
         var price_amt;
 
+        // Calculate price based on discount type
         if (chk_dis_type == 'percent') {
-            if($(this).parent().parent().parent().find('.inv-left').find('.dis').text() == '')
-            {
-                var discount = 0;
-                price_amt = main_price - (main_price * (discount / 100));
-            }
-            else
-            {
-                var discount = parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
-                if($(this).parent().parent().parent().find('#hdn_discount_surcharge_type').val() == 'Surcharge')
-                {
-                    var discount = parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
+            var discount = parseFloat($currentDiv.find('#hdn_discount_amount').val() || 0);
+            if ($currentDiv.find('.inv-left .dis').text() == '') {
+                price_amt = main_price;
+            } else {
+                if ($currentDiv.find('#hdn_discount_surcharge_type').val() == 'Surcharge') {
                     price_amt = main_price + (main_price * (discount / 100));
-                }
-                else
-                {
-                    var discount = parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
+                } else {
                     price_amt = main_price - (main_price * (discount / 100));
                 }
             }
-            
         } else {
-            if($(this).parent().parent().parent().find('.inv-left').find('.dis').text() == '')
-            {
+            var discount = parseFloat($currentDiv.find('#hdn_discount_amount').val() || 0);
+            if ($currentDiv.find('.inv-left .dis').text() == '') {
                 price_amt = parseFloat(main_price);
-            }else{
-                if($(this).parent().parent().parent().find('#hdn_discount_surcharge_type').val() == 'Surcharge')
-                {
-                    price_amt = parseFloat(main_price) + parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
-                }else{
-                    price_amt = parseFloat(main_price) - parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
+            } else {
+                if ($currentDiv.find('#hdn_discount_surcharge_type').val() == 'Surcharge') {
+                    price_amt = parseFloat(main_price) + discount;
+                } else {
+                    price_amt = parseFloat(main_price) - discount;
                 }
             }
         }
 
-        var price_mul = price_amt * parseInt($input.val());
-        $currentDiv.find('.inv-number .m_p').text('$' + price_mul); 
-        $input.change();
-        var textValue = $currentDiv.find('.dis').text();
+        // Update quantity for the current product
+        var $input = $currentDiv.find('input.quantity');
+        var newQuantity = parseInt($input.val()) + 1;
+        $input.val(newQuantity);
 
-        // Extract the number from the text using regular expressions
+        // Update price for the current product
+        var newPrice = price_amt * newQuantity;
+        $currentDiv.find('.m_p').text('$' + newPrice);
+
+        // Show the main_p_price if quantity is greater than or equal to 1
+        if (newQuantity >= 1) {
+            $currentDiv.find('.main_p_price').show();
+        }
+
+        // Update quantity and price in other tabs
+        $('.tab-pane').not($currentDiv.closest('.tab-pane')).each(function() {
+            var $otherTab = $(this);
+            $otherTab.find('.product-info1').each(function() {
+                var $otherProduct = $(this);
+                var productId = $otherProduct.attr('prod_id');
+
+                if ($currentDiv.attr('prod_id') === productId) {
+                    var $quantity = $otherProduct.find('.quantity');
+                    var $price = $otherProduct.find('.m_p');
+
+                    if ($quantity.length > 0) {
+                        var newQuantity = parseInt($quantity.val()) + 1;
+                        $quantity.val(newQuantity);
+
+                        var nPrice = price_amt;
+                        $price.text('$' + nPrice * newQuantity);
+
+                        if (newQuantity === 1) {
+                            $currentDiv.find('.main_p_price').hide();
+                        } else {
+                            $currentDiv.find('.main_p_price').show();
+                        }
+                    }
+                    // Exit the loop once the product is found
+                    return false;
+                }
+            });
+        });
+
+        // Update discount display
+        var textValue = $currentDiv.find('.dis').text();
         var regex = /\$([\d.]+)/;
         var match = textValue.match(regex);
 
         if (match && match.length > 1) {
-            // Extracted number from the text
             var discountAmount = parseFloat(match[1]);
 
-            // Calculate the new discount amount based on the discount type
-            var newDiscountAmount;
-            if(chk_dis_type =='percent')
-            {
-                var editAmountValue = $(this).parent().parent().parent().find('#hdn_discount_amount').val();
+            // Calculate new discount amount based on discount type
+            var newDiscountAmount = discountAmount;
+            if (chk_dis_type == 'percent') {
+                var editAmountValue = $currentDiv.find('#hdn_discount_amount').val();
                 var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
 
                 var discount = (parseFloat(main_price) * parsedEditAmount) / 100;
-                // var newDiscountAmount = discountAmount + discount;
-                var newDiscountAmount = discountAmount;
-            }else{
-                var editAmountValue = $(this).parent().parent().parent().find('#hdn_discount_amount').val();
+                newDiscountAmount = discountAmount + discount;
+            } else {
+                var editAmountValue = $currentDiv.find('#hdn_discount_amount').val();
                 var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
-                
-                // var newDiscountAmount = discountAmount + parsedEditAmount;
-                var newDiscountAmount = discountAmount;
+
+                newDiscountAmount = discountAmount + parsedEditAmount;
             }
             newDiscountAmount = Math.max(newDiscountAmount, 0);
 
-            // Update the displayed discount value
-            if($(this).parent().parent().parent().find('#hdn_discount_surcharge_type').val() == 'Surcharge')
-            {
+            // Update displayed discount value
+            if ($currentDiv.find('#hdn_discount_surcharge_type').val() == 'Surcharge') {
                 $currentDiv.find('.dis').text("( Surcharge: $" + newDiscountAmount.toFixed(2) + ")");
                 $('#dynamic_discount').text(' Surcharge: $' + newDiscountAmount.toFixed(2));
-            }else{
+            } else {
                 $currentDiv.find('.dis').text("( Discount: $" + newDiscountAmount.toFixed(2) + ")");
                 $('#dynamic_discount').text(' Discount: $' + newDiscountAmount.toFixed(2));
             }
         }
+
         updateSubtotalAndTotal(type);
         return false;
     });
+
+
 
     $(document).on('keyup', '.casual_quantity', function(e) {
         var type = 'casual';
@@ -3183,430 +3217,6 @@
 
         // Trigger subtotal update
         updateSubtotalAndTotal(type);
-    });
-    $(document).on('keyup', '.new_quantity', function(e) {
-        var type = 'new';
-        var $currentDiv = $(this).closest('.product-info2'); // Reference to the current div
-        var quantity = parseInt($(this).val());
-        var mainPrice = parseFloat($currentDiv.find('#product_price').val());
-        var discountAmount = parseFloat($currentDiv.find('.dis').text().replace(/[^\d.]/g, '')) || 0;
-
-        // Calculate the total price based on quantity and discounts
-        var totalPrice = mainPrice * quantity - discountAmount;
-
-        // Update the displayed price
-        $currentDiv.find('.inv-number .m_p').text('$' + totalPrice.toFixed(2));
-
-        // Trigger subtotal update
-        updateSubtotalAndTotal(type);
-    });
-    $(document).on('keyup', '.existing_quantity', function(e) {
-        var type = 'existing';
-        var $currentDiv = $(this).closest('.product-info3'); // Reference to the current div
-        var quantity = parseInt($(this).val());
-        var mainPrice = parseFloat($currentDiv.find('#product_price').val());
-        var discountAmount = parseFloat($currentDiv.find('.dis').text().replace(/[^\d.]/g, '')) || 0;
-
-        // Calculate the total price based on quantity and discounts
-        var totalPrice = mainPrice * quantity - discountAmount;
-
-        // Update the displayed price
-        $currentDiv.find('.inv-number .m_p').text('$' + totalPrice.toFixed(2));
-
-        // Trigger subtotal update
-        updateSubtotalAndTotal(type);
-    });
-    $(document).on('click', '.n_minus', function(e) {
-        var type="new";
-        var $currentDiv = $(this).closest('.product-info2'); // Reference to the current div
-        var $input = $currentDiv.find('input.quantity');
-        var count = parseInt($input.val()) - 1;
-        count = count < 1 ? 1 : count;
-        if(count == 1)
-        {
-            $(this).parent().parent().next().find('.main_p_price').hide();
-        }
-        $input.val(count);
-
-        var chk_dis_type = $(this).parent().parent().parent().find('#discount_types').val();
-
-        var main_price = parseFloat($currentDiv.find('#product_price').val());
-        var price_amt;
-        
-        if (chk_dis_type == 'percent') {
-            if($(this).parent().parent().parent().find('.inv-left').find('.dis').text() == '')
-            {
-                var discount = 0;
-                price_amt = main_price - (main_price * (discount / 100));
-            }
-            else
-            {
-                var discount = parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
-                if($(this).parent().parent().parent().find('#hdn_discount_surcharge_type').val() == 'Surcharge')
-                {
-                    price_amt = main_price + (main_price * (discount / 100));
-                }
-                else
-                {
-                    price_amt = main_price - (main_price * (discount / 100));
-                }
-            }
-            
-        } else {
-            if($(this).parent().parent().parent().find('.inv-left').find('.dis').text() == '')
-            {
-                price_amt = parseFloat(main_price);
-            }else{
-                if($(this).parent().parent().parent().find('#hdn_discount_surcharge_type').val() == 'Surcharge')
-                {
-                    price_amt = parseFloat(main_price) + parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
-                }else{
-                    price_amt = parseFloat(main_price) - parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
-                }
-            }
-        }
-
-        var price_mul = price_amt * parseInt($input.val());
-        $currentDiv.find('.inv-number .m_p').text('$' + price_mul);
-
-        $input.change();
-        var textValue = $(this).parent().parent().parent().find('.dis').text();
-
-        // Extract the number from the text using regular expressions
-        var regex = /\$([\d.]+)/;
-        var match = textValue.match(regex);
-
-        if (match && match.length > 1) {
-            // Extracted number from the text
-            var discountAmount = parseFloat(match[1]);
-            
-            // Calculate half of the discount amount
-            if(chk_dis_type =='percent')
-            {
-                var editAmountValue = $(this).parent().parent().parent().find('#hdn_discount_amount').val();
-                var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
-
-                var discount = (parseFloat(main_price) * parsedEditAmount) / 100;
-                // var newDiscountAmount = discountAmount - discount;
-                var newDiscountAmount = discountAmount;
-            }else{
-                var editAmountValue = $(this).parent().parent().parent().find('#hdn_discount_amount').val();
-                var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
-
-                // var newDiscountAmount = discountAmount - parsedEditAmount;
-                var newDiscountAmount = discountAmount;
-            }
-            newDiscountAmount = Math.max(newDiscountAmount, 0);
-
-            // Replace the text with the new discount amount
-            // $(".dis").text("( Discount: $" + newDiscountAmount.toFixed(2) + ")");
-            // $('#dynamic_discount').text(' Discount: $' + newDiscountAmount.toFixed(2));
-
-            if($(this).parent().parent().parent().find('#hdn_discount_surcharge_type').val() == 'Surcharge')
-            {
-                $currentDiv.find('.dis').text("( Surcharge: $" + newDiscountAmount.toFixed(2) + ")");
-                $('#dynamic_discount').text(' Surcharge: $' + newDiscountAmount.toFixed(2));
-            }else{
-                $currentDiv.find('.dis').text("( Discount: $" + newDiscountAmount.toFixed(2) + ")");
-                $('#dynamic_discount').text(' Discount: $' + newDiscountAmount.toFixed(2));
-            }
-        }
-        updateSubtotalAndTotal(type);
-        return false;
-    });
-
-    $(document).on('click', '.n_plus', function(e) {
-        var type="new";
-        var $currentDiv = $(this).closest('.product-info2'); // Reference to the current div
-        var $input = $currentDiv.find('input.quantity');
-        $input.val(parseInt($input.val()) + 1);
-        if(parseInt($input.val()) >= 1)
-        {
-            $(this).parent().parent().next().find('.main_p_price').show();
-        }
-        var chk_dis_type = $(this).parent().parent().parent().find('#discount_types').val();
-
-        var main_price = parseFloat($currentDiv.find('#product_price').val());
-        var price_amt;
-
-        if (chk_dis_type == 'percent') {
-            if($(this).parent().parent().parent().find('.inv-left').find('.dis').text() == '')
-            {
-                var discount = 0;
-                price_amt = main_price - (main_price * (discount / 100));
-            }
-            else
-            {
-                var discount = parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
-                if($(this).parent().parent().parent().find('#hdn_discount_surcharge_type').val() == 'Surcharge')
-                {
-                    var discount = parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
-                    price_amt = main_price + (main_price * (discount / 100));
-                }
-                else
-                {
-                    var discount = parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
-                    price_amt = main_price - (main_price * (discount / 100));
-                }
-            }
-            
-        } else {
-            if($(this).parent().parent().parent().find('.inv-left').find('.dis').text() == '')
-            {
-                price_amt = parseFloat(main_price);
-            }else{
-                if($(this).parent().parent().parent().find('#hdn_discount_surcharge_type').val() == 'Surcharge')
-                {
-                    price_amt = parseFloat(main_price) + parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
-                }else{
-                    price_amt = parseFloat(main_price) - parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
-                }
-            }
-        }
-
-        var price_mul = price_amt * parseInt($input.val());
-        $currentDiv.find('.inv-number .m_p').text('$' + price_mul);
-
-        $input.change();
-        var textValue = $(this).parent().parent().parent().find('.dis').text();
-
-        // Extract the number from the text using regular expressions
-        var regex = /\$([\d.]+)/;
-        var match = textValue.match(regex);
-
-        if (match && match.length > 1) {
-            // Extracted number from the text
-            var discountAmount = parseFloat(match[1]);
-            
-            // Calculate half of the discount amount
-            if(chk_dis_type =='percent')
-            {
-                var editAmountValue = $(this).parent().parent().parent().find('#hdn_discount_amount').val();
-                var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
-
-                var discount = (parseFloat(main_price) * parsedEditAmount) / 100;
-                // var newDiscountAmount = discountAmount + discount;
-                var newDiscountAmount = discountAmount;
-            }else{
-                var editAmountValue = $(this).parent().parent().parent().find('#hdn_discount_amount').val();
-                var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
-                
-                // var newDiscountAmount = discountAmount + parsedEditAmount;
-                var newDiscountAmount = discountAmount;
-            }
-            // var final = discountAmount - newDiscountAmount;
-
-            newDiscountAmount = Math.max(newDiscountAmount, 0);
-            if($(this).parent().parent().parent().find('#hdn_discount_surcharge_type').val() == 'Surcharge')
-            {
-                $currentDiv.find('.dis').text("( Surcharge: $" + newDiscountAmount.toFixed(2) + ")");
-                $('#dynamic_discount').text(' Surcharge: $' + newDiscountAmount.toFixed(2));
-            }else{
-                $currentDiv.find('.dis').text("( Discount: $" + newDiscountAmount.toFixed(2) + ")");
-                $('#dynamic_discount').text(' Discount: $' + newDiscountAmount.toFixed(2));
-            }
-        }
-        updateSubtotalAndTotal(type);
-        return false;
-    });
-
-    $(document).on('click', '.e_minus', function(e) {
-        var type = "existing";
-        var $currentDiv = $(this).closest('.product-info3'); // Reference to the current div
-        var $input = $currentDiv.find('input.quantity');
-        var count = parseInt($input.val()) - 1;
-        count = count < 1 ? 1 : count;
-        if(count == 1)
-        {
-            $(this).parent().parent().next().find('.main_p_price').hide();
-        }
-        $input.val(count);
-
-        var chk_dis_type = $(this).parent().parent().parent().find('#discount_types').val();
-
-        var main_price = parseFloat($currentDiv.find('#product_price').val());
-        var price_amt;
-        
-        if (chk_dis_type == 'percent') {
-            if($(this).parent().parent().parent().find('.inv-left').find('.dis').text() == '')
-            {
-                var discount = 0;
-                price_amt = main_price - (main_price * (discount / 100));
-            }
-            else
-            {
-                var discount = parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
-                if($(this).parent().parent().parent().find('#hdn_discount_surcharge_type').val() == 'Surcharge')
-                {
-                    price_amt = main_price + (main_price * (discount / 100));
-                }
-                else
-                {
-                    price_amt = main_price - (main_price * (discount / 100));
-                }
-            }
-            
-        } else {
-            if($(this).parent().parent().parent().find('.inv-left').find('.dis').text() == '')
-            {
-                price_amt = parseFloat(main_price);
-            }else{
-                if($(this).parent().parent().parent().find('#hdn_discount_surcharge_type').val() == 'Surcharge')
-                {
-                    price_amt = parseFloat(main_price) + parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
-                }else{
-                    price_amt = parseFloat(main_price) - parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
-                }
-            }
-        }
-
-        var price_mul = price_amt * parseInt($input.val());
-        $currentDiv.find('.inv-number .m_p').text('$' + price_mul);
-        
-        $input.change();
-        var textValue = $(this).parent().parent().parent().find('.dis').text();
-
-        // Extract the number from the text using regular expressions
-        var regex = /\$([\d.]+)/;
-        var match = textValue.match(regex);
-
-        if (match && match.length > 1) {
-            // Extracted number from the text
-            var discountAmount = parseFloat(match[1]);
-            
-            if(chk_dis_type =='percent')
-            {
-                var editAmountValue = $(this).parent().parent().parent().find('#hdn_discount_amount').val();
-                var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
-
-                var discount = (parseFloat(main_price) * parsedEditAmount) / 100;
-                // var newDiscountAmount = discountAmount - discount;
-                var newDiscountAmount = discountAmount;
-            }else{
-                var editAmountValue = $(this).parent().parent().parent().find('#hdn_discount_amount').val();
-                var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
-
-                // var newDiscountAmount = discountAmount - parsedEditAmount;
-                var newDiscountAmount = discountAmount;
-            }
-            // var final = discountAmount - newDiscountAmount;
-
-            newDiscountAmount = Math.max(newDiscountAmount, 0);
-
-            // Replace the text with the new discount amount
-            // $(".dis").text("( Discount: $" + newDiscountAmount.toFixed(2) + ")");
-            // $('#dynamic_discount').text(' Discount: $' + newDiscountAmount.toFixed(2));
-
-            if($(this).parent().parent().parent().find('#hdn_discount_surcharge_type').val() == 'Surcharge')
-            {
-                $currentDiv.find('.dis').text("( Surcharge: $" + newDiscountAmount.toFixed(2) + ")");
-                $('#dynamic_discount').text(' Surcharge: $' + newDiscountAmount.toFixed(2));
-            }else{
-                $currentDiv.find('.dis').text("( Discount: $" + newDiscountAmount.toFixed(2) + ")");
-                $('#dynamic_discount').text(' Discount: $' + newDiscountAmount.toFixed(2));
-            }
-        }
-        updateSubtotalAndTotal(type);
-        return false;
-    });
-
-    $(document).on('click', '.e_plus', function(e) {
-        var type = "existing";
-        var $currentDiv = $(this).closest('.product-info3'); // Reference to the current div
-        var $input = $currentDiv.find('input.quantity');
-        if(parseInt($input.val()) >= 1)
-        {
-            $(this).parent().parent().next().find('.main_p_price').show();
-        }
-        $input.val(parseInt($input.val()) + 1);
-
-        var chk_dis_type = $(this).parent().parent().parent().find('#discount_types').val();
-
-        var main_price = parseFloat($currentDiv.find('#product_price').val());
-        var price_amt;
-
-        if (chk_dis_type == 'percent') {
-            if($(this).parent().parent().parent().find('.inv-left').find('.dis').text() == '')
-            {
-                var discount = 0;
-                price_amt = main_price - (main_price * (discount / 100));
-            }
-            else
-            {
-                var discount = parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
-                if($(this).parent().parent().parent().find('#hdn_discount_surcharge_type').val() == 'Surcharge')
-                {
-                    var discount = parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
-                    price_amt = main_price + (main_price * (discount / 100));
-                }
-                else
-                {
-                    var discount = parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
-                    price_amt = main_price - (main_price * (discount / 100));
-                }
-            }
-            
-        } else {
-            if($(this).parent().parent().parent().find('.inv-left').find('.dis').text() == '')
-            {
-                price_amt = parseFloat(main_price);
-            }else{
-
-                if($(this).parent().parent().parent().find('#hdn_discount_surcharge_type').val() == 'Surcharge')
-                {
-                    price_amt = parseFloat(main_price) + parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
-                }else{
-                    price_amt = parseFloat(main_price) - parseFloat($(this).parent().parent().parent().find('#hdn_discount_amount').val());
-                }
-                
-            }
-        }
-
-        var price_mul = price_amt * parseInt($input.val());
-        $currentDiv.find('.inv-number .m_p').text('$' + price_mul);
-
-        $input.change();
-        var textValue = $(this).parent().parent().parent().find('.dis').text();
-
-        // Extract the number from the text using regular expressions
-        var regex = /\$([\d.]+)/;
-        var match = textValue.match(regex);
-
-        if (match && match.length > 1) {
-            // Extracted number from the text
-            var discountAmount = parseFloat(match[1]);
-            
-            // Calculate half of the discount amount
-            if(chk_dis_type =='percent')
-            {
-                var editAmountValue = $(this).parent().parent().parent().find('#hdn_discount_amount').val();
-                var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
-
-                var discount = (parseFloat(main_price) * parsedEditAmount) / 100;
-                // var newDiscountAmount = discountAmount + discount;
-                var newDiscountAmount = discountAmount;
-            }else{
-                var editAmountValue = $(this).parent().parent().parent().find('#hdn_discount_amount').val();
-                var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
-                
-                // var newDiscountAmount = discountAmount + parsedEditAmount;
-                var newDiscountAmount = discountAmount;
-            }
-            // var final = discountAmount - newDiscountAmount;
-
-            newDiscountAmount = Math.max(newDiscountAmount, 0);
-
-            if($(this).parent().parent().parent().find('#hdn_discount_surcharge_type').val() == 'Surcharge')
-            {
-                $currentDiv.find('.dis').text("( Surcharge: $" + newDiscountAmount.toFixed(2) + ")");
-                $('#dynamic_discount').text(' Surcharge: $' + newDiscountAmount.toFixed(2));
-            }else{
-                $currentDiv.find('.dis').text("( Discount: $" + newDiscountAmount.toFixed(2) + ")");
-                $('#dynamic_discount').text(' Discount: $' + newDiscountAmount.toFixed(2));
-            }
-        }
-        updateSubtotalAndTotal(type);
-        return false;
     });
     $(document).on('click', '.edit_minus', function() {
         // Decrement quantity if greater than 1
@@ -3655,18 +3265,27 @@
 
     $(document).on('click', '.casual_cus', function(e) {
         e.preventDefault(); // Prevent default link behavior
-        $('#total_selected_product').val('0');
-        if($('#total_selected_product').val() == 0)
+        $('#new_customer').hide();
+        $('#casual_customer').show();
+        $('#exist_customer').hide();
+        // $('.total_selected_product').val('0');
+        if($('.total_selected_product').val() == 0)
         {
             $('.take_payment').prop('disabled', true);
         }
+        if($('.casual_quantity').val() > 1)
+        {
+            $('.main_p_price').show();
+        }else{
+            $('.main_p_price').hide();
+        }
         $('#hdn_customer_type').val('casual');
         $('#customer_type').val('casual');
-        $("#casual_customer").load(location.href + " #casual_customer");
-        $('.add_dis').find('.subtotal').text('$0.00');
-        $('.add_dis').find('.discount').text('$0.00');
-        $('.add_dis').find('.total').text('$0.00');
-        $('#amount').val(0);
+        // $("#casual_customer").load(location.href + " #casual_customer");
+        // $('.add_dis').find('.subtotal').text('$0.00');
+        // $('.add_dis').find('.discount').text('$0.00');
+        // $('.add_dis').find('.total').text('$0.00');
+        // $('#amount').val(0);
         $('#discount_surcharge').val('Manual Discount');
         $('#amount').prop('disabled', false);
         $('#discount_type').prop('disabled', false);
@@ -3677,18 +3296,28 @@
     });
     $(document).on('click', '.new_cus', function(e) {
         e.preventDefault(); // Prevent default link behavior
-        $('#total_selected_product').val('0');
-        if($('#total_selected_product').val() == 0)
+        $('#casual_customer').hide();
+        $('#exist_customer').hide();
+        $('#new_customer').show();
+        $('.new_tab').show();
+        // $('.total_selected_product').val('0');
+        if($('.total_selected_product').val() == 0)
         {
             $('.take_payment').prop('disabled', true);
         }
+        if($('.casual_quantity').val() > 1)
+        {
+            $('.main_p_price').show();
+        }else{
+            $('.main_p_price').hide();
+        }
         $('#hdn_customer_type').val('new');
         $('#customer_type').val('new');
-        $("#new_customer").load(location.href + " #new_customer");
-        $('.add_dis').find('.subtotal').text('$0.00');
-        $('.add_dis').find('.discount').text('$0.00');
-        $('.add_dis').find('.total').text('$0.00');
-        $('#amount').val(0);
+        // $("#new_customer").load(location.href + " #new_customer");
+        // $('.add_dis').find('.subtotal').text('$0.00');
+        // $('.add_dis').find('.discount').text('$0.00');
+        // $('.add_dis').find('.total').text('$0.00');
+        // $('#amount').val(0);
         $('#discount_surcharge').val('Manual Discount');
         $('#amount').prop('disabled', false);
         $('#discount_type').prop('disabled', false);
@@ -3699,18 +3328,28 @@
     });
     $(document).on('click', '.existing_cus', function(e) {
         e.preventDefault(); // Prevent default link behavior
-        $('#total_selected_product').val('0');
-        if($('#total_selected_product').val() == 0)
+        $('#casual_customer').hide();
+        $('.existing_tab').show();
+        $('#exist_customer').show();
+        $('#new_customer').hide();
+        // $('.total_selected_product').val('0');
+        if($('.total_selected_product').val() == 0)
         {
             $('.take_payment').prop('disabled', true);
         }
+        if($('.casual_quantity').val() > 1)
+        {
+            $('.main_p_price').show();
+        }else{
+            $('.main_p_price').hide();
+        }
         $('#hdn_customer_type').val('existing');
         $('#customer_type').val('existing');
-        $("#exist_customer").load(location.href + " #exist_customer");
-        $('.add_dis').find('.subtotal').text('$0.00');
-        $('.add_dis').find('.discount').text('$0.00');
-        $('.add_dis').find('.total').text('$0.00');
-        $('#amount').val(0);
+        // $("#exist_customer").load(location.href + " #exist_customer");
+        // $('.add_dis').find('.subtotal').text('$0.00');
+        // $('.add_dis').find('.discount').text('$0.00');
+        // $('.add_dis').find('.total').text('$0.00');
+        // $('#amount').val(0);
         $('#discount_surcharge').val('Manual Discount');
         $('#amount').prop('disabled', false);
         $('#discount_type').prop('disabled', false);
@@ -3971,8 +3610,8 @@ if (text !== null) {
     $(document).on('click','.remove_product',function() {
         $(this).parent().remove();
         var type=$('#customer_type').val();
-        $('#total_selected_product').val($('#total_selected_product').val() - 1);
-        if($('#total_selected_product').val() == 0)
+        $('.total_selected_product').val($('.total_selected_product').val() - 1);
+        if($('.total_selected_product').val() == 0)
         {
             $('.take_payment').prop('disabled', true);
         }
@@ -4019,15 +3658,17 @@ if (text !== null) {
     })
     $(document).on('click','.cancel_payment',function(){
         $('#Walkin_Retail').modal('hide');
-        $('#productDetails').empty();
-        $('#NewproductDetails').empty();
-        $('#ExistingproductDetails').empty();
+        $('.productDetails').empty();
+        $('.NewproductDetails').empty();
+        $('.ExistingproductDetails').empty();
         $('#existingclientmodal').hide();
         $('.subtotal').text('$0.00');
         $('.discount').text('$0.00');
         $('.total').text('$0.00');
         $('.gst_total').text('(Includes GST of $0.00)');
-        $('#create_walkin')[0].reset();
+        $('#create_walkin_casual')[0].reset();
+        $('#create_walkin_new')[0].reset();
+        $('#create_walkin_existing')[0].reset();
         $('.main_walk_in').find('.add_discount').each(function() {
             // Update the HTML content of the element
             $(this).html('<i class="ico-percentage me-2 fs-5"></i>Add discount / surcharge');
@@ -4071,6 +3712,7 @@ if (text !== null) {
     });
 
     $(document).on('click', '.complete_sale', function() {
+        
         var payment_total = $('.payment_total').text();
         var remaining_balance = $('.remaining_balance').text();
 
@@ -4089,7 +3731,22 @@ if (text !== null) {
             paymentDates.push($(this).val());
         });
 
-        var formData = new FormData($('#create_walkin')[0]);
+        // var formData = new FormData($('#create_walkin_casual')[0]);
+        var activeTabId = $('.tab-pane.show.active').attr('id');
+        var formIsValid = false;
+        var formElement;
+
+        if (activeTabId === 'casual_customer') {
+            var formData = new FormData($('#create_walkin_casual')[0]);
+            formData.append('hdn_customer_type', 'casual');
+
+        } else if (activeTabId === 'new_customer') {
+            var formData = new FormData($('#create_walkin_new')[0]);
+            formData.append('hdn_customer_type', 'new');
+        } else if (activeTabId === 'exist_customer') {
+            var formData = new FormData($('#create_walkin_existing')[0]);
+            formData.append('hdn_customer_type', 'existing');
+        }
 
         // Append each payment type separately to FormData
         paymentTypes.forEach(function(paymentType) {
@@ -4120,12 +3777,14 @@ if (text !== null) {
         $('#existingclientmodal').hide();
     })
     $(document).on('click', '.print_quote', function() {
-        // window.print();
+        window.print();
     })
     $(document).on('click', '.view_invoice', function() {
         $('#payment_completed').modal('hide');
         $('#paid_Invoice').modal('show');
         var walk_ids = $(this).attr('walk_in_ids');
+        $('.delete_invoice').attr('delete_id',walk_ids);
+        $('.edit_invoice').attr('edit_id',walk_ids);
         //ajax for invoice data
         $.ajax({
             headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
@@ -4147,7 +3806,7 @@ if (text !== null) {
     // updateRemainingBalance();
     function populateInvoiceModal(invoiceData, subtotal, discount, total) {
         // Update the modal content with the retrieved invoice data
-        $('#modalTitle').text('Paid invoice for ' + invoiceData.client_name);
+        // $('#modalTitle').text('Paid invoice for ' + invoiceData.client_name);
         $('#invoiceDate').text(invoiceData.invoice_date);
         $('#invoiceNumber').text('INV' + invoiceData.id);
 
@@ -5092,30 +4751,13 @@ if (text !== null) {
 
     //change input modal
     const changeProductInput = debounce((val) => {
+        
         var results = matchProducts(val);
         if (results && results.length > 0) {
             updateSearchResults(results); // Update UI with search results
         } else {
-            $('#resultproductmodal').empty(); // Clear search results if no data
+            $('.resultproductmodal').empty(); // Clear search results if no data
             $('.products_box').hide(); // Hide the product search results box
-        }
-    }, 300);
-    const changeProductInputNewCustomer = debounce((val) => {
-        var results = matchProductsNewCustomer(val);
-        if (results && results.length > 0) {
-            updateSearchResultsNewCustomer(results); // Update UI with search results
-        } else {
-            $('#resultproductmodalNew').empty(); // Clear search results if no data
-            $('.products_box_new').hide(); // Hide the product search results box
-        }
-    }, 300);
-    const changeProductInputExistingCustomer = debounce((val) => {
-        var results = matchProductsExistingCustomer(val);
-        if (results && results.length > 0) {
-            updateSearchResultsExistingCustomer(results); // Update UI with search results
-        } else {
-            $('#resultproductmodalExisting').empty(); // Clear search results if no data
-            $('.products_box_existing').hide(); // Hide the product search results box
         }
     }, 300);
 
@@ -5237,7 +4879,7 @@ if (text !== null) {
                     $("#existingclientDetailsModal").html(
                         `<i class='ico-user2 me-2 fs-6'></i>  ${client.name}  ${client.lastname}`);
                     document.getElementById('search_exist_customer').value = '';
-                    $('#walk_in_client_id').val(client.id);
+                    $('.walk_in_client_id').val(client.id);
                     // Trigger the click event of the history button
                     // $('.history').click();
                     break; // Stop iterating once a match is found
@@ -5346,11 +4988,12 @@ if (text !== null) {
         }
     }
     function setProductSearchModal(value) {
-        $('#search_products').val(value); // Set selected value to input field
+        
+        $('.search_products').val(value); // Set selected value to input field
         $('.products_box').hide();
         
-        document.getElementById('search_products').value = value;
-        document.getElementById("resultproductmodal").innerHTML = "";
+        document.getElementsByClassName('search_products').value = value;
+        document.getElementsByClassName("resultproductmodal").innerHTML = "";
 
         // Iterate over client_details to find a matching value
         for (const key in product_details) {
@@ -5361,7 +5004,7 @@ if (text !== null) {
                 if (product.name === value) {
                     console.log(product);
                     // If a match is found, dynamically bind HTML to productDetails element
-                    $('#productDetails').append(
+                    $('.productDetails').append(
                         `<div class="invo-notice mb-4 closed product-info1" prod_id='${product.id}'>
                             <a href="#" class="btn cross remove_product"><i class="ico-close"></i></a>
                             <input type='hidden' name='casual_product_name[]' value='${product.name}'>
@@ -5396,146 +5039,22 @@ if (text !== null) {
                         </div>`
                     );
                     var type='casual';
-                    $('#total_selected_product').val(parseFloat($('#total_selected_product').val()) + 1);
-                    if($('#total_selected_product').val() > 0)
+                    $('.total_selected_product').val(parseFloat($('.total_selected_product').val()) + 1);
+                    if($('.total_selected_product').val() > 0)
                     {
                         $('.take_payment').prop('disabled', false);
                     }
                     updateSubtotalAndTotal(type); // Update Subtotal and Total
 
-                    document.getElementById('search_products').value = '';
-                    break; // Stop iterating once a match is found
-                }
-            }
-        }
-    }
-    function setProductSearchModalNew(value) {
-        $('#search_products_new_customer').val(value); // Set selected value to input field
-        $('.products_box_new').hide();
-        
-        document.getElementById('search_products_new_customer').value = value;
-        document.getElementById("resultproductmodalNew").innerHTML = "";
-
-        // Iterate over client_details to find a matching value
-        for (const key in product_details) {
-            console.log(product_details);
-            if (product_details.hasOwnProperty(key)) {
-                const product = product_details[key];
-                // Check if value matches any field in the product object
-                if (product.name === value) {
-                    console.log(product);
-                    // If a match is found, dynamically bind HTML to productDetails element
-                    $('#NewproductDetails').append(
-                        `<div class="invo-notice mb-4 closed product-info2" prod_id='${product.id}'>
-                            <a href="#" class="btn cross remove_product"><i class="ico-close"></i></a>
-                            <input type='hidden' name='new_product_name[]' value='${product.name}'>
-                            <input type='hidden' id="product_id" name='new_product_id[]' value='${product.id}'>
-                            <input type='hidden' id="product_price" name='new_product_price[]' value='${product.price}'>
-                            <input type='hidden' id="product_gst" name='product_gst' value='${product.gst}'>
-                            <input type='hidden' id="discount_types" name='new_discount_types[]' value='amount'>
-                            <input type='hidden' id="hdn_discount_surcharge" name='new_discount_surcharge[]' value='No Discount'>
-                            <input type='hidden' id="hdn_discount_surcharge_type" name='hdn_discount_surcharge_type[]' value=''>
-                            <input type='hidden' id="hdn_discount_amount" name='new_discount_amount[]' value='0'>
-                            <input type='hidden' id="hdn_discount_text" name='new_discount_text[]' value='0'>
-                            <input type='hidden' id="hdn_reason" name='new_reason[]' value=''>
-                            <input type='hidden' id="hdn_who_did_work" name='new_who_did_work[]' value='no one'>
-                            <input type='hidden' id="hdn_edit_amount" name='new_edit_amount[]' value='0'>
-                            <input type='hidden' id="product_type" name='product_type[]' value='${product.product_type}'>
-                            <div class="inv-left"><div><b>${product.name} </b><div class="who_did_work"></div><span class="dis"></div></span></div>
-                            <div class="inv-center">
-                                <div class="number-input walk_number_input safari_only form-group mb-0 number">
-                                    <button class="n_minus minus"></button>
-                                    <input type="number" class="new_quantity quantity form-control" min="0" name="new_product_quanitity[]" value="1">
-                                    <button class="n_plus plus"></button>
-                                </div>
-                            </div>
-                            <div class="inv-number go price">
-                                <div>
-                                    <div class="m_p">${'$'+product.price}</div>
-                                        <div class="main_p_price" style="display:none;">(${'$'+product.price} ea)
-                                    </div>
-                                </div>
-                                    <a href="#" class="btn btn-sm px-0 product-name clickable" product_id="${product.id}" product_name="${product.name}" product_price="${product.price}"><i class="ico-right-arrow fs-2 ms-3"></i></a>
-                                </div>
-                        </div>`
-                    );
-                    var type='new';
-                    $('#total_selected_product').val(parseFloat($('#total_selected_product').val()) + 1);
-                    if($('#total_selected_product').val() > 0)
-                    {
-                        $('.take_payment').prop('disabled', false);
-                    }
-                    updateSubtotalAndTotal(type); // Update Subtotal and Total
-                    document.getElementById('search_products_new_customer').value = '';
-                    break; // Stop iterating once a match is found
-                }
-            }
-        }
-    }
-    function setProductSearchModalExisting(value) {
-        $('#search_products_existing_customer').val(value); // Set selected value to input field
-        $('.products_box_existing').hide();
-        
-        document.getElementById('search_products_existing_customer').value = value;
-        document.getElementById("resultproductmodalExisting").innerHTML = "";
-
-        // Iterate over client_details to find a matching value
-        for (const key in product_details) {
-            console.log(product_details);
-            if (product_details.hasOwnProperty(key)) {
-                const product = product_details[key];
-                // Check if value matches any field in the product object
-                if (product.name === value) {
-                    console.log(product);
-                    // If a match is found, dynamically bind HTML to productDetails element
-                    $('#ExistingproductDetails').append(
-                        `<div class="invo-notice mb-4 closed product-info3" prod_id='${product.id}'>
-                            <a href="#" class="btn cross remove_product"><i class="ico-close"></i></a>
-                            <input type='hidden' name='existing_product_name[]' value='${product.name}'>
-                            <input type='hidden' id="product_id" name='existing_product_id[]' value='${product.id}'>
-                            <input type='hidden' id="product_price" name='existing_product_price[]' value='${product.price}'>
-                            <input type='hidden' id="product_gst" name='product_gst' value='${product.gst}'>
-                            <input type='hidden' id="hdn_discount_surcharge" name='existing_discount_surcharge[]' value='No Discount'>
-                            <input type='hidden' id="hdn_discount_surcharge_type" name='hdn_discount_surcharge_type[]' value=''>
-                            <input type='hidden' id="hdn_discount_amount" name='existing_discount_amount[]' value='0'>
-                            <input type='hidden' id="hdn_discount_text" name='existing_discount_text[]' value='0'>
-                            <input type='hidden' id="hdn_reason" name='existing_reason[]' value=''>
-                            <input type='hidden' id="discount_types" name='existing_discount_types[]' value='amount'>
-                            <input type='hidden' id="hdn_who_did_work" name='existing_who_did_work[]' value='no one'>
-                            <input type='hidden' id="hdn_edit_amount" name='existing_edit_amount[]' value='0'>
-                            <input type='hidden' id="product_type" name='product_type[]' value='${product.product_type}'>
-                            <div class="inv-left"><div><b>${product.name} </b><div class="who_did_work"></div><span class="dis"></div></span></div>
-                            <div class="inv-center">
-                                <div class="number-input walk_number_input safari_only form-group mb-0 number">
-                                    <button class="e_minus minus"></button>
-                                    <input type="number" class="existing_quantity quantity form-control" min="0" name="existing_product_quanitity[]" value="1">
-                                    <button class="e_plus plus"></button>
-                                </div>
-                            </div>
-                            <div class="inv-number go price">
-                                <div>
-                                    <div class="m_p">${'$'+product.price}</div>
-                                        <div class="main_p_price" style="display:none;">(${'$'+product.price} ea)
-                                    </div>
-                                </div>
-                                <a href="#" class="btn btn-sm px-0 product-name clickable" product_id="${product.id}" product_name="${product.name}" product_price="${product.price}"><i class="ico-right-arrow fs-2 ms-3"></i></a>
-                            </div>
-                        </div>`
-                    );
-                    var type='existing';
-                    $('#total_selected_product').val(parseFloat($('#total_selected_product').val()) + 1);
-                    if($('#total_selected_product').val() > 0)
-                    {
-                        $('.take_payment').prop('disabled', false);
-                    }
-                    updateSubtotalAndTotal(type); // Update Subtotal and Total
-                    document.getElementById('search_products_existing_customer').value = '';
+                    // document.getElementsByClassName('search_products').value = '';
+                    $('.search_products').val('');
                     break; // Stop iterating once a match is found
                 }
             }
         }
     }
     function updateSubtotalAndTotal(type) {
+        
         if(type === 'casual') {
             
             var subtotal = 0;
@@ -5544,7 +5063,7 @@ if (text !== null) {
             var amountInput = $('#amount').val();
             var amount = parseFloat(amountInput.trim() !== '' ? amountInput : 0);
             var gst = 0;
-            $('.product-info1').each(function() {
+            $('.tab-pane.active .product-info1').each(function() {
                 if($(this).find('.dis').text() == '')
                 {
                     var price = parseFloat($(this).find('#product_price').val()); //parseFloat($(this).find('.price').text().replace('$', ''));
@@ -5609,7 +5128,7 @@ if (text !== null) {
                 discount = amount; // Use the entered amount as the discount
             }
 
-            var dis_sur = $('#discount_surcharge').find(':selected').parent().attr('label');
+            var dis_sur = $('#discount_surcharge option:selected').closest('optgroup').attr('label');
             if(dis_sur == 'Surcharge')
             {
                 var total = subtotal + discount; // Calculate total after discount
@@ -5620,17 +5139,28 @@ if (text !== null) {
             
             
             var grandTotal = total + gst; // Calculate total including GST
-            $('#hdn_subtotal').val(subtotal.toFixed(2));
-            $('#hdn_discount').val(discount.toFixed(2));
-            $('#hdn_total').val(total.toFixed(2));
-            $('#hdn_gst').val(gst.toFixed(2));
-            $('.take_payment').attr('main_total',total.toFixed(2));
+            $('.hdn_subtotal').val(subtotal.toFixed(2));
+            $('.hdn_discount').val(discount.toFixed(2));
+            $('.hdn_total').val(total.toFixed(2));
+            $('.hdn_gst').val(gst.toFixed(2));
+            if($('.edit_invoice_number:first').text()=='')
+            {
+                $('.take_payment').attr('main_total',total.toFixed(2));
+            }
+            else
+            {
+                var edit_total = $('.edited_total').val();
+                $('.take_payment').attr('main_total',edit_total);
+                $('.remaining_balance').text('$' + (total.toFixed(2) - edit_total));
+                $('.payment_total').text('$' + (total.toFixed(2)));
+            }
+
             // Update the displayed values on the page
             $('.subtotal').text('$' + subtotal.toFixed(2));
 
             $('.discount').each(function() {
                 var parentTd = $(this).parent().find('td');
-                parentTd.text($('#discount_surcharge').find(':selected').parent().attr('label'));
+                parentTd.text($('#discount_surcharge option:selected').closest('optgroup').attr('label'));
             });
 
 
@@ -5647,7 +5177,7 @@ if (text !== null) {
             var amountInput = $('#amount').val();
             var amount = parseFloat(amountInput.trim() !== '' ? amountInput : 0);
             var gst = 0;
-            $('.product-info2').each(function() {
+            $('.tab-pane.active .product-info1').each(function() {
                 if($(this).find('.dis').text() == '')
                 {
                     var price = parseFloat($(this).find('#product_price').val()); //parseFloat($(this).find('.price').text().replace('$', ''));
@@ -5712,7 +5242,7 @@ if (text !== null) {
                 discount = amount; // Use the entered amount as the discount
             }
 
-            var dis_sur = $('#discount_surcharge').find(':selected').parent().attr('label');
+            var dis_sur = $('#discount_surcharge option:selected').closest('optgroup').attr('label');
             if(dis_sur == 'Surcharge')
             {
                 var total = subtotal + discount; // Calculate total after discount
@@ -5724,18 +5254,27 @@ if (text !== null) {
             // var grandTotal = total + gst; // Calculate total including GST
 
             // Update the displayed values on the page
-            $('#hdn_subtotal').val(subtotal.toFixed(2));
-            $('#hdn_discount').val(discount.toFixed(2));
-            $('#hdn_total').val(total.toFixed(2));
-            $('#hdn_gst').val(gst.toFixed(2));
-
-            $('.take_payment').attr('main_total',total.toFixed(2));
+            $('.hdn_subtotal').val(subtotal.toFixed(2));
+            $('.hdn_discount').val(discount.toFixed(2));
+            $('.hdn_total').val(total.toFixed(2));
+            $('.hdn_gst').val(gst.toFixed(2));
+            if($('.edit_invoice_number:first').text()=='')
+            {
+                $('.take_payment').attr('main_total',total.toFixed(2));
+            }
+            else
+            {
+                var edit_total = $('.edited_total').val();
+                $('.take_payment').attr('main_total',edit_total);
+                $('.remaining_balance').text('$' + (total.toFixed(2) - edit_total));
+                $('.payment_total').text('$' + (total.toFixed(2)));
+            }
 
             $('.subtotal').text('$' + subtotal.toFixed(2));
             
             $('.discount').each(function() {
                 var parentTd = $(this).parent().find('td');
-                parentTd.text($('#discount_surcharge').find(':selected').parent().attr('label'));
+                parentTd.text($('#discount_surcharge option:selected').closest('optgroup').attr('label'));
             });
 
             $('.discount').text('$' + discount.toFixed(2));
@@ -5750,7 +5289,7 @@ if (text !== null) {
             var amountInput = $('#amount').val();
             var amount = parseFloat(amountInput.trim() !== '' ? amountInput : 0);
             var gst = 0;
-            $('.product-info3').each(function() {
+            $('.tab-pane.active .product-info1').each(function() {
                 if($(this).find('.dis').text() == '')
                 {
                     var price = parseFloat($(this).find('#product_price').val()); //parseFloat($(this).find('.price').text().replace('$', ''));
@@ -5810,7 +5349,7 @@ if (text !== null) {
             } else if (discount_type === 'amount') {
                 discount = amount; // Use the entered amount as the discount
             }
-            var dis_sur = $('#discount_surcharge').find(':selected').parent().attr('label');
+            var dis_sur = $('#discount_surcharge option:selected').closest('optgroup').attr('label');
             if(dis_sur == 'Surcharge')
             {
                 var total = subtotal + discount; // Calculate total after discount
@@ -5822,18 +5361,28 @@ if (text !== null) {
             // var grandTotal = total + gst; // Calculate total including GST
 
             // Update the displayed values on the page
-            $('#hdn_subtotal').val(subtotal.toFixed(2));
-            $('#hdn_discount').val(discount.toFixed(2));
-            $('#hdn_total').val(total.toFixed(2));
-            $('#hdn_gst').val(gst.toFixed(2));
-
-            $('.take_payment').attr('main_total',total.toFixed(2));
+            $('.hdn_subtotal').val(subtotal.toFixed(2));
+            $('.hdn_discount').val(discount.toFixed(2));
+            $('.hdn_total').val(total.toFixed(2));
+            $('.hdn_gst').val(gst.toFixed(2));
+            
+            if($('.edit_invoice_number:first').text()=='')
+            {
+                $('.take_payment').attr('main_total',total.toFixed(2));
+            }
+            else
+            {
+                var edit_total = $('.edited_total').val();
+                $('.take_payment').attr('main_total',edit_total);
+                $('.remaining_balance').text('$' + (total.toFixed(2) - edit_total)); 
+                $('.payment_total').text('$' + (total.toFixed(2)));
+            }
             
             $('.subtotal').text('$' + subtotal.toFixed(2));
             
             $('.discount').each(function() {
                 var parentTd = $(this).parent().find('td');
-                parentTd.text($('#discount_surcharge').find(':selected').parent().attr('label'));
+                parentTd.text($('#discount_surcharge option:selected').closest('optgroup').attr('label'));
             });
 
             $('.discount').text('$' + discount.toFixed(2));
@@ -6021,34 +5570,7 @@ if (text !== null) {
         });
     }
     function matchProducts(input) {
-        var reg = new RegExp(input.trim(), "i");
-        var res = [];
-        if (input.trim().length === 0) {
-            return res;
-        }
-        for (var i = 0, len = product_details.length; i < len; i++) {
-            var product = product_details[i];
-            if (product.name && product.name.match(reg)) {
-                res.push(product);
-            }
-        }
-        return res;
-    }
-    function matchProductsNewCustomer(input) {
-        var reg = new RegExp(input.trim(), "i");
-        var res = [];
-        if (input.trim().length === 0) {
-            return res;
-        }
-        for (var i = 0, len = product_details.length; i < len; i++) {
-            var product = product_details[i];
-            if (product.name && product.name.match(reg)) {
-                res.push(product);
-            }
-        }
-        return res;
-    }
-    function matchProductsExistingCustomer(input) {
+        
         var reg = new RegExp(input.trim(), "i");
         var res = [];
         if (input.trim().length === 0) {
@@ -6063,7 +5585,8 @@ if (text !== null) {
         return res;
     }
     function updateSearchResults(results) {
-        var resultList = $('#resultproductmodal');
+        
+        var resultList = $('.resultproductmodal');
         resultList.empty(); // Clear previous search results
         for (var i = 0; i < results.length; i++) {
             // resultList.append(`<li>${results[i].name}</li>`); // Update HTML with search results
@@ -6073,30 +5596,6 @@ if (text !== null) {
             </li>`);
         }
         $('.products_box').show(); // Show the product search results box
-    }
-    function updateSearchResultsNewCustomer(results) {
-        var resultList = $('#resultproductmodalNew');
-        resultList.empty(); // Clear previous search results
-        for (var i = 0; i < results.length; i++) {
-            // resultList.append(`<li>${results[i].name}</li>`); // Update HTML with search results
-
-            resultList.append(`<li onclick='setProductSearchModalNew("${results[i].name}")'>
-                <aside>${results[i].name}</aside> <aside>${'$'+results[i].price}</aside>
-            </li>`);
-        }
-        $('.products_box_new').show(); // Show the product search results box
-    }
-    function updateSearchResultsExistingCustomer(results) {
-        var resultList = $('#resultproductmodalExisting');
-        resultList.empty(); // Clear previous search results
-        for (var i = 0; i < results.length; i++) {
-            // resultList.append(`<li>${results[i].name}</li>`); // Update HTML with search results
-
-            resultList.append(`<li onclick='setProductSearchModalExisting("${results[i].name}")'>
-                <aside>${results[i].name}</aside> <aside>${'$'+results[i].price}</aside>
-            </li>`);
-        }
-        $('.products_box_existing').show(); // Show the product search results box
     }
     function SubmitWalkIn(formData){
 		$.ajax({
@@ -6114,6 +5613,9 @@ if (text !== null) {
                     console.log("res",response);
                     var amount = response.amount;
                     var walk_in_id = response.walk_in_id;
+                    var username = response.username;
+                    var client_email = response.client_email;
+                    $('.send_email').val(client_email);
                     $('#take_payment').modal('hide');
                     $("#payment_completed").modal('show');
                     $('.view_invoice').attr('walk_in_ids',walk_in_id);
@@ -6128,11 +5630,11 @@ if (text !== null) {
                     // var message = '<h4>Payment Completed</h4>Payment of $' + amount + ' has been processed by Praharsh test on ' + formattedDate;
                     // $('.payment_complete_message').text(message);
 
-                    var message = '<h4>Payment Completed</h4>Payment of $' + amount + ' has been processed by Praharsh test on ' + formattedDate;
+                    var message = '<h4>Payment Completed</h4>Payment of $' + amount + ' has been processed by '+ username +' on ' + formattedDate;
 
                     // Assuming you're using jQuery to update an element with id "paymentMessage"
                     $('#paymentMessage').html(message);
-
+                    $('#create_walkin_new')[0].reset();
 
 
 				} else {

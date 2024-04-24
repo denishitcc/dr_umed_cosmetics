@@ -116,7 +116,7 @@ img{ max-width: 100%;}
 .btn-primary.blue-alter{border: 1px solid var(--blue); background: #FFF; color: var(--blue);}
 .btn-primary.blue-alter:hover{border: 1px solid #282828; color: #282828; }
 
-.btn[disabled]{border: 1px solid #D0D0D0; background: #FFF;}
+/* .btn[disabled]{border: 1px solid #D0D0D0; background: #FFF;} */
 
 .btn-light{color: var(--l-grey);}
 .btn-light:hover{}

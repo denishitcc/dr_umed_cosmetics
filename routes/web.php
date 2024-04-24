@@ -166,5 +166,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('calendar/get-selected-location', [CalenderController::class, 'GetLocation'])->name('calendar.get-selected-location');
     Route::post('calendar/get-categories-and-services', [CalenderController::class, 'getCategoriesAndServices'])->name('calendar.get-categories-and-services');
     Route::post('calendar/paid-invoice', [CalenderController::class, 'paidInvoice'])->name('calendar.paid-invoice');
+    Route::delete('calender/delete-walk-in/{id}',[CalenderController::class, 'deleteWalkIn'])->name('calendar.delete-walk-in');
+    Route::post('calendar/edit-invoice', [CalenderController::class, 'editInvoice'])->name('calendar.edit-invoice');
 });
 Route::post('/get-staff-list', [CalenderController::class,'getStaffList'])->name('get-staff-list');

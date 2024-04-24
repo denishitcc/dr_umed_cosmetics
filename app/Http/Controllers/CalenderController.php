@@ -1373,292 +1373,551 @@ class CalenderController extends Controller
     public function StoreWalkIn(Request $request)
     {
         // dd($request->all());
-        // hdn_discount_surcharge_type
-        // casual_discount_text
-        if($request->hdn_customer_type == 'casual')
-        {
-            // Storing walk-in sale details
-            $walk_in_table = [
-                'location_id' =>$request->walk_in_location_id,
-                'customer_type' => $request->hdn_customer_type,
-                'invoice_date' => $request->casual_invoice_date,
-                'subtotal' => $request->hdn_subtotal,
-                'discount' => $request->hdn_discount,
-                'gst' => $request->hdn_gst,
-                'total' => $request->hdn_total,
-                'remaining_balance' => str_replace('$', '', $request->remaining_balance),
-                'user_id' => $request->casual_staff,
-                'note' => $request->notes
-            ];  
-            // dd($walk_in_table);
+        $userName = auth()->user()->first_name.' '.auth()->user()->last_name;
+        $client_id = $request->walk_in_client_id;
+        $client_email = '';
 
-            $walkInSale = WalkInRetailSale::create($walk_in_table);
-
-            // Storing walk-in sale products
-            foreach ($request->casual_product_id as $index => $productId) {
-                $walk_in_product = [
-                    'walk_in_id' => $walkInSale->id,
-                    'product_id' => $productId,
-                    'product_name' => $request->casual_product_name[$index],
-                    'product_price' => $request->casual_product_price[$index],
-                    'product_quantity' => $request->casual_product_quanitity[$index],
-                    'product_type' => $request->product_type[$index],
-                    'who_did_work' => ($request->casual_who_did_work[$index] && $request->casual_who_did_work[$index] == 'no one' || $request->casual_who_did_work[$index] == 'Please select') ? null : $request->casual_who_did_work[$index],
-                    'product_discount_surcharge' => $request->casual_discount_surcharge[$index],
-                    'discount_type' => $request->casual_discount_types[$index],
-                    'discount_amount' => $request->casual_discount_amount[$index],
-                    // 'edit_amount' => $request->casual_edit_amount[$index],
-                    'type' => $request->hdn_discount_surcharge_type[$index],
-                    'discount_value' => $request->casual_discount_text[$index],
-                    'discount_reason' => $request->casual_reason[$index],
-                ];
-                WalkInProducts::create($walk_in_product);
-
-                if($request->product_type[$index] == 'product')
-                {
-                    //product quanitity minus logic
-                    $p_availbility = ProductAvailabilities::where('product_id', $productId)
-                    ->where('location_name', $request->walk_in_location_id)
-                    ->first(); // Retrieve product availability record
-
-                    if ($p_availbility) {
-                    // Calculate the new quantity by subtracting the requested quantity
-                    $newQuantity = $p_availbility->quantity - $request->casual_product_quanitity[$index];
-
-                    // Update the quantity in the database
-                    ProductAvailabilities::where('product_id', $productId)
-                        ->where('location_name', $request->walk_in_location_id)
-                        ->update(['quantity' => $newQuantity]);
-                    } else {
-                    // dd('Product availability record not found'); // Handle the case where the product availability record doesn't exist
-                    }
-                }
-                
-            }
-            // dd($walk_in_product);
-
-            // Storing walk-in sale discount/surcharge details
-            $walk_in_discount_surcharge = [
-                'walk_in_id' => $walkInSale->id,
-                'discount_surcharge' => $request->hdn_main_discount_surcharge,
-                'discount_type' => $request->hdn_main_discount_type,
-                'discount_amount' => $request->hdn_main_discount_amount,
-                'discount_reason' => $request->hdn_main_discount_reason,
-            ];
-            // dd($walk_in_discount_surcharge);
-            WalkInDiscountSurcharge::create($walk_in_discount_surcharge);
-
-            // Storing walk-in payment details
-            foreach($request->payment_types as $index => $paymentType) {
-                // Access payment details using the same index
-                $paymentAmount = $request->payment_amounts[$index];
-                $paymentDate = $request->payment_dates[$index];
-            
-                // Now you can create your payment record
-                $walk_in_payment = [
-                    'walk_in_id' => $walkInSale->id,
-                    'payment_type' => $paymentType,
-                    'amount' => $paymentAmount,
-                    'date' => $paymentDate,
-                ];
-            
-                Payment::create($walk_in_payment);
+        if (isset($client_id) && $client_id != null) {
+            $client = Clients::find($client_id);
+            if ($client) {
+                $client_email = $client->email;
             }
         }
-        else if($request->hdn_customer_type == 'existing')
-        {
-            // Storing walk-in sale details
-            $walk_in_table = [
-                'client_id' => $request->walk_in_client_id,
-                'location_id' =>$request->walk_in_location_id,
-                'customer_type' => $request->hdn_customer_type,
-                'invoice_date' => $request->existing_invoice_date,
-                'subtotal' => $request->hdn_subtotal,
-                'discount' => $request->hdn_discount,
-                'gst' => $request->hdn_gst,
-                'total' => $request->hdn_total,
-                'remaining_balance' => str_replace('$', '', $request->remaining_balance),
-                'user_id' => $request->existing_staff,
-                'note' => $request->notes
-            ];  
-            // dd($walk_in_table);
+        // hdn_discount_surcharge_type
+        // casual_discount_text
+        if ($request->invoice_id != '') {
+            if ($request->hdn_customer_type == 'casual') {
+                // For casual customers
+        
+                // Retrieve the existing walk-in sale record using the invoice_id
+                $walkInSale = WalkInRetailSale::find($request->invoice_id);
+        
+                if ($walkInSale) {
+                    // Update the walk-in sale details
+                    $walkInSale->update([
+                        'location_id' => $request->walk_in_location_id,
+                        'customer_type' => $request->hdn_customer_type,
+                        'invoice_date' => $request->casual_invoice_date,
+                        'subtotal' => $request->hdn_subtotal,
+                        'discount' => $request->hdn_discount,
+                        'gst' => $request->hdn_gst,
+                        'total' => $request->hdn_total,
+                        'remaining_balance' => str_replace('$', '', $request->remaining_balance),
+                        'user_id' => $request->casual_staff,
+                        'note' => $request->notes
+                    ]);
+        
+                    // Update or create walk-in sale products
+                    foreach ($request->casual_product_id as $index => $productId) {
+                        WalkInProducts::updateOrCreate(
+                            ['walk_in_id' => $request->invoice_id, 'product_id' => $productId],
+                            [
+                                'product_name' => $request->casual_product_name[$index],
+                                'product_price' => $request->casual_product_price[$index],
+                                'product_quantity' => $request->casual_product_quanitity[$index],
+                                'product_type' => $request->product_type[$index],
+                                'who_did_work' => ($request->casual_who_did_work[$index] && $request->casual_who_did_work[$index] == 'no one' || $request->casual_who_did_work[$index] == 'Please select') ? null : $request->casual_who_did_work[$index],
+                                'product_discount_surcharge' => $request->casual_discount_surcharge[$index],
+                                'discount_type' => $request->casual_discount_types[$index],
+                                'discount_amount' => $request->casual_discount_amount[$index],
+                                'type' => $request->hdn_discount_surcharge_type[$index],
+                                'discount_value' => $request->casual_discount_text[$index],
+                                'discount_reason' => $request->casual_reason[$index],
+                            ]
+                        );
+        
+                        if ($request->product_type[$index] == 'product') {
+                            // Product quantity minus logic
+                            $pAvailability = ProductAvailabilities::where('product_id', $productId)
+                                ->where('location_name', $request->walk_in_location_id)
+                                ->first();
+        
+                            if ($pAvailability) {
+                                // Calculate the new quantity by subtracting the requested quantity
+                                $newQuantity = $pAvailability->quantity - $request->casual_product_quanitity[$index];
+                                // Update the quantity in the database
+                                $pAvailability->update(['quantity' => $newQuantity]);
+                            } else {
+                                // Handle the case where the product availability record doesn't exist
+                            }
+                        }
+                    }
+        
+                    // Update walk-in sale discount/surcharge details
+                    WalkInDiscountSurcharge::updateOrCreate(
+                        ['walk_in_id' => $request->invoice_id],
+                        [
+                            'discount_surcharge' => $request->hdn_main_discount_surcharge,
+                            'discount_type' => $request->hdn_main_discount_type,
+                            'discount_amount' => $request->hdn_main_discount_amount,
+                            'discount_reason' => $request->hdn_main_discount_reason,
+                        ]
+                    );
+        
+                    // Update walk-in payment details
+                    foreach ($request->payment_types as $index => $paymentType) {
 
-            $walkInSale = WalkInRetailSale::create($walk_in_table);
-
-            // Storing walk-in sale products
-            foreach ($request->existing_product_id as $index => $productId) {
-                $walk_in_product = [
-                    'walk_in_id' => $walkInSale->id,
-                    'product_id' => $productId,
-                    'product_name' => $request->existing_product_name[$index],
-                    'product_price' => $request->existing_product_price[$index],
-                    'product_quantity' => $request->existing_product_quanitity[$index],
-                    'product_type' => $request->product_type[$index],
-                    'who_did_work' => ($request->existing_who_did_work[$index] && $request->existing_who_did_work[$index] == 'no one' || $request->existing_who_did_work[$index] == 'Please select') ? null : $request->existing_who_did_work[$index],
-                    'product_discount_surcharge' => $request->existing_discount_surcharge[$index],
-                    'discount_type' => $request->existing_discount_types[$index],
-                    'discount_amount' => $request->existing_discount_amount[$index],
-                    'type' => $request->hdn_discount_surcharge_type[$index],
-                    'discount_value' => $request->existing_discount_text[$index],
-                    // 'edit_amount' => $request->casual_edit_amount[$index],
-                    'discount_reason' => $request->existing_reason[$index],
-                ];
-                WalkInProducts::create($walk_in_product);
-                if($request->product_type[$index] == 'product')
-                {
-                    //product quanitity minus logic
-                    $p_availbility = ProductAvailabilities::where('product_id', $productId)
-                        ->where('location_name', $request->walk_in_location_id)
-                        ->first(); // Retrieve product availability record
-                    
-                    if ($p_availbility) {
-                        // Calculate the new quantity by subtracting the requested quantity
-                        $newQuantity = $p_availbility->quantity - $request->existing_product_quanitity[$index];
-
-                        // Update the quantity in the database
-                        ProductAvailabilities::where('product_id', $productId)
-                            ->where('location_name', $request->walk_in_location_id)
-                            ->update(['quantity' => $newQuantity]);
-                    } else {
-                        // dd('Product availability record not found'); // Handle the case where the product availability record doesn't exist
+                        $paymentAmount = $request->payment_amounts[$index];
+                        $paymentDate = $request->payment_dates[$index];
+                        // Update or create payment details
+                        Payment::updateOrCreate(
+                            ['walk_in_id' => $request->invoice_id, 'payment_type' => $paymentType],
+                            ['amount' => $request->payment_amounts[$index], 'date' => $request->payment_dates[$index]]
+                        );
                     }
                 }
-            }
-            // dd($walk_in_product);
+            } elseif ($request->hdn_customer_type == 'existing') {
+                // For existing customers
+        
+                // For casual customers
+        
+                // Retrieve the existing walk-in sale record using the invoice_id
+                $walkInSale = WalkInRetailSale::find($request->invoice_id);
+        
+                if ($walkInSale) {
+                    // Update the walk-in sale details
+                    $walkInSale->update([
+                        'client_id' => $request->walk_in_client_id,
+                        'location_id' => $request->walk_in_location_id,
+                        'customer_type' => $request->hdn_customer_type,
+                        'invoice_date' => $request->casual_invoice_date,
+                        'subtotal' => $request->hdn_subtotal,
+                        'discount' => $request->hdn_discount,
+                        'gst' => $request->hdn_gst,
+                        'total' => $request->hdn_total,
+                        'remaining_balance' => str_replace('$', '', $request->remaining_balance),
+                        'user_id' => $request->casual_staff,
+                        'note' => $request->notes
+                    ]);
+        
+                    // Update or create walk-in sale products
+                    foreach ($request->casual_product_id as $index => $productId) {
+                        WalkInProducts::updateOrCreate(
+                            ['walk_in_id' => $request->invoice_id, 'product_id' => $productId],
+                            [
+                                'product_name' => $request->casual_product_name[$index],
+                                'product_price' => $request->casual_product_price[$index],
+                                'product_quantity' => $request->casual_product_quanitity[$index],
+                                'product_type' => $request->product_type[$index],
+                                'who_did_work' => ($request->casual_who_did_work[$index] && $request->casual_who_did_work[$index] == 'no one' || $request->casual_who_did_work[$index] == 'Please select') ? null : $request->casual_who_did_work[$index],
+                                'product_discount_surcharge' => $request->casual_discount_surcharge[$index],
+                                'discount_type' => $request->casual_discount_types[$index],
+                                'discount_amount' => $request->casual_discount_amount[$index],
+                                'type' => $request->hdn_discount_surcharge_type[$index],
+                                'discount_value' => $request->casual_discount_text[$index],
+                                'discount_reason' => $request->casual_reason[$index],
+                            ]
+                        );
+        
+                        if ($request->product_type[$index] == 'product') {
+                            // Product quantity minus logic
+                            $pAvailability = ProductAvailabilities::where('product_id', $productId)
+                                ->where('location_name', $request->walk_in_location_id)
+                                ->first();
+        
+                            if ($pAvailability) {
+                                // Calculate the new quantity by subtracting the requested quantity
+                                $newQuantity = $pAvailability->quantity - $request->casual_product_quanitity[$index];
+                                // Update the quantity in the database
+                                $pAvailability->update(['quantity' => $newQuantity]);
+                            } else {
+                                // Handle the case where the product availability record doesn't exist
+                            }
+                        }
+                    }
+        
+                    // Update walk-in sale discount/surcharge details
+                    WalkInDiscountSurcharge::updateOrCreate(
+                        ['walk_in_id' => $request->invoice_id],
+                        [
+                            'discount_surcharge' => $request->hdn_main_discount_surcharge,
+                            'discount_type' => $request->hdn_main_discount_type,
+                            'discount_amount' => $request->hdn_main_discount_amount,
+                            'discount_reason' => $request->hdn_main_discount_reason,
+                        ]
+                    );
+        
+                    // Update walk-in payment details
+                    foreach ($request->payment_types as $index => $paymentType) {
 
-            // Storing walk-in sale discount/surcharge details
-            $walk_in_discount_surcharge = [
-                'walk_in_id' => $walkInSale->id,
-                'discount_surcharge' => $request->hdn_main_discount_surcharge,
-                'discount_type' => $request->hdn_main_discount_type,
-                'discount_amount' => $request->hdn_main_discount_amount,
-                'discount_reason' => $request->hdn_main_discount_reason,
-            ];
-            // dd($walk_in_discount_surcharge);
-            WalkInDiscountSurcharge::create($walk_in_discount_surcharge);
+                        $paymentAmount = $request->payment_amounts[$index];
+                        $paymentDate = $request->payment_dates[$index];
+                        // Update or create payment details
+                        Payment::updateOrCreate(
+                            ['walk_in_id' => $request->invoice_id, 'payment_type' => $paymentType],
+                            ['amount' => $request->payment_amounts[$index], 'date' => $request->payment_dates[$index]]
+                        );
+                    }
+                }
+            } else {
+                // For new customers
+        
+                // Similar logic as for casual customers
+                $walkInSale = WalkInRetailSale::find($request->invoice_id);
+        
+                if ($walkInSale) {
+                    // Update the walk-in sale details
+                    $walkInSale->update([
+                        'client_id' => $request->walk_in_client_id,
+                        'location_id' => $request->walk_in_location_id,
+                        'customer_type' => $request->hdn_customer_type,
+                        'invoice_date' => $request->casual_invoice_date,
+                        'subtotal' => $request->hdn_subtotal,
+                        'discount' => $request->hdn_discount,
+                        'gst' => $request->hdn_gst,
+                        'total' => $request->hdn_total,
+                        'remaining_balance' => str_replace('$', '', $request->remaining_balance),
+                        'user_id' => $request->casual_staff,
+                        'note' => $request->notes
+                    ]);
+        
+                    // Update or create walk-in sale products
+                    foreach ($request->casual_product_id as $index => $productId) {
+                        WalkInProducts::updateOrCreate(
+                            ['walk_in_id' => $request->invoice_id, 'product_id' => $productId],
+                            [
+                                'product_name' => $request->casual_product_name[$index],
+                                'product_price' => $request->casual_product_price[$index],
+                                'product_quantity' => $request->casual_product_quanitity[$index],
+                                'product_type' => $request->product_type[$index],
+                                'who_did_work' => ($request->casual_who_did_work[$index] && $request->casual_who_did_work[$index] == 'no one' || $request->casual_who_did_work[$index] == 'Please select') ? null : $request->casual_who_did_work[$index],
+                                'product_discount_surcharge' => $request->casual_discount_surcharge[$index],
+                                'discount_type' => $request->casual_discount_types[$index],
+                                'discount_amount' => $request->casual_discount_amount[$index],
+                                'type' => $request->hdn_discount_surcharge_type[$index],
+                                'discount_value' => $request->casual_discount_text[$index],
+                                'discount_reason' => $request->casual_reason[$index],
+                            ]
+                        );
+        
+                        if ($request->product_type[$index] == 'product') {
+                            // Product quantity minus logic
+                            $pAvailability = ProductAvailabilities::where('product_id', $productId)
+                                ->where('location_name', $request->walk_in_location_id)
+                                ->first();
+        
+                            if ($pAvailability) {
+                                // Calculate the new quantity by subtracting the requested quantity
+                                $newQuantity = $pAvailability->quantity - $request->casual_product_quanitity[$index];
+                                // Update the quantity in the database
+                                $pAvailability->update(['quantity' => $newQuantity]);
+                            } else {
+                                // Handle the case where the product availability record doesn't exist
+                            }
+                        }
+                    }
+        
+                    // Update walk-in sale discount/surcharge details
+                    WalkInDiscountSurcharge::updateOrCreate(
+                        ['walk_in_id' => $request->invoice_id],
+                        [
+                            'discount_surcharge' => $request->hdn_main_discount_surcharge,
+                            'discount_type' => $request->hdn_main_discount_type,
+                            'discount_amount' => $request->hdn_main_discount_amount,
+                            'discount_reason' => $request->hdn_main_discount_reason,
+                        ]
+                    );
+        
+                    // Update walk-in payment details
+                    foreach ($request->payment_types as $index => $paymentType) {
 
-            // Storing walk-in payment details
-            foreach($request->payment_types as $index => $paymentType) {
-                // Access payment details using the same index
-                $paymentAmount = $request->payment_amounts[$index];
-                $paymentDate = $request->payment_dates[$index];
-            
-                // Now you can create your payment record
-                $walk_in_payment = [
-                    'walk_in_id' => $walkInSale->id,
-                    'payment_type' => $paymentType,
-                    'amount' => $paymentAmount,
-                    'date' => $paymentDate,
-                ];
-            
-                Payment::create($walk_in_payment);
+                        $paymentAmount = $request->payment_amounts[$index];
+                        $paymentDate = $request->payment_dates[$index];
+                        // Update or create payment details
+                        Payment::updateOrCreate(
+                            ['walk_in_id' => $request->invoice_id, 'payment_type' => $paymentType],
+                            ['amount' => $request->payment_amounts[$index], 'date' => $request->payment_dates[$index]]
+                        );
+                    }
+                }
             }
         }
         else{
-            //store client details
-            $newUser = Clients::create([
-                'firstname' => $request->walkin_first_name,
-                'lastname' => $request->walkin_last_name,
-                'email' => $request->walkin_email,
-                'gender' => $request->walkin_gender,
-                'mobile_number' => $request->walkin_phone_type == 'Mobile' ? $request->walkin_phone_no : null,
-                'home_phone' => $request->walkin_phone_type == 'Home' ? $request->walkin_phone_no : null,
-                'work_phone' => $request->walkin_phone_type == 'Work' ? $request->walkin_phone_no : null,
-                'contact_method' => $request->walkin_contact_method,
-                'send_promotions' => $request->walkin_send_promotions
-            ]);
-            
-            // Storing walk-in sale details
-            $walk_in_table = [
-                'client_id' => $newUser->id,
-                'location_id' =>$request->walk_in_location_id,
-                'customer_type' => $request->hdn_customer_type,
-                'invoice_date' => $request->new_invoice_date,
-                'subtotal' => $request->hdn_subtotal,
-                'discount' => $request->hdn_discount,
-                'gst' => $request->hdn_gst,
-                'total' => $request->hdn_total,
-                'remaining_balance' => str_replace('$', '', $request->remaining_balance),
-                'user_id' => $request->new_staff,
-                'note' => $request->notes
-            ];  
-            // dd($walk_in_table);
+            if($request->hdn_customer_type == 'casual')
+            {
+                // Storing walk-in sale details
+                $walk_in_table = [
+                    'location_id' =>$request->walk_in_location_id,
+                    'customer_type' => $request->hdn_customer_type,
+                    'invoice_date' => $request->casual_invoice_date,
+                    'subtotal' => $request->hdn_subtotal,
+                    'discount' => $request->hdn_discount,
+                    'gst' => $request->hdn_gst,
+                    'total' => $request->hdn_total,
+                    'remaining_balance' => str_replace('$', '', $request->remaining_balance),
+                    'user_id' => $request->casual_staff,
+                    'note' => $request->notes
+                ];  
+                // dd($walk_in_table);
 
-            $walkInSale = WalkInRetailSale::create($walk_in_table);
+                $walkInSale = WalkInRetailSale::create($walk_in_table);
 
-            // Storing walk-in sale products
-            foreach ($request->new_product_id as $index => $productId) {
-                $walk_in_product = [
-                    'walk_in_id' => $walkInSale->id,
-                    'product_id' => $productId,
-                    'product_name' => $request->new_product_name[$index],
-                    'product_price' => $request->new_product_price[$index],
-                    'product_type' => $request->product_type[$index],
-                    'product_quantity' => $request->new_product_quanitity[$index],
-                    'who_did_work' => ($request->new_who_did_work[$index] && $request->new_who_did_work[$index] == 'no one' || $request->new_who_did_work[$index] == 'Please select') ? null : $request->new_who_did_work[$index],
-                    'product_discount_surcharge' => $request->new_discount_surcharge[$index],
-                    'discount_type' => $request->new_discount_types[$index],
-                    'discount_amount' => $request->new_discount_amount[$index],
-                    'type' => $request->hdn_discount_surcharge_type[$index],
-                    'discount_value' => $request->new_discount_text[$index],
-                    // 'edit_amount' => $request->casual_edit_amount[$index],
-                    'discount_reason' => $request->new_reason[$index],
-                ];
+                // Storing walk-in sale products
+                foreach ($request->casual_product_id as $index => $productId) {
+                    $walk_in_product = [
+                        'walk_in_id' => $walkInSale->id,
+                        'product_id' => $productId,
+                        'product_name' => $request->casual_product_name[$index],
+                        'product_price' => $request->casual_product_price[$index],
+                        'product_quantity' => $request->casual_product_quanitity[$index],
+                        'product_type' => $request->product_type[$index],
+                        'who_did_work' => ($request->casual_who_did_work[$index] && $request->casual_who_did_work[$index] == 'no one' || $request->casual_who_did_work[$index] == 'Please select') ? null : $request->casual_who_did_work[$index],
+                        'product_discount_surcharge' => $request->casual_discount_surcharge[$index],
+                        'discount_type' => $request->casual_discount_types[$index],
+                        'discount_amount' => $request->casual_discount_amount[$index],
+                        // 'edit_amount' => $request->casual_edit_amount[$index],
+                        'type' => $request->hdn_discount_surcharge_type[$index],
+                        'discount_value' => $request->casual_discount_text[$index],
+                        'discount_reason' => $request->casual_reason[$index],
+                    ];
+                    WalkInProducts::create($walk_in_product);
 
-                WalkInProducts::create($walk_in_product);
-                if($request->product_type[$index] == 'product')
-                {
-                    //product quanitity minus logic
-                    $p_availbility = ProductAvailabilities::where('product_id', $productId)
+                    if($request->product_type[$index] == 'product')
+                    {
+                        //product quanitity minus logic
+                        $p_availbility = ProductAvailabilities::where('product_id', $productId)
                         ->where('location_name', $request->walk_in_location_id)
                         ->first(); // Retrieve product availability record
-                    
-                    if ($p_availbility) {
+
+                        if ($p_availbility) {
                         // Calculate the new quantity by subtracting the requested quantity
-                        $newQuantity = $p_availbility->quantity - $request->new_product_quanitity[$index];
+                        $newQuantity = $p_availbility->quantity - $request->casual_product_quanitity[$index];
 
                         // Update the quantity in the database
                         ProductAvailabilities::where('product_id', $productId)
                             ->where('location_name', $request->walk_in_location_id)
                             ->update(['quantity' => $newQuantity]);
-                    } else {
+                        } else {
                         // dd('Product availability record not found'); // Handle the case where the product availability record doesn't exist
+                        }
                     }
+                    
+                }
+                // dd($walk_in_product);
+
+                // Storing walk-in sale discount/surcharge details
+                $walk_in_discount_surcharge = [
+                    'walk_in_id' => $walkInSale->id,
+                    'discount_surcharge' => $request->hdn_main_discount_surcharge,
+                    'discount_type' => $request->hdn_main_discount_type,
+                    'discount_amount' => $request->hdn_main_discount_amount,
+                    'discount_reason' => $request->hdn_main_discount_reason,
+                ];
+                // dd($walk_in_discount_surcharge);
+                WalkInDiscountSurcharge::create($walk_in_discount_surcharge);
+
+                // Storing walk-in payment details
+                foreach($request->payment_types as $index => $paymentType) {
+                    // Access payment details using the same index
+                    $paymentAmount = $request->payment_amounts[$index];
+                    $paymentDate = $request->payment_dates[$index];
+                
+                    // Now you can create your payment record
+                    $walk_in_payment = [
+                        'walk_in_id' => $walkInSale->id,
+                        'payment_type' => $paymentType,
+                        'amount' => $paymentAmount,
+                        'date' => $paymentDate,
+                    ];
+                
+                    Payment::create($walk_in_payment);
                 }
             }
-            // dd($walk_in_product);
+            else if($request->hdn_customer_type == 'existing')
+            {
+                // Storing walk-in sale details
+                $walk_in_table = [
+                    'client_id' => $request->walk_in_client_id,
+                    'location_id' =>$request->walk_in_location_id,
+                    'customer_type' => $request->hdn_customer_type,
+                    'invoice_date' => $request->casual_invoice_date,
+                    'subtotal' => $request->hdn_subtotal,
+                    'discount' => $request->hdn_discount,
+                    'gst' => $request->hdn_gst,
+                    'total' => $request->hdn_total,
+                    'remaining_balance' => str_replace('$', '', $request->remaining_balance),
+                    'user_id' => $request->casual_staff,
+                    'note' => $request->notes
+                ];  
+                // dd($walk_in_table);
 
-            // Storing walk-in sale discount/surcharge details
-            $walk_in_discount_surcharge = [
-                'walk_in_id' => $walkInSale->id,
-                'discount_surcharge' => $request->hdn_main_discount_surcharge,
-                'discount_type' => $request->hdn_main_discount_type,
-                'discount_amount' => $request->hdn_main_discount_amount,
-                'discount_reason' => $request->hdn_main_discount_reason,
-            ];
-            // dd($walk_in_discount_surcharge);
-            WalkInDiscountSurcharge::create($walk_in_discount_surcharge);
+                $walkInSale = WalkInRetailSale::create($walk_in_table);
 
-            // Storing walk-in payment details
-            foreach($request->payment_types as $index => $paymentType) {
-                // Access payment details using the same index
-                $paymentAmount = $request->payment_amounts[$index];
-                $paymentDate = $request->payment_dates[$index];
-            
-                // Now you can create your payment record
-                $walk_in_payment = [
+                // Storing walk-in sale products
+                foreach ($request->casual_product_id as $index => $productId) {
+                    $walk_in_product = [
+                        'walk_in_id' => $walkInSale->id,
+                        'product_id' => $productId,
+                        'product_name' => $request->casual_product_name[$index],
+                        'product_price' => $request->casual_product_price[$index],
+                        'product_quantity' => $request->casual_product_quanitity[$index],
+                        'product_type' => $request->product_type[$index],
+                        'who_did_work' => ($request->casual_who_did_work[$index] && $request->casual_who_did_work[$index] == 'no one' || $request->casual_who_did_work[$index] == 'Please select') ? null : $request->casual_who_did_work[$index],
+                        'product_discount_surcharge' => $request->casual_discount_surcharge[$index],
+                        'discount_type' => $request->casual_discount_types[$index],
+                        'discount_amount' => $request->casual_discount_amount[$index],
+                        'type' => $request->hdn_discount_surcharge_type[$index],
+                        'discount_value' => $request->casual_discount_text[$index],
+                        // 'edit_amount' => $request->casual_edit_amount[$index],
+                        'discount_reason' => $request->casual_reason[$index],
+                    ];
+                    WalkInProducts::create($walk_in_product);
+                    if($request->product_type[$index] == 'product')
+                    {
+                        //product quanitity minus logic
+                        $p_availbility = ProductAvailabilities::where('product_id', $productId)
+                            ->where('location_name', $request->walk_in_location_id)
+                            ->first(); // Retrieve product availability record
+                        
+                        if ($p_availbility) {
+                            // Calculate the new quantity by subtracting the requested quantity
+                            $newQuantity = $p_availbility->quantity - $request->casual_product_quanitity[$index];
+
+                            // Update the quantity in the database
+                            ProductAvailabilities::where('product_id', $productId)
+                                ->where('location_name', $request->walk_in_location_id)
+                                ->update(['quantity' => $newQuantity]);
+                        } else {
+                            // dd('Product availability record not found'); // Handle the case where the product availability record doesn't exist
+                        }
+                    }
+                }
+                // dd($walk_in_product);
+
+                // Storing walk-in sale discount/surcharge details
+                $walk_in_discount_surcharge = [
                     'walk_in_id' => $walkInSale->id,
-                    'payment_type' => $paymentType,
-                    'amount' => $paymentAmount,
-                    'date' => $paymentDate,
+                    'discount_surcharge' => $request->hdn_main_discount_surcharge,
+                    'discount_type' => $request->hdn_main_discount_type,
+                    'discount_amount' => $request->hdn_main_discount_amount,
+                    'discount_reason' => $request->hdn_main_discount_reason,
                 ];
-            
-                Payment::create($walk_in_payment);
+                // dd($walk_in_discount_surcharge);
+                WalkInDiscountSurcharge::create($walk_in_discount_surcharge);
+
+                // Storing walk-in payment details
+                foreach($request->payment_types as $index => $paymentType) {
+                    // Access payment details using the same index
+                    $paymentAmount = $request->payment_amounts[$index];
+                    $paymentDate = $request->payment_dates[$index];
+                
+                    // Now you can create your payment record
+                    $walk_in_payment = [
+                        'walk_in_id' => $walkInSale->id,
+                        'payment_type' => $paymentType,
+                        'amount' => $paymentAmount,
+                        'date' => $paymentDate,
+                    ];
+                
+                    Payment::create($walk_in_payment);
+                }
+            }
+            else{
+                // dd($request->all());
+                //store client details
+                $newUser = Clients::create([
+                    'firstname' => $request->walkin_first_name,
+                    'lastname' => $request->walkin_last_name,
+                    'email' => $request->walkin_email,
+                    'gender' => $request->walkin_gender,
+                    'mobile_number' => $request->walkin_phone_type == 'Mobile' ? $request->walkin_phone_no : null,
+                    'home_phone' => $request->walkin_phone_type == 'Home' ? $request->walkin_phone_no : null,
+                    'work_phone' => $request->walkin_phone_type == 'Work' ? $request->walkin_phone_no : null,
+                    'contact_method' => $request->walkin_contact_method,
+                    'send_promotions' => $request->walkin_send_promotions
+                ]);
+                
+                // Storing walk-in sale details
+                $walk_in_table = [
+                    'client_id' => $newUser->id,
+                    'location_id' =>$request->walk_in_location_id,
+                    'customer_type' => $request->hdn_customer_type,
+                    'invoice_date' => $request->casual_invoice_date,
+                    'subtotal' => $request->hdn_subtotal,
+                    'discount' => $request->hdn_discount,
+                    'gst' => $request->hdn_gst,
+                    'total' => $request->hdn_total,
+                    'remaining_balance' => str_replace('$', '', $request->remaining_balance),
+                    'user_id' => $request->casual_staff,
+                    'note' => $request->notes
+                ];  
+                // dd($walk_in_table);
+
+                $walkInSale = WalkInRetailSale::create($walk_in_table);
+
+                // Storing walk-in sale products
+                foreach ($request->casual_product_id as $index => $productId) {
+                    $walk_in_product = [
+                        'walk_in_id' => $walkInSale->id,
+                        'product_id' => $productId,
+                        'product_name' => $request->casual_product_name[$index],
+                        'product_price' => $request->casual_product_price[$index],
+                        'product_type' => $request->product_type[$index],
+                        'product_quantity' => $request->casual_product_quanitity[$index],
+                        'who_did_work' => ($request->casual_who_did_work[$index] && $request->casual_who_did_work[$index] == 'no one' || $request->casual_who_did_work[$index] == 'Please select') ? null : $request->casual_who_did_work[$index],
+                        'product_discount_surcharge' => $request->casual_discount_surcharge[$index],
+                        'discount_type' => $request->casual_discount_types[$index],
+                        'discount_amount' => $request->casual_discount_amount[$index],
+                        'type' => $request->hdn_discount_surcharge_type[$index],
+                        'discount_value' => $request->casual_discount_text[$index],
+                        // 'edit_amount' => $request->casual_edit_amount[$index],
+                        'discount_reason' => $request->casual_reason[$index],
+                    ];
+
+                    WalkInProducts::create($walk_in_product);
+                    if($request->product_type[$index] == 'product')
+                    {
+                        //product quanitity minus logic
+                        $p_availbility = ProductAvailabilities::where('product_id', $productId)
+                            ->where('location_name', $request->walk_in_location_id)
+                            ->first(); // Retrieve product availability record
+                        
+                        if ($p_availbility) {
+                            // Calculate the new quantity by subtracting the requested quantity
+                            $newQuantity = $p_availbility->quantity - $request->casual_product_quanitity[$index];
+
+                            // Update the quantity in the database
+                            ProductAvailabilities::where('product_id', $productId)
+                                ->where('location_name', $request->walk_in_location_id)
+                                ->update(['quantity' => $newQuantity]);
+                        } else {
+                            // dd('Product availability record not found'); // Handle the case where the product availability record doesn't exist
+                        }
+                    }
+                }
+                // dd($walk_in_product);
+
+                // Storing walk-in sale discount/surcharge details
+                $walk_in_discount_surcharge = [
+                    'walk_in_id' => $walkInSale->id,
+                    'discount_surcharge' => $request->hdn_main_discount_surcharge,
+                    'discount_type' => $request->hdn_main_discount_type,
+                    'discount_amount' => $request->hdn_main_discount_amount,
+                    'discount_reason' => $request->hdn_main_discount_reason,
+                ];
+                // dd($walk_in_discount_surcharge);
+                WalkInDiscountSurcharge::create($walk_in_discount_surcharge);
+
+                // Storing walk-in payment details
+                foreach($request->payment_types as $index => $paymentType) {
+                    // Access payment details using the same index
+                    $paymentAmount = $request->payment_amounts[$index];
+                    $paymentDate = $request->payment_dates[$index];
+                
+                    // Now you can create your payment record
+                    $walk_in_payment = [
+                        'walk_in_id' => $walkInSale->id,
+                        'payment_type' => $paymentType,
+                        'amount' => $paymentAmount,
+                        'date' => $paymentDate,
+                    ];
+                
+                    Payment::create($walk_in_payment);
+                }
             }
         }
         
-
-        return response()->json(['success' => true, 'message' => 'Walk-In created successfully','amount' => $paymentAmount,'walk_in_id' =>$walkInSale->id]);
+        return response()->json(['success' => true, 'message' => 'Walk-In created successfully','amount' => $paymentAmount,'walk_in_id' =>isset($walkInSale->id)?$walkInSale->id:$request->invoice_id,'username'=>$userName,'client_email'=>$client_email]);
     }
     public function GetLocation(Request $request)
     {
@@ -1814,5 +2073,80 @@ class CalenderController extends Controller
         // Now $invoice contains the main invoice data along with its associated products
         return response()->json(['success' => true, 'invoice' => $invoice]);
     }
+    public function deleteWalkIn(Request $request, $id)
+    {
+        try {
+            WalkInRetailSale::findOrFail($id)->delete();
+            WalkInProducts::where('walk_in_id', $id)->delete();
+            WalkInDiscountSurcharge::where('walk_in_id', $id)->delete();
+            Payment::where('walk_in_id', $id)->delete();
 
+            $data = [
+                'success' => true,
+                'message' => 'Walk-in deleted successfully!',
+                'type'    => 'success',
+            ];
+        } catch (\Throwable $th) {
+            $data = [
+                'success' => false,
+                'message' => $th->getMessage(),
+                'type'    => 'fail',
+            ];
+        }
+        return response()->json($data);
+    }
+    public function editInvoice(Request $request)
+    {
+        $walk_ids = $request->input('walk_ids');
+
+        // Retrieve the main invoice data
+        $invoice = DB::table('walk_in_retail_sale')
+            ->where('id', $walk_ids)
+            ->first();
+            
+            $client_name = ''; // Default value is an empty string
+            if ($invoice->client_id !== null) {
+                $client_details = Clients::where('id', $invoice->client_id)->first();
+                $client_name = $client_details->firstname . ' ' . $client_details->lastname;
+            }
+            
+            $invoice->client_name = $client_name;
+
+        // Check if the invoice exists
+        if ($invoice) {
+            // Retrieve all products associated with the invoice
+            $products = WalkInProducts::where('walk_in_id', $walk_ids)->get();
+            
+            // Loop through each product to attach user_full_name
+            foreach ($products as $prd) {
+                $user_id = $prd->who_did_work;
+                if($user_id==null)
+                {
+                    $prd->user_full_name='';
+                }else{
+                    $user = User::where('id', $user_id)->first();
+                    // Add user_full_name to each product object
+                    $prd->user_full_name = "With " .$user->first_name . ' ' . $user->last_name;
+                }
+            }
+            
+            // Attach the products to the invoice
+            $invoice->products = $products;
+
+            // Retrieve all discount surcharges associated with the invoice
+            $discount_surcharge = WalkInDiscountSurcharge::where('walk_in_id', $walk_ids)->get();
+            
+            // Attach the discount surcharges to the invoice
+            $invoice->discount_surcharges = $discount_surcharge;
+
+            // Retrieve all payments associated with the invoice
+            $payment = Payment::where('walk_in_id', $walk_ids)->get();
+            
+            // Attach the payments to the invoice
+            $invoice->payments = $payment;
+        }
+        // dd($invoice);
+        // Now $invoice contains the main invoice data along with its associated products
+        return response()->json(['success' => true, 'invoice' => $invoice]);
+    }
 }
