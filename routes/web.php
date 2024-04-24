@@ -133,6 +133,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/forms', FormsController::class);
     Route::post('forms/table',[FormsController::class, 'index'])->name('forms.table');
     Route::post('forms/update',[FormsController::class, 'formUpdate'])->name('serviceforms.formUpdate');
+    Route::post('forms/updatehtml',[FormsController::class, 'formHTMLUpdate'])->name('serviceforms.formHTMLUpdate');
 
     //Product Categories
     Route::resource('/products-categories', ProductCategoriesController::class);
@@ -170,3 +171,4 @@ Route::middleware(['auth'])->group(function () {
     Route::post('calendar/edit-invoice', [CalenderController::class, 'editInvoice'])->name('calendar.edit-invoice');
 });
 Route::post('/get-staff-list', [CalenderController::class,'getStaffList'])->name('get-staff-list');
+Route::post('forms/deleteform',[FormsController::class, 'formDelete'])->name('serviceforms.formDelete');

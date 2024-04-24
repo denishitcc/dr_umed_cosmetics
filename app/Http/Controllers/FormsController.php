@@ -116,10 +116,10 @@ class FormsController extends Controller
         if($forms)
         {
             $data = [
-                'title' => $request->title,
-                'description' => $request->description,
-                'status' => $request->status,
-                'by_whom' => $user->first_name.' '.$user->last_name
+                'title'         => $request->title,
+                'description'   => $request->description,
+                'status'        => $request->status,
+                'by_whom'       => $user->first_name.' '.$user->last_name
             ];
 
             $updateForms = $forms->update($data);
@@ -141,5 +141,81 @@ class FormsController extends Controller
             }
             return response()->json($response);
         }
+    }
+
+    /**
+     * Method formHTMLUpdate
+     *
+     * @param Request $request [explicite description]
+     *
+     * @return void
+     */
+    public function formHTMLUpdate(Request $request)
+    {
+        try {
+
+            $forms  = FormSummary::find($request->form_id);
+            $user   = Auth::user();
+
+            if($forms){
+                $fdata = [
+                    'form_json'     => $request->form_json,
+                    'by_whom'       => $user->first_name.' '.$user->last_name
+                ];
+
+                $updateForms = $forms->update($fdata);
+
+                $data = [
+                    'success' => true,
+                    'message' => 'Form updated successfully!',
+                    'type' => 'success',
+                ];
+            }
+
+        } catch (\Throwable $th) {
+
+            $data = [
+                'success' => false,
+                'message' => $th,
+                'type'    => 'fail',
+            ];
+        }
+        return response()->json($data);
+
+    }
+
+    /**
+     * Method formDelete
+     *
+     * @param Request $request [explicite description]
+     *
+     * @return void
+     */
+    public function formDelete(Request $request)
+    {
+        try {
+            $forms = FormSummary::find($request->form_id);
+
+            if($forms)
+            {
+                $forms->delete();
+            }
+
+            $data = [
+                'success' => true,
+                'message' => 'Appointment deleted successfully!',
+                'type'    => 'success',
+            ];
+
+        } catch (\Throwable $th) {
+
+            $data = [
+                'success' => false,
+                'message' => $th,
+                'type'    => 'fail',
+            ];
+        }
+
+        return response()->json($data);
     }
 }

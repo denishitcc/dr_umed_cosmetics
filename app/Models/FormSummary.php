@@ -24,6 +24,7 @@ class FormSummary extends Model
         'id',
         'title',
         'description',
+        'form_json',
         'by_whom',
         'status'
     ];

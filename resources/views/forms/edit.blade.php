@@ -22,6 +22,8 @@
             <div class="tool-right">
                 <div class="tool-right">
                     <a href="#" class="btn btn-primary btn-md" id="formOptionsBtn" data-bs-toggle="modal" data-bs-target="#edit_form">Options</a>
+                    <a href="javascript:void(0)" class="btn btn-primary btn-md" id="deleteFormBtn" data-formid="{{ $forms->id }}">Delete</a>
+                    <a href="javascript:void(0)" class="btn btn-primary btn-md" id="previewFormBtn" data-formid="{{ $forms->id }}">Preview</a>
                 </div>
             </div>
             <div id="fb-editor"></div>
@@ -86,7 +88,9 @@
 <script src="{{ asset('js/form.js') }}"></script>
 <script type="text/javascript">
     var moduleConfig = {
-        updateForm:      "{!! route('serviceforms.formUpdate') !!}",
+        updateForm:             "{!! route('serviceforms.formUpdate') !!}",
+        updateHTMLFormContent:  "{!! route('serviceforms.formHTMLUpdate') !!}",
+        deleteForm:             "{!! route('serviceforms.formDelete') !!}",
     }
     DU.form.init();
 </script>
