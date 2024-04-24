@@ -949,7 +949,7 @@
                 <h4 class="modal-title">Take Payment</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body main_payment_details">
                     <div class="row payment_details closed-stip">
                         <div class="col-lg-4">
                             <div class="form-group">
@@ -1042,7 +1042,7 @@
                 </div>
                 <div class="modal-footer">
                 <button type="button" class="btn btn-light btn-md close_payment">Close</button>
-                <button type="button" class="btn btn-primary btn-md">Print</button>
+                <button type="button" class="btn btn-primary btn-md print_completed_invoice">Print</button>
                 <button type="button" class="btn btn-primary btn-md view_invoice" walk_in_ids="">View Invoice</button>
                 </div>
             </div>
@@ -1141,7 +1141,7 @@
                     <button type="button" class="btn btn-light btn-md delete_invoice" delete_id="">Delete</button>   
                     <button type="button" class="btn btn-light btn-md edit_invoice" edit_id="">Edit</button>   
                     <button type="button" class="btn btn-light btn-md cancel_invoice">Cancel</button>
-                    <button type="button" class="btn btn-primary btn-md">Print</button>
+                    <button type="button" class="btn btn-primary btn-md print_completed_invoice">Print</button>
                 </div>
             </div>
         </div>
@@ -3777,31 +3777,253 @@ if (text !== null) {
         $('#existingclientmodal').hide();
     })
     $(document).on('click', '.print_quote', function() {
-        // window.print();
+        // Create a hidden container element
+        var date_print = $('#datePicker1').val();
+        // Define an array to store product details
+        var products = [];
+        var activeTab = $('.tab-pane.active').find('.productDetails');
+        // Iterate over each .productDetails element
+        activeTab.find('.product-info1').each(function() {
+            // Extract product information from the current .productDetails element
+            var productName = $(this).find('[name="casual_product_name[]"]').val();
+            var productQuanitity = $(this).find('[name="casual_product_quanitity[]"]').val();
+            var productPrice = $(this).find('.m_p').text();
 
-        var originalContent = document.body.innerHTML;
-        var html = `<h1>Test</h1>
-                    <div>Milan Soni</div>
-                    <table>
-                        <thead>
-                            <th>Product Name</th>
-                            <th>Quantity</th>
-                            <th>Price</th>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Test</td>
-                                <td>2</td>
-                                <td>$100</td>
-                            </tr>
-                        </tbody>
-                    </table>`;
-        document.body.innerHTML = html;
+            // Create an object for the current product and push it to the products array
+            var product = {
+                name: productName,
+                quantity: productQuanitity,
+                price: productPrice
+            };
+            products.push(product);
+        });
+        console.log('products',products);
+        var printContainer = document.createElement('div');
+        printContainer.setAttribute('id', 'print-container');
 
+        // Create printable content
+        var printableContent = `
+        <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Document</title>
+                <style>
+                    @media print {
+                        body * {
+                            visibility: hidden;
+                        }
+                        #printable-content, #printable-content * {
+                            visibility: visible;
+                        }
+                        #printable-content {
+                            position: absolute;
+                            left: 0;
+                            right:0;
+                            top: 0;
+                            bottom:0;
+                        }
+                    }
+                </style>
+            </head>
+            <body>
+                <div id="printable-content">
+                    <table style="width: 100%; font-family: Verdana, Geneva, Tahoma, sans-serif; font-weight: 400; vertical-align: middle; line-height: 1.5em;">
+                        <tr>
+                            <td style="text-align: right;">
+                                <b>Dr Umed Cosmetics</b><br>
+                                0407194519<br>
+                                <a href="mailto:info@drumedcosmetics.com.au">info@drumedcosmetics.com.au</a><br>
+                                ABN # xx-xxx-xxx
+                            </td>
+                        </tr>
+                    </table>
+                    <h3 style="font-family: Verdana, Geneva, Tahoma, sans-serif; line-height: 1.5em;">QUOTE</h3>
+                    <p style="font-family: Verdana, Geneva, Tahoma, sans-serif; line-height: 1.5em;">CUSTOMER</p>
+                    <p style="font-family: Verdana, Geneva, Tahoma, sans-serif; line-height: 1.5em;">DATE OF ISSUE<br> <b>${date_print}</b></p>
+                    <br>
+                    <table style="width: 100%; font-family: Verdana, Geneva, Tahoma, sans-serif; font-weight: 400; vertical-align: middle; line-height: 1.5em;">
+                        <tr>
+                            <th style="background-color: #F6F8FA; padding: 0.9rem; border-bottom: 1px solid #EBF5FF; text-align: left;" >Quantity</th>
+                            <th style="background-color: #F6F8FA; padding: 0.9rem; border-bottom: 1px solid #EBF5FF; text-align: left;">Service</th>
+                            <th style="background-color: #F6F8FA; padding: 0.9rem; border-bottom: 1px solid #EBF5FF; text-align: right;" >Price</th>
+                        </tr>
+                        ${products.map(product => `
+                        <tr>
+                            <td style="padding: 0.9rem; border-bottom: 1px solid #d5dce2; text-align: left;">${product.quantity}</td>
+                            <td style="padding: 0.9rem; border-bottom: 1px solid #d5dce2; text-align: left;">${product.name}</td>
+                            <td style="padding: 0.9rem; border-bottom: 1px solid #d5dce2; text-align: right;">${product.price}</td>
+                        </tr>
+                        `).join('')}
+                        <tr>
+                            <td colspan="3" style="padding: 0.9rem; border-bottom: 1px solid #d5dce2; text-align: right;">
+                                Subtotal ${$('.tab-pane.active').find('.subtotal').text()}<br>
+                                Total: <strong style="font-size: 20px;">${$('.tab-pane.active').find('.total').text()}</strong><br>
+                                ${$('.tab-pane.active').find('.gst_total').text()}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </body>
+        </html>
+        `;
+
+        // Set printable content to the container
+        printContainer.innerHTML = printableContent;
+
+        // Append container to document body
+        document.body.appendChild(printContainer);
+
+        // Print the page
         window.print();
 
-        document.body.innerHTML = originalContent;
-    })
+        // Remove the container from the document body
+        document.body.removeChild(printContainer);
+    });
+
+
+    $(document).on('click', '.print_completed_invoice', function() {
+        // Create a hidden container element
+        var date_print = $('#datePicker1').val();
+        // Define an array to store product details
+        var products = [];
+        var activeTab = $('.tab-pane.active').find('.productDetails');
+        // Iterate over each .productDetails element
+        activeTab.find('.product-info1').each(function() {
+            // Extract product information from the current .productDetails element
+            var productName = $(this).find('[name="casual_product_name[]"]').val();
+            var productQuanitity = $(this).find('[name="casual_product_quanitity[]"]').val();
+            var productPrice = $(this).find('.m_p').text();
+
+            // Create an object for the current product and push it to the products array
+            var product = {
+                name: productName,
+                quantity: productQuanitity,
+                price: productPrice
+            };
+            products.push(product);
+        });
+        console.log('products',products);
+        var cardDetails = [];
+        var totalCardPayments = 0; // Initialize total card payments
+
+        $('.main_payment_details').find('.payment_details').each(function(){
+            var cardTyoe = $(this).find('#payment_type').val();
+            var cardAmount = $(this).find('.payment_amount').val();
+            var cardDate = $(this).find('#datePicker4').val();
+
+            // Create an object for the current product and push it to the cardDetails array
+            var c_details = {
+                card: cardTyoe,
+                amount: cardAmount,
+                date: cardDate
+            };
+            cardDetails.push(c_details);
+            totalCardPayments += parseFloat(cardAmount);
+        })
+        var totalPaid = parseFloat($('.main_payment_details').find('.payment_total').text());
+        var printContainer = document.createElement('div');
+        printContainer.setAttribute('id', 'print-container');
+
+        // Create printable content
+        var printableContent = `
+        <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Document</title>
+                <style>
+                    @media print {
+                        body * {
+                            visibility: hidden;
+                        }
+                        #printable-content, #printable-content * {
+                            visibility: visible;
+                        }
+                        #printable-content {
+                            position: absolute;
+                            left: 0;
+                            right:0;
+                            top: 0;
+                            bottom:0;
+                        }
+                    }
+                </style>
+            </head>
+            <body>
+                <div id="printable-content">
+                    <table style="width: 100%; font-family: Verdana, Geneva, Tahoma, sans-serif; font-weight: 400; vertical-align: middle; line-height: 1.5em;">
+                        <tr>
+                            <td style="text-align: right;">
+                                <b>Dr Umed Cosmetics</b><br>
+                                0407194519<br>
+                                <a href="mailto:info@drumedcosmetics.com.au">info@drumedcosmetics.com.au</a><br>
+                                ABN # xx-xxx-xxx
+                            </td>
+                        </tr>
+                    </table>
+                    <h3 style="font-family: Verdana, Geneva, Tahoma, sans-serif; line-height: 1.5em;">TAX INVOICE / RECEIPT</h3>
+                    <p style="font-family: Verdana, Geneva, Tahoma, sans-serif; line-height: 1.5em;">CUSTOMER</p>
+                    <p style="font-family: Verdana, Geneva, Tahoma, sans-serif; line-height: 1.5em;">DATE OF ISSUE<br> <b>${date_print}</b></p>
+                    <p style="font-family: Verdana, Geneva, Tahoma, sans-serif; line-height: 1.5em; text-align: right;">INVOICE NUMBER: <b>#INV${$('.view_invoice').attr('walk_in_ids')}</b></p>
+                    <br>
+                    <table style="width: 100%; font-family: Verdana, Geneva, Tahoma, sans-serif; font-weight: 400; vertical-align: middle; line-height: 1.5em;">
+                        <tr>
+                            <th style="background-color: #F6F8FA; padding: 0.9rem; border-bottom: 1px solid #EBF5FF; text-align: left;" >Quantity</th>
+                            <th style="background-color: #F6F8FA; padding: 0.9rem; border-bottom: 1px solid #EBF5FF; text-align: left;">Service</th>
+                            <th style="background-color: #F6F8FA; padding: 0.9rem; border-bottom: 1px solid #EBF5FF; text-align: right;" >Price</th>
+                        </tr>
+                        ${products.map(product => `
+                        <tr>
+                            <td style="padding: 0.9rem; border-bottom: 1px solid #d5dce2; text-align: left;">${product.quantity}</td>
+                            <td style="padding: 0.9rem; border-bottom: 1px solid #d5dce2; text-align: left;">${product.name}</td>
+                            <td style="padding: 0.9rem; border-bottom: 1px solid #d5dce2; text-align: right;">${product.price}</td>
+                        </tr>
+                        `).join('')}
+                        <tr>
+                            <td colspan="3" style="padding: 0.9rem; border-bottom: 1px solid #d5dce2; text-align: right;">
+                                Subtotal ${$('.tab-pane.active').find('.subtotal').text()}<br>
+                                Total: <strong style="font-size: 20px;">${$('.tab-pane.active').find('.total').text()}</strong><br>
+                                ${$('.tab-pane.active').find('.gst_total').text()}
+                            </td>
+                        </tr>
+                        ${cardDetails.length > 0 ? `
+                        <tr>
+                            <td style="padding: 0.9rem; border-bottom: 1px solid #d5dce2; text-align: left;" colspan="2">PAYMENTS</td>
+                            <td style="padding: 0.9rem; border-bottom: 1px solid #d5dce2; text-align: right;"></td>
+                        </tr>
+                        ${cardDetails.map(cards => `
+                        <tr>
+                            <td style="padding: 0.9rem; border-bottom: 1px solid #d5dce2; text-align: left;"><b>${cards.date} ${cards.card}</b></td>
+                            <td style="padding: 0.9rem; border-bottom: 1px solid #d5dce2; text-align: left;"></td>
+                            <td style="padding: 0.9rem; border-bottom: 1px solid #d5dce2; text-align: right;">$${cards.amount}</td>
+                        </tr>
+                        `).join('')}
+                        ` : ''}
+                        <tr>
+                            <td colspan="3" style="padding: 0.9rem; text-align: right;">
+                                Total Paid: <strong style="font-size: 20px;">$${totalCardPayments}</strong><br>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </body>
+        </html>
+        `;
+
+        // Set printable content to the container
+        printContainer.innerHTML = printableContent;
+
+        // Append container to document body
+        document.body.appendChild(printContainer);
+
+        // Print the page
+        window.print();
+
+        // Remove the container from the document body
+        document.body.removeChild(printContainer);
+    });
+    
     $(document).on('click', '.view_invoice', function() {
         $('#payment_completed').modal('hide');
         $('#paid_Invoice').modal('show');
