@@ -3816,13 +3816,13 @@ if (text !== null) {
         invoiceData.products.forEach(function (product) {
             if(product.type == 'Surcharge')
             {
-                var p_price = product.product_price + product.discount_value;
+                var p_price = (parseFloat(product.product_price) + parseFloat(product.discount_value)).toFixed(2)
             }else if(product.type == 'Discount')
             {
-                var p_price = product.product_price - product.discount_value;
+                var p_price = (parseFloat(product.product_price) - parseFloat(product.discount_value)).toFixed(2)
             }else
             {
-                var p_price = product.product_price;
+                var p_price = (parseFloat(product.product_price)).toFixed(2)
             }
             productTableBody.append('<tr><td><b>' + product.product_name + '</b><br><span class="d-grey">' + product.user_full_name + '</span></td><td><b>' + product.product_quantity + '</b></td><td><b>$' + p_price + '</b></td></tr>');
         });
