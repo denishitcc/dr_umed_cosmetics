@@ -3778,7 +3778,9 @@ if (text !== null) {
     })
     $(document).on('click', '.print_quote', function() {
         // Create a hidden container element
-        var date_print = $('#datePicker1').val();
+        var dateValue = $('#datePicker1').val();
+        var dateParts = dateValue.split('-'); // Assuming the date is in the format yyyy-mm-dd
+        var formattedDates = dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0]; // Rearranging the parts to dd-mm-yyyy format
         // Define an array to store product details
         var products = [];
         var activeTab = $('.tab-pane.active').find('.productDetails');
@@ -3840,7 +3842,7 @@ if (text !== null) {
                     </table>
                     <h3 style="font-family: Verdana, Geneva, Tahoma, sans-serif; line-height: 1.5em;">QUOTE</h3>
                     <p style="font-family: Verdana, Geneva, Tahoma, sans-serif; line-height: 1.5em;">CUSTOMER</p>
-                    <p style="font-family: Verdana, Geneva, Tahoma, sans-serif; line-height: 1.5em;">DATE OF ISSUE<br> <b>${date_print}</b></p>
+                    <p style="font-family: Verdana, Geneva, Tahoma, sans-serif; line-height: 1.5em;">DATE OF ISSUE<br> <b>${formattedDates}</b></p>
                     <br>
                     <table style="width: 100%; font-family: Verdana, Geneva, Tahoma, sans-serif; font-weight: 400; vertical-align: middle; line-height: 1.5em;">
                         <tr>
@@ -3884,7 +3886,10 @@ if (text !== null) {
 
     $(document).on('click', '.print_completed_invoice', function() {
         // Create a hidden container element
-        var date_print = $('#datePicker1').val();
+        var dateValue = $('#datePicker1').val();
+        var dateParts = dateValue.split('-'); // Assuming the date is in the format yyyy-mm-dd
+        var formattedDates = dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0]; // Rearranging the parts to dd-mm-yyyy format
+
         // Define an array to store product details
         var products = [];
         var activeTab = $('.tab-pane.active').find('.productDetails');
@@ -3910,7 +3915,10 @@ if (text !== null) {
         $('.main_payment_details').find('.payment_details').each(function(){
             var cardTyoe = $(this).find('#payment_type').val();
             var cardAmount = $(this).find('.payment_amount').val();
-            var cardDate = $(this).find('#datePicker4').val();
+            // var cardDate = $(this).find('#datePicker4').val();
+            var dateValue1 = $('#datePicker4').val();
+            var dateParts1 = dateValue1.split('-'); // Assuming the date is in the format yyyy-mm-dd
+            var cardDate = dateParts1[2] + '-' + dateParts1[1] + '-' + dateParts1[0]; 
 
             // Create an object for the current product and push it to the cardDetails array
             var c_details = {
@@ -3964,7 +3972,7 @@ if (text !== null) {
                     </table>
                     <h3 style="font-family: Verdana, Geneva, Tahoma, sans-serif; line-height: 1.5em;">TAX INVOICE / RECEIPT</h3>
                     <p style="font-family: Verdana, Geneva, Tahoma, sans-serif; line-height: 1.5em;">CUSTOMER</p>
-                    <p style="font-family: Verdana, Geneva, Tahoma, sans-serif; line-height: 1.5em;">DATE OF ISSUE<br> <b>${date_print}</b></p>
+                    <p style="font-family: Verdana, Geneva, Tahoma, sans-serif; line-height: 1.5em;">DATE OF ISSUE<br> <b>${formattedDates}</b></p>
                     <p style="font-family: Verdana, Geneva, Tahoma, sans-serif; line-height: 1.5em; text-align: right;">INVOICE NUMBER: <b>#INV${$('.view_invoice').attr('walk_in_ids')}</b></p>
                     <br>
                     <table style="width: 100%; font-family: Verdana, Geneva, Tahoma, sans-serif; font-weight: 400; vertical-align: middle; line-height: 1.5em;">
@@ -4052,7 +4060,9 @@ if (text !== null) {
     function populateInvoiceModal(invoiceData, subtotal, discount, total) {
         // Update the modal content with the retrieved invoice data
         // $('#modalTitle').text('Paid invoice for ' + invoiceData.client_name);
-        $('#invoiceDate').text(invoiceData.invoice_date);
+        var invoiceDate = new Date(invoiceData.invoice_date);
+        var formattedInvoiceDate = `${invoiceDate.getDate()}-${invoiceDate.getMonth() + 1}-${invoiceDate.getFullYear()}`;
+        $('#invoiceDate').text(formattedInvoiceDate);
         $('#invoiceNumber').text('INV' + invoiceData.id);
 
         // Populate product table
@@ -4079,7 +4089,9 @@ if (text !== null) {
         var paymentTableBody = $('#paymentTable tbody');
         paymentTableBody.empty();
         invoiceData.payments.forEach(function (payment) {
-            paymentTableBody.append('<tr><td><b>' + payment.payment_type + '</b></td><td class="d-grey">' + payment.date + '</td><td><b>$' + payment.amount + '</b></td></tr>');
+            var paymentDate = new Date(payment.date);
+            var formattedPaymentDate = `${paymentDate.getDate()}-${paymentDate.getMonth() + 1}-${paymentDate.getFullYear()}`;
+            paymentTableBody.append('<tr><td><b>' + payment.payment_type + '</b></td><td class="d-grey">' + formattedPaymentDate + '</td><td><b>$' + payment.amount + '</b></td></tr>');
         });
 
         // Populate subtotal, discount, total, and total paid
