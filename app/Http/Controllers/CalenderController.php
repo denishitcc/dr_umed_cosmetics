@@ -36,6 +36,8 @@ use App\Models\LocationDiscount;
 use App\Models\LocationSurcharge;
 use App\Models\ServicesAvailability;
 use App\Models\ProductAvailabilities;
+use App\Models\EmailTemplates;
+use Mail; 
 
 class CalenderController extends Controller
 {
@@ -2148,5 +2150,86 @@ class CalenderController extends Controller
         // dd($invoice);
         // Now $invoice contains the main invoice data along with its associated products
         return response()->json(['success' => true, 'invoice' => $invoice]);
+    }
+    public function sendPaymentMail(Request $request)
+    {
+        $emailtemplate = EmailTemplates::where('email_template_type', 'Payment Completed')->first();
+        
+        $walk_ids = $request->walk_in_id;
+
+        // Retrieve the main invoice data
+        $invoice = DB::table('walk_in_retail_sale')
+            ->where('id', $walk_ids)
+            ->first();
+            
+        $client_name = ''; // Default value is an empty string
+        if ($invoice->client_id !== null) {
+            $client_details = Clients::where('id', $invoice->client_id)->first();
+            $client_name = $client_details->firstname . ' ' . $client_details->lastname;
+        }
+        
+        $invoice->client_name = $client_name;
+
+        // Check if the invoice exists
+        if ($invoice) {
+            // Retrieve all products associated with the invoice
+            $products = WalkInProducts::where('walk_in_id', $walk_ids)->get();
+            
+            // Loop through each product to attach user_full_name
+            foreach ($products as $prd) {
+                $user_id = $prd->who_did_work;
+                if($user_id==null)
+                {
+                    $prd->user_full_name='';
+                }else{
+                    $user = User::where('id', $user_id)->first();
+                    // Add user_full_name to each product object
+                    $prd->user_full_name = "With " .$user->first_name . ' ' . $user->last_name;
+                }
+            }
+            
+            // Attach the products to the invoice
+            $invoice->products = $products;
+
+            // Retrieve all discount surcharges associated with the invoice
+            $discount_surcharge = WalkInDiscountSurcharge::where('walk_in_id', $walk_ids)->get();
+            
+            // Attach the discount surcharges to the invoice
+            $invoice->discount_surcharges = $discount_surcharge;
+
+            // Retrieve all payments associated with the invoice
+            $payment = Payment::where('walk_in_id', $walk_ids)->get();
+            
+            // Attach the payments to the invoice
+            $invoice->payments = $payment;
+        }
+
+        $_data = [
+            'subject' => $emailtemplate->subject,
+        ];
+
+        $totalPaid = $invoice->payments->sum('amount');
+        $invoice->total_paid = $totalPaid;
+        
+        // Explode email addresses if comma-separated
+        $emails = explode(',', $request->email);
+
+        foreach ($emails as $email) {
+            $data = [
+                'from_email' => 'support@itcc.net.au',
+                'subject' => $_data['subject'],
+                'invoice' => $invoice, // Include the invoice data here
+            ];
+
+            $sub = $data['subject'];
+            
+            Mail::send('email.payment-success', $data, function($message) use ($email, $sub) {
+                $message->to(trim($email)) // Trim whitespace from email address
+                    ->subject($sub);
+                $message->from('support@itcc.net.au', $sub);
+            });
+        }
+
+        return response()->json(['success' => true]);
     }
 }

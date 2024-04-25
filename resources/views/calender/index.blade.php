@@ -1031,10 +1031,10 @@
                         <label class="form-label"><strong>Send receipt by email</strong></label>
                         <div class="row">
                             <div class="col-lg-10">
-                                <input type="text" class="form-control send_email" placeholder="admin@tenderresponse.com.au">
+                                <input type="text" class="form-control send_email" placeholder="admin@tenderresponse.com.au (use comma for multiple email)">
                             </div>
                             <div class="col-auto">
-                                <button type="button" class="btn btn-primary btn-md">Send</button>
+                                <button type="button" class="btn btn-primary btn-md send_payment_mail">Send</button>
                             </div>
                         </div>
                     </div>
@@ -1128,10 +1128,10 @@
                         <label class="form-label"><strong>Send receipt by email</strong></label>
                         <div class="row">
                             <div class="col-lg-10">
-                                <input type="text" class="form-control send_email" placeholder="admin@tenderresponse.com.au">
+                                <input type="text" class="form-control send_email_receipt" placeholder="admin@tenderresponse.com.au (use comma for multiple email)">
                             </div>
                             <div class="col-auto">
-                                <button type="button" class="btn btn-primary btn-md">Send</button>
+                                <button type="button" class="btn btn-primary btn-md send_receipt_payment_mail">Send</button>
                             </div>
                         </div>
                     </div>
@@ -4033,6 +4033,7 @@ if (text !== null) {
     });
     
     $(document).on('click', '.view_invoice', function() {
+        $('.error').remove();
         $('#payment_completed').modal('hide');
         $('#paid_Invoice').modal('show');
         var walk_ids = $(this).attr('walk_in_ids');
@@ -4054,6 +4055,92 @@ if (text !== null) {
             }
         });
     });
+    $(document).on('click','.send_payment_mail',function() {
+        var email = $('.send_email').val();
+        var walk_in_id = $('.view_invoice').attr('walk_in_ids');
+
+        // Regular expression for email validation
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        $('.error').remove();
+        // Check if email is blank or doesn't match the email format
+        if (!email) {
+            // Show validation message for required field
+            $('.send_email').after('<label for="email" class="error">Email is required.</label>');
+            return; // Exit function
+        } else if (!emailRegex.test(email)) {
+            // Show validation message for invalid email format
+            $('.send_email').after('<label for="email" class="error">Please enter a valid email.</label>');
+            return; // Exit function
+        }
+
+        
+        $.ajax({
+            headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            url: "{{ route('calendar.send-payment-mail') }}",
+            type: "POST",
+            data: {'email': email,'walk_in_id':walk_in_id},
+            success: function (response) {
+                if (response.success) {
+					Swal.fire({
+						title: "Payment!",
+						text: "Payment Mail send successfully.",
+						type: "success",
+					}).then((result) => {
+                        // window.location = "{{url('calender')}}/"
+                    });
+				} else {
+					Swal.fire({
+						title: "Error!",
+						text: response.message,
+						type: "error",
+					});
+				}
+            }
+        });
+    })
+    $(document).on('click','.send_receipt_payment_mail',function() {
+        var email = $('.send_email_receipt').val();
+        var walk_in_id = $('.view_invoice').attr('walk_in_ids');
+
+        // Regular expression for email validation
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        $('.error').remove();
+        // Check if email is blank or doesn't match the email format
+        if (!email) {
+            // Show validation message for required field
+            $('.send_email_receipt').after('<label for="email" class="error">Email is required.</label>');
+            return; // Exit function
+        } else if (!emailRegex.test(email)) {
+            // Show validation message for invalid email format
+            $('.send_email_receipt').after('<label for="email" class="error">Please enter a valid email.</label>');
+            return; // Exit function
+        }
+
+        
+        $.ajax({
+            headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            url: "{{ route('calendar.send-payment-mail') }}",
+            type: "POST",
+            data: {'email': email,'walk_in_id':walk_in_id},
+            success: function (response) {
+                if (response.success) {
+					Swal.fire({
+						title: "Payment!",
+						text: "Payment Mail send successfully.",
+						type: "success",
+					}).then((result) => {
+                        // window.location = "{{url('calender')}}/"
+                    });
+				} else {
+					Swal.fire({
+						title: "Error!",
+						text: response.message,
+						type: "error",
+					});
+				}
+            }
+        });
+    })
     
     updateRemoveIconVisibility();
     // updateRemainingBalance();

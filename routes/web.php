@@ -169,6 +169,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('calendar/paid-invoice', [CalenderController::class, 'paidInvoice'])->name('calendar.paid-invoice');
     Route::delete('calender/delete-walk-in/{id}',[CalenderController::class, 'deleteWalkIn'])->name('calendar.delete-walk-in');
     Route::post('calendar/edit-invoice', [CalenderController::class, 'editInvoice'])->name('calendar.edit-invoice');
+    Route::post('calendar/send-payment-mail', [CalenderController::class, 'sendPaymentMail'])->name('calendar.send-payment-mail');
 });
 Route::post('/get-staff-list', [CalenderController::class,'getStaffList'])->name('get-staff-list');
 Route::post('forms/deleteform',[FormsController::class, 'formDelete'])->name('serviceforms.formDelete');
