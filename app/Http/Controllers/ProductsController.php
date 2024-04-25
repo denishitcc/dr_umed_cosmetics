@@ -50,7 +50,7 @@ class ProductsController extends Controller
             
                     return $margin . '%';
                 } else {
-                    return 'N/A'; // Or any other appropriate value to handle division by zero
+                    return '100'; // Or any other appropriate value to handle division by zero
                 }
             })   
 
