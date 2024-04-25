@@ -128,7 +128,7 @@ class ServicesController extends Controller
         ->first();
         // dd($services);
         $service_availability =ServicesAvailability::where('service_id',$id)->get();
-        $all_services = Services::get();
+        $all_services = Services::whereNotIn('id', [$id])->get();
         // dd($all_services);
         $users = User::get();
         return view('services.edit',compact('list_cat','locations','services','service_availability','all_services','users','list_parent_cat'));
