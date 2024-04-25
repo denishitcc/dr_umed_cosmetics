@@ -5361,68 +5361,105 @@ if (text !== null) {
             }
         }
     }
-    function setProductSearchModal(value) {
-        
-        $('.search_products').val(value); // Set selected value to input field
+    function setProductSearchModal(value,id,type) {
+        // Retrieve the selected value from the clicked element
         $('.products_box').hide();
-        
-        document.getElementsByClassName('search_products').value = value;
-        document.getElementsByClassName("resultproductmodal").innerHTML = "";
 
-        // Iterate over client_details to find a matching value
-        for (const key in product_details) {
-            console.log(product_details);
-            if (product_details.hasOwnProperty(key)) {
-                const product = product_details[key];
-                // Check if value matches any field in the product object
-                if (product.name === value) {
-                    console.log(product);
-                    // If a match is found, dynamically bind HTML to productDetails element
-                    $('.productDetails').append(
-                        `<div class="invo-notice mb-4 closed product-info1" prod_id='${product.id}'>
-                            <a href="#" class="btn cross remove_product"><i class="ico-close"></i></a>
-                            <input type='hidden' name='casual_product_name[]' value='${product.name}'>
-                            <input type='hidden' id="product_id" name='casual_product_id[]' value='${product.id}'>
-                            <input type='hidden' id="product_price" name='casual_product_price[]' value='${product.price}'>
-                            <input type='hidden' id="product_gst" name='product_gst' value='${product.gst}'>
-                            <input type='hidden' id="discount_types" name='casual_discount_types[]' value='amount'>
-                            <input type='hidden' id="hdn_discount_surcharge" name='casual_discount_surcharge[]' value='No Discount'>
-                            <input type='hidden' id="hdn_discount_surcharge_type" name='hdn_discount_surcharge_type[]' value=''>
-                            <input type='hidden' id="hdn_discount_amount" name='casual_discount_amount[]' value='0'>
-                            <input type='hidden' id="hdn_discount_text" name='casual_discount_text[]' value='0'>
-                            <input type='hidden' id="hdn_reason" name='casual_reason[]' value=''>
-                            <input type='hidden' id="hdn_who_did_work" name='casual_who_did_work[]' value='no one'>
-                            <input type='hidden' id="hdn_edit_amount" name='casual_edit_amount[]' value='0'>
-                            <input type='hidden' id="product_type" name='product_type[]' value='${product.product_type}'>
-                            <div class="inv-left"><div><b>${product.name} </b><div class="who_did_work"></div><span class="dis"></div></span></div>
-                            <div class="inv-center">
-                                <div class="number-input walk_number_input safari_only form-group mb-0 number">
-                                    <button class="c_minus minus"></button>
-                                    <input type="number" class="casual_quantity quantity form-control" min="0" name="casual_product_quanitity[]" value="1">
-                                    <button class="c_plus plus"></button>
-                                </div>
-                            </div>
-                            <div class="inv-number go price">
-                                <div>
-                                    <div class="m_p">${'$'+product.price}</div>
-                                        <div class="main_p_price" style="display:none;">(${'$'+product.price} ea)
+        var activeTabContainer = $('.productDetails');
+
+        // Get existing product elements associated with the active tab
+        var activeTabProducts = activeTabContainer.find('.product-info1');
+
+        // Iterate over existing products to check if the selected product already exists
+        var productExists = false;
+        activeTabProducts.each(function() {
+            var prodName = $(this).find('.inv-left b').text();
+            var prodId = $(this).find('#product_id').val();
+            var prodType = $(this).find('#product_type').val();
+            // If the product already exists, update its quantity
+            if (prodName === value && prodId === id && prodType === type) {
+                var quantityInput = $(this).find('.casual_quantity');
+                var quantity = parseInt(quantityInput.val()) + 1;
+                quantityInput.val(quantity);
+
+                productExists = true;
+                
+                //update total start
+                var newPrice = $(this).find('#product_price').val() * quantity;
+                // $currentDiv.find('.m_p').text('$' + newPrice);
+                $(this).find('.m_p').text(parseFloat(newPrice).toFixed(2));
+
+                // Show the main_p_price if quantity is greater than or equal to 1
+                if (quantity >= 1) {
+                    // $currentDiv.find('.main_p_price').show();
+                    $(this).find('.main_p_price').show();
+                }
+                
+                //update total end
+                updateSubtotalAndTotal(type); // Update Subtotal and Total
+
+                // document.getElementsByClassName('search_products').value = '';
+                $('.search_products').val('');
+                // return false; // Exit the loop
+            }
+        });
+
+        // If the product does not exist, add a new entry
+        if (!productExists) {
+            for (const key in product_details) {
+                console.log(product_details);
+                if (product_details.hasOwnProperty(key)) {
+                    const product = product_details[key];
+                    // Check if value matches any field in the product object
+                    if (product.name === value) {
+                        console.log(product);
+                        // If a match is found, dynamically bind HTML to productDetails element
+                        $('.productDetails').append(
+                            `<div class="invo-notice mb-4 closed product-info1" prod_id='${product.id}'>
+                                <a href="#" class="btn cross remove_product"><i class="ico-close"></i></a>
+                                <input type='hidden' name='casual_product_name[]' value='${product.name}'>
+                                <input type='hidden' id="product_id" name='casual_product_id[]' value='${product.id}'>
+                                <input type='hidden' id="product_price" name='casual_product_price[]' value='${product.price}'>
+                                <input type='hidden' id="product_gst" name='product_gst' value='${product.gst}'>
+                                <input type='hidden' id="discount_types" name='casual_discount_types[]' value='amount'>
+                                <input type='hidden' id="hdn_discount_surcharge" name='casual_discount_surcharge[]' value='No Discount'>
+                                <input type='hidden' id="hdn_discount_surcharge_type" name='hdn_discount_surcharge_type[]' value=''>
+                                <input type='hidden' id="hdn_discount_amount" name='casual_discount_amount[]' value='0'>
+                                <input type='hidden' id="hdn_discount_text" name='casual_discount_text[]' value='0'>
+                                <input type='hidden' id="hdn_reason" name='casual_reason[]' value=''>
+                                <input type='hidden' id="hdn_who_did_work" name='casual_who_did_work[]' value='no one'>
+                                <input type='hidden' id="hdn_edit_amount" name='casual_edit_amount[]' value='0'>
+                                <input type='hidden' id="product_type" name='product_type[]' value='${product.product_type}'>
+                                <div class="inv-left"><div><b>${product.name}</b><div class="who_did_work"></div><span class="dis"></div></span></div>
+                                <div class="inv-center">
+                                    <div class="number-input walk_number_input safari_only form-group mb-0 number">
+                                        <button class="c_minus minus"></button>
+                                        <input type="number" class="casual_quantity quantity form-control" min="0" name="casual_product_quanitity[]" value="1">
+                                        <button class="c_plus plus"></button>
                                     </div>
                                 </div>
-                                <a href="#" class="btn btn-sm px-0 product-name clickable" product_id="${product.id}" product_name="${product.name}" product_price="${product.price}"><i class="ico-right-arrow fs-2 ms-3"></i></a>
-                            </div>
-                        </div>`
-                    );
-                    var type='casual';
-                    $('.total_selected_product').val(parseFloat($('.total_selected_product').val()) + 1);
-                    if($('.total_selected_product').val() > 0)
-                    {
-                        $('.take_payment').prop('disabled', false);
-                    }
-                    updateSubtotalAndTotal(type); // Update Subtotal and Total
+                                <div class="inv-number go price">
+                                    <div>
+                                        <div class="m_p">${'$'+product.price}</div>
+                                            <div class="main_p_price" style="display:none;">(${'$'+product.price} ea)
+                                        </div>
+                                    </div>
+                                    <a href="#" class="btn btn-sm px-0 product-name clickable" product_id="${product.id}" product_name="${product.name}" product_price="${product.price}"><i class="ico-right-arrow fs-2 ms-3"></i></a>
+                                </div>
+                            </div>`
+                        );
+                        var type='casual';
+                        $('.total_selected_product').val(parseFloat($('.total_selected_product').val()) + 1);
+                        if($('.total_selected_product').val() > 0)
+                        {
+                            $('.take_payment').prop('disabled', false);
+                        }
+                        updateSubtotalAndTotal(type); // Update Subtotal and Total
 
-                    // document.getElementsByClassName('search_products').value = '';
-                    $('.search_products').val('');
-                    break; // Stop iterating once a match is found
+                        // document.getElementsByClassName('search_products').value = '';
+                        $('.search_products').val('');
+                        break; // Stop iterating once a match is found
+                    }
                 }
             }
         }
@@ -5959,15 +5996,15 @@ if (text !== null) {
         return res;
     }
     function updateSearchResults(results) {
-        
         var resultList = $('.resultproductmodal');
         resultList.empty(); // Clear previous search results
         for (var i = 0; i < results.length; i++) {
             // resultList.append(`<li>${results[i].name}</li>`); // Update HTML with search results
 
-            resultList.append(`<li onclick='setProductSearchModal("${results[i].name}")'>
+            resultList.append(`<li class="selectedProduct" prods_id="${results[i].id}" prods_type="${results[i].product_type}" prods_name="${results[i].name}" onclick='setProductSearchModal("${results[i].name}", "${results[i].id}", "${results[i].product_type}")'>
                 <aside>${results[i].name}</aside> <aside>${'$'+results[i].price}</aside>
             </li>`);
+
         }
         $('.products_box').show(); // Show the product search results box
     }
