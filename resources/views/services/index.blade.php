@@ -94,7 +94,7 @@
         <div class="modal-content">
             <div class="modal-header">
             <h4 class="modal-title" id="exampleModalLabel">New Category</h4>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <button type="button" class="btn-close category_close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form id="create_category" name="create_category" class="form">
             @csrf
@@ -594,6 +594,9 @@ $(document).ready(function() {
             submitImportServiceForm(data);
         // }
     });
+    $(document).on('click','.category_close',function(e){
+        $('#category_name').val('');
+    })
     function submitCreateCategoryForm(data){
         
 		$.ajax({

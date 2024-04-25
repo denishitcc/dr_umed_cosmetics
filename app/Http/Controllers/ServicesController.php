@@ -450,6 +450,54 @@ class ServicesController extends Controller
     
             foreach ($data as $rowIndex => $row) {
                 $rowErrors = []; // Track errors for this specific row
+                // Check if numeric values are present in specific rows
+                if (!is_numeric($row[4])) {
+                    $rowErrors[] = 'Invalid value for "appear_on_calendar". Numeric value expected.';
+                }
+
+                if (!is_numeric($row[5])) {
+                    $rowErrors[] = 'Invalid value for "duration". Numeric value expected.';
+                }
+
+                if (!is_numeric($row[6])) {
+                    $rowErrors[] = 'Invalid value for "processing_time". Numeric value expected.';
+                }
+
+                if (!is_numeric($row[7])) {
+                    $rowErrors[] = 'Invalid value for "fast_duration". Numeric value expected.';
+                }
+
+                if (!is_numeric($row[8])) {
+                    $rowErrors[] = 'Invalid value for "slow_duration". Numeric value expected.';
+                }
+
+                if (!is_numeric($row[10])) {
+                    $rowErrors[] = 'Invalid value for "dont_include_reports". Numeric value expected.';
+                }
+
+                if (!is_numeric($row[11])) {
+                    $rowErrors[] = 'Invalid value for "technical_service". Numeric value expected.';
+                }
+
+                if (!is_numeric($row[12])) {
+                    $rowErrors[] = 'Invalid value for "available_on_online_booking". Numeric value expected.';
+                }
+
+                if (!is_numeric($row[13])) {
+                    $rowErrors[] = 'Invalid value for "require_a_room". Numeric value expected.';
+                }
+
+                if (!is_numeric($row[14])) {
+                    $rowErrors[] = 'Invalid value for "unpaid_time". Numeric value expected.';
+                }
+
+                if (!is_numeric($row[15])) {
+                    $rowErrors[] = 'Invalid value for "require_a_follow_on_service". Numeric value expected.';
+                }
+
+                if (!is_numeric($row[17])) {
+                    $rowErrors[] = 'Invalid value for "standard_price". Numeric value expected.';
+                }
                 
                 // Initialize locationsInRow array
                 // $locationsInRow = [];
