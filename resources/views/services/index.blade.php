@@ -351,7 +351,8 @@ $(document).ready(function() {
                     $('.table-responsive').append("<table class='table all-db-table align-middle table-striped'><thead><tr><th class='blue-bold' width='75%' aria-sort='ascending'>Services in this category</th><th class='blue-bold' width='25%'>Minutes </th></tr></thead><tbody>");
                     $.each(res.data, function(index, res) {
                         var url = '{{ URL::to("services/") }}/' + res.id; // Corrected URL formatting
-                        $('.table-striped').append("<tr><td><a href='" + url + "' style='color: #282828;'><b>" + res.service_name + "</b></a></td><td>" + res.duration + " mins</td></tr>");
+                        var duration = res.duration != null ? res.duration : "0";
+                        $('.table-striped').append("<tr><td><a href='" + url + "' style='color: #282828;'><b>" + res.service_name + "</b></a></td><td>" + duration + " mins</td></tr>");
                     });
                     $('.table-responsive').append("</tbody></table>");
                 }
@@ -433,6 +434,7 @@ $(document).ready(function() {
     //     return false;
     // })
     $('.parent_category').click(function(){
+        debugger;
         if($(this).find('.disflex').find('.count').text() > 0)
         {
             $('.set_availability').show();
@@ -480,7 +482,8 @@ $(document).ready(function() {
                     $('.table-responsive').append("<table class='table all-db-table align-middle table-striped'><thead><tr><th class='blue-bold' width='75%' aria-sort='ascending'>Services in this category</th><th class='blue-bold' width='25%'>Minutes </th></tr></thead><tbody>");
                     $.each(res.data, function(index, res) {
                         var url = '{{ URL::to("services/") }}/' + res.id; // Corrected URL formatting
-                        $('.table-striped').append("<tr><td><a href='" + url + "' style='color: #282828;'><b>" + res.service_name + "</b></a></td><td>" + res.duration + " mins</td></tr>");
+                        var duration = res.duration != null ? res.duration : "0";
+                        $('.table-striped').append("<tr><td><a href='" + url + "' style='color: #282828;'><b>" + res.service_name + "</b></a></td><td>" + duration + " mins</td></tr>");
                     });
                     $('.table-responsive').append("</tbody></table>");
                 }
