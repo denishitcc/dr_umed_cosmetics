@@ -1948,7 +1948,7 @@ class CalenderController extends Controller
             $mergedArray[] = [
                 'id'    => $service->id,
                 'name'  => $service->service_name,
-                'price' => $service->standard_price,
+                'price' => $service->standard_price ?? 0,
                 'gst'   =>'yes',
                 'product_type' =>'service'
             ];
@@ -1960,7 +1960,7 @@ class CalenderController extends Controller
             $mergedArray[] = [
                 'id'    => $product->product_id,
                 'name'  => $product->product_name,
-                'price' => $product->availability_price != null ? $product->availability_price : $product->p_price,
+                'price' => $product->availability_price != null ? $product->availability_price?? 0 : $product->p_price?? 0,
                 'gst'   => $gst,
                 'product_type' =>'product'
             ];

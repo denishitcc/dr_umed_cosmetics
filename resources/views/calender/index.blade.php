@@ -3265,6 +3265,16 @@
 
     $(document).on('click', '.casual_cus', function(e) {
         e.preventDefault(); // Prevent default link behavior
+        var activeTab = $('.tab-pane.active').find('.productDetails');
+        // Iterate over each .productDetails element
+        activeTab.find('.product-info1').each(function() {
+            if($(this).find('.casual_quantity').val() == 1)
+            {
+                $(this).find('.main_p_price').hide();
+            }else{
+                $(this).find('.main_p_price').show();
+            }
+        });
         $('#new_customer').hide();
         $('#casual_customer').show();
         $('#exist_customer').hide();
@@ -3273,12 +3283,12 @@
         {
             $('.take_payment').prop('disabled', true);
         }
-        if($('.casual_quantity').val() > 1)
-        {
-            $('.main_p_price').show();
-        }else{
-            $('.main_p_price').hide();
-        }
+        // if($('.casual_quantity').val() > 1)
+        // {
+        //     $('.main_p_price').show();
+        // }else{
+        //     $('.main_p_price').hide();
+        // }
         $('#hdn_customer_type').val('casual');
         $('#customer_type').val('casual');
         // $("#casual_customer").load(location.href + " #casual_customer");
@@ -3295,6 +3305,16 @@
         $('#reason').val('');
     });
     $(document).on('click', '.new_cus', function(e) {
+        var activeTab = $('.tab-pane.active').find('.productDetails');
+        // Iterate over each .productDetails element
+        activeTab.find('.product-info1').each(function() {
+            if($(this).find('.casual_quantity').val() == 1)
+            {
+                $(this).find('.main_p_price').hide();
+            }else{
+                $(this).find('.main_p_price').show();
+            }
+        });
         e.preventDefault(); // Prevent default link behavior
         $('#casual_customer').hide();
         $('#exist_customer').hide();
@@ -3305,12 +3325,12 @@
         {
             $('.take_payment').prop('disabled', true);
         }
-        if($('.casual_quantity').val() > 1)
-        {
-            $('.main_p_price').show();
-        }else{
-            $('.main_p_price').hide();
-        }
+        // if($('.casual_quantity').val() > 1)
+        // {
+        //     $('.main_p_price').show();
+        // }else{
+        //     $('.main_p_price').hide();
+        // }
         $('#hdn_customer_type').val('new');
         $('#customer_type').val('new');
         // $("#new_customer").load(location.href + " #new_customer");
@@ -3328,6 +3348,16 @@
     });
     $(document).on('click', '.existing_cus', function(e) {
         e.preventDefault(); // Prevent default link behavior
+        var activeTab = $('.tab-pane.active').find('.productDetails');
+        // Iterate over each .productDetails element
+        activeTab.find('.product-info1').each(function() {
+            if($(this).find('.casual_quantity').val() == 1)
+            {
+                $(this).find('.main_p_price').hide();
+            }else{
+                $(this).find('.main_p_price').show();
+            }
+        });
         $('#casual_customer').hide();
         $('.existing_tab').show();
         $('#exist_customer').show();
@@ -3337,12 +3367,12 @@
         {
             $('.take_payment').prop('disabled', true);
         }
-        if($('.casual_quantity').val() > 1)
-        {
-            $('.main_p_price').show();
-        }else{
-            $('.main_p_price').hide();
-        }
+        // if($('.casual_quantity').val() > 1)
+        // {
+        //     $('.main_p_price').show();
+        // }else{
+        //     $('.main_p_price').hide();
+        // }
         $('#hdn_customer_type').val('existing');
         $('#customer_type').val('existing');
         // $("#exist_customer").load(location.href + " #exist_customer");
