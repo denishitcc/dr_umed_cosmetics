@@ -144,7 +144,7 @@ $(document).ready(function() {
             name: 'created_at',
             render: function(data, type, row, meta) {
                 // Assuming 'date_created' is in a format that can be parsed by Moment.js
-                var formattedDate = moment(data).format('DD/MM/YYYY HH:mm:ss');
+                var formattedDate = moment(data).format('DD-MM-YYYY HH:mm:ss');
                 return formattedDate;
             }
         },

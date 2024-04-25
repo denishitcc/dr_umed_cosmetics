@@ -137,7 +137,19 @@ $(document).ready(function() {
                 // return "<div class='form-check form-switch green'><input class='form-check-input flexSwitchCheckDefault' id='flexSwitchCheckDefault' type='checkbox' ids='"+full.id+"' value='"+data +"' "+data +"></div>"
             }
         },
-        {data: 'last_login', name: 'last_login'},
+        {
+            data: 'last_login',
+            name: 'last_login',
+            render: function(data, type, full, meta){
+                if(data){
+                    return moment(data).format('DD-MM-YYYY HH:mm:ss');
+                }
+                else
+                {
+                    return '';
+                }
+            }
+        },
         {data: 'action', name: 'action', orderable: false, searchable: false},
     ],
     "dom": 'Blrftip',

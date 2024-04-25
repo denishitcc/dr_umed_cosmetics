@@ -161,7 +161,7 @@ $(document).ready(function() {
             name: 'updated_at',
             render: function(data, type, row, meta) {
                 // Assuming 'updated_at' is in a format that can be parsed by Moment.js
-                var formattedDate = moment(data).format('DD/MM/YYYY HH:mm:ss');
+                var formattedDate = moment(data).format('DD-MM-YYYY HH:mm:ss');
                 return formattedDate;
             }
         },
