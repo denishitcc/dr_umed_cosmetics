@@ -149,6 +149,7 @@
                 </div>
             </div>
             <div class="modal-footer">
+            <button type="button" class="btn btn-light me-2 delete_category">Delete</button>
             <button type="submit" class="btn btn-primary btn-md">Save</button>
             </div>
             </form>
@@ -434,7 +435,6 @@ $(document).ready(function() {
     //     return false;
     // })
     $('.parent_category').click(function(){
-        debugger;
         if($(this).find('.disflex').find('.count').text() > 0)
         {
             $('.set_availability').show();
@@ -599,6 +599,37 @@ $(document).ready(function() {
     });
     $(document).on('click','.category_close',function(e){
         $('#category_name').val('');
+    })
+    $(document).on('click','.delete_category',function(e){
+        var id = $('#cat_hdn_id').val();
+        if(confirm("Are you sure to delete this category?")){
+            $.ajax({
+            headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            url: "/delete-category/"+id,
+            type: 'DELETE',
+            data: {
+                "id": id,
+            },
+                success: function(response) {
+                    // Show a Sweet Alert message after the form is submitted.
+                    if (response.success) {
+                    Swal.fire({
+                        title: "Category!",
+                        text: "Your Category deleted successfully.",
+                        type: "success",
+                    }).then((result) => {
+                                    window.location = "{{url('services')}}"//'/player_detail?username=' + name;
+                                });
+                    } else {
+                    Swal.fire({
+                        title: "Error!",
+                        text: response.message,
+                        type: "error",
+                    });
+                    }
+                },
+            });
+        }
     })
     function submitCreateCategoryForm(data){
         

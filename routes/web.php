@@ -121,6 +121,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('services/checkCategoryName', [ServicesController::class, 'checkCategoryName']);
     Route::post('services/checkServiceName', [ServicesController::class, 'checkServiceName']);
     Route::post('services/import',[ServicesController::class, 'import'])->name('services.import');
+    Route::delete('/delete-category/{id}', [ServicesController::class, 'destroyCategory'])->name('delete.category');
+
     //Products
     Route::resource('/products', ProductsController::class);
     Route::post('products/table',[ProductsController::class, 'index'])->name('products.table');

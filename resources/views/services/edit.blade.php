@@ -233,6 +233,7 @@
         </div>
         
         <div class="col-lg-12 text-lg-end mt-4">
+            <button type="button" class="btn btn-light me-2 delete_service">Delete</button>
             <button type="button" class="btn btn-light me-2" onclick="window.location='{{ url("services") }}'">Discard</button>
             <button type="submit" class="btn btn-primary">Save Changes</button>
         </div>
@@ -324,6 +325,37 @@ $(document).on('submit','#edit_service',function(e){
         submitEditServiceForm(data,id);
     }
 });
+$(document).on('click','.delete_service',function(e){
+    var id = $('#id').val();
+    if(confirm("Are you sure to delete this service?")){
+        $.ajax({
+        headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        url: "/services/"+id,
+        type: 'DELETE',
+        data: {
+            "id": id,
+        },
+            success: function(response) {
+                // Show a Sweet Alert message after the form is submitted.
+                if (response.success) {
+                Swal.fire({
+                    title: "Service!",
+                    text: "Your Service deleted successfully.",
+                    type: "success",
+                }).then((result) => {
+                                window.location = "{{url('services')}}"//'/player_detail?username=' + name;
+                            });
+                } else {
+                Swal.fire({
+                    title: "Error!",
+                    text: response.message,
+                    type: "error",
+                });
+                }
+            },
+        });
+    }
+})
 function submitEditServiceForm(data,id){
     
     $.ajax({

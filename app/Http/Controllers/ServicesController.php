@@ -231,9 +231,37 @@ class ServicesController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
-        //
+        // Delete from Services table
+        Services::find($request->id)->delete();
+        
+        // Delete from ServicesAppearOnCalendar table
+        ServicesAppearOnCalendar::where('service_id', $request->id)->delete();
+        
+        // Delete from ServicesAvailability table
+        ServicesAvailability::where('service_id', $request->id)->delete();
+        
+        $response = [
+            'success' => true,
+            'message' => 'Service deleted successfully!',
+            'type' => 'success',
+        ];
+        
+        return response()->json($response);
+    }
+    public function destroyCategory(Request $request)
+    {
+        // Delete from Services table
+        Category::find($request->id)->delete();
+        
+        $response = [
+            'success' => true,
+            'message' => 'Category deleted successfully!',
+            'type' => 'success',
+        ];
+        
+        return response()->json($response);
     }
     public function store_category(Request $request)
     {

@@ -2205,7 +2205,7 @@ class CalenderController extends Controller
         }
 
         $_data = [
-            'subject' => $emailtemplate->subject,
+            'subject' => 'TAX INVOICE / RECEIPT',
         ];
 
         $totalPaid = $invoice->payments->sum('amount');
