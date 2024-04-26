@@ -138,7 +138,15 @@ $(document).ready(function() {
         {data: 'email', name: 'email'},
         {data: 'phone_number', name: 'phone_number'},
         {data: 'locations_names', name: 'locations_names'},
-        {data: 'enquiry_date', name: 'enquiry_date'},
+        {
+            data: 'enquiry_date',
+            name: 'enquiry_date',
+            render: function(data, type, row, meta) {
+                // Assuming 'date_created' is in a format that can be parsed by Moment.js
+                var formattedDate = moment(data).format('DD-MM-YYYY');
+                return formattedDate;
+            }
+        },
         {
             data: 'created_at',
             name: 'created_at',
