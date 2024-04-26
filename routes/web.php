@@ -136,6 +136,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('forms/table',[FormsController::class, 'index'])->name('forms.table');
     Route::post('forms/update',[FormsController::class, 'formUpdate'])->name('serviceforms.formUpdate');
     Route::post('forms/updatehtml',[FormsController::class, 'formHTMLUpdate'])->name('serviceforms.formHTMLUpdate');
+    Route::get('forms/preview/{id}',[FormsController::class, 'formPreview'])->name('serviceforms.formPreview');
 
     //Product Categories
     Route::resource('/products-categories', ProductCategoriesController::class);

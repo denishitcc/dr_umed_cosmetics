@@ -118,6 +118,8 @@ var DU = {};
 })();
 
 jQuery(function ($) {
+    var formxml = $("#formxml").data('form_json');
+
     var templates = {
         break: function (fieldData) {
             return {
@@ -186,7 +188,9 @@ jQuery(function ($) {
             signature: ['edit'], // disables the remove butotn for text fields
         },
         templates,
+        formData: formxml,
         onSave: function (evt, formData) {
+            console.log(formData);
             update(formData);
             // $('.render-wrap').formRender({ formData });
         },

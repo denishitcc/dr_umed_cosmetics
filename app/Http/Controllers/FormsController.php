@@ -218,4 +218,19 @@ class FormsController extends Controller
 
         return response()->json($data);
     }
+
+    /**
+     * Method formPreview
+     *
+     * @param $id $id [explicite description]
+     *
+     * @return void
+     */
+    public function formPreview($id)
+    {
+        $forms  = FormSummary::find($id);
+        $user   = Auth::user();
+
+        return view('forms.preview',compact('forms','user'));
+    }
 }
