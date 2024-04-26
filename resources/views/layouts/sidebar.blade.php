@@ -53,8 +53,8 @@
                     <li class="{{ (request()->is('enquiries')) ? 'active' : '' }} || {{ (request()->is('enquiries/*')) ? 'active' : '' }}">
                         <a href="{{ route('enquiries.index') }}"><i class="ico-enquiries"></i>Enquiries</a>
                     </li>
-                    <li>
-                        <a href="#"><i class="ico-finance"></i>Finance</a>
+                    <li class="{{ (request()->is('finance')) ? 'active' : '' }} || {{ (request()->is('finance/*')) ? 'active' : '' }}">
+                        <a href="{{ route('finance.index') }}"><i class="ico-finance"></i>Finance</a>
                     </li>
                     <li>
                         <a href="#"><i class="ico-reports"></i>Reports</a>

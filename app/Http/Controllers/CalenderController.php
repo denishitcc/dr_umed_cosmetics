@@ -1406,7 +1406,8 @@ class CalenderController extends Controller
                         'total' => $request->hdn_total,
                         'remaining_balance' => str_replace('$', '', $request->remaining_balance),
                         'user_id' => $request->casual_staff,
-                        'note' => $request->notes
+                        'note' => $request->notes,
+                        'walk_in_type'=>'walk-in'
                     ]);
         
                     // Update or create walk-in sale products
@@ -1489,7 +1490,8 @@ class CalenderController extends Controller
                         'total' => $request->hdn_total,
                         'remaining_balance' => str_replace('$', '', $request->remaining_balance),
                         'user_id' => $request->casual_staff,
-                        'note' => $request->notes
+                        'note' => $request->notes,
+                        'walk_in_type'=>'walk-in'
                     ]);
         
                     // Update or create walk-in sale products
@@ -1570,7 +1572,8 @@ class CalenderController extends Controller
                         'total' => $request->hdn_total,
                         'remaining_balance' => str_replace('$', '', $request->remaining_balance),
                         'user_id' => $request->casual_staff,
-                        'note' => $request->notes
+                        'note' => $request->notes,
+                        'walk_in_type'=>'walk-in'
                     ]);
         
                     // Update or create walk-in sale products
@@ -1648,7 +1651,8 @@ class CalenderController extends Controller
                     'total' => $request->hdn_total,
                     'remaining_balance' => str_replace('$', '', $request->remaining_balance),
                     'user_id' => $request->casual_staff,
-                    'note' => $request->notes
+                    'note' => $request->notes,
+                    'walk_in_type'=>'walk-in'
                 ];  
                 // dd($walk_in_table);
 
@@ -1739,7 +1743,8 @@ class CalenderController extends Controller
                     'total' => $request->hdn_total,
                     'remaining_balance' => str_replace('$', '', $request->remaining_balance),
                     'user_id' => $request->casual_staff,
-                    'note' => $request->notes
+                    'note' => $request->notes,
+                    'walk_in_type'=>'walk-in'
                 ];  
                 // dd($walk_in_table);
 
@@ -1841,7 +1846,8 @@ class CalenderController extends Controller
                     'total' => $request->hdn_total,
                     'remaining_balance' => str_replace('$', '', $request->remaining_balance),
                     'user_id' => $request->casual_staff,
-                    'note' => $request->notes
+                    'note' => $request->notes,
+                    'walk_in_type'=>'walk-in'
                 ];  
                 // dd($walk_in_table);
 

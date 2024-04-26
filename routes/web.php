@@ -18,6 +18,7 @@ use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\FormsController;
 use App\Http\Controllers\ProductCategoriesController;
+use App\Http\Controllers\FinanceController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -173,6 +174,10 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('calender/delete-walk-in/{id}',[CalenderController::class, 'deleteWalkIn'])->name('calendar.delete-walk-in');
     Route::post('calendar/edit-invoice', [CalenderController::class, 'editInvoice'])->name('calendar.edit-invoice');
     Route::post('calendar/send-payment-mail', [CalenderController::class, 'sendPaymentMail'])->name('calendar.send-payment-mail');
+
+    //finance
+    Route::resource('finance', FinanceController::class);
+    Route::post('finance/table',[FinanceController::class, 'index'])->name('finance.table');
 });
 Route::post('/get-staff-list', [CalenderController::class,'getStaffList'])->name('get-staff-list');
 Route::post('forms/deleteform',[FormsController::class, 'formDelete'])->name('serviceforms.formDelete');

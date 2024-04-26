@@ -27,6 +27,7 @@ class WalkInRetailSale extends Model
         'remaining_balance',
         'user_id',
         'note',
-        'customer_type'
+        'customer_type',
+        'walk_in_type'
     ];
 }
