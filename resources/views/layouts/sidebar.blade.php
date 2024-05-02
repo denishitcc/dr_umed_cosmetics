@@ -245,15 +245,15 @@
     </div>
     
     <!-- Bootstrap core JS-->
-    {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script> --}}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Core theme JS-->
     <script src="{{ asset('js/scripts.js') }}"></script>
     <script src="{{ asset('js/jquery/dist/jquery.min.js') }}"></script>
 
     <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-    <link rel="stylesheet" href="{{ asset('js/bootstrap/dist/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('js/bootstrap-icons/font/bootstrap-icons.css') }}">
+    {{-- <link rel="stylesheet" href="{{ asset('js/bootstrap/dist/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('js/bootstrap-icons/font/bootstrap-icons.css') }}"> --}}
 
     <script src="{{ asset('js/bootstrap/dist/js/bootstrap.min.js') }}"></script>
 
