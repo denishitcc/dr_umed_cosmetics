@@ -5,8 +5,9 @@
     <div class="card-head">
         <h4 class="small-title mb-5">Edit Forms</h4>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
-    <script src="https://formbuilder.online/assets/js/form-builder.min.js"></script>
+    <link rel="stylesheet" href="{{ asset('js/formiojs/dist/formio.full.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('js/@formio/contrib/dist/formio-contrib.css') }}">
+
     <div class="card-body">
         <div class="row">
             <div>
@@ -27,8 +28,9 @@
                     <a href="{{ route('serviceforms.formPreview', $forms->id )}}" target="_blank" class="btn btn-primary btn-md">Preview</a>
                 </div>
             </div>
-            <div id="fb-editor"></div>
         </div>
+        <br><br>
+        <div id="form-editor"></div>
     </div>
 </div>
 <!-- Modal -->
@@ -86,7 +88,12 @@
 </div>
 @endsection
 @section('script')
+<script src="{{ asset('js/@formio/js/dist/formio.form.min.js') }}"></script>
+<script src="{{ asset('js/formiojs/dist/formio.full.min.js') }}"></script>
+<script src="{{ asset('js/@formio/js/dist/formio.full.js') }}"></script>
+<script src="{{ asset('js/section_break.js') }}"></script>
 <script src="{{ asset('js/form.js') }}"></script>
+<script src="{{ asset('js/index.js') }}"></script>
 <script type="text/javascript">
     var moduleConfig = {
         updateForm:             "{!! route('serviceforms.formUpdate') !!}",
