@@ -2861,7 +2861,7 @@ $(document).on('click','.make_sale',function(){
     $('.take_payment').attr('main_total','');
     $('.take_payment').attr('main_remain',0);
     $('.edited_total').val(0);
-    $('#invoice_id').val('');
+    $('.invoice_id').val('');
 })
 $(document).on('click', '.casual_cus', function(e) {
     e.preventDefault(); // Prevent default link behavior
