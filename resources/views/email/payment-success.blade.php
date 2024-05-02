@@ -35,7 +35,7 @@
             </table>
             <h3 style="font-family: Verdana, Geneva, Tahoma, sans-serif; line-height: 1.5em;">TAX INVOICE / RECEIPT</h3>
             <p style="font-family: Verdana, Geneva, Tahoma, sans-serif; line-height: 1.5em;">CUSTOMER</p>
-            <p style="font-family: Verdana, Geneva, Tahoma, sans-serif; line-height: 1.5em;">DATE OF ISSUE<br> <b>{{ $invoice->invoice_date }}</b></p>
+            <p style="font-family: Verdana, Geneva, Tahoma, sans-serif; line-height: 1.5em;">DATE OF ISSUE<br> <b>{{ date('d-m-Y', strtotime($invoice->invoice_date)) }}</b></p>
             <p style="font-family: Verdana, Geneva, Tahoma, sans-serif; line-height: 1.5em; text-align: right;">INVOICE NUMBER: <b>#INV{{$invoice->id}}</b></p>
             <br>
             <table style="width: 100%; font-family: Verdana, Geneva, Tahoma, sans-serif; font-weight: 400; vertical-align: middle; line-height: 1.5em;">
@@ -69,7 +69,7 @@
                 @foreach ($invoice->payments as $payment)
                 <tr>
                     <td style="padding: 0.9rem; border-bottom: 1px solid #d5dce2; text-align: left;"><b>{{ $payment->payment_type }}</b></td>
-                    <td style="padding: 0.9rem; border-bottom: 1px solid #d5dce2; text-align: left;"></td>
+                    <td style="padding: 0.9rem; border-bottom: 1px solid #d5dce2; text-align: left;">{{ date('d-m-Y', strtotime($payment->date)) }}</td>
                     <td style="padding: 0.9rem; border-bottom: 1px solid #d5dce2; text-align: right;">${{ $payment->amount }}</td>
                 </tr>
                 @endforeach

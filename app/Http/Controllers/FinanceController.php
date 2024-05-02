@@ -10,6 +10,7 @@ use App\Models\Payment;
 use DataTables;
 use App\Models\Clients;
 use App\Models\Locations;
+use App\Models\User;
 
 class FinanceController extends Controller
 {
@@ -37,8 +38,8 @@ class FinanceController extends Controller
             //         $query->where('product_name', 'LIKE', "%$searchTerm%");
             //     });
             // }
+            $data = $walkin->where('location_id', $request->location_id)->get();
 
-            $data = $walkin->get();
             return Datatables::of($data)
 
             ->addIndexColumn()
@@ -98,15 +99,16 @@ class FinanceController extends Controller
 
             ->addIndexColumn()
             ->addColumn('action', function($row) {
-                $btn = '<div class="action-box"><button type="button" class="btn btn-sm black-btn round-6 dt-edit" ids='.$row->id.'><i class="ico-print"></i></button></div>';
+                $btn = '<div class="action-box"><button type="button" class="btn btn-sm black-btn round-6 print_invoice" ids='.$row->id.'><i class="ico-print"></i></button></div>';
                 return $btn;
             })
             ->rawColumns(['action'])
             ->make(true);
         }
-        
+        $locations = Locations::all();
+        $staffs     = User::all();
 
-        return view('finance.index', compact('walkin'));
+        return view('finance.index', compact('walkin','locations','staffs'));
     }
 
 

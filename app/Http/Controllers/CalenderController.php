@@ -1458,15 +1458,38 @@ class CalenderController extends Controller
                     );
         
                     // Update walk-in payment details
-                    foreach ($request->payment_types as $index => $paymentType) {
+                    // foreach ($request->payment_types as $index => $paymentType) {
 
+                    //     $paymentAmount = $request->payment_amounts[$index];
+                    //     $paymentDate = $request->payment_dates[$index];
+                    //     // Update or create payment details
+                    //     Payment::updateOrCreate(
+                    //         ['walk_in_id' => $request->invoice_id, 'payment_type' => $paymentType],
+                    //         ['amount' => $request->payment_amounts[$index], 'date' => $request->payment_dates[$index]]
+                    //     );
+                    // }
+                    $totalPaymentAmount = 0;
+                    $existingPaymentIds = []; // Store the IDs of existing payments
+
+                    foreach ($request->payment_types as $index => $paymentType) {
+                        $paymentId = $request->payment_ids[$index];
                         $paymentAmount = $request->payment_amounts[$index];
                         $paymentDate = $request->payment_dates[$index];
-                        // Update or create payment details
-                        Payment::updateOrCreate(
-                            ['walk_in_id' => $request->invoice_id, 'payment_type' => $paymentType],
-                            ['amount' => $request->payment_amounts[$index], 'date' => $request->payment_dates[$index]]
-                        );
+                        $totalPaymentAmount += $paymentAmount;
+                        
+                        // Check if there is an existing payment entry for this index
+                        $existingPayment = Payment::where('walk_in_id', $request->invoice_id)
+                                                ->where('id', $paymentId) // Assuming the payment IDs start from 1
+                                                ->first();
+                        
+                        if ($existingPayment) {
+                            // Update the existing payment entry
+                            $existingPayment->update(['amount' => $paymentAmount, 'date' => $paymentDate,'payment_type' => $paymentType]);
+                            // $existingPaymentIds[] = $existingPayment->id; // Store the ID of updated payment
+                        } else {
+                            // Create a new payment entry
+                            Payment::create(['walk_in_id' => $request->invoice_id, 'amount' => $paymentAmount, 'date' => $paymentDate,'payment_type' => $paymentType]);
+                        }
                     }
                 }
             } elseif ($request->hdn_customer_type == 'existing') {
@@ -1542,15 +1565,34 @@ class CalenderController extends Controller
                     );
         
                     // Update walk-in payment details
-                    foreach ($request->payment_types as $index => $paymentType) {
+                    // foreach ($request->payment_types as $index => $paymentType) {
 
+                    //     $paymentAmount = $request->payment_amounts[$index];
+                    //     $paymentDate = $request->payment_dates[$index];
+                    //     // Update or create payment details
+                    //     Payment::updateOrCreate(
+                    //         ['walk_in_id' => $request->invoice_id, 'payment_type' => $paymentType],
+                    //         ['amount' => $request->payment_amounts[$index], 'date' => $request->payment_dates[$index]]
+                    //     );
+                    // }
+                    $totalPaymentAmount = 0;
+                    foreach ($request->payment_types as $index => $paymentType) {
+                        $paymentId = $request->payment_ids[$index];
                         $paymentAmount = $request->payment_amounts[$index];
                         $paymentDate = $request->payment_dates[$index];
-                        // Update or create payment details
-                        Payment::updateOrCreate(
-                            ['walk_in_id' => $request->invoice_id, 'payment_type' => $paymentType],
-                            ['amount' => $request->payment_amounts[$index], 'date' => $request->payment_dates[$index]]
-                        );
+                        $totalPaymentAmount += $paymentAmount;
+                        // Check if there is an existing payment entry for this index
+                        $existingPayment = Payment::where('walk_in_id', $request->invoice_id)
+                                                    ->where('id', $paymentId) // Assuming the payment IDs start from 1
+                                                    ->first();
+                    
+                        if ($existingPayment) {
+                            // Update the existing payment entry
+                            $existingPayment->update(['amount' => $paymentAmount, 'date' => $paymentDate,'payment_type' => $paymentType]);
+                        } else {
+                            // Create a new payment entry
+                            Payment::create(['walk_in_id' => $request->invoice_id, 'amount' => $paymentAmount, 'date' => $paymentDate,'payment_type' => $paymentType]);
+                        }
                     }
                 }
             } else {
@@ -1624,15 +1666,34 @@ class CalenderController extends Controller
                     );
         
                     // Update walk-in payment details
-                    foreach ($request->payment_types as $index => $paymentType) {
+                    // foreach ($request->payment_types as $index => $paymentType) {
 
+                    //     $paymentAmount = $request->payment_amounts[$index];
+                    //     $paymentDate = $request->payment_dates[$index];
+                    //     // Update or create payment details
+                    //     Payment::updateOrCreate(
+                    //         ['walk_in_id' => $request->invoice_id, 'payment_type' => $paymentType],
+                    //         ['amount' => $request->payment_amounts[$index], 'date' => $request->payment_dates[$index]]
+                    //     );
+                    // }
+                    $totalPaymentAmount = 0;
+                    foreach ($request->payment_types as $index => $paymentType) {
+                        $paymentId = $request->payment_ids[$index];
                         $paymentAmount = $request->payment_amounts[$index];
                         $paymentDate = $request->payment_dates[$index];
-                        // Update or create payment details
-                        Payment::updateOrCreate(
-                            ['walk_in_id' => $request->invoice_id, 'payment_type' => $paymentType],
-                            ['amount' => $request->payment_amounts[$index], 'date' => $request->payment_dates[$index]]
-                        );
+                        $totalPaymentAmount += $paymentAmount;
+                        // Check if there is an existing payment entry for this index
+                        $existingPayment = Payment::where('walk_in_id', $request->invoice_id)
+                                                    ->where('id', $paymentId) // Assuming the payment IDs start from 1
+                                                    ->first();
+                    
+                        if ($existingPayment) {
+                            // Update the existing payment entry
+                            $existingPayment->update(['amount' => $paymentAmount, 'date' => $paymentDate,'payment_type' => $paymentType]);
+                        } else {
+                            // Create a new payment entry
+                            Payment::create(['walk_in_id' => $request->invoice_id, 'amount' => $paymentAmount, 'date' => $paymentDate,'payment_type' => $paymentType]);
+                        }
                     }
                 }
             }
@@ -1711,13 +1772,13 @@ class CalenderController extends Controller
                 ];
                 // dd($walk_in_discount_surcharge);
                 WalkInDiscountSurcharge::create($walk_in_discount_surcharge);
-
+                $totalPaymentAmount = 0;
                 // Storing walk-in payment details
                 foreach($request->payment_types as $index => $paymentType) {
                     // Access payment details using the same index
                     $paymentAmount = $request->payment_amounts[$index];
                     $paymentDate = $request->payment_dates[$index];
-                
+                    $totalPaymentAmount += $paymentAmount;
                     // Now you can create your payment record
                     $walk_in_payment = [
                         'walk_in_id' => $walkInSale->id,
@@ -1801,13 +1862,13 @@ class CalenderController extends Controller
                 ];
                 // dd($walk_in_discount_surcharge);
                 WalkInDiscountSurcharge::create($walk_in_discount_surcharge);
-
+                $totalPaymentAmount = 0;
                 // Storing walk-in payment details
                 foreach($request->payment_types as $index => $paymentType) {
                     // Access payment details using the same index
                     $paymentAmount = $request->payment_amounts[$index];
                     $paymentDate = $request->payment_dates[$index];
-                
+                    $totalPaymentAmount += $paymentAmount;
                     // Now you can create your payment record
                     $walk_in_payment = [
                         'walk_in_id' => $walkInSale->id,
@@ -1905,13 +1966,13 @@ class CalenderController extends Controller
                 ];
                 // dd($walk_in_discount_surcharge);
                 WalkInDiscountSurcharge::create($walk_in_discount_surcharge);
-
+                $totalPaymentAmount = 0;
                 // Storing walk-in payment details
                 foreach($request->payment_types as $index => $paymentType) {
                     // Access payment details using the same index
                     $paymentAmount = $request->payment_amounts[$index];
                     $paymentDate = $request->payment_dates[$index];
-                
+                    $totalPaymentAmount += $paymentAmount;
                     // Now you can create your payment record
                     $walk_in_payment = [
                         'walk_in_id' => $walkInSale->id,
@@ -1925,7 +1986,7 @@ class CalenderController extends Controller
             }
         }
         
-        return response()->json(['success' => true, 'message' => 'Walk-In created successfully','amount' => $paymentAmount,'walk_in_id' =>isset($walkInSale->id)?$walkInSale->id:$request->invoice_id,'username'=>$userName,'client_email'=>$client_email]);
+        return response()->json(['success' => true, 'message' => 'Walk-In created successfully','amount' => $totalPaymentAmount,'walk_in_id' =>isset($walkInSale->id)?$walkInSale->id:$request->invoice_id,'username'=>$userName,'client_email'=>$client_email]);
     }
     public function GetLocation(Request $request)
     {
@@ -2159,6 +2220,7 @@ class CalenderController extends Controller
     }
     public function sendPaymentMail(Request $request)
     {
+        // dd($request->all());
         $emailtemplate = EmailTemplates::where('email_template_type', 'Payment Completed')->first();
         
         $walk_ids = $request->walk_in_id;

@@ -747,7 +747,7 @@
                     </div>
                     <div class="mod-ft-right">
                         <button type="button" class="btn btn-light btn-md cancel_payment">Cancel</button>
-                        <button type="submit" class="btn btn-primary btn-md take_payment" main_total="" disabled>Take Payment</button>
+                        <button type="submit" class="btn btn-primary btn-md take_payment" main_total="" main_remain="" disabled>Take Payment</button>
                     </div>
                 </div>
             </div>
@@ -950,22 +950,21 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body main_payment_details">
-                    <div class="row payment_details closed-stip">
-                        <div class="col-lg-4">
+                    <div class="row payment_details closed-stip payment_details_single">
+                        <div class="col-lg-4 p_details">
                             <div class="form-group">
                                 <label class="form-label">Payment</label>
-                                <select class="form-select form-control" name="payment_type[]" id="payment_type">
+                                <select class="form-select form-control payment_type" name="payment_type[]" id="payment_type">
                                     <option>Card</option>
                                     <option>Afterpay</option>
                                     <option>Bank Transfer</option>
                                     <option>Cash</option>
                                     <option>Humm payment</option>
-                                    <!-- <option>Voucher</option> -->
                                     <option>Zip Pay</option>
                                 </select>
                                 </div>
                         </div>
-                        <div class="col-lg-4">
+                        <div class="col-lg-4 p_details">
                             <div class="form-group">
                                 <label class="form-label">Amount</label>
                                 <div class="input-group">
@@ -975,18 +974,18 @@
                                     </div>
                                 </div>
                         </div>
-                        <div class="col-lg-4">
+                        <div class="col-lg-4 p_details">
                             <div class="form-group">
                                 <label class="form-label">Date</label>
-                                <input type="date" id="datePicker4" name="payment_date[]" class="form-control" id="payment_date" placeholder="date" value="<?php echo date('Y-m-d'); ?>" readonly>
+                                <input type="date" id="datePicker4" name="payment_date[]" class="form-control payment_date" placeholder="date" value="<?php echo date('Y-m-d'); ?>" readonly>
                             </div>
                         </div>
-                        <div class="remove_payment cross">
+                        <div class="remove_payment cross p_details">
                             <a href="#" class="remove_payment_btn"><button class="btn-close close_waitlist"></button></a>
                         </div>
                     </div>
                     
-                    <div class="mb-3">
+                    <div class="mb-3 payment_data">
                         <a href="#" class="btn btn-dashed w-100 btn-blue icon-btn-center mb-2 add_another_payment"><i class="ico-ticket-discount me-2 fs-5"></i> Add another payment</a>
                         <div class="form-text d-flex align-items-center"><span class="ico-danger fs-5 me-2"></span> Not all payment type supported</div>
                     </div>
@@ -1187,8 +1186,8 @@
         document.getElementById("datePicker1").setAttribute("max", today.toISOString().split('T')[0]);
         // document.getElementById("datePicker2").setAttribute("max", today.toISOString().split('T')[0]);
         // document.getElementById("datePicker3").setAttribute("max", today.toISOString().split('T')[0]);
-        document.getElementById("datePicker4").setAttribute("min", today.toISOString().split('T')[0]);
-        document.getElementById("datePicker4").setAttribute("max", today.toISOString().split('T')[0]);
+        // document.getElementById("datePicker4").setAttribute("min", today.toISOString().split('T')[0]);
+        // document.getElementById("datePicker4").setAttribute("max", today.toISOString().split('T')[0]);
         
         $("#edit_waitlist_client").validate({
             rules: {
@@ -2189,13 +2188,25 @@
                             $('.existing_cus').addClass('active');
                             $('#existingclientmodal').show();
                             $('.walk_in_client_id').val(response.invoice.client_id);
-                            $('#existingclientDetailsModal').append('<i class="ico-user2 me-2 fs-6"></i>' + response.invoice.client_name);
+                            $('#existingclientDetailsModal').html('<i class="ico-user2 me-2 fs-6"></i>' + response.invoice.client_name);
                         }
                         $('.invoice_id').val(response.invoice.id);
                         $('.invoice_date').hide();
-                        $('.edit_invoice_date').text(response.invoice.invoice_date);
+                        var invoiceDate = new Date(response.invoice.invoice_date);
+
+                        // Get day, month, and year
+                        var day = invoiceDate.getDate();
+                        var month = invoiceDate.getMonth() + 1; // Month is zero-based, so add 1
+                        var year = invoiceDate.getFullYear();
+
+                        // Ensure day and month are displayed with leading zeros if needed
+                        var formattedInvoiceDate = `${day < 10 ? '0' + day : day}-${month < 10 ? '0' + month : month}-${year}`;
+
+                        $('.edit_invoice_date').text(formattedInvoiceDate);
+
                         $('.edit_invoice_number').text('Invoice number: '+ 'INV' +response.invoice.id)
                         $('.edited_total').val(response.invoice.total);
+                        $('.take_payment').attr('main_remain',response.invoice.remaining_balance);
                     }
                 }
             });
@@ -2383,6 +2394,79 @@
                 $('.payment_amount').val($('.take_payment').attr('main_total'));
                 
                 // SubmitWalkIn(data);
+
+                //update payment details
+                var id = $('#invoice_id').val();
+                if (id != '') {
+                    $.ajax({
+                        headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                        url: "{{ route('calendar.edit-invoice') }}",
+                        type: "POST",
+                        data: { 'walk_ids': id },
+                        success: function(response) {
+                            if (response.success) {
+                                $('.payment_details').remove(); // Clear existing payment details
+                                var totalPaymentAmount = 0;
+
+                                // Create the row outside of the loop
+                                var paymentRow = $('<div class="row payment_details closed-stip"></div>');
+
+                                // Append payment details from response
+                                $.each(response.invoice.payments.reverse(), function(index, payment) {
+                                    // Create a clone of the payment row for each payment
+                                    var clonedRow = paymentRow.clone();
+
+                                    // Append payment details to the cloned row
+                                    clonedRow.append(`
+                                        <input type="hidden" class="payment_id" name="payment_id[]" value="${payment.id}">
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Payment</label>
+                                                <select class="form-select form-control payment_type" name="payment_type[]" id="payment_type_${index}">
+                                                    <option ${payment.payment_type === 'Card' ? 'selected' : ''}>Card</option>
+                                                    <option ${payment.payment_type === 'Afterpay' ? 'selected' : ''}>Afterpay</option>
+                                                    <option ${payment.payment_type === 'Bank Transfer' ? 'selected' : ''}>Bank Transfer</option>
+                                                    <option ${payment.payment_type === 'Cash' ? 'selected' : ''}>Cash</option>
+                                                    <option ${payment.payment_type === 'Humm payment' ? 'selected' : ''}>Humm payment</option>
+                                                    <option ${payment.payment_type === 'Zip Pay' ? 'selected' : ''}>Zip Pay</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Amount</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text"><i class="ico-dollar fs-4"></i></span>
+                                                    <input type="number" class="form-control payment_amount" name="payment_amount[]" placeholder="0" value="${payment.amount}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Date</label>
+                                                <input type="date" name="payment_date[]" class="form-control payment_date" placeholder="date" value="${payment.date}" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="remove_payment cross">
+                                            <a href="#" class="remove_payment_btn"><button class="btn-close close_waitlist"></button></a>
+                                        </div>
+                                    `);
+
+                                    // Append the cloned row to the payment details container
+                                    $('.payment_data').prepend(clonedRow);
+
+                                    // Add the payment amount to the total payment amount
+                                    totalPaymentAmount += parseFloat(payment.amount);
+                                });
+
+                                // Update the total payment amount display
+                                // $('.payment_total').text('$' + totalPaymentAmount);
+                                // $('.remaining_balance').text('$' + $('.take_payment').attr('main_remain'));
+                                $('.remaining_balance').text('$' + $('.take_payment').attr('main_remain'));
+                            }
+                        }
+                    });
+                }
             }
         });
 
@@ -3061,12 +3145,12 @@
                 var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
 
                 var discount = (parseFloat(main_price) * parsedEditAmount) / 100;
-                newDiscountAmount = discountAmount + discount;
+                // newDiscountAmount = discountAmount - discount;
             } else {
                 var editAmountValue = $currentDiv.find('#hdn_discount_amount').val();
                 var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
 
-                newDiscountAmount = discountAmount + parsedEditAmount;
+                // newDiscountAmount = discountAmount - parsedEditAmount;
             }
             newDiscountAmount = Math.max(newDiscountAmount, 0);
 
@@ -3085,7 +3169,6 @@
     });
 
     $(document).on('click', '.c_plus', function(e) {
-        
         var type = "casual";
         var $currentDiv = $(this).closest('.product-info1');
         var chk_dis_type = $currentDiv.find('#discount_types').val();
@@ -3177,12 +3260,12 @@
                 var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
 
                 var discount = (parseFloat(main_price) * parsedEditAmount) / 100;
-                newDiscountAmount = discountAmount + discount;
+                // newDiscountAmount = discountAmount + discount;
             } else {
                 var editAmountValue = $currentDiv.find('#hdn_discount_amount').val();
                 var parsedEditAmount = editAmountValue !== "" ? parseFloat(editAmountValue) : 0;
 
-                newDiscountAmount = discountAmount + parsedEditAmount;
+                // newDiscountAmount = discountAmount + parsedEditAmount;
             }
             newDiscountAmount = Math.max(newDiscountAmount, 0);
 
@@ -3421,7 +3504,7 @@
             }
             var pricePerUnit = parseFloat($('.edit_price_per_unit').val());
             var quantity = parseInt($('.edit_quantity').val());
-            var totalAmount = pricePerUnit * quantity;
+            var totalAmount = pricePerUnit;
             var discountAmount = totalAmount * (discountValue / 100); // Calculate discount based on selected dropdown value
 
             // Update dynamic discount display
@@ -3431,22 +3514,22 @@
             // $reason.val('Credit Card Surcharge').prop('disabled', true);
 
             // Recalculate edit_product_price with the discounted amount
-            var newPrice = totalAmount - discountAmount;
+            var newPrice = (totalAmount * quantity)- (discountAmount * quantity);
 
             // Update edit_product_price
             $('.edit_product_price').find('b').text('$' + newPrice.toFixed(2));
             var text = $('#dynamic_discount').text();
             // Use a regular expression to extract the number
             var text = $('#dynamic_discount').text();
-var number = 0; // Default value is 0
-// Check if text is not null and matches the regular expression
-if (text !== null) {
-    var match = text.match(/\d+\.\d+/);
-    // If the match is found, parse the number
-    if (match !== null) {
-        number = parseFloat(match[0]);
-    }
-}
+            var number = 0; // Default value is 0
+            // Check if text is not null and matches the regular expression
+            if (text !== null) {
+                var match = text.match(/\d+\.\d+/);
+                // If the match is found, parse the number
+                if (match !== null) {
+                    number = parseFloat(match[0]);
+                }
+            }
 
             $('.main_detail_price').text('$' + (pricePerUnit - number).toFixed(2) + 'ea');
 
@@ -3491,15 +3574,15 @@ if (text !== null) {
             var text = $('#dynamic_discount').text();
             // Use a regular expression to extract the number
             var text = $('#dynamic_discount').text();
-var number = 0; // Default value is 0
-// Check if text is not null and matches the regular expression
-if (text !== null) {
-    var match = text.match(/\d+\.\d+/);
-    // If the match is found, parse the number
-    if (match !== null) {
-        number = parseFloat(match[0]);
-    }
-}
+            var number = 0; // Default value is 0
+            // Check if text is not null and matches the regular expression
+            if (text !== null) {
+                var match = text.match(/\d+\.\d+/);
+                // If the match is found, parse the number
+                if (match !== null) {
+                    number = parseFloat(match[0]);
+                }
+            }
 
             $('.main_detail_price').text('$' + (pricePerUnit + number).toFixed(2) + 'ea');
             
@@ -3540,7 +3623,7 @@ if (text !== null) {
         var currentQuantity = parseInt(quantityInput.val());
         quantityInput.val(currentQuantity);
         $('.edit_product_quantity').text(currentQuantity);
-        
+        // updateQuantity();
         calculateAndUpdate();
     });
 
@@ -3725,7 +3808,7 @@ if (text !== null) {
         var paymentDetailsClone = $('.payment_details').first().clone(); // Clone the first .payment_details div
         console.log('paymentDetailsClone',paymentDetailsClone);
         paymentDetailsClone.find('.payment_amount').val('0');
-
+        paymentDetailsClone.find('.payment_id').val('0');
         $('.payment_details:last').after(paymentDetailsClone); // Append the cloned div after the last .payment_details div
         
         updateRemoveIconVisibility(); // Update remove icon visibility
@@ -3745,6 +3828,11 @@ if (text !== null) {
         
         var payment_total = $('.payment_total').text();
         var remaining_balance = $('.remaining_balance').text();
+
+        var paymentIds = []; // Array to store selected payment types
+        $('.payment_id').each(function() {
+            paymentIds.push($(this).val()); // Push each payment amount into the array
+        });
 
         var paymentTypes = []; // Array to store selected payment types
         $('select[name="payment_type[]"] option:selected').each(function() {
@@ -3779,6 +3867,10 @@ if (text !== null) {
         }
 
         // Append each payment type separately to FormData
+        paymentIds.forEach(function(paymentIds) {
+            formData.append('payment_ids[]', paymentIds);
+        });
+        
         paymentTypes.forEach(function(paymentType) {
             formData.append('payment_types[]', paymentType);
         });
@@ -3943,18 +4035,21 @@ if (text !== null) {
         var totalCardPayments = 0; // Initialize total card payments
 
         $('.main_payment_details').find('.payment_details').each(function(){
-            var cardTyoe = $(this).find('#payment_type').val();
+            var cardType = $(this).find('.payment_type').val();
             var cardAmount = $(this).find('.payment_amount').val();
-            // var cardDate = $(this).find('#datePicker4').val();
-            var dateValue1 = $('#datePicker4').val();
-            var dateParts1 = dateValue1.split('-'); // Assuming the date is in the format yyyy-mm-dd
-            var cardDate = dateParts1[2] + '-' + dateParts1[1] + '-' + dateParts1[0]; 
+            var cardDate = $(this).find('.payment_date').val();
+
+            // Split the date string assuming the format is yyyy-mm-dd
+            var dateParts = cardDate.split('-');
+
+            // Reconstruct the date string in the format dd-mm-yyyy
+            var formattedDate = dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0];
 
             // Create an object for the current product and push it to the cardDetails array
             var c_details = {
-                card: cardTyoe,
+                card: cardType,
                 amount: cardAmount,
-                date: cardDate
+                date: formattedDate
             };
             cardDetails.push(c_details);
             totalCardPayments += parseFloat(cardAmount);
@@ -4178,7 +4273,15 @@ if (text !== null) {
         // Update the modal content with the retrieved invoice data
         // $('#modalTitle').text('Paid invoice for ' + invoiceData.client_name);
         var invoiceDate = new Date(invoiceData.invoice_date);
-        var formattedInvoiceDate = `${invoiceDate.getDate()}-${invoiceDate.getMonth() + 1}-${invoiceDate.getFullYear()}`;
+
+        // Get day, month, and year
+        var day = invoiceDate.getDate();
+        var month = invoiceDate.getMonth() + 1; // Month is zero-based, so add 1
+        var year = invoiceDate.getFullYear();
+
+        // Ensure day and month are displayed with leading zeros if needed
+        var formattedInvoiceDate = `${day < 10 ? '0' + day : day}-${month < 10 ? '0' + month : month}-${year}`;
+
         $('#invoiceDate').text(formattedInvoiceDate);
         $('#invoiceNumber').text('INV' + invoiceData.id);
 
@@ -4207,9 +4310,18 @@ if (text !== null) {
         paymentTableBody.empty();
         invoiceData.payments.forEach(function (payment) {
             var paymentDate = new Date(payment.date);
-            var formattedPaymentDate = `${paymentDate.getDate()}-${paymentDate.getMonth() + 1}-${paymentDate.getFullYear()}`;
+
+            // Get day, month, and year
+            var day = paymentDate.getDate();
+            var month = paymentDate.getMonth() + 1; // Month is zero-based, so add 1
+            var year = paymentDate.getFullYear();
+
+            // Ensure day and month are displayed with leading zeros if needed
+            var formattedPaymentDate = `${day < 10 ? '0' + day : day}-${month < 10 ? '0' + month : month}-${year}`;
+
             paymentTableBody.append('<tr><td><b>' + payment.payment_type + '</b></td><td class="d-grey">' + formattedPaymentDate + '</td><td><b>$' + payment.amount + '</b></td></tr>');
         });
+
 
         // Populate subtotal, discount, total, and total paid
         $('#subtotalProductPrice').html('<span class="blue-bold">$' + subtotal + '</span>');
@@ -4354,17 +4466,23 @@ if (text !== null) {
         var text = $('#dynamic_discount').text();
         // Use a regular expression to extract the number
         var text = $('#dynamic_discount').text();
-var number = 0; // Default value is 0
-// Check if text is not null and matches the regular expression
-if (text !== null) {
-    var match = text.match(/\d+\.\d+/);
-    // If the match is found, parse the number
-    if (match !== null) {
-        number = parseFloat(match[0]);
-    }
-}
-
-        $('.main_detail_price').text('$' + (pricePerUnit - number).toFixed(2) + 'ea');
+        var number = 0; // Default value is 0
+        // Check if text is not null and matches the regular expression
+        if (text !== null) {
+            var match = text.match(/\d+\.\d+/);
+            // If the match is found, parse the number
+            if (match !== null) {
+                number = parseFloat(match[0]);
+            }
+        }
+        if(optgroupLabel == 'Surcharge'){
+            $('.main_detail_price').text('$' + (pricePerUnit + number).toFixed(2) + 'ea');
+        }else if(optgroupLabel == 'Discount'){
+            $('.main_detail_price').text('$' + (pricePerUnit - number).toFixed(2) + 'ea');
+        }else{
+            $('.main_detail_price').text('$' + (pricePerUnit).toFixed(2) + 'ea');
+        }
+        // $('.main_detail_price').text('$' + (pricePerUnit - number).toFixed(2) + 'ea');
         
         // $('.main_detail_price').text('($' + pricePerUnit + ' ea)');
     }
@@ -4378,7 +4496,7 @@ if (text !== null) {
 
         // Update edit_product_price
         $('.edit_product_price').find('b').text('$' + newPrice.toFixed(2));
-        $('.main_detail_price').text('($' + newPrice + ' ea)');
+        $('.main_detail_price').text('($' + pricePerUnit + ' ea)');
     }
 
     function updateQuantity() {
@@ -5465,7 +5583,6 @@ if (text !== null) {
         }
     }
     function updateSubtotalAndTotal(type) {
-        
         if(type === 'casual') {
             
             var subtotal = 0;
@@ -5564,6 +5681,12 @@ if (text !== null) {
                 $('.take_payment').attr('main_total',edit_total);
                 $('.remaining_balance').text('$' + (total.toFixed(2) - edit_total));
                 $('.payment_total').text('$' + (total.toFixed(2)));
+                if(parseFloat($('.take_payment').attr('main_remain')) == 0)
+                {
+                    $('.take_payment').attr('main_remain',parseFloat((total.toFixed(2) - edit_total)).toFixed(2));    
+                }else{
+                    $('.take_payment').attr('main_remain',parseFloat((total.toFixed(2) - parseFloat($('.take_payment').attr('main_remain')))).toFixed(2));
+                }
             }
 
             // Update the displayed values on the page
@@ -5679,6 +5802,12 @@ if (text !== null) {
                 $('.take_payment').attr('main_total',edit_total);
                 $('.remaining_balance').text('$' + (total.toFixed(2) - edit_total));
                 $('.payment_total').text('$' + (total.toFixed(2)));
+                if(parseFloat($('.take_payment').attr('main_remain')) == 0)
+                {
+                    $('.take_payment').attr('main_remain',parseFloat((total.toFixed(2) - edit_total)).toFixed(2));    
+                }else{
+                    $('.take_payment').attr('main_remain',parseFloat((total.toFixed(2) - parseFloat($('.take_payment').attr('main_remain')))).toFixed(2));
+                }
             }
 
             $('.subtotal').text('$' + subtotal.toFixed(2));
@@ -5787,6 +5916,12 @@ if (text !== null) {
                 $('.take_payment').attr('main_total',edit_total);
                 $('.remaining_balance').text('$' + (total.toFixed(2) - edit_total)); 
                 $('.payment_total').text('$' + (total.toFixed(2)));
+                if(parseFloat($('.take_payment').attr('main_remain')) == 0)
+                {
+                    $('.take_payment').attr('main_remain',parseFloat((total.toFixed(2) - edit_total)).toFixed(2));    
+                }else{
+                    $('.take_payment').attr('main_remain',parseFloat((total.toFixed(2) - parseFloat($('.take_payment').attr('main_remain')))).toFixed(2));
+                }
             }
             
             $('.subtotal').text('$' + subtotal.toFixed(2));
