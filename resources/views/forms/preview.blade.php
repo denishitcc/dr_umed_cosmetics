@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8" />
     <title>Preview</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
-    <script src="https://formbuilder.online/assets/js/form-builder.min.js"></script>
-    <script src="https://formbuilder.online/assets/js/form-render.min.js"></script>
+    <link rel="stylesheet" href="{{ asset('js/formiojs/dist/formio.full.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('js/@formio/contrib/dist/formio-contrib.css') }}">
 </head>
 <body>
     <div class="client-preview-banner js-client-preview-banner">
@@ -27,10 +25,17 @@
                 <div class="form-group"><img src="{{ asset('/storage/images/banner_image/no-image.jpg') }}" alt="" id="imgBannerPreview"></div>
             @endif
         </div>
+        <h4>{{ $forms->title }}</h4>
+        <hr>
         <label data-form_json="{{ $forms->form_json }}" id="formxml"></label>
-        <form ></form>
         <div id="fb-editor"></div>
     </div>
 </body>
 </html>
+<script src="{{ asset('js/jquery/dist/jquery.min.js') }}"></script>
+<script src="{{ asset('js/@formio/js/dist/formio.form.min.js') }}"></script>
+<script src="{{ asset('js/formiojs/dist/formio.full.min.js') }}"></script>
+<script src="{{ asset('js/@formio/js/dist/formio.full.js') }}"></script>
+<script src="{{ asset('js/section_break.js') }}"></script>
 <script src="{{ asset('js/preview.js') }}"></script>
+<script src="{{ asset('js/index.js') }}"></script>

@@ -1137,8 +1137,8 @@
                 </div>
                 <!-- Modal footer -->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light btn-md delete_invoice" delete_id="">Delete</button>   
-                    <button type="button" class="btn btn-light btn-md edit_invoice" edit_id="">Edit</button>   
+                    <button type="button" class="btn btn-light btn-md delete_invoice" delete_id="">Delete</button>
+                    <button type="button" class="btn btn-light btn-md edit_invoice" edit_id="">Edit</button>
                     <button type="button" class="btn btn-light btn-md cancel_invoice">Cancel</button>
                     <button type="button" class="btn btn-primary btn-md print_completed_invoice">Print</button>
                 </div>
