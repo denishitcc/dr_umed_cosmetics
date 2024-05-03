@@ -351,7 +351,6 @@
         $('#waitlistSaveBtn').on('click' ,function(e){
             var clientselectedServicesCount = $('#selected_services').children("li").length,
                 clientName                  = $('#clientDetailsModal').text();
-            // console.log(clientName);
 
             if($('#check_client').val() == 'new_client')
             {

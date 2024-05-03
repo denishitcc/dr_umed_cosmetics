@@ -88,7 +88,6 @@ var DU = {};
                     right: 'resourceTimeGridDay,dayGridMonth,resourceTimelineYear'
                 },
                 loading: function (isLoading) {
-                    // console.log(isLoading);
                     // if (isLoading) {
                     //   // Show loader
                     //   $('#loader').show();
@@ -1310,7 +1309,6 @@ var DU = {};
                         $('#subcategory_text').text(categoryTitle);
                         $('#sub_services').empty();
                         $.each(data, function(index, item) {
-                            console.log(item);
                             $("#sub_services").append(`<li><a href='javascript:void(0);' class='services' data-services_id=${item.id} data-category_id=${item.category_id} data-duration=${item.duration}>${item.service_name}</a></li>`);
                         });
                     },
@@ -1567,7 +1565,6 @@ var DU = {};
                 var clientselectedServicesCount = $('#selected_services').children("li").length,
                     clientName                  = $('#clientDetailsModal').text(),
                     locationId                  = $('#appointmentlocationId').val();
-                // console.log(locationId);
 
                 if($('#check_client').val() == 'new_client')
                 {
@@ -1576,7 +1573,6 @@ var DU = {};
                         SubmitCreateClient(data);
                         if(clientName === "")
                         {
-                            console.log('in if');
                             $('#client').show();
                         }
                         else
@@ -1606,7 +1602,6 @@ var DU = {};
                                 clientId            = $('#clientDetails').find('input:hidden[name=client_id]').val();
                                 // Increment the counter
                                 count++;
-                                console.log(categoryId);
                                 // $('#mycalendar').remove();
                                 $('#external-events').removeAttr('style');
                                 if (count === 1) {
@@ -1647,7 +1642,6 @@ var DU = {};
                 }else{
                     if(clientName === "")
                     {
-                        console.log('in if');
                         $('#client').show();
                     }
                     else
@@ -1767,7 +1761,6 @@ var DU = {};
                 e.preventDefault(); // Prevent default form submission behavior
                 var clientselectedServicesCount = $('#edit_selected_services').children("li").length,
                     clientName                  = $('#clienteditDetailsModal').text();
-                // console.log(clientName);
 
                 if($('#check_client').val() == 'new_client')
                 {
@@ -2500,7 +2493,6 @@ var DU = {};
                         //for reload all services & selected services
                         $("#all_ser").load(location.href+" #all_ser>*","");
                         $("#selected_services").empty();
-                        // console.log(result);
                         // window.location = redirct_url;
                     });
 				} else {
@@ -2580,7 +2572,6 @@ var DU = {};
                         //for reload all services & selected services
                         $("#all_ser").load(location.href+" #all_ser>*","");
                         $("#selected_services").empty();
-                        // console.log(result);
                         // window.location = redirct_url;
                     });
 				} else {
