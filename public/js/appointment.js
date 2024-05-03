@@ -1178,6 +1178,7 @@ var DU = {};
                             text: data.message,
                             info: "success",
                         });
+                        location.reload();
                     } else {
                         Swal.fire({
                             title: "Error!",
@@ -1208,6 +1209,7 @@ var DU = {};
                             text: data.message,
                             info: "success",
                         });
+                        location.reload();
                     } else {
                         Swal.fire({
                             title: "Error!",
