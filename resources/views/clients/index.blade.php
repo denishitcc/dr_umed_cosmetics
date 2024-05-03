@@ -66,7 +66,7 @@
                     <th>Next Appointments</th>
                     <!-- <th>Appointment Status</th> -->
                     <!-- <th>Date and Time</th> -->
-                    <th>Status</th> 
+                    <th>Status</th>
                     <!-- <th>Location</th> -->
                     <!--<th>status</th>-->
                     </tr>
@@ -75,7 +75,7 @@
                 </tbody>
                 </table>
         </div>
-        
+
         <div class="modal fade" id="New_waitlist_client" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered modal-xxl">
                 <div class="modal-content">

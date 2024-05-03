@@ -1177,8 +1177,10 @@ var DU = {};
                             title: "Appointment!",
                             text: data.message,
                             info: "success",
+                        }).then(function() {
+                            // Reload the current page
+                            location.reload();
                         });
-                        location.reload();
                     } else {
                         Swal.fire({
                             title: "Error!",
@@ -1208,8 +1210,10 @@ var DU = {};
                             title: "Appointment!",
                             text: data.message,
                             info: "success",
+                        }).then(function() {
+                            // Reload the current page
+                            location.reload();
                         });
-                        location.reload();
                     } else {
                         Swal.fire({
                             title: "Error!",
