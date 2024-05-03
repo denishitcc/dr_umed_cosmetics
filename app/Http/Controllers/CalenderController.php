@@ -358,7 +358,7 @@ class CalenderController extends Controller
                     ->with([
                         'services',
                         'clients'
-                    ]);
+                    ])->where('status','!=',Appointment::COMPLETED);
 
         if ($request->start_date) {
             $events->whereBetween(DB::raw('DATE(start_date)'), array($request->start_date, $request->end_date));
