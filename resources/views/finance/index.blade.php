@@ -4144,7 +4144,6 @@ function printInvoice(invoiceData) {
 }
 
 function populateInvoiceModal(invoiceData, subtotal, discount, total) {
-    debugger;
     // Update the modal content with the retrieved invoice data
     // $('#modalTitle').text('Paid invoice for ' + invoiceData.client_name);
     var invoiceDate = new Date(invoiceData.invoice_date);
