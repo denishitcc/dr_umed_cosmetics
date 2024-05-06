@@ -121,7 +121,9 @@ class ClientsController extends Controller
 
         $categories = Category::get();
 
-        $services   = Services::with(['appearoncalender'])->get();
+        $services   = Services::with(['appearoncalender'])
+                    ->where('appear_on_calendar',1)
+                    ->get();
         $users = User::all();
         return view('clients.index', compact('clients','count_today_appointments','categories','services','users'));
     }
