@@ -30,11 +30,16 @@
                         </select>
                         </div>
                     </div>
+                    <div class="tool-right">
+                        <div class="tool-right">
+                            <input class="form-control form-control-solid" placeholder="Pick date rage" id="kt_daterangepicker_1"/>
+                        </div>
+                    </div>
                 </div>
             </div>
               <div class="card-body">
               <div class="row">
-                        <table class="table data-table all-db-table align-middle display" style="width:100%;">
+                        <table class="table data-table all-db-table align-middle display" id="datatable" style="width:100%;">
                         <thead>
                           <tr>
                             <th>Invoice</th>
@@ -44,6 +49,7 @@
                             <th>Type</th>
                             <th>Payment</th>
                             <th>Status</th>
+                            <th>Invoice Date</th>
                             <th>Time</th>
                             <th>Total</th>
                             <th>Action</th>
@@ -733,6 +739,7 @@ $(document).ready(function() {
         },
         data: function(d) {
             d.location_id = $('#locations').val(); // Include the selected location ID in the AJAX request data
+            d.daterange = $('#kt_daterangepicker_1').val();
         }
     },
     columns: [
@@ -817,6 +824,14 @@ $(document).ready(function() {
                 return '<span class="badge text-bg-green badge-md">PAID</span>';
             }
         },
+        {
+            data: "invoice_date", 
+            name: "invoice_date",
+            render: function(data, type, row, meta) {
+                // Format the date using moment.js to display in dd-mm-yyyy format
+                return moment(data).format("DD-MM-YYYY");
+            }
+        },
         { 
             data: "updated_at", 
             name: "updated_at",
@@ -851,11 +866,14 @@ $(document).ready(function() {
                 { 
                     text: "Excel",
                     exportOptions: { 
-                        columns: [1,2,3,4,5,6,7,8],
+                        columns: [0,1,2,3,4,5,6,7,8],
                         format: {
                             body: function (data, row, column, node) {
                                 // For the 7th column, replace 'checked' with 'Active' and 'unchecked' with 'Deactive'
-                                if (column === 1) {
+                                if (column === 0) {
+                                    return node.textContent;
+                                }
+                                else if (column === 1) {
                                     return node.textContent;
                                 }
                                 else if (column === 6) {
@@ -870,11 +888,14 @@ $(document).ready(function() {
                 { 
                     text: "CSV",
                     exportOptions: { 
-                        columns: [1,2,3,4,5,6,7,8],
+                        columns: [0,1,2,3,4,5,6,7,8],
                         format: {
                             body: function (data, row, column, node) {
                                 // For the 7th column, replace 'checked' with 'Active' and 'unchecked' with 'Deactive'
-                                if (column === 1) {
+                                if (column === 0) {
+                                    return node.textContent;
+                                }
+                                else if (column === 1) {
                                     return node.textContent;
                                 }
                                 else if (column === 6) {
@@ -889,11 +910,14 @@ $(document).ready(function() {
                 { 
                     text: "PDF",
                     exportOptions: { 
-                        columns: [1,2,3,4,5,6,7,8],
+                        columns: [0,1,2,3,4,5,6,7,8],
                         format: {
                             body: function (data, row, column, node) {
                                 // For the 7th column, replace 'checked' with 'Active' and 'unchecked' with 'Deactive'
-                                if (column === 1) {
+                                if (column === 0) {
+                                    return node.textContent;
+                                }
+                                else if (column === 1) {
                                     return node.textContent;
                                 }
                                 else if (column === 6) {
@@ -908,11 +932,14 @@ $(document).ready(function() {
                 { 
                     text: "PRINT",
                     exportOptions: { 
-                        columns: [1,2,3,4,5,6,7,8],
+                        columns: [0,1,2,3,4,5,6,7,8],
                         format: {
                             body: function (data, row, column, node) {
                                 // For the 7th column, replace 'checked' with 'Active' and 'unchecked' with 'Deactive'
-                                if (column === 1) {
+                                if (column === 0) {
+                                    return node.textContent;
+                                }
+                                else if (column === 1) {
                                     return node.textContent;
                                 }
                                 else if (column === 6) {
@@ -1003,32 +1030,42 @@ $(document).ready(function() {
     }
 });
 table.select.info( false);
+$('#kt_daterangepicker_1').daterangepicker({
+    startDate: moment().startOf('month'),
+    endDate: moment().endOf('month'),
+    locale: {
+        format: 'DD/MM/YYYY' // Set the format to dd-mm-yyyy
+    }
+});
 $(document).on('change', '#locations', function() {
-    var searchText = $(this).find(':selected').text(); // Get the text of the selected option
-    table.columns(2).search(searchText).draw(); // Perform search based on the text and redraw the table
+    table.ajax.reload();
 });
 
-// $(document).on('input', '.dt-search', function() {
-//     var searchTerm = this.value.trim(); // Trim whitespace from search term
+// Attach an event listener to the daterangepicker to trigger AJAX call on date change
+$('#kt_daterangepicker_1').on('apply.daterangepicker', function(ev, picker) {
+    table.ajax.reload();
+});
+$(document).on('input', '.dt-search', function() {
+    var searchTerm = this.value.trim(); // Trim whitespace from search term
 
-//     // Check if the search term starts with "INV" (for the first column)
-//     if (searchTerm.startsWith("INV") || searchTerm.startsWith("inv")) {
-//         var digitsOnly = searchTerm.replace(/\D/g, '');
-//         table.column(0).search(digitsOnly).draw();
-//     } else {
-//         // If search term is empty, filter all records; otherwise, filter the second and third columns
-//         if ($(this).val() == '') {
-//             table.columns([0, 1]).search('').draw();
-//         } else {
-//             table.columns([1, 2]).search(searchTerm).draw(); // Search in both second and third columns
-//         }
-//     }
+    // Check if the search term starts with "INV" (for the first column)
+    if (searchTerm.startsWith("INV") || searchTerm.startsWith("inv")) {
+        var digitsOnly = searchTerm.replace(/\D/g, '');
+        table.column(0).search(digitsOnly).draw();
+    } else {
+        // If search term is empty, filter all records; otherwise, filter the second and third columns
+        if ($(this).val() == '' && table.column(0).search() != '') {
+            table.column(0).search('').draw();
+        } else {
+            table.search($(this).val()).draw() ;
+        }
+    }
+});
+
+// $(document).on('input', '.dt-search', function()
+// {
+//     table.search($(this).val()).draw() ;
 // });
-
-$(document).on('input', '.dt-search', function()
-{
-    table.search($(this).val()).draw() ;
-});
 $(document).on('change', '#pagelist', function()
 {
     var page_no = $('#pagelist').find(":selected").text();

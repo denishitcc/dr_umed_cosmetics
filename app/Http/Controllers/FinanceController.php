@@ -11,6 +11,7 @@ use DataTables;
 use App\Models\Clients;
 use App\Models\Locations;
 use App\Models\User;
+use Carbon\Carbon;
 
 class FinanceController extends Controller
 {
@@ -23,23 +24,20 @@ class FinanceController extends Controller
         
         if ($request->ajax()) {
             $walkin = WalkInRetailSale::query();
-            // dd($request->all());
-            // Apply search filter if search term exists
-            // if ($request->has('search') && !empty($request->search['value'])) {
-            //     dd('4');
-            //     $searchTerm = $request->search['value'];
-            //     preg_match_all('/\d+/', $searchTerm, $matches);
-            //     $searchTerm = implode('', $matches[0]);
-
-            //     $walkin->where(function ($query) use ($searchTerm) {
-            //         $query->where('id', $searchTerm)
-            //             ->orWhere('customer_type', 'LIKE', "%$searchTerm%");
-            //     })->orWhereHas('products', function ($query) use ($searchTerm) {
-            //         $query->where('product_name', 'LIKE', "%$searchTerm%");
-            //     });
-            // }
+            if ($request->has('daterange')) {
+                // Split the date range string into start and end dates
+                $dates = explode(' - ', $request->daterange);
+                if($dates[0] != '')
+                {
+                    // Extract start and end dates
+                    $startDate = Carbon::createFromFormat('d/m/Y', $dates[0])->format('Y-m-d');
+                    $endDate = Carbon::createFromFormat('d/m/Y', $dates[1])->format('Y-m-d');
+                    
+                    // Filter data based on the date range
+                    $walkin->whereBetween('invoice_date', [$startDate, $endDate]);
+                }
+            }            
             $data = $walkin->where('location_id', $request->location_id)->get();
-
             return Datatables::of($data)
 
             ->addIndexColumn()
