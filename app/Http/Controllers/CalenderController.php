@@ -37,7 +37,7 @@ use App\Models\LocationSurcharge;
 use App\Models\ServicesAvailability;
 use App\Models\ProductAvailabilities;
 use App\Models\EmailTemplates;
-use Mail; 
+use Mail;
 
 class CalenderController extends Controller
 {
@@ -2062,12 +2062,12 @@ class CalenderController extends Controller
             'category',
             // 'service.appearoncalender',
             'appearoncalender'
-        ]);
+        ])->join("services","services.id","=","services_availabilities.service_id");
 
         if ($request->location_id) {
             $services->where('location_name', $request->location_id)->where('availability','Available');
         }
-
+        $services               = $services->where('services.appear_on_calendar', 1);
         $services               = $services->get();
         $availablecategories    = $services->pluck('category_id')->unique();
 
