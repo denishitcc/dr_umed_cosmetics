@@ -27,7 +27,7 @@ class FinanceController extends Controller
             if ($request->has('daterange')) {
                 // Split the date range string into start and end dates
                 $dates = explode(' - ', $request->daterange);
-                if($dates[0] != '')
+                if($dates[0] != '' && $dates[1] != '')
                 {
                     // Extract start and end dates
                     $startDate = Carbon::createFromFormat('d/m/Y', $dates[0])->format('Y-m-d');

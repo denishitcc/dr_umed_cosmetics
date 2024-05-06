@@ -32,7 +32,7 @@
                     </div>
                     <div class="tool-right">
                         <div class="tool-right">
-                            <input class="form-control form-control-solid" placeholder="Pick date rage" id="kt_daterangepicker_1"/>
+                            <input class="form-control form-control-solid" placeholder="Pick date rage" id="kt_daterangepicker_1" autocomplete="off"/>
                         </div>
                     </div>
                 </div>
@@ -49,7 +49,7 @@
                             <th>Type</th>
                             <th>Payment</th>
                             <th>Status</th>
-                            <th>Invoice Date</th>
+                            <!-- <th>Invoice Date</th> -->
                             <th>Time</th>
                             <th>Total</th>
                             <th>Action</th>
@@ -824,14 +824,14 @@ $(document).ready(function() {
                 return '<span class="badge text-bg-green badge-md">PAID</span>';
             }
         },
-        {
-            data: "invoice_date", 
-            name: "invoice_date",
-            render: function(data, type, row, meta) {
-                // Format the date using moment.js to display in dd-mm-yyyy format
-                return moment(data).format("DD-MM-YYYY");
-            }
-        },
+        // {
+        //     data: "invoice_date", 
+        //     name: "invoice_date",
+        //     render: function(data, type, row, meta) {
+        //         // Format the date using moment.js to display in dd-mm-yyyy format
+        //         return moment(data).format("DD-MM-YYYY");
+        //     }
+        // },
         { 
             data: "updated_at", 
             name: "updated_at",
@@ -1031,12 +1031,12 @@ $(document).ready(function() {
 });
 table.select.info( false);
 $('#kt_daterangepicker_1').daterangepicker({
-    startDate: moment().startOf('month'),
-    endDate: moment().endOf('month'),
     locale: {
         format: 'DD/MM/YYYY' // Set the format to dd-mm-yyyy
     }
 });
+// Clear the input fields
+$('#kt_daterangepicker_1').val('');
 $(document).on('change', '#locations', function() {
     table.ajax.reload();
 });
