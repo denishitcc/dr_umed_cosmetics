@@ -32,7 +32,7 @@
                     </div>
                     <div class="tool-right">
                         <div class="tool-right">
-                            <input class="form-control form-control-solid" placeholder="Pick date rage" id="kt_daterangepicker_1" autocomplete="off"/>
+                            <input class="form-control form-control-solid" placeholder="Pick date range" id="kt_daterangepicker_1" autocomplete="off"/>
                         </div>
                     </div>
                 </div>
