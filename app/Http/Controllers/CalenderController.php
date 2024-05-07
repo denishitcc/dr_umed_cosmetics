@@ -533,12 +533,17 @@ class CalenderController extends Controller
      */
     public function getEventById(int $appointmentId)
     {
-        // $appointment   = Appointment::find($appointmentId);
-        $appointment = Appointment::leftJoin('walk_in_retail_sale', 'walk_in_retail_sale.appt_id', '=', 'appointment.id')
-        ->select('walk_in_retail_sale.id AS walk_in_id', 'appointment.*')
-        ->whereNull('walk_in_retail_sale.deleted_at')
-        ->whereNull('appointment.deleted_at')
-        ->find($appointmentId);
+        $appointment   = Appointment::find($appointmentId);
+        if($appointment->status == '1')
+        {
+            $appointment   = Appointment::find($appointmentId);
+        }else{
+            $appointment = Appointment::leftJoin('walk_in_retail_sale', 'walk_in_retail_sale.appt_id', '=', 'appointment.id')
+            ->select('walk_in_retail_sale.id AS walk_in_id', 'appointment.*')
+            ->whereNull('walk_in_retail_sale.deleted_at')
+            ->whereNull('appointment.deleted_at')
+            ->find($appointmentId);
+        }
 
         return response()->json([
             'status'     => true,
