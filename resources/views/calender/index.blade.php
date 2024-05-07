@@ -21,7 +21,7 @@
                         </button>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" id="appointment" href="javascript:void(0);">New appointment</a></li>
-                            <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#Walkin_Retail" id="new_walk_in_sale" href="javascript:void(0);">New walk-in sale</a></li>
+                            <li><a class="dropdown-item" id="new_walk_in_sale" href="javascript:void(0);">New walk-in sale</a></li>
                         </ul>
                     </div>
                     <!-- <a href="javascript:void(0);" class="btn btn-primary btn-md me-3 w-100" id="appointment">New Appointment</a> -->
@@ -599,6 +599,8 @@
                         <form id="create_walkin_casual" name="create_walkin_casual" class="form casual_tab" method="post">
                             @csrf
                             <input type="hidden" id="invoice_id" name="invoice_id" value="" class="invoice_id">
+                            <input type="hidden" id="inv_type" name="inv_type" value="" class="inv_type">
+                            <input type="hidden" id="appt_id" name="appt_id" value="" class="appt_id">
                             <input type="hidden" name="total_selected_product" id="total_selected_product" value="0" class="total_selected_product">
                             <input type="hidden" name="walk_in_location_id" id="walk_in_location_id" class="walk_in_location_id">
                             <input type="hidden" name="walk_in_client_id" id="walk_in_client_id" class="walk_in_client_id">
@@ -620,6 +622,8 @@
                         <form id="create_walkin_new" name="create_walkin_new" class="form new_tab" method="post" style="display:none;">
                             @csrf
                             <input type="hidden" id="invoice_id" name="invoice_id" value="" class="invoice_id">
+                            <input type="hidden" id="inv_type" name="inv_type" value="" class="inv_type">
+                            <input type="hidden" id="appt_id" name="appt_id" value="" class="appt_id">
                             <input type="hidden" name="total_selected_product" id="total_selected_product" value="0" class="total_selected_product">
                             <input type="hidden" name="walk_in_location_id" id="walk_in_location_id" class="walk_in_location_id">
                             <input type="hidden" name="walk_in_client_id" id="walk_in_client_id" class="walk_in_client_id">
@@ -703,6 +707,8 @@
                         <form id="create_walkin_existing" name="create_walkin_existing" class="form existing_tab" method="post" style="display:none;">
                             @csrf
                             <input type="hidden" id="invoice_id" name="invoice_id" value="" class="invoice_id">
+                            <input type="hidden" id="inv_type" name="inv_type" value="" class="inv_type">
+                            <input type="hidden" id="appt_id" name="appt_id" value="" class="appt_id">
                             <input type="hidden" name="total_selected_product" id="total_selected_product" value="0" class="total_selected_product">
                             <input type="hidden" name="walk_in_location_id" id="walk_in_location_id" class="walk_in_location_id">
                             <input type="hidden" name="walk_in_client_id" id="walk_in_client_id" class="walk_in_client_id">
@@ -2206,6 +2212,111 @@
 
                         $('.edit_invoice_number').text('Invoice number: '+ 'INV' +response.invoice.id)
                         $('.edited_total').val(response.invoice.total);
+
+                        //new code start
+                        $('.productDetails').empty();
+                        // Iterate over each product in the response
+                        $.each(response.invoice.products, function(index, product) {
+                            $('.productDetails').append(
+                                `<div class="invo-notice mb-4 closed product-info1" prod_id='${product.id}'>
+                                    <a href="#" class="btn cross remove_product"><i class="ico-close"></i></a>
+                                    <input type='hidden' name='casual_product_name[]' value='${product.product_name}'>
+                                    <input type='hidden' id="product_id" name='casual_product_id[]' value='${product.product_id}'>
+                                    <input type='hidden' id="product_price" name='casual_product_price[]' value='${product.product_price}'>
+                                    <input type='hidden' id="product_gst" name='product_gst' value='${response.invoice.gst}'>
+                                    <input type='hidden' id="discount_types" name='casual_discount_types[]' value='${product.discount_type}'>
+                                    <input type='hidden' id="hdn_discount_surcharge" name='casual_discount_surcharge[]' value='${product.product_discount_surcharge}'>
+                                    <input type='hidden' id="hdn_discount_surcharge_type" name='hdn_discount_surcharge_type[]' value='${product.type}'>
+                                    <input type='hidden' id="hdn_discount_amount" name='casual_discount_amount[]' value='${product.discount_amount}'>
+                                    <input type='hidden' id="hdn_discount_text" name='casual_discount_text[]' value='${product.discount_value}'>
+                                    <input type='hidden' id="hdn_reason" name='casual_reason[]' value='${product.discount_reason}'>
+                                    <input type="hidden" id="hdn_who_did_work" name="casual_who_did_work[]" value="${product.who_did_work === null ? '' : product.who_did_work}">
+                                    <input type='hidden' id="hdn_edit_amount" name='casual_edit_amount[]' value='0'>
+                                    <input type='hidden' id="product_type" name='product_type[]' value='${product.product_type}'>
+                                    <div class="inv-left">
+                                        <div>
+                                            <b>${product.product_name}</b>
+                                            <div class="who_did_work">Sold by ${product.user_full_name}</div>
+                                            <span class="dis">Discount: $${product.discount_value}</span>
+                                        </div>
+                                    </div>
+                                    <div class="inv-center">
+                                        <div class="number-input walk_number_input safari_only form-group mb-0 number">
+                                            <button class="c_minus minus"></button>
+                                            <input type="number" class="casual_quantity quantity form-control" min="0" name="casual_product_quanitity[]" value="${product.product_quantity}">
+                                            <button class="c_plus plus"></button>
+                                        </div>
+                                    </div>
+                                    <div class="inv-number go price">
+                                        <div>
+                                        <div class="m_p">${'$' + ((product.product_price * product.product_quantity) - (product.discount_value * product.product_quantity)).toFixed(2)}</div>
+                                            ${product.product_quantity > 1 ?
+                                                `<div class="main_p_price">
+                                                    ${('$' + (product.product_price - product.discount_value).toFixed(2) + ' ea')}
+                                                </div>` :
+                                                `<div class="main_p_price" style="display:none;">
+                                                    ${('$' + (product.product_price - product.discount_value).toFixed(2) + ' ea')}
+                                                </div>`
+                                            }
+                                        </div>
+                                        <a href="#" class="btn btn-sm px-0 product-name clickable" product_id="${product.id}" product_name="${product.product_name}" product_price="${product.product_price}"><i class="ico-right-arrow fs-2 ms-3"></i></a>
+                                    </div>
+                                </div>`
+                            );
+                        });
+
+                        //subtotal
+                        $('.subtotal').text('$'+ response.invoice.subtotal);
+                        $('.discount').text('$'+ response.invoice.discount);
+                        $('.total').text('$'+ response.invoice.total);
+                        $('.gst_total').text("(Includes GST of $" + response.invoice.gst + ")");
+                        
+                        $('#sale_staff_id').val(response.invoice.user_id);
+                        $('#notes').text(response.invoice.note);
+                        $('.take_payment').attr('main_total',response.invoice.total);
+                        $('.take_payment').attr('main_remain',response.invoice.remaining_balance);
+
+                        //discount
+                        $('#discount_surcharge').val(response.invoice.discount_surcharges[0].discount_surcharge);
+                        $('input[name="discount_type"][value="' + response.invoice.discount_surcharges[0].discount_type + '"]').prop('checked', true);
+                        $('#amount').val(response.invoice.discount_surcharges[0].discount_amount);
+                        $('#reason').text(response.invoice.discount_surcharges[0].discount_reason);
+                        if(response.invoice.discount_surcharges[0].discount_surcharge == 'Manual Discount')
+                        {
+                            $('#amount').prop('disabled', false);
+                            $('#discount_type').prop('disabled', false);
+                            $('#percent_type').prop('disabled', false);
+                            $('#reason').prop('disabled', false);
+                            $('.discount-row').show();
+                        }else if(response.invoice.discount_surcharges[0].discount_surcharge == 'Manual Surcharge')
+                        {
+                            $('#amount').prop('disabled', false);
+                            $('#discount_type').prop('disabled', false);
+                            $('#percent_type').prop('disabled', false);
+                            $('#reason').prop('disabled', false);
+                            $('.discount-row').show();
+                        }
+                        else{
+                            $('#amount').prop('disabled', true);
+                            $('#discount_type').prop('disabled', true);
+                            $('#percent_type').prop('disabled', true);
+                            $('#reason').prop('disabled', true);
+                            $('.discount-row').show();
+                            $('#reason').val('');
+                        }
+                        $('.walk_in_location_id').val(response.invoice.location_id);
+                        //
+                        $('.hdn_main_discount_surcharge').val(response.invoice.discount_surcharges[0].discount_surcharge);
+                        $('.hdn_main_discount_type').val(response.invoice.discount_surcharges[0].discount_type);
+                        $('.hdn_main_discount_amount').val(response.invoice.discount_surcharges[0].discount_amount);
+                        $('.hdn_main_discount_reason').val(response.invoice.discount_surcharges[0].discount_reason);
+
+                        //subtotal
+                        $('#hdn_subtotal').val(response.invoice.subtotal);
+                        $('#hdn_discount').val(response.invoice.discount);
+                        $('#hdn_gst').val(response.invoice.gst);
+                        $('#hdn_total').val(response.invoice.total);
+                        //new code end
                         $('.take_payment').attr('main_remain',response.invoice.remaining_balance);
                     }
                 }
@@ -4266,6 +4377,158 @@
             }
         });
     })
+    $(document).on('click','#new_walk_in_sale',function(){
+        $('#Walkin_Retail').modal('show');
+        $('.main_walkin').show();
+        $('.inv_type').val('walk-in');
+        $('.walkin_loc_name').text($('#locations option:selected').text());
+        $('.walk_in_location_id').val($('#locations').val());
+        // Reset the modal content to its initial state
+        // $('#Walkin_Retail .modal-content').html(initialModalContent);
+        //clear all data
+        $('.productDetails').empty();
+        $('.NewproductDetails').empty();
+        $('.ExistingproductDetails').empty();
+        $('#existingclientmodal').hide();
+        $('.subtotal').text('$0.00');
+        $('.discount').text('$0.00');
+        $('.total').text('$0.00');
+        $('.gst_total').text('(Includes GST of $0.00)');
+        $('#create_walkin_casual')[0].reset();
+        $('#create_walkin_new')[0].reset();
+        $('#create_walkin_existing')[0].reset();
+        $('.main_walk_in').find('.add_discount').each(function() {
+            // Update the HTML content of the element
+            $(this).html('<i class="ico-percentage me-2 fs-5"></i>Add discount / surcharge');
+
+            // Your additional code logic here for each element with the class 'add_discount'
+        });
+        $('input[name="discount_type"]').prop('disabled', false);
+        $('#amount').prop('disabled', false);
+        $('#amount').val(0);
+        $('#reason').prop('disabled',false);
+        $('#reason').val('');
+        $('.discount').each(function() {
+            var parentTd = $(this).parent().find('td');
+            parentTd.text('Discount');
+
+            var parentTds = $(this).parent().find('.discount');
+            parentTds.text('$0.00');
+        });
+        $('#notes').text('');
+        //payment
+        $('#payment_type option:first').prop('selected',true);
+        $('.edit_invoice_date').remove();
+        $('.edit_invoice_number').remove();
+        if($('.total_selected_product').val() == 0)
+        {
+            $('.take_payment').prop('disabled', true);
+        }
+        $('.remaining_balance').val(0);
+        $('.take_payment').attr('main_total','');
+        $('.take_payment').attr('main_remain',0);
+        $('.edited_total').val(0);
+        $('.invoice_id').val('');
+    })
+    $(document).on('click','.make_sale',function(){
+        $('#Walkin_Retail').modal('show');
+        $('.main_walkin').show();
+        $('.appt_id').val($('#make_sale').attr('appt_id'));
+        $('.inv_type').val('appt');
+        $('.walkin_loc_name').text($('#locations option:selected').text());
+        $('.walk_in_location_id').val($('#locations').val());
+        // Reset the modal content to its initial state
+        // $('#Walkin_Retail .modal-content').html(initialModalContent);
+        //clear all data
+        $('.productDetails').empty();
+        $('.NewproductDetails').empty();
+        $('.ExistingproductDetails').empty();
+        $('#existingclientmodal').hide();
+        $('.subtotal').text('$0.00');
+        $('.discount').text('$0.00');
+        $('.total').text('$0.00');
+        $('.gst_total').text('(Includes GST of $0.00)');
+        $('#create_walkin_casual')[0].reset();
+        $('#create_walkin_new')[0].reset();
+        $('#create_walkin_existing')[0].reset();
+        $('.main_walk_in').find('.add_discount').each(function() {
+            // Update the HTML content of the element
+            $(this).html('<i class="ico-percentage me-2 fs-5"></i>Add discount / surcharge');
+
+            // Your additional code logic here for each element with the class 'add_discount'
+        });
+        $('input[name="discount_type"]').prop('disabled', false);
+        $('#amount').prop('disabled', false);
+        $('#amount').val(0);
+        $('#reason').prop('disabled',false);
+        $('#reason').val('');
+        $('.discount').each(function() {
+            var parentTd = $(this).parent().find('td');
+            parentTd.text('Discount');
+
+            var parentTds = $(this).parent().find('.discount');
+            parentTds.text('$0.00');
+        });
+        $('#notes').text('');
+        //payment
+        $('#payment_type option:first').prop('selected',true);
+        $('.edit_invoice_date').remove();
+        $('.edit_invoice_number').remove();
+        if($('.total_selected_product').val() == 0)
+        {
+            $('.take_payment').prop('disabled', true);
+        }
+        $('.remaining_balance').val(0);
+        $('.take_payment').attr('main_total','');
+        $('.take_payment').attr('main_remain',0);
+        $('.edited_total').val(0);
+        $('.invoice_id').val('');
+        //append product details
+        $('.productDetails').append(
+            `<div class="invo-notice mb-4 closed product-info1" prod_id='${$(this).attr('product_id')}'>
+                <a href="#" class="btn cross remove_product"><i class="ico-close"></i></a>
+                <input type='hidden' name='casual_product_name[]' value='${$(this).attr('product_name')}'>
+                <input type='hidden' id="product_id" name='casual_product_id[]' value='${$(this).attr('product_id')}'>
+                <input type='hidden' id="product_price" name='casual_product_price[]' value='${$(this).attr('product_price')}'>
+                <input type='hidden' id="product_gst" name='product_gst' value='yes'>
+                <input type='hidden' id="discount_types" name='casual_discount_types[]' value='amount'>
+                <input type='hidden' id="hdn_discount_surcharge" name='casual_discount_surcharge[]' value='No Discount'>
+                <input type='hidden' id="hdn_discount_surcharge_type" name='hdn_discount_surcharge_type[]' value=''>
+                <input type='hidden' id="hdn_discount_amount" name='casual_discount_amount[]' value='0'>
+                <input type='hidden' id="hdn_discount_text" name='casual_discount_text[]' value='0'>
+                <input type='hidden' id="hdn_reason" name='casual_reason[]' value=''>
+                <input type='hidden' id="hdn_who_did_work" name='casual_who_did_work[]' value='no one'>
+                <input type='hidden' id="hdn_edit_amount" name='casual_edit_amount[]' value='0'>
+                <input type='hidden' id="product_type" name='product_type[]' value='service'>
+                <div class="inv-left"><div><b>${$(this).attr('product_name')}</b><div class="who_did_work"></div><span class="dis"></div></span></div>
+                <div class="inv-center">
+                    <div class="number-input walk_number_input safari_only form-group mb-0 number">
+                        <button class="c_minus minus"></button>
+                        <input type="number" class="casual_quantity quantity form-control" min="0" name="casual_product_quanitity[]" value="1">
+                        <button class="c_plus plus"></button>
+                    </div>
+                </div>
+                <div class="inv-number go price">
+                    <div>
+                        <div class="m_p">$${$(this).attr('product_price')}</div>
+                        <div class="main_p_price" style="display:none;">($${$(this).attr('product_price')} ea)</div>
+                    </div>
+                    <a href="#" class="btn btn-sm px-0 product-name clickable" product_id="${$(this).attr('product_id')}" product_name="${$(this).attr('product_name')}" product_price="${$(this).attr('product_price')}"><i class="ico-right-arrow fs-2 ms-3"></i></a>
+                </div>
+            </div>`
+        );
+        var type='casual';
+        $('.total_selected_product').val(parseFloat($('.total_selected_product').val()) + 1);
+        if($('.total_selected_product').val() > 0)
+        {
+            $('.take_payment').prop('disabled', false);
+        }
+        updateSubtotalAndTotal(type); // Update Subtotal and Total
+
+        // document.getElementsByClassName('search_products').value = '';
+        $('.search_products').val('');
+        $('#sale_staff_id').val($(this).attr('staff_id'));
+    })
     
     updateRemoveIconVisibility();
     // updateRemainingBalance();
@@ -6181,8 +6444,10 @@
                     // Assuming you're using jQuery to update an element with id "paymentMessage"
                     $('#paymentMessage').html(message);
                     $('#create_walkin_new')[0].reset();
-
-
+                    $('#edit_appointment').prop('disabled', true);
+                    $('#make_sale').remove();//.css('display', 'none !important');
+                    $('#deleteAppointment').hide();
+                    $('.view_invoice').show();
 				} else {
 					
 					Swal.fire({

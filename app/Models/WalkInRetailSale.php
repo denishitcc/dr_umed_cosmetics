@@ -19,6 +19,7 @@ class WalkInRetailSale extends Model
         'id',
         'client_id',
         'location_id',
+        'appt_id',
         'invoice_date',
         'subtotal',
         'discount',

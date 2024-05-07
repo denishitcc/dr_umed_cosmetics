@@ -185,6 +185,7 @@
                     <form id="create_walkin_casual" name="create_walkin_casual" class="form casual_tab" method="post">
                         @csrf
                         <input type="hidden" id="invoice_id" name="invoice_id" value="" class="invoice_id">
+                        <input type="hidden" id="inv_type" name="inv_type" value="" class="inv_type">
                         <input type="hidden" name="total_selected_product" id="total_selected_product" value="0" class="total_selected_product">
                         <input type="hidden" name="walk_in_location_id" id="walk_in_location_id" class="walk_in_location_id">
                         <input type="hidden" name="walk_in_client_id" id="walk_in_client_id" class="walk_in_client_id">
@@ -206,6 +207,7 @@
                     <form id="create_walkin_new" name="create_walkin_new" class="form new_tab" method="post" style="display:none;">
                         @csrf
                         <input type="hidden" id="invoice_id" name="invoice_id" value="" class="invoice_id">
+                        <input type="hidden" id="inv_type" name="inv_type" value="" class="inv_type">
                         <input type="hidden" name="total_selected_product" id="total_selected_product" value="0" class="total_selected_product">
                         <input type="hidden" name="walk_in_location_id" id="walk_in_location_id" class="walk_in_location_id">
                         <input type="hidden" name="walk_in_client_id" id="walk_in_client_id" class="walk_in_client_id">
@@ -289,6 +291,7 @@
                     <form id="create_walkin_existing" name="create_walkin_existing" class="form existing_tab" method="post" style="display:none;">
                         @csrf
                         <input type="hidden" id="invoice_id" name="invoice_id" value="" class="invoice_id">
+                        <input type="hidden" id="inv_type" name="inv_type" value="" class="inv_type">
                         <input type="hidden" name="total_selected_product" id="total_selected_product" value="0" class="total_selected_product">
                         <input type="hidden" name="walk_in_location_id" id="walk_in_location_id" class="walk_in_location_id">
                         <input type="hidden" name="walk_in_client_id" id="walk_in_client_id" class="walk_in_client_id">
@@ -1242,6 +1245,7 @@ $(document).on('click', '.edit_invoice', function(e) {
                 console.log('data', response.invoice);
                 $('#paid_Invoice').modal('hide');
                 $('#Walkin_Retail').modal('show');
+                $('.inv_type').val('walk-in');
                 var type_cus = response.invoice.customer_type;
                 if(type_cus =='new')
                 {
@@ -2851,6 +2855,7 @@ $(document).on('click','.cancel_payment',function(){
 $(document).on('click','.make_sale',function(){
     $('#Walkin_Retail').modal('show');
     $('.main_walkin').show();
+    $('.inv_type').val('walk-in');
     $('.walkin_loc_name').text($('#locations option:selected').text());
     $('.walk_in_location_id').val($('#locations').val());
     // Reset the modal content to its initial state

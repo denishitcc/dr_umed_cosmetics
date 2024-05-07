@@ -358,7 +358,8 @@ class CalenderController extends Controller
                     ->with([
                         'services',
                         'clients'
-                    ])->where('status','!=',Appointment::COMPLETED);
+                    ]);
+                    // ->where('status','!=',Appointment::COMPLETED);
 
         if ($request->start_date) {
             $events->whereBetween(DB::raw('DATE(start_date)'), array($request->start_date, $request->end_date));
@@ -532,7 +533,12 @@ class CalenderController extends Controller
      */
     public function getEventById(int $appointmentId)
     {
-        $appointment   = Appointment::find($appointmentId);
+        // $appointment   = Appointment::find($appointmentId);
+        $appointment = Appointment::leftJoin('walk_in_retail_sale', 'walk_in_retail_sale.appt_id', '=', 'appointment.id')
+        ->select('walk_in_retail_sale.id AS walk_in_id', 'appointment.*')
+        ->whereNull('walk_in_retail_sale.deleted_at')
+        ->whereNull('appointment.deleted_at')
+        ->find($appointmentId);
 
         return response()->json([
             'status'     => true,
@@ -1398,6 +1404,7 @@ class CalenderController extends Controller
                     // Update the walk-in sale details
                     $walkInSale->update([
                         'location_id' => $request->walk_in_location_id,
+                        'appt_id' => $request->appt_id,
                         'customer_type' => $request->hdn_customer_type,
                         'invoice_date' => $request->casual_invoice_date,
                         'subtotal' => $request->hdn_subtotal,
@@ -1407,7 +1414,7 @@ class CalenderController extends Controller
                         'remaining_balance' => str_replace('$', '', $request->remaining_balance),
                         'user_id' => $request->casual_staff,
                         'note' => $request->notes,
-                        'walk_in_type'=>'walk-in'
+                        'walk_in_type'=>$request->inv_type
                     ]);
         
                     // Update or create walk-in sale products
@@ -1505,6 +1512,7 @@ class CalenderController extends Controller
                     $walkInSale->update([
                         'client_id' => $request->walk_in_client_id,
                         'location_id' => $request->walk_in_location_id,
+                        'appt_id' => $request->appt_id,
                         'customer_type' => $request->hdn_customer_type,
                         'invoice_date' => $request->casual_invoice_date,
                         'subtotal' => $request->hdn_subtotal,
@@ -1514,7 +1522,7 @@ class CalenderController extends Controller
                         'remaining_balance' => str_replace('$', '', $request->remaining_balance),
                         'user_id' => $request->casual_staff,
                         'note' => $request->notes,
-                        'walk_in_type'=>'walk-in'
+                        'walk_in_type'=>$request->inv_type
                     ]);
         
                     // Update or create walk-in sale products
@@ -1605,6 +1613,7 @@ class CalenderController extends Controller
                     // Update the walk-in sale details
                     $walkInSale->update([
                         'client_id' => $request->walk_in_client_id,
+                        'appt_id' => $request->appt_id,
                         'location_id' => $request->walk_in_location_id,
                         'customer_type' => $request->hdn_customer_type,
                         'invoice_date' => $request->casual_invoice_date,
@@ -1615,7 +1624,7 @@ class CalenderController extends Controller
                         'remaining_balance' => str_replace('$', '', $request->remaining_balance),
                         'user_id' => $request->casual_staff,
                         'note' => $request->notes,
-                        'walk_in_type'=>'walk-in'
+                        'walk_in_type'=>$request->inv_type
                     ]);
         
                     // Update or create walk-in sale products
@@ -1704,6 +1713,7 @@ class CalenderController extends Controller
                 // Storing walk-in sale details
                 $walk_in_table = [
                     'location_id' =>$request->walk_in_location_id,
+                    'appt_id' => $request->appt_id,
                     'customer_type' => $request->hdn_customer_type,
                     'invoice_date' => $request->casual_invoice_date,
                     'subtotal' => $request->hdn_subtotal,
@@ -1713,7 +1723,7 @@ class CalenderController extends Controller
                     'remaining_balance' => str_replace('$', '', $request->remaining_balance),
                     'user_id' => $request->casual_staff,
                     'note' => $request->notes,
-                    'walk_in_type'=>'walk-in'
+                    'walk_in_type'=>$request->inv_type
                 ];  
                 // dd($walk_in_table);
 
@@ -1796,6 +1806,7 @@ class CalenderController extends Controller
                 $walk_in_table = [
                     'client_id' => $request->walk_in_client_id,
                     'location_id' =>$request->walk_in_location_id,
+                    'appt_id' => $request->appt_id,
                     'customer_type' => $request->hdn_customer_type,
                     'invoice_date' => $request->casual_invoice_date,
                     'subtotal' => $request->hdn_subtotal,
@@ -1805,7 +1816,7 @@ class CalenderController extends Controller
                     'remaining_balance' => str_replace('$', '', $request->remaining_balance),
                     'user_id' => $request->casual_staff,
                     'note' => $request->notes,
-                    'walk_in_type'=>'walk-in'
+                    'walk_in_type'=>$request->inv_type
                 ];  
                 // dd($walk_in_table);
 
@@ -1899,6 +1910,7 @@ class CalenderController extends Controller
                 $walk_in_table = [
                     'client_id' => $newUser->id,
                     'location_id' =>$request->walk_in_location_id,
+                    'appt_id' => $request->appt_id,
                     'customer_type' => $request->hdn_customer_type,
                     'invoice_date' => $request->casual_invoice_date,
                     'subtotal' => $request->hdn_subtotal,
@@ -1908,7 +1920,7 @@ class CalenderController extends Controller
                     'remaining_balance' => str_replace('$', '', $request->remaining_balance),
                     'user_id' => $request->casual_staff,
                     'note' => $request->notes,
-                    'walk_in_type'=>'walk-in'
+                    'walk_in_type'=>$request->inv_type
                 ];  
                 // dd($walk_in_table);
 
@@ -1984,6 +1996,10 @@ class CalenderController extends Controller
                     Payment::create($walk_in_payment);
                 }
             }
+        }
+        if($request->appt_id != '')
+        {
+            Appointment::where('id',$request->appt_id)->update(['status'=> 4]);
         }
         
         return response()->json(['success' => true, 'message' => 'Walk-In created successfully','amount' => $totalPaymentAmount,'walk_in_id' =>isset($walkInSale->id)?$walkInSale->id:$request->invoice_id,'username'=>$userName,'client_email'=>$client_email]);
@@ -2145,6 +2161,10 @@ class CalenderController extends Controller
     public function deleteWalkIn(Request $request, $id)
     {
         try {
+            //change status to 1
+            $walkin = WalkInRetailSale::where('id',$id)->first();
+            Appointment::where('id',$walkin->appt_id)->update(['status'=> 1]);
+
             WalkInRetailSale::findOrFail($id)->delete();
             WalkInProducts::where('walk_in_id', $id)->delete();
             WalkInDiscountSurcharge::where('walk_in_id', $id)->delete();

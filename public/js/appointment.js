@@ -965,18 +965,17 @@ var DU = {};
                                 <input type="hidden" id="staff_id" value="${response.data.staff_id}">
                             </div>
                             <div class="btns mb-3">
-                                <button class="btn btn-secondary btn-sm" id="edit_appointment" event_id="${response.data.id}" staff_id="${response.data.staff_id}" appointment_date="${response.data.appointment_date}" appointment_time="${response.data.appointment_time}" staff_name="${response.data.staff_name}" service_name="${response.data.services_name}" duration="${response.data.duration}" category_id="${response.data.category_id}" services_id="${response.data.service_id}" client-id="${response.data.id}" client-name="${response.data.client_data.first_name+' '+response.data.client_data.last_name}" edit-service-name="${response.data.service_id}">Edit Appt</button>
+                                <button class="btn btn-secondary btn-sm" id="edit_appointment" event_id="${response.data.id}" staff_id="${response.data.staff_id}" appointment_date="${response.data.appointment_date}" appointment_time="${response.data.appointment_time}" staff_name="${response.data.staff_name}" service_name="${response.data.services_name}" duration="${response.data.duration}" category_id="${response.data.category_id}" services_id="${response.data.service_id}" client-id="${response.data.id}" client-name="${response.data.client_data.first_name + ' ' + response.data.client_data.last_name}" edit-service-name="${response.data.service_id}" ${response.data.status_no == 4 ? 'disabled' : ''}>Edit Appt</button>
                                 <button class="btn btn-secondary btn-sm">Edit Forms</button>
                                 <button class="btn btn-secondary btn-sm rebook">Rebook</button>
                                 <button class="btn btn-secondary btn-sm repeat_appt">Repeat Appt</button>
                                 <button class="btn btn-secondary btn-sm">Messages</button>
                                 <button class="btn btn-secondary btn-sm">Send appt details</button>
+                                ${response.data.status_no == 4 ? `<button class="btn btn-secondary btn-sm view_invoice" walk_in_ids="${response.data.walk_in_id}">View paid invoice</button>` : '<button class="btn btn-secondary btn-sm view_invoice" walk_in_ids="${response.data.walk_in_id}"  style="display:none;">View paid invoice</button>'}
                             </div>
-                            <a href="#" class="btn btn-primary btn-md mb-2 d-block">Make Sale</a>
+                            ${response.data.status_no != 4 ? `<a href="#" id="make_sale" class="btn btn-primary btn-md mb-2 d-block make_sale" product_id="${response.data.service_id}" product_name="${response.data.services_name}" product_price="${response.data.standard_price}" appt_id="${response.data.id}" staff_id="${response.data.staff_id}">Make Sale</a>` : ''}
 
-                            <div class="text-end">
-                                <a href="javascript:void(0)" class="btn btn-primary btn-md blue-alter" id="deleteAppointment">Delete</a>
-                            </div>
+                            ${response.data.status_no != 4 ? `<div class="text-end"><a href="javascript:void(0)" class="btn btn-primary btn-md blue-alter" id="deleteAppointment">Delete</a></div>`:''}
                             <hr>
                             <div class="form-group">
                                 <label class="form-label">Notes</label>
