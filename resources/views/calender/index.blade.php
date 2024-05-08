@@ -1146,7 +1146,7 @@
                     <button type="button" class="btn btn-light btn-md delete_invoice" delete_id="">Delete</button>
                     <button type="button" class="btn btn-light btn-md edit_invoice" edit_id="">Edit</button>
                     <button type="button" class="btn btn-light btn-md cancel_invoice">Cancel</button>
-                    <button type="button" class="btn btn-primary btn-md print_completed_invoice">Print</button>
+                    <button type="button" class="btn btn-primary btn-md print_completed_invoice_single">Print</button>
                 </div>
             </div>
         </div>
@@ -4118,6 +4118,7 @@
 
 
     $(document).on('click', '.print_completed_invoice', function() {
+        debugger;
         // Create a hidden container element
         var dateValue = $('#datePicker1').val();
         var dateParts = dateValue.split('-'); // Assuming the date is in the format yyyy-mm-dd
@@ -4266,6 +4267,25 @@
 
         // Remove the container from the document body
         document.body.removeChild(printContainer);
+    });
+
+    $(document).on('click', '.print_completed_invoice_single', function() {
+        debugger;
+        var walk_ids = $('.delete_invoice').attr('delete_id');
+        // var formattedDates = $('#datePicker1').val().split('-').reverse().join('-'); // Reformatting the date
+
+        $.ajax({
+            headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            url: "{{ route('calendar.paid-invoice') }}",
+            type: "POST",
+            data: {'walk_ids': walk_ids},
+            success: function (response) {
+                if (response.success) {
+                    // Call a function to handle printing
+                    printInvoice(response.invoice);
+                }
+            }
+        });
     });
     
     $(document).on('click', '.view_invoice', function() {
@@ -6459,7 +6479,139 @@
 			},
 		});
 	}
+    function printInvoice(invoiceData) {
+        var date = invoiceData.invoice_date;
+        var d = new Date(date.split("/").reverse().join("-"));
+        var dd = String(d.getDate()).padStart(2, '0'); // Ensure two digits for day
+        var mm = String(d.getMonth() + 1).padStart(2, '0'); // Ensure two digits for month
+        var yy = d.getFullYear();
+        var formattedDate = dd + "-" + mm + "-" + yy;
+        console.log(formattedDate); // Output: "29-04-2024"
 
+        var productsHTML = invoiceData.products.map(product => `
+            <tr>
+                <td style="padding: 0.9rem; border-bottom: 1px solid #d5dce2; text-align: left;">${product.product_quantity}</td>
+                <td style="padding: 0.9rem; border-bottom: 1px solid #d5dce2; text-align: left;">${product.product_name}</td>
+                <td style="padding: 0.9rem; border-bottom: 1px solid #d5dce2; text-align: right;">${product.product_price}</td>
+            </tr>
+        `).join('');
+
+        var cardDetailsHTML = invoiceData.payments.map(cards => {
+            // Convert the date string to a Date object
+            var date = new Date(cards.date);
+
+            // Get the day, month, and year
+            var day = date.getDate();
+            var month = date.getMonth() + 1; // Month is zero-based, so we add 1
+            var year = date.getFullYear();
+
+            // Pad single-digit day and month with leading zeros if necessary
+            day = day < 10 ? '0' + day : day;
+            month = month < 10 ? '0' + month : month;
+
+            // Format the date as dd-mm-yyyy
+            var formattedDate = `${day}-${month}-${year}`;
+
+            // Construct the HTML for the table row
+            return `
+                <tr>
+                    <td style="padding: 0.9rem; border-bottom: 1px solid #d5dce2; text-align: left;"><b>${formattedDate} ${cards.payment_type}</b></td>
+                    <td style="padding: 0.9rem; border-bottom: 1px solid #d5dce2; text-align: left;"></td>
+                    <td style="padding: 0.9rem; border-bottom: 1px solid #d5dce2; text-align: right;">$${cards.amount}</td>
+                </tr>
+            `;
+        }).join('');
+
+
+        var printableContent = `
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Document</title>
+                <style>
+                    @media print {
+                        body * {
+                            visibility: hidden;
+                        }
+                        #printable-content, #printable-content * {
+                            visibility: visible;
+                        }
+                        #printable-content {
+                            position: absolute;
+                            left: 0;
+                            right:0;
+                            top: 0;
+                            bottom:0;
+                        }
+                    }
+                </style>
+            </head>
+            <body>
+            <div id="printable-content">
+                <table style="width: 100%; font-family: Verdana, Geneva, Tahoma, sans-serif; font-weight: 400; vertical-align: middle; line-height: 1.5em;">
+                    <tr>
+                        <td style="text-align: right;">
+                            <b>Dr Umed Cosmetics</b><br>
+                            0407194519<br>
+                            <a href="mailto:info@drumedcosmetics.com.au">info@drumedcosmetics.com.au</a><br>
+                            ABN # xx-xxx-xxx
+                        </td>
+                    </tr>
+                </table>
+                <h3 style="font-family: Verdana, Geneva, Tahoma, sans-serif; line-height: 1.5em;">TAX INVOICE / RECEIPT</h3>
+                <p style="font-family: Verdana, Geneva, Tahoma, sans-serif; line-height: 1.5em;">CUSTOMER</p>
+                <p style="font-family: Verdana, Geneva, Tahoma, sans-serif; line-height: 1.5em;">
+                    DATE OF ISSUE<br> 
+                    <b>${formattedDate}</b>
+                </p>
+
+                <p style="font-family: Verdana, Geneva, Tahoma, sans-serif; line-height: 1.5em; text-align: right;">INVOICE NUMBER: <b>#INV${invoiceData.id}</b></p>
+                <br>
+                <table style="width: 100%; font-family: Verdana, Geneva, Tahoma, sans-serif; font-weight: 400; vertical-align: middle; line-height: 1.5em;">
+                    <tr>
+                        <th style="background-color: #F6F8FA; padding: 0.9rem; border-bottom: 1px solid #EBF5FF; text-align: left;" >Quantity</th>
+                        <th style="background-color: #F6F8FA; padding: 0.9rem; border-bottom: 1px solid #EBF5FF; text-align: left;">Service</th>
+                        <th style="background-color: #F6F8FA; padding: 0.9rem; border-bottom: 1px solid #EBF5FF; text-align: right;" >Price</th>
+                    </tr>
+                    ${productsHTML} <!-- Insert productsHTML here -->
+                    <tr>
+                        <td colspan="3" style="padding: 0.9rem; border-bottom: 1px solid #d5dce2; text-align: right;">
+                            Subtotal ${invoiceData.subtotal}<br>
+                            Total: <strong style="font-size: 20px;">${invoiceData.total}</strong><br>
+                            GST: ${invoiceData.gst}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.9rem; border-bottom: 1px solid #d5dce2; text-align: left;" colspan="2">PAYMENTS</td>
+                        <td style="padding: 0.9rem; border-bottom: 1px solid #d5dce2; text-align: right;"></td>
+                    </tr>
+                    ${cardDetailsHTML} <!-- Insert cardDetailsHTML here -->
+                    <tr>
+                        <td colspan="3" style="padding: 0.9rem; text-align: right;">
+                            Total Paid: <strong style="font-size: 20px;">$${calculateTotalPaid(invoiceData.payments)}</strong><br>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            </body>
+            </html>
+        `;
+
+        var printContainer = document.createElement('div');
+        printContainer.setAttribute('id', 'print-container');
+        printContainer.innerHTML = printableContent;
+        document.body.appendChild(printContainer);
+
+        // Print the page
+        window.print();
+
+        // Remove the container from the document body
+        document.body.removeChild(printContainer);
+    }
+    function calculateTotalPaid(payments) {
+        return payments.reduce((total, payment) => total + parseFloat(payment.amount), 0).toFixed(2);
+    }
 </script>
 </html>
 @endsection
