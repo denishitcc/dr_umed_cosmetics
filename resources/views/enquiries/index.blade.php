@@ -190,9 +190,9 @@ $(document).ready(function() {
     ],
     "dom": 'Blrftip',
     "language": {
-            "search": '<i class="fa fa-search"></i>',
-            "searchPlaceholder": "search...",
-            "infoFiltered": "",
+        "search": '<i class="fa fa-search"></i>',
+        "searchPlaceholder": "search...",
+        "infoFiltered": "",
     },
     "paging": true,
     "pageLength": 10,

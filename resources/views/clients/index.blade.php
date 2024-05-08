@@ -811,6 +811,11 @@ $(document).ready(function() {
             },
         ],
         "dom": 'Blrftip',
+        "language": {
+            "search": '<i class="fa fa-search"></i>',
+            "searchPlaceholder": "search...",
+            "infoFiltered": "",
+        },
         "paging": true,
         "pageLength": 10,
         "autoWidth": true,
@@ -1019,10 +1024,18 @@ $(document).ready(function() {
         }
     })
     $(document).on('change', '#MultiSelect_DefaultValues', function() {
+        // var selectedCount = $(this).find('option:selected').length;
+        // var totalOptions = $(this).find('option').length;
+
+        // // Check if all checkboxes are checked
+        // var allChecked = selectedCount === totalOptions;
         var vals = [];
         $(this).find(':selected').each(function(index, element) {
             vals.push($.fn.dataTable.util.escapeRegex($(element).val()));
         });
+        // if(allChecked == true){
+        //     vals.push("");
+        // }
         var regex = vals.join('|');
         if (regex == "") {
             regex = null;
@@ -1060,7 +1073,7 @@ $(document).ready(function() {
             });
         
         }
-        
+        // selectedValues.push("");
         // If no value is selected, remove the filter
         if (selectedValues === null || selectedValues.length === 0) {
             selectedValues = null;

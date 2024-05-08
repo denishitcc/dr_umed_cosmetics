@@ -59,7 +59,7 @@
             </div>
             <div class="row">
                 <div class="col-lg-4">
-                    <div class="form-group mb-0">
+                    <div class="form-group">
                         <label class="form-label">Mobile Number</label>
                         <input type="text" class="form-control" name="mobile_number" id="mobile_number" maxlength="15">
                         </div>
@@ -73,7 +73,7 @@
                     </div>
                 </div>
                 <div class="col-lg-4">
-                    <div class="form-group">
+                    <div class="form-group mb-0">
                         <label class="form-label">Work Phone</label>
                         <input type="text" class="form-control" name="work_phone" id="work_phone" maxlength="15">
                     </div>

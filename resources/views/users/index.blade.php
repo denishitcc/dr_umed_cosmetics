@@ -154,9 +154,9 @@ $(document).ready(function() {
     ],
     "dom": 'Blrftip',
     "language": {
-            "search": '<i class="fa fa-search"></i>',
-            "searchPlaceholder": "search...",
-            "infoFiltered": "", 
+        "search": '<i class="fa fa-search"></i>',
+        "searchPlaceholder": "search...",
+        "infoFiltered": "", 
     },
     "paging": true,
     "pageLength": 10,
@@ -322,6 +322,7 @@ $(document).ready(function() {
 });
 table.select.info( false);
 $(document).on('change', '#MultiSelect_DefaultValues', function() {
+    debugger;
   var vals = $(this).find(':selected').map(function(index, element) {
     return $.fn.dataTable.util.escapeRegex($(element).val());
   }).toArray().join('|').replace("&", "\\&").replace(/\s/g, "\\s");

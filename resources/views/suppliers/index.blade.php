@@ -65,6 +65,11 @@ $(document).ready(function() {
             {data: 'action', name: 'action'},
         ],
         "dom": 'Blrftip',
+        "language": {
+            "search": '<i class="fa fa-search"></i>',
+            "searchPlaceholder": "search...",
+            "infoFiltered": "", 
+        },
         "paging": true,
         "pageLength": 10,
         "autoWidth": true,
