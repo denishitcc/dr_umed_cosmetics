@@ -183,7 +183,7 @@
 
         <div class="form-group">
             <label class="form-label">Comments</label>
-            <textarea class="form-control" rows="5" name="comments" maxlength="100"></textarea>
+            <textarea class="form-control" rows="5" name="comments" maxlength="100">{{$enquiries->comments}}</textarea>
         </div>
 
         <div class="col-lg-12 text-lg-end mt-4">
