@@ -20,7 +20,7 @@ class AppointmentResource extends JsonResource
             // 'date'              => $this->start_date,
             'date'              => date('Y-m-d', strtotime($this->start_date)),
             'appointment_date'  => date('D d M Y', strtotime($this->start_date)),
-            'appointment_time'  => date('H:i a', strtotime($this->start_date)),
+            'appointment_time'  => date('h:i a', strtotime($this->start_date)),
             'status'            => $this->appointment_status,
             'status_no'         => $this->status,
             'services_name'     => $this->services->service_name,
