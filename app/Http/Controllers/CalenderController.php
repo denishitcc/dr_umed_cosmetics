@@ -137,7 +137,7 @@ class CalenderController extends Controller
      */
     public function getCategoryServices(Request $request)
     {
-        $services   = Services::select();
+        $services   = Services::select()->where('appear_on_calendar', 1);
 
         if ($request->category_id) {
             $services->where('category_id', $request->category_id);
