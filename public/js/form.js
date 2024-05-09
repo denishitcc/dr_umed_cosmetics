@@ -37,7 +37,7 @@ var DU = {};
             var context = this;
             var formjson = $("#formxml").data('form_json');
             Formio.builder(document.getElementById('form-editor'), formjson, {}).then(function (builder) {
-                builder.on('saveComponent', function () {
+                builder.on('change', function () {
                     update(builder.schema);
                 });
             });
