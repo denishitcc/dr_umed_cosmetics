@@ -6475,6 +6475,8 @@
                     $('#make_sale').remove();//.css('display', 'none !important');
                     $('#deleteAppointment').hide();
                     $('.view_invoice').show();
+
+                    $('.change_status').val(4);
 				} else {
 					
 					Swal.fire({

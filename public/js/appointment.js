@@ -934,16 +934,16 @@ var DU = {};
                                 <label class="form-label">Status </label>
                                 <input type="hidden" name="appointment_id" value=${response.data.id}>
                                 <select class="form-select form-control change_status" id="appointment_status">
-                                    <option value="1">Booked</option>
-                                    <option value="2">Confirmed</option>
-                                    <option value="3">Started</option>
-                                    <option value="4">Completed</option>
-                                    <option value="5">No Answer</option>
-                                    <option value="6">Left Message</option>
-                                    <option value="7">Pencilied In</option>
-                                    <option value="8">Turned Up</option>
-                                    <option value="9">No Show</option>
-                                    <option value="10">Cancelled</option>
+                                    <option value="1" ${response.data.status_no == 1 ? 'selected' : ''}>Booked</option>
+                                    <option value="2" ${response.data.status_no == 2 ? 'selected' : ''}>Confirmed</option>
+                                    <option value="3" ${response.data.status_no == 3 ? 'selected' : ''}>Started</option>
+                                    <option value="4" ${response.data.status_no == 4 ? 'selected' : ''}>Completed</option>
+                                    <option value="5" ${response.data.status_no == 5 ? 'selected' : ''}>No Answer</option>
+                                    <option value="6" ${response.data.status_no == 6 ? 'selected' : ''}>Left Message</option>
+                                    <option value="7" ${response.data.status_no == 7 ? 'selected' : ''}>Pencilied In</option>
+                                    <option value="8" ${response.data.status_no == 8 ? 'selected' : ''}>Turned Up</option>
+                                    <option value="9" ${response.data.status_no == 9 ? 'selected' : ''}>No Show</option>
+                                    <option value="10" ${response.data.status_no == 10 ? 'selected' : ''}>Cancelled</option>
                                 </select>
                             </div>
                             <div class="river-bed mb-3 reminder">
