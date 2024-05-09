@@ -1257,7 +1257,7 @@ $(document).on('click', '.edit_invoice', function(e) {
                     $('.walk_in_client_id').val(response.invoice.client_id);
                     $('#existingclientDetailsModal').html('<i class="ico-user2 me-2 fs-6"></i>' + response.invoice.client_name);
                 }
-                // $('.main_walkin').hide();
+                $('.main_walkin').hide();
                 
                 $('.invoice_id').val(response.invoice.id);
                 $('.invoice_date').hide();
@@ -1324,6 +1324,11 @@ $(document).on('click', '.edit_invoice', function(e) {
                             </div>
                         </div>`
                     );
+                    $('.total_selected_product').val(parseFloat($('.total_selected_product').val()) + 1);
+                    if($('.total_selected_product').val() > 0)
+                    {
+                        $('.take_payment').prop('disabled', false);
+                    }
                 });
 
                 //subtotal
@@ -2894,8 +2899,8 @@ $(document).on('click','.make_sale',function(){
     $('#notes').text('');
     //payment
     $('#payment_type option:first').prop('selected',true);
-    $('.edit_invoice_date').remove();
-    $('.edit_invoice_number').remove();
+    // $('.edit_invoice_date').remove();
+    // $('.edit_invoice_number').remove();
     if($('.total_selected_product').val() == 0)
     {
         $('.take_payment').prop('disabled', true);

@@ -552,7 +552,7 @@
                     $("#results").append(res[i].location_name);
                     loc_name.push(res[i].location_name); // Push the location_name to the array
                 }
-
+                $('.location').append('<option value="No appointment">No appointment</option>');
                 // Move the map function inside the success callback
                 $.map(loc_name, function(x) {
                     return $('.location').append("<option>" + x + "</option>");
@@ -582,7 +582,7 @@
         // .multiselect('selectAll', false)
         // .multiselect('updateButtonText');
 
-        var filter_by = ['All Days', 'Feature Appointments', 'Today','Tomorrow'];
+        var filter_by = ['No appointment', 'All Days', 'Feature Appointments', 'Today','Tomorrow'];
         $.map(filter_by, function (x) {
         return $('.filter_by').append("<option>" + x + "</option>");
         });
@@ -726,7 +726,7 @@ $(document).ready(function() {
                 name: 'appointment_dates',
                 render: function (data, type, row, meta) {
                     if (data === null) {
-                        return '';
+                        return 'No appointment';
                     } else {
                         var datesArray = data.split(',');
                         var statusArray = row.app_status.split(',');
@@ -1024,20 +1024,17 @@ $(document).ready(function() {
         }
     })
     $(document).on('change', '#MultiSelect_DefaultValues', function() {
-        // var selectedCount = $(this).find('option:selected').length;
-        // var totalOptions = $(this).find('option').length;
-
-        // // Check if all checkboxes are checked
-        // var allChecked = selectedCount === totalOptions;
         var vals = [];
+        var regex;
+
         $(this).find(':selected').each(function(index, element) {
-            vals.push($.fn.dataTable.util.escapeRegex($(element).val()));
+            var val = $.fn.dataTable.util.escapeRegex($(element).val());
+            vals.push(val);
         });
-        // if(allChecked == true){
-        //     vals.push("");
-        // }
-        var regex = vals.join('|');
-        if (regex == "") {
+
+        if (vals.length > 0) {
+            regex = vals.join('|');
+        } else {
             regex = null;
         }
         table.columns(4).search(regex, true, false).draw();
@@ -1050,30 +1047,39 @@ $(document).ready(function() {
         var dateFilter = [];
 
         // Loop through each selected value
-        if(selectedValues != null){
-            
-            selectedValues.forEach(function(selectedValue) {
-                switch (selectedValue) {
-                    case 'Today':
-                        dateFilter.push(new Date().toISOString().slice(0, 10)); // Get today's date in ISO format
-                        break;
-                    case 'Tomorrow':
-                        var Tomorrow = new Date();
-                        Tomorrow.setDate(Tomorrow.getDate() + 1); // Get Tomorrow's date
-                        dateFilter.push(Tomorrow.toISOString().slice(0, 10)); // Get Tomorrow's date in ISO format
-                        break;
-                    case 'Feature Appointments':
-                        var Future = new Date();
-                        Future.setDate(Future.getDate() + 1); // Get Next day's date
-                        dateFilter.push(Future.toISOString().slice(0, 10)); // Get Next day's date in ISO format
-                        // Assuming 'feature' is a placeholder for the actual date of the last feature appointment,
+        if (selectedValues != null) {
+        selectedValues.forEach(function(selectedValue) {
+            switch (selectedValue) {
+                case 'No appointment':
+                    dateFilter.push('No appointment'); // Filter for 'No appointment'
+                    break;
+                case 'All Days':
+                    // Filter for today, tomorrow, and future appointments
+                    var today = new Date().toISOString().slice(0, 10);
+                    var tomorrow = new Date();
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    var future = tomorrow.toISOString().slice(0, 10);
+                    dateFilter.push(today, tomorrow, future);
+                    break;
+                case 'Today':
+                    dateFilter.push(new Date().toISOString().slice(0, 10)); // Filter for today's appointments
+                    break;
+                case 'Tomorrow':
+                    var tomorrow = new Date();
+                    tomorrow.setDate(tomorrow.getDate() + 1); // Filter for tomorrow's appointments
+                    dateFilter.push(tomorrow.toISOString().slice(0, 10));
+                    break;
+                case 'Feature Appointments':
+                    var future = new Date();
+                    future.setDate(future.getDate() + 1); // Filter for feature appointments
+                    dateFilter.push(future.toISOString().slice(0, 10));
+                    // Assuming 'feature' is a placeholder for the actual date of the last feature appointment,
                         // use the actual date instead of 'feature' in the future.
                         break;
                 }
             });
-        
         }
-        // selectedValues.push("");
+
         // If no value is selected, remove the filter
         if (selectedValues === null || selectedValues.length === 0) {
             selectedValues = null;
@@ -1085,7 +1091,9 @@ $(document).ready(function() {
         var dateFilterString = dateFilter.join('|');
 
         // Apply the filter to the DataTable column 4 (assuming column 4 contains the date)
-        // table.column(4).search(dateFilterString).draw();
+        if (dateFilterString === "") {
+            dateFilterString = "^(?!No appointment$)"; // Show only appointments other than 'No appointment'
+        }
         table.column(4).search(dateFilterString, true, false).draw();
     });
 

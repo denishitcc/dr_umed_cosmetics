@@ -2173,7 +2173,10 @@
             }
         })
         $(document).on('click', '.edit_invoice', function(e) {
-            
+            if($('.total_selected_product').val() == 0)
+            {
+                $('.take_payment').prop('disabled', true);
+            }
             
             var id = $(this).attr('edit_id');
             $.ajax({
@@ -2196,6 +2199,7 @@
                             $('.walk_in_client_id').val(response.invoice.client_id);
                             $('#existingclientDetailsModal').html('<i class="ico-user2 me-2 fs-6"></i>' + response.invoice.client_name);
                         }
+                        $('.main_walkin').hide();
                         $('.invoice_id').val(response.invoice.id);
                         $('.invoice_date').hide();
                         var invoiceDate = new Date(response.invoice.invoice_date);
@@ -2263,6 +2267,11 @@
                                     </div>
                                 </div>`
                             );
+                            $('.total_selected_product').val(parseFloat($('.total_selected_product').val()) + 1);
+                            if($('.total_selected_product').val() > 0)
+                            {
+                                $('.take_payment').prop('disabled', false);
+                            }
                         });
 
                         //subtotal
@@ -4118,7 +4127,6 @@
 
 
     $(document).on('click', '.print_completed_invoice', function() {
-        debugger;
         // Create a hidden container element
         var dateValue = $('#datePicker1').val();
         var dateParts = dateValue.split('-'); // Assuming the date is in the format yyyy-mm-dd
@@ -4270,7 +4278,6 @@
     });
 
     $(document).on('click', '.print_completed_invoice_single', function() {
-        debugger;
         var walk_ids = $('.delete_invoice').attr('delete_id');
         // var formattedDates = $('#datePicker1').val().split('-').reverse().join('-'); // Reformatting the date
 
@@ -4438,8 +4445,8 @@
         $('#notes').text('');
         //payment
         $('#payment_type option:first').prop('selected',true);
-        $('.edit_invoice_date').remove();
-        $('.edit_invoice_number').remove();
+        // $('.edit_invoice_date').remove();
+        // $('.edit_invoice_number').remove();
         if($('.total_selected_product').val() == 0)
         {
             $('.take_payment').prop('disabled', true);
@@ -4492,8 +4499,8 @@
         $('#notes').text('');
         //payment
         $('#payment_type option:first').prop('selected',true);
-        $('.edit_invoice_date').remove();
-        $('.edit_invoice_number').remove();
+        // $('.edit_invoice_date').remove();
+        // $('.edit_invoice_number').remove();
         if($('.total_selected_product').val() == 0)
         {
             $('.take_payment').prop('disabled', true);

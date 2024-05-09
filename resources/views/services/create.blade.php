@@ -230,8 +230,8 @@ $(document).ready(function() {
     
     var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
         removeItemButton: true,
-        searchResultLimit:5,
-        renderChoiceLimit:5
+        // searchResultLimit:5,
+        // renderChoiceLimit:5
         });
     $('.select_none').click(function(){
         

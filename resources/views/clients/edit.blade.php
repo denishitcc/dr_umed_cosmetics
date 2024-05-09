@@ -41,10 +41,10 @@
             <a class="nav-link" data-bs-toggle="tab" href="#tab_2" aria-selected="false" tabindex="-1" role="tab"><i class="ico-task"></i> Client Details</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#tab_3" aria-selected="false" tabindex="-1" role="tab"><i class="ico-photo"></i> Photos<span class="badge badge-circle ms-2">{{count($client_photos)}}</span></a>
+            <a class="nav-link" data-bs-toggle="tab" href="#tab_3" aria-selected="false" tabindex="-1" role="tab"><i class="ico-photo"></i> Photos<span class="badge badge-circle ms-2 photos_count">{{count($client_photos)}}</span></a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#tab_4" aria-selected="false" tabindex="-1" role="tab"><i class="ico-folder"></i> Documents<span class="badge badge-circle ms-2">{{count($client_documents)}}</span></a>
+            <a class="nav-link" data-bs-toggle="tab" href="#tab_4" aria-selected="false" tabindex="-1" role="tab"><i class="ico-folder"></i> Documents<span class="badge badge-circle ms-2 doc_count">{{count($client_documents)}}</span></a>
         </li>
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="tab" href="#tab_5" aria-selected="false" tabindex="-1" role="tab"><i class="ico-appt-reminder"></i> Forms<span class="badge badge-circle ms-2">5</span></a>
@@ -560,16 +560,16 @@
                     </label>
                     <div class="mt-2 d-grey font-13"><em>Photos you add here will be visible to this client in Online Booking.</em></div>
                 </div>
-                @if(count($client_photos)>0)
                 <div class="gallery client-phbox grid-6 gap-2 h-188">
+                @if(count($client_photos)>0)
                     @foreach($client_photos as $photos)
                     <figure>
                         <a href="{{asset('storage/images/clients_photos/').'/'.$photos->client_photos}}" data-fancybox="mygallery"><img src="{{asset('storage/images/clients_photos/').'/'.$photos->client_photos}}" alt=""></a>
                         <button type="button" photos ids="{{$photos->id}}"class="btn black-btn round-6 dt-delete remove_image"><i class="ico-trash"></i></button>
                     </figure>
                     @endforeach
-                </div>
                 @endif
+                </div>
             </div>
             </form>
         </div>
@@ -588,13 +588,13 @@
                     </label>
                     <div class="mt-2 d-grey font-13"><em>Documents you add here will be visible to this client in Online Booking.</em></div>
                 </div>
-                @if(count($client_documents)>0)
                 <div class="form-group mb-0 docs">
+                @if(count($client_documents)>0)
                     @foreach($client_documents as $doc)
                     <a href="#" class="btn tag icon-btn-left skyblue mb-2"><span><i class="ico-pdf me-2 fs-2 align-middle"></i> {{$doc->client_documents}}</span> <span class="file-date">{{date('d F h:i A', strtotime($doc->created_at))}}</span><i class="del ico-trash remove_doc" ids="{{$doc->id}}"></i></a>
                     @endforeach
-                </div>
                 @endif
+                </div>
             </div>
             </form>
         </div>
@@ -977,7 +977,7 @@
                     'commonNotes'    : commonNotes,
                     'client_id'      : clientId
                 },
-                success: function (data) {debugger;
+                success: function (data) {
                     // location.reload();
                     $('#client_info').find('#ClientNotesData').remove();
                     $('#clientNotes').html(data.client_notes);
@@ -1174,11 +1174,14 @@
         });
         
         $("#client_photos").change(function () {
-            
+            var fileCount = this.files.length;
             var inputElement = document.getElementById('client_photos');
             var data = new FormData();
-            var id=$('#id').val();
-            for (var i = 0; i < this.files.length; i++) {
+            var id = $('#id').val();
+            var gallery = $('.client-phbox'); // Selecting the gallery container
+            var uploadedImageIds = []; // Array to hold IDs of uploaded images
+            var numFiles = this.files.length; // Store the number of uploaded files
+            for (var i = 0; i < numFiles; i++) {
                 var reader = new FileReader();
                 var files = this.files[i].name;
                 var currFile = this.files[i];
@@ -1186,33 +1189,26 @@
                 // Check if the file is an image and has a valid extension and size
                 if ($.inArray(fileExt, ['png', 'jpeg', 'jpg']) !== -1) { // 2MB in bytes  && fileSize <= 2097152
                     var reader = new FileReader();
-
                     reader.onload = (function (file) {
                         return function (e) {
                             var fileName = file.name;
                             var fileContents = e.target.result;
-                            $('.client-phbox').append('<input type="hidden" name="hdn_img" value=' + file + '><figure imgname=' + fileName + ' id="remove_image" class="remove_image"><img src=' + fileContents + '></figure>');
+                            // Append the image and delete button to the gallery
+                            gallery.append('<figure><a href="' + fileContents + '" data-fancybox="mygallery"><img src="' + fileContents + '" alt=""></a><button type="button" class="btn black-btn round-6 dt-delete remove_image latest_remove" ids=""><i class="del ico-trash"></i></button></figure>');
                         };
                     })(currFile);
                     reader.readAsDataURL(this.files[i]);
                     data.append('pics[]', currFile);
-                    data.append('id',id);
+                    data.append('id', id);
                 } else {
-                    
-                    if(file_cnt != ''){
+                    if (file_cnt != '') {
                         $('.photos_cnt').text(file_cnt);
-                    }else{
+                    } else {
                         $('.photos_cnt').text('');
                     }
-                    
-                    // Reset the file input and display an error message
-                    // $('#imgPreview').attr('src', "{{ asset('/storage/images/banner_image/no-image.jpg') }}");
-                    // $('.error').remove();
-                    // $('.photo_img').after('<label class="error">Only PNG, JPEG, or JPG images are allowed for photos.</label>');
                 }
-                
             }
-            if(data.has('pics[]')) {
+            if (data.has('pics[]')) {
                 jQuery.ajax({
                     headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     url: "{{route('clients-photos')}}",
@@ -1224,16 +1220,23 @@
                     type: 'POST', // For jQuery < 1.9
                     success: function (response) {
                         if (response.success) {
+                            uploadedImageIds = response.id;
                             Swal.fire({
                                 title: "Client!",
                                 text: "Client Photos Updated successfully.",
                                 type: "success",
                             }).then((result) => {
-                                window.location = "{{url('clients')}}/" + id
-                                // window.location = "{{url('clients')}}"//'/player_detail?username=' + name;
+                                var photosCount = parseInt($('.photos_count').text());
+                                var resultdoc = photosCount + fileCount;
+                                $('.photos_count').text(resultdoc);
+
+                                // Handle success if needed
+                                var latestImages = gallery.children('figure').slice(-numFiles); // Get the latest appended images
+                                latestImages.each(function(index) {
+                                    $(this).find('.latest_remove').attr('ids', uploadedImageIds[index]); // Assign the ID to the corresponding delete button
+                                });
                             });
                         } else {
-                            
                             Swal.fire({
                                 title: "Error!",
                                 text: response.message,
@@ -1245,18 +1248,19 @@
             }
         });
         $("#client_documents").change(function() {
+            var fileCount = this.files.length;
             var inputElement = document.getElementById('client_documents');
             var data = new FormData();
             var id=$('#id').val();
+            var gallery = $('.docs'); // Selecting the document container
             for (var i = 0; i < this.files.length; i++) {
                 var reader = new FileReader();
                 var files = this.files[i].name;
                 var currFile = this.files[i];
                 var fileExt = files.split('.').pop().toLowerCase(); // file extension
-                // Check if the file is an image and has a valid extension and size
+                // Check if the file has a valid extension
                 if ($.inArray(fileExt, ['png', 'jpeg', 'jpg', 'xlsx', 'doc', 'pdf']) !== -1) { // 2MB in bytes  && fileSize <= 2097152
                     var reader = new FileReader();
-
                     reader.onload = (function (file) {
                         return function (e) {
                             var d = new Date();
@@ -1264,27 +1268,20 @@
                             var fulldate = d.getDate()+' '+ month + ' ' + d.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
                             var fileName = file.name;
                             var fileContents = e.target.result;
-                            $('.docs').append('<a href="#" class="btn tag icon-btn-left skyblue mb-2"><span><i class="ico-pdf me-2 fs-2 align-middle"></i> ' + fileName + '</span> <span class="file-date">' + fulldate + '</span><i class="del ico-trash"></i></a>');
-                            $('.docs').append('<a href="#" class="btn tag icon-btn-left skyblue remove_doc mb-2"><i class="ico-pdf me-2 fs-2"></i> ' + fileName + ' <i class="del ico-trash"></i></a><figure style="display:none"; imgname='+ fileName +' id="remove_image" class="remove_image"><img src=' + fileContents + '><button type="button" class="btn black-btn round-6 dt-delete"><i class="ico-trash"></i></button></figure>');
+                            // Append the document and delete button to the gallery
+                            gallery.append('<a href="#" class="btn tag icon-btn-left skyblue mb-2 latest_remove_doc"><span><i class="ico-pdf me-2 fs-2 align-middle"></i> ' + fileName + '</span> <span class="file-date">' + fulldate + '</span><i class="del ico-trash remove_doc"></i></a>');
                         };
                     })(currFile);
                     reader.readAsDataURL(this.files[i]);
                     data.append('pics[]', currFile);
                     data.append('id',id);
                 } else {
-                    
                     if(file_cnt != ''){
                         $('.photos_cnt').text(file_cnt);
-                    }else{
+                    } else {
                         $('.photos_cnt').text('');
                     }
-                    
-                    // Reset the file input and display an error message
-                    // $('#imgPreview').attr('src', "{{ asset('/storage/images/banner_image/no-image.jpg') }}");
-                    // $('.error').remove();
-                    // $('.photo_img').after('<label class="error">Only PNG, JPEG, or JPG images are allowed for photos.</label>');
                 }
-                
             }
             if(data.has('pics[]')) {
                 jQuery.ajax({
@@ -1298,16 +1295,23 @@
                     type: 'POST', // For jQuery < 1.9
                     success: function (response) {
                         if (response.success) {
+                            uploadedImageIds = response.client_id;
                             Swal.fire({
                                 title: "Client!",
                                 text: "Client Documents Updated successfully.",
                                 type: "success",
                             }).then((result) => {
-                                window.location = "{{url('clients')}}/" + id
-                                // window.location = "{{url('clients')}}"//'/player_detail?username=' + name;
+                                // Update document count
+                                var docCount = parseInt($('.doc_count').text());
+                                var resultDocCount = docCount + fileCount;
+                                $('.doc_count').text(resultDocCount);
+                                
+                                // Assign IDs to the delete buttons
+                                $('.latest_remove_doc').each(function(index) {
+                                    $(this).find('.del').attr('ids', uploadedImageIds[index]);
+                                });
                             });
                         } else {
-                            
                             Swal.fire({
                                 title: "Error!",
                                 text: response.message,
@@ -1318,6 +1322,7 @@
                 });
             }
         });
+
         
     });
     $(document).on('submit','#update_client_detail',function(e){
@@ -1364,7 +1369,10 @@
                         text: "Client Photo Deleted successfully.",
                         type: "success",
                     }).then((result) => {
-                        window.location = "{{url('clients')}}/" + id
+                        var photosCount = parseInt($('.photos_count').text());
+                        var resultdoc = photosCount - 1;
+                        $('.photos_count').text(resultdoc);
+                        // window.location = "{{url('clients')}}/" + id
                     });
                 } else {
                     
@@ -1401,8 +1409,11 @@
                         text: "Client Documents Deleted successfully.",
                         type: "success",
                     }).then((result) => {
-                        window.location = "{{url('clients')}}/" + id
                         // window.location = "{{url('clients')}}/" + id
+                        // window.location = "{{url('clients')}}/" + id
+                        var docsCount = parseInt($('.doc_count').text());
+                        var resultdoc = docsCount - 1;
+                        $('.doc_count').text(resultdoc);
                     });
                 } else {
                     
