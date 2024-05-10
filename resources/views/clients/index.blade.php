@@ -282,7 +282,7 @@
                                     </ul>
                                 </div>
                             </div>
-                            <div><label style="color: red" id="service_error">Please select at least one service for this appointment.</label></div>
+                            <div style="display:none;" id="service_error"><label style="color: red">Please select at least one service for this appointment.</label></div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -604,6 +604,43 @@ $(document).ready(function() {
     $("#openWaitListModalBtn").click(function(){
         $("#New_waitlist_client").modal('show');
         $('#clientmodal').hide();
+        
+        $('.clientCreateModal').show();
+        $('#subcategory_text').text('All Services & Tasks');
+        $('#create_waitlist_client').trigger('reset');
+        $('#sub_services').empty();
+        $('#selected_services').empty();
+        
+        $('.new_client_head').hide();
+        $('.client_form').hide();
+        $('.client_detail').show();
+        
+        //for all services append code
+        var $this           = $(this),
+            categoryId      = $this.data('category_id'),
+            duration        = $this.data('duration'),
+            categoryTitle   = $this.text();
+            $.ajax({
+                url: "{{ route('calender.get-category-services') }}", // Replace with your actual API endpoint
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    'category_id' : categoryId === undefined ? 0 : categoryId
+                },
+                success: function (data) {
+
+                    $('#subcategory_text').text(categoryTitle);
+                    $('#sub_services').empty();
+                    $.each(data, function(index, item) {
+                        $("#sub_services").append(`<li><a href='javascript:void(0);' class='services' data-services_id=${item.id} data-category_id=${item.category_id} data-duration=${item.duration}>${item.service_name}</a></li>`);
+                    });
+                },
+                error: function (error) {
+                    console.error('Error fetching resources:', error);
+                }
+            });
     });
 
     $('.add_new_client').click(function(){
