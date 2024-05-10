@@ -391,7 +391,7 @@
                         <div class="clients_photos">
                             <h4 class="d-grey mb-3 mt-5">Photos</h4>
                             @if ($client_photos->count())
-                            <div class="gallery client-phbox grid-4">
+                            <div class="gallery client-phbox grid-4 history">
                                 @foreach ($client_photos as $photos)
                                     <figure>
                                         <a href="{{ $photos->photourl }}" data-fancybox="mygallery">

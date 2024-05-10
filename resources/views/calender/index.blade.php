@@ -32,6 +32,7 @@
                     <input type="text" id="search" class="form-control " autocomplete="off" placeholder="Search for a client" onkeyup="changeInput(this.value)">
                     <i class="ico-search"></i>
                 </div>
+                <div class="detaild-theos-scroll">
                 <div id="clientDetails" class="detaild-theos pt-3"></div>
                 <div id='external-events'></div>
                 {{-- <div id="result" class="list-group"></div>  --}}
@@ -136,7 +137,7 @@
                             <p class="additional_notes" style="display:none;">{{$waitlists->additional_notes}}
                             <div class="mt-2">
                                 <span class="dropdown show">
-                                    <a class="btn btn-primary font-13 alter btn-sm slot-btn me-2 dropdown-toggle more-options-btn" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <a class="btn btn-primary font-13 alter btn-sm slot-btn me-1 dropdown-toggle more-options-btn" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         More Options
                                     </a>
 
@@ -157,6 +158,7 @@
                     <span>No data found
                     </ul>
                     @endif
+                </div>
                 </div>
                 {{-- <img src="img/demo-calander.png" alt="" class="search_client"> onkeyup="changeInput(this.value)" --}}
             </div>
@@ -1679,9 +1681,12 @@
             var fileCount = this.files.length;
             var inputElement = document.getElementById('client_photos');
             var data = new FormData();
-            var id = $('#client_id').val();
+            var id = $('#id').val();
+            var gallery = $('.client-phbox.photos'); // Selecting the gallery container
+            var gallery_history = $('.client-phbox.history'); // Selecting the gallery container
             var uploadedImageIds = []; // Array to hold IDs of uploaded images
-            for (var i = 0; i < this.files.length; i++) {
+            var numFiles = this.files.length; // Store the number of uploaded files
+            for (var i = 0; i < numFiles; i++) {
                 var reader = new FileReader();
                 var files = this.files[i].name;
                 var currFile = this.files[i];
@@ -1689,58 +1694,27 @@
                 // Check if the file is an image and has a valid extension and size
                 if ($.inArray(fileExt, ['png', 'jpeg', 'jpg']) !== -1) { // 2MB in bytes  && fileSize <= 2097152
                     var reader = new FileReader();
-
                     reader.onload = (function (file) {
-                    return function (e) {
-                        var fileName = file.name;
-                        var fileContents = e.target.result;
-
-                        $('.gallery.client-phbox').append(
-                            '<input type="hidden" name="hdn_img" value="' + file + '">' +
-                            '<figure imgname="' + fileName + '" class="remove_image latest">' +
-                            '<a href='+ fileContents +' data-fancybox="mygallery">' +
-                            '<img src=' + fileContents + ' class="img-fluid">' +
-                            '</a></figure>'
-                        );
-
-                        $('.gallery.abc').append(
-                            '<input type="hidden" name="hdn_img" value="' + file + '">' +
-                            '<figure imgname="' + fileName + '" class="remove_image latest">' +
-                            '<a href='+ fileContents +' data-fancybox="mygallery">' +
-                            '<img src=' + fileContents + ' class="img-fluid">' +
-                            '</a></figure>'
-                        );
-
-                        // Add delete button
-                        var deleteButton = $('<button>')
-                            .addClass('btn black-btn round-6 remove_image dt-delete')
-                            .html('<i class="ico-trash"></i>')
-                            .click(function () {
-                                // You can call a function here to delete the photo using AJAX
-                                // For example, deletePhoto(photoId);
-                            });
-
-                        $('.remove_image:last').append(deleteButton);
-                    };
-                })(currFile);
-                reader.readAsDataURL(this.files[i]);
-                data.append('pics[]', currFile);
-                data.append('id',id);
+                        return function (e) {
+                            var fileName = file.name;
+                            var fileContents = e.target.result;
+                            // Append the image and delete button to the gallery
+                            gallery.append('<figure><a href="' + fileContents + '" data-fancybox="mygallery"><img src="' + fileContents + '" alt=""></a><button type="button" class="btn black-btn round-6 dt-delete remove_image latest_remove" ids=""><i class="del ico-trash"></i></button></figure>');
+                            gallery_history.append('<figure><a href="' + fileContents + '" data-fancybox="mygallery"><img src="' + fileContents + '" alt=""></a></figure>');
+                        };
+                    })(currFile);
+                    reader.readAsDataURL(this.files[i]);
+                    data.append('pics[]', currFile);
+                    data.append('id', id);
                 } else {
-                    
-                    // if(file_cnt != ''){alert('11');
-                    //     $('.photos_count').text(file_cnt);
-                    // }else{alert('22');
-                    //     $('.photos_count').text('');
-                    // }
-                    
-                    // Reset the file input and display an error message
-                    // $('#imgPreview').attr('src', "{{ asset('/storage/images/banner_image/no-image.jpg') }}");
-                    // $('.error').remove();
-                    // $('.photo_img').after('<label class="error">Only PNG, JPEG, or JPG images are allowed for photos.</label>');
+                    if (file_cnt != '') {
+                        $('.photos_cnt').text(file_cnt);
+                    } else {
+                        $('.photos_cnt').text('');
+                    }
                 }
             }
-            if(data.has('pics[]')) {
+            if (data.has('pics[]')) {
                 jQuery.ajax({
                     headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     url: "{{route('clients-photos')}}",
@@ -1758,13 +1732,14 @@
                                 text: "Client Photos Updated successfully.",
                                 type: "success",
                             }).then((result) => {
-                                // Update the photos count after success 01-03-2023
                                 var photosCount = parseInt($('.photos_count').text());
                                 var resultdoc = photosCount + fileCount;
                                 $('.photos_count').text(resultdoc);
-                                // Loop through each .remove_image element and set the ids attribute
-                                $('.latest').each(function(index, element) {
-                                    $(this).find('.dt-delete').attr('ids', uploadedImageIds[index]);
+
+                                // Handle success if needed
+                                var latestImages = gallery.children('figure').slice(-numFiles); // Get the latest appended images
+                                latestImages.each(function(index) {
+                                    $(this).find('.latest_remove').attr('ids', uploadedImageIds[index]); // Assign the ID to the corresponding delete button
                                 });
                             });
                         } else {
@@ -1775,7 +1750,6 @@
                             });
                         }
                     }
-
                 });
             }
         });
@@ -2333,12 +2307,17 @@
         });
         $(document).on('click', '.show_notes', function(e) {
             e.preventDefault();
-            var notesDiv = $(this).closest('li').find('.additional_notes');
-            notesDiv.toggle(); // Toggle the visibility of notes
+            var isDisabled = $(this).attr('disabled') !== undefined;
+            if(isDisabled == false)
+            {
+                var notesDiv = $(this).closest('li').find('.additional_notes');
+                notesDiv.toggle(); // Toggle the visibility of notes
+            }
         });
         $(document).on('click', '.more-options-btn', function(e) {
             e.preventDefault();
-            $(this).next('.more-options').toggle();
+            // $(this).next('.more-options').toggle();
+            $(this).next().toggle();
         });
         $(document).on('click', '.current_date_checked', function(e) {
             var isChecked = $(this).prop('checked') ? '1' : '0';
@@ -2428,7 +2407,7 @@
                                     <p class="additional_notes" style="display:none;">${item.additional_notes}</p>
                                     <div class="mt-2">
                                         <span class="dropdown show">
-                                            <a class="btn btn-primary font-13 alter btn-sm slot-btn me-2 dropdown-toggle more-options-btn" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <a class="btn btn-primary font-13 alter btn-sm slot-btn me-1 dropdown-toggle more-options-btn" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                 More Options
                                             </a>
                                             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
@@ -2686,7 +2665,7 @@
                                         <p class="additional_notes" style="display:none;">${item.additional_notes}</p>
                                         <div class="mt-2">
                                             <span class="dropdown show">
-                                                <a class="btn btn-primary font-13 alter btn-sm slot-btn me-2 dropdown-toggle more-options-btn" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <a class="btn btn-primary font-13 alter btn-sm slot-btn me-1 dropdown-toggle more-options-btn" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     More Options
                                                 </a>
                                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
@@ -4998,18 +4977,49 @@
                         if (res[i].documents && res[i].documents.length > 0) {
                             for (var j = 0; j < res[i].documents.length; j++) {
                                 // If the record with the same doc_id already exists in the array, skip
-                                if (existingRecordIndex !== -1 && client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].documents[j].doc_id)) {
+                                if (existingRecordIndex !== -1 && client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].documents[j].id)) {
                                     continue;
                                 }
                                 // If the record doesn't exist in the array or the doc_id doesn't exist in the documents array, add it
-                                if (existingRecordIndex === -1 || !client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].documents[j].doc_id)) {
+                                if (existingRecordIndex === -1 || !client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].documents[j].id)) {
                                     client_details[existingRecordIndex !== -1 ? existingRecordIndex : i].client_documents.push({
-                                        doc_id: res[i].documents[j].doc_id,
+                                        doc_id: res[i].documents[j].id,
                                         doc_name: res[i].documents[j].doc_name,
                                         created_at: res[i].documents[j].created_at
                                     });
                                 }
                             }
+                        }
+                        if (res[i].photos && res[i].photos.length > 0) {
+                            $('.photos_count').text(res[i].photos.length);
+
+                            var photoContainer = $('.gallery.client-phbox'); // Assuming you have a container for client photos in your modal
+                            photoContainer.empty(); // Clear previous photos
+                            res[i].photos.forEach(function(photoUrl) {
+                                var img = $('<img>').attr('src', '{{ asset('storage/images/clients_photos/') }}' + '/' + photoUrl.photo_name).addClass('img-fluid');
+                                var anchor = $('<a>').attr({
+                                    'href': '{{ asset('storage/images/clients_photos/') }}' + '/' + photoUrl.photo_name,
+                                    'data-fancybox': 'mygallery' // Add data-fancybox attribute
+                                }).append(img);
+                                var figure = $('<figure>').append(anchor);
+
+                                // Create the delete button with a dynamic ID based on the photo index
+                                var deleteButton = $('<button>')
+                                .addClass('btn black-btn round-6 dt-delete remove_image')
+                                .attr('type', 'button')
+                                .attr('ids', photoUrl.id)
+                                .click(function() {
+                                    // Functionality to delete the photo based on its ID
+                                    var photoId = $(this).attr('photos-id');
+                                    deletePhoto(photoId);
+                                })
+                                .append($('<i>').addClass('ico-trash'));
+
+                                // Append the delete button to the figure element
+                                figure.append(deleteButton);
+                                
+                                photoContainer.append(figure);
+                            });
                         }
                     }
                 } else {
@@ -5115,13 +5125,13 @@
                             // Iterate over client documents and push only doc_name and created_at
                             for (var j = 0; j < res[i].documents.length; j++) {
                                 // If the record with the same doc_id already exists in the array, skip
-                                if (existingRecordIndex !== -1 && client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].documents[j].doc_id)) {
+                                if (existingRecordIndex !== -1 && client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].documents[j].id)) {
                                     continue;
                                 }
                                 // If the record doesn't exist in the array or the doc_id doesn't exist in the documents array, add it
-                                if (existingRecordIndex === -1 || !client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].documents[j].doc_id)) {
+                                if (existingRecordIndex === -1 || !client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].documents[j].id)) {
                                     client_details[existingRecordIndex !== -1 ? existingRecordIndex : i].client_documents.push({
-                                        doc_id: res[i].documents[j].doc_id,
+                                        doc_id: res[i].documents[j].id,
                                         doc_name: res[i].documents[j].doc_name,
                                         created_at: res[i].documents[j].created_at
                                     });
@@ -5232,13 +5242,13 @@
                             // Iterate over client documents and push only doc_name and created_at
                             for (var j = 0; j < res[i].documents.length; j++) {
                                 // If the record with the same doc_id already exists in the array, skip
-                                if (existingRecordIndex !== -1 && client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].documents[j].doc_id)) {
+                                if (existingRecordIndex !== -1 && client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].documents[j].id)) {
                                     continue;
                                 }
                                 // If the record doesn't exist in the array or the doc_id doesn't exist in the documents array, add it
-                                if (existingRecordIndex === -1 || !client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].documents[j].doc_id)) {
+                                if (existingRecordIndex === -1 || !client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].documents[j].id)) {
                                     client_details[existingRecordIndex !== -1 ? existingRecordIndex : i].client_documents.push({
-                                        doc_id: res[i].documents[j].doc_id,
+                                        doc_id: res[i].documents[j].id,
                                         doc_name: res[i].documents[j].doc_name,
                                         created_at: res[i].documents[j].created_at
                                     });
@@ -5352,13 +5362,13 @@
                         if (res[i].documents && res[i].documents.length > 0) {
                             for (var j = 0; j < res[i].documents.length; j++) {
                                 // If the record with the same doc_id already exists in the array, skip
-                                if (existingRecordIndex !== -1 && client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].documents[j].doc_id)) {
+                                if (existingRecordIndex !== -1 && client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].documents[j].id)) {
                                     continue;
                                 }
                                 // If the record doesn't exist in the array or the doc_id doesn't exist in the documents array, add it
-                                if (existingRecordIndex === -1 || !client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].documents[j].doc_id)) {
+                                if (existingRecordIndex === -1 || !client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].documents[j].id)) {
                                     client_details[existingRecordIndex !== -1 ? existingRecordIndex : i].client_documents.push({
-                                        doc_id: res[i].documents[j].doc_id,
+                                        doc_id: res[i].documents[j].id,
                                         doc_name: res[i].documents[j].doc_name,
                                         created_at: res[i].documents[j].created_at
                                     });
@@ -5469,13 +5479,13 @@
                             // Iterate over client documents and push only doc_name and created_at
                             for (var j = 0; j < res[i].documents.length; j++) {
                                 // If the record with the same doc_id already exists in the array, skip
-                                if (existingRecordIndex !== -1 && client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].documents[j].doc_id)) {
+                                if (existingRecordIndex !== -1 && client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].documents[j].id)) {
                                     continue;
                                 }
                                 // If the record doesn't exist in the array or the doc_id doesn't exist in the documents array, add it
-                                if (existingRecordIndex === -1 || !client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].documents[j].doc_id)) {
+                                if (existingRecordIndex === -1 || !client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].documents[j].id)) {
                                     client_details[existingRecordIndex !== -1 ? existingRecordIndex : i].client_documents.push({
-                                        doc_id: res[i].documents[j].doc_id,
+                                        doc_id: res[i].documents[j].id,
                                         doc_name: res[i].documents[j].doc_name,
                                         created_at: res[i].documents[j].created_at
                                     });
@@ -6304,7 +6314,6 @@
                     // Assuming each document object has a property called 'created_at' representing its creation date
                     var createdDate = new Date(doc.created_at);
                     var formattedDate = formatDate(createdDate); // Assuming formatDate function formats the date appropriately
-
                     var link = $('<a>').addClass('btn tag icon-btn-left skyblue mb-2').html('<span><i class="ico-pdf me-2 fs-2 align-middle"></i>' + doc.doc_name + '</span><span class="file-date">' + formattedDate + '</span><i class="del ico-trash remove_doc" ids = "'+ doc.doc_id+ '"></i>');
                     var listItem = $('<span>').append(link);
                     documentListContainer.append(listItem);

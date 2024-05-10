@@ -225,7 +225,7 @@
                                     <div class="mt-2 d-grey font-13"><em>Photos you add here will be visible to this
                                             client in Online Booking.</em></div>
                                 </div>
-                                <div class="gallery client-phbox abc grid-6 gap-2 h-188">
+                                <div class="gallery client-phbox abc grid-6 gap-2 h-188 photos">
                                 </div>
                             </div>
                         </form>
