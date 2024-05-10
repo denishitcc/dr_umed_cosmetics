@@ -38,7 +38,8 @@ var DU = {};
             var formjson = $("#formxml").data('form_json');
             Formio.builder(document.getElementById('form-editor'), formjson, {}).then(function (builder) {
                 builder.on('change', function () {
-                    update(builder.schema);
+                    var json = JSON.stringify(builder.schema);
+                    context.formJson(json)
                 });
             });
         },
@@ -123,42 +124,40 @@ var DU = {};
                     return false;
                 }
             });
+        },
+
+        formJson: function(json){
+            var fid = $("#deleteFormBtn").data('formid');
+            $.ajax({
+                url: moduleConfig.updateHTMLFormContent,
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    'form_id'   : fid,
+                    'form_json' : json
+                },
+                success: function (data) {
+                    if (data.success) {
+                        Swal.fire({
+                            title: "Forms!",
+                            text: data.message,
+                            info: "success",
+                        });
+                        // location.reload();
+                    } else {
+                        Swal.fire({
+                            title: "Error!",
+                            text: data.message,
+                            info: "error",
+                        });
+                    }
+                },
+                error: function (error) {
+                    console.error('Error fetching events:', error);
+                }
+            });
         }
     }
-
 })();
-
-function update(formData){
-    var fid = $("#deleteFormBtn").data('formid');
-
-    $.ajax({
-        url: moduleConfig.updateHTMLFormContent,
-        type: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
-        },
-        data: {
-            'form_id'   : fid,
-            'form_json' : formData
-        },
-        success: function (data) {
-            if (data.success) {
-                Swal.fire({
-                    title: "Forms!",
-                    text: data.message,
-                    info: "success",
-                });
-                location.reload();
-            } else {
-                Swal.fire({
-                    title: "Error!",
-                    text: data.message,
-                    info: "error",
-                });
-            }
-        },
-        error: function (error) {
-            console.error('Error fetching events:', error);
-        }
-    });
-}

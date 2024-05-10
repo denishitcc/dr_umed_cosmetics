@@ -4,7 +4,11 @@
     <meta charset="UTF-8" />
     <title>Preview</title>
     <link rel="stylesheet" href="{{ asset('js/formiojs/dist/formio.full.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('js/@formio/contrib/dist/formio-contrib.css') }}">
+    <link href="{{ asset('css/styles.css') }}" rel="stylesheet"/>
+    <link href="{{ asset('css/custom.css') }}" rel="stylesheet" />
+       {{-- <link rel="stylesheet" href="{{ asset('js/bootstrap/dist/css/bootstrap.min.css') }}"> --}}
+
+    {{-- <link rel="stylesheet" href="{{ asset('js/@formio/contrib/dist/formio-contrib.css') }}"> --}}
 </head>
 <body>
     <div class="client-preview-banner js-client-preview-banner">
@@ -30,12 +34,12 @@
         <label data-form_json="{{ $forms->form_json }}" id="formxml"></label>
         <div id="fb-editor"></div>
     </div>
+    <script src="{{ asset('js/jquery/dist/jquery.min.js') }}"></script>
+    <script src="{{ asset('js/@formio/js/dist/formio.form.min.js') }}"></script>
+    <script src="{{ asset('js/formiojs/dist/formio.full.min.js') }}"></script>
+    <script src="{{ asset('js/@formio/js/dist/formio.full.js') }}"></script>
+    <script src="{{ asset('js/section_break.js') }}"></script>
+    <script src="{{ asset('js/preview.js') }}"></script>
+    <script src="{{ asset('js/index.js') }}"></script>
 </body>
 </html>
-<script src="{{ asset('js/jquery/dist/jquery.min.js') }}"></script>
-<script src="{{ asset('js/@formio/js/dist/formio.form.min.js') }}"></script>
-<script src="{{ asset('js/formiojs/dist/formio.full.min.js') }}"></script>
-<script src="{{ asset('js/@formio/js/dist/formio.full.js') }}"></script>
-<script src="{{ asset('js/section_break.js') }}"></script>
-<script src="{{ asset('js/preview.js') }}"></script>
-<script src="{{ asset('js/index.js') }}"></script>
