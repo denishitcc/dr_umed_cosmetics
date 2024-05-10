@@ -257,8 +257,10 @@
     @if(Route::current()->getName() == 'forms.show')
         <link rel="stylesheet" href="{{ asset('js/bootstrap-icons/font/bootstrap-icons.css') }}">
         <script src="{{ asset('js/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+    @elseif(Route::current()->getName() == 'calender.index')
+        <script src="{{ asset('js/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
     @else
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
         <script src="{{ asset('js/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
     @endif
 
