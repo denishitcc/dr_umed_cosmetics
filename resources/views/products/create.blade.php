@@ -330,7 +330,7 @@ $(document).ready(function() {
             if (element.attr("name") === "price") {
                 error.insertAfter('.form-text');
             }else if(element.attr("name") === "cost") {
-                error.insertAfter('.cost_validate');
+                error.insertAfter('.cost_validate').addClass("w-100");
             }
             else {
                 error.insertAfter(element);

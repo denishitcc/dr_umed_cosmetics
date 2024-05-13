@@ -98,13 +98,19 @@
                                 <span><i class="ico-clock me-1 fs-5"></i> {{ \Carbon\Carbon::parse($waitlists->updated_at)->diffForHumans() }}</span>
                             </div>
                             <div class="client-name">
-                                <div class="drop-cap" style="background: #D0D0D0; color:#fff;">{{ strtoupper(substr($waitlists->firstname, 0, 1))}}</div>
+                                <div class="drop-cap" style="background: #D0D0D0; color:#fff;">
+                                    {{ $waitlists->firstname ? strtoupper(substr($waitlists->firstname, 0, 1)) : 'N' }}
+                                </div>
                                 <div class="client-info">
-                                    <h4 class="blue-bold" data-clientid="{{$waitlists->id}}">{{$waitlists->firstname.' '.$waitlists->lastname}}</h4>
+                                    <h4 class="blue-bold" data-clientid="{{ $waitlists->id }}">
+                                        {{ $waitlists->firstname ? $waitlists->firstname . ' ' . $waitlists->lastname : 'No client' }}
+                                    </h4>
                                 </div>
                             </div>
-                            <div class="mb-2"><a href="#" class="river-bed"><b>{{$waitlists->mobile_number}}</b></a><br>
-                            <a href="#" class="river-bed"><b>{{$waitlists->email}}</b></a></div>
+                            <div class="mb-2">
+                                <a href="#" class="river-bed"><b>{{ $waitlists->mobile_number }}</b></a><br>
+                                <a href="#" class="river-bed"><b>{{ $waitlists->email }}</b></a>
+                            </div>
                             <!-- Your other content -->
                             @php
                             $ser_names = [];
@@ -461,7 +467,7 @@
                     </div>
                     <div class="mb-5" id="clientWaitListEditModal">
                         <div class="one-inline align-items-center mb-2">
-                            <span class="custname me-3" id="clientEditDetailsModal"> </span>
+                            <span class="custname me-3" id="clientEditDetailsModals"> </span>
                             <input type="hidden" name="clientname" id="clientName">
                             <input type="hidden" name="clientid" id="clientid">
                             <input type="hidden" name="waitlist_id" id="waitlist_id">
@@ -474,7 +480,7 @@
                             <div class="form-group">
                                 <label class="form-label">Preferred staff member</label>
                                 <select class="form-select form-control" name="user_id" id="user_id">
-                                    <option selected="" value="">Anyone</option>
+                                    <option value="" selected>Anyone</option>
                                     @if(count($staffs)>0)
                                     @foreach($staffs as $user)
                                         <option value="{{$user->id}}">{{$user->first_name.' '.$user->last_name}}</option>
@@ -2394,11 +2400,19 @@
                                 <li class="fc-event" data-app_id="${item.id}" data-client_id="${item.client_id}" data-category_id="${item.category_id}" data-duration="${item.duration}" data-service_name="${item.service_name}" data-service_id="${item.service_id}" data-client_name="${item.firstname+' '+item.lastname}">
                                     <div class="hist-strip">${formattedDate} <span><i class="ico-clock me-1 fs-5"></i>${formattedTimeElapsed}</span></div>
                                     <div class="client-name">
-                                        <div class="drop-cap" style="background: #D0D0D0; color:#fff;">${item.firstname.charAt(0).toUpperCase()}</div>
-                                        <div class="client-info"><h4 class="blue-bold" data-clientid="${item.client_id}">${item.firstname} ${item.lastname}</h4></div>
+                                        <div class="drop-cap" style="background: #D0D0D0; color:#fff;">
+                                            ${item.firstname ? item.firstname.charAt(0).toUpperCase() : 'N'}
+                                        </div>
+                                        <div class="client-info">
+                                            <h4 class="blue-bold" data-clientid="${item.client_id}">
+                                                ${item.client_id ? `${item.firstname} ${item.lastname}` : 'No client'}
+                                            </h4>
+                                        </div>
                                     </div>
-                                    <div class="mb-2"><a href="#" class="river-bed"><b>${item.mobile_number}</b></a><br>
-                                    <a href="#" class="river-bed"><b>${item.email}</b></a></div>
+                                    <div class="mb-2">
+                                        <a href="#" class="river-bed"><b>${item.client_id ? item.mobile_number : ''}</b></a><br>
+                                        <a href="#" class="river-bed"><b>${item.client_id ? item.email : ''}</b></a>
+                                    </div>
                                     <!-- Your other content -->
                                     ${item.service_name.map((service, index) => `
                                         <p>${service}</p>
@@ -2748,11 +2762,21 @@
             var app_date = $(this).attr('preferred-from-date');
             var app_time = $(this).attr('preferred-to-date');
             var staff_name = $(this).attr('staff_name');
-            var staff_id = $(this).attr('user-id');
             var event_id = $(this).attr('event_id');
             var waitlist_id = $(this).attr('waitlist_id');
-            $('#client_id').val(clientId);
-            $('#user_id').val(staff_id);
+            if(clientId == "null")
+            {
+                $('#client_id').val('');
+            }else{
+                $('#client_id').val(clientId);
+            }
+            
+            var staff_id = $(this).attr('user-id');
+            if(staff_id == "null"){
+                $('#user_id').val('');
+            }else{
+                $('#user_id').val(staff_id ? staff_id : '');
+            }
             $('#waitlist_id').val(waitlist_id);
             // Set values in modal fields
             $('#latest_staff_id').val(staff_id);
@@ -2761,12 +2785,26 @@
             $('#event_id').val(event_id);
             $('#preferred_from_date').val(app_date);
             $('#preferred_to_date').val(app_time);
-            $('#additional_notes').val($(this).attr('additional-notes'));
+            if($(this).attr('additional-notes') =='' || $(this).attr('additional-notes') =="null")
+            {
+                $('#additional_notes').val('');
+            }else{
+                $('#additional_notes').val($(this).attr('additional-notes'));
+            }
+            
 
-            // Trigger the modal to open
+            if(clientId == '' || clientId == 'null')
+            {
+                $('.clientWaitListEditModal').show();
+                $('#clientWaitListEditModal').hide();
+            }else{
+                $('.clientWaitListEditModal').hide();
+                // $("#Edit_waitlist_client").modal('show');
+            }
+            
             $("#Edit_waitlist_client").modal('show');
-            $('.clientWaitListEditModal').hide();
-            $("#clientEditDetailsModal").html(`<i class='ico-user2 me-2 fs-6'></i>${clientName}`);
+            $('#clientWaitListEditModal').show();
+            $("#clientEditDetailsModals").html(`<i class='ico-user2 me-2 fs-6'></i>${clientName}`);
 
             $('#edit_waitlist_selected_services').empty();
             // Loop through each service item
@@ -2795,6 +2833,10 @@
                     }
                 });
             });
+            if(clientId == '' || clientId == 'null')
+            {
+                $('#clientWaitListEditModal').hide();
+            }
         });
         $(document).on('click', '.delete_waitlist_client', function (e) {
             var appointmentId = $(this).attr('waitlist_id');
@@ -5743,11 +5785,11 @@
                 if (client.email === value || client.mobile_number === value || client.name === value) {
                     console.log(client);
                     // If a match is found, dynamically bind HTML to clientDetails element
-                    $('#clienteditmodal').show();
-                    $('.clientEditModal').hide();
+                    $('#clientWaitListEditModal').show();
+                    $('.clientWaitListEditModal').hide();
                     $('#resulteditmodal').empty();
                     $("#clientName").val(client.name+client.lastname);
-                    $("#clienteditDetailsModal").html(
+                    $("#clientEditDetailsModals").html(
                         `<i class='ico-user2 me-2 fs-6'></i>  ${client.name}  ${client.lastname}`);
                     $('#clientDetails').html(
                         `<div class="client-name">
@@ -5772,6 +5814,9 @@
                             <hr>`
                     );
                     document.getElementById('searcheditmodel').value = '';
+                    // $("#clientDetailsModal").html(
+                    // `<i class='ico-user2 me-2 fs-6'></i> ${client.name} ${client.lastname}`);
+                    document.getElementById('searchwaitlistmodel').value='';
                     // Trigger the click event of the history button
                     // $('.history').click();
                     break; // Stop iterating once a match is found

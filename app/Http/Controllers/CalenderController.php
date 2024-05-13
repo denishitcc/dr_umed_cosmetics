@@ -60,7 +60,7 @@ class CalenderController extends Controller
         $staffs     = User::all();
         $todayDate  = date('Y-m-d'); // Get current date in 'YYYY-MM-DD' format
         $waitlist   = WaitlistClient::select('waitlist_client.*', 'clients.firstname','clients.lastname','clients.mobile_number','clients.email', 'users.first_name as user_firstname', 'users.last_name as user_lastname')
-            ->join('clients', 'waitlist_client.client_id', '=', 'clients.id')
+            ->leftjoin('clients', 'waitlist_client.client_id', '=', 'clients.id')
             ->leftjoin('users', 'waitlist_client.user_id', '=', 'users.id')
             ->where('preferred_from_date',$todayDate)
             ->get();
@@ -1223,16 +1223,26 @@ class CalenderController extends Controller
         $todayDate = date('Y-m-d'); // Get current date in 'YYYY-MM-DD' format
         $staffs      = User::all();
         if($request->is_checked == '1') {
+            // dd('1');
+            // $waitlist = WaitlistClient::select('waitlist_client.*', 'clients.firstname','clients.lastname','clients.mobile_number','clients.email', 'users.first_name as user_firstname', 'users.last_name as user_lastname')
+            //     ->join('clients', 'waitlist_client.client_id', '=', 'clients.id')
+            //     ->leftjoin('users', 'waitlist_client.user_id', '=', 'users.id')
+            //     ->where('preferred_from_date', $todayDate)
+            //     ->get();
             $waitlist = WaitlistClient::select('waitlist_client.*', 'clients.firstname','clients.lastname','clients.mobile_number','clients.email', 'users.first_name as user_firstname', 'users.last_name as user_lastname')
-                ->join('clients', 'waitlist_client.client_id', '=', 'clients.id')
+                ->leftjoin('clients', 'waitlist_client.client_id', '=', 'clients.id')
                 ->leftjoin('users', 'waitlist_client.user_id', '=', 'users.id')
                 ->where('preferred_from_date', $todayDate)
                 ->get();
         } else {
+            // $waitlist = WaitlistClient::select('waitlist_client.*', 'clients.firstname','clients.lastname','clients.mobile_number','clients.email', 'users.first_name as user_firstname', 'users.last_name as user_lastname')
+            //     ->join('clients', 'waitlist_client.client_id', '=', 'clients.id')
+            //     ->leftjoin('users', 'waitlist_client.user_id', '=', 'users.id')
+            //     ->get();
             $waitlist = WaitlistClient::select('waitlist_client.*', 'clients.firstname','clients.lastname','clients.mobile_number','clients.email', 'users.first_name as user_firstname', 'users.last_name as user_lastname')
-                ->join('clients', 'waitlist_client.client_id', '=', 'clients.id')
-                ->leftjoin('users', 'waitlist_client.user_id', '=', 'users.id')
-                ->get();
+            ->leftJoin('clients', 'waitlist_client.client_id', '=', 'clients.id')
+            ->leftJoin('users', 'waitlist_client.user_id', '=', 'users.id')
+            ->get();
         }
 
         foreach($waitlist as $wait) {
@@ -1270,14 +1280,14 @@ class CalenderController extends Controller
         $staffs      = User::all();
         if($request->is_checked == '1') {
             $waitlist = WaitlistClient::select('waitlist_client.*', 'clients.firstname','clients.lastname','clients.mobile_number','clients.email', 'users.first_name as user_firstname', 'users.last_name as user_lastname')
-                ->join('clients', 'waitlist_client.client_id', '=', 'clients.id')
+                ->leftjoin('clients', 'waitlist_client.client_id', '=', 'clients.id')
                 ->leftjoin('users', 'waitlist_client.user_id', '=', 'users.id')
                 ->where('preferred_from_date', $todayDate)
                 ->where('users.id', $request->staff_id)
                 ->get();
         } else {
             $waitlist = WaitlistClient::select('waitlist_client.*', 'clients.firstname','clients.lastname','clients.mobile_number','clients.email', 'users.first_name as user_firstname', 'users.last_name as user_lastname')
-                ->join('clients', 'waitlist_client.client_id', '=', 'clients.id')
+                ->leftjoin('clients', 'waitlist_client.client_id', '=', 'clients.id')
                 ->leftjoin('users', 'waitlist_client.user_id', '=', 'users.id')
                 ->where('users.id', $request->staff_id)
                 ->get();

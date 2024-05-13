@@ -539,11 +539,11 @@ var DU = {};
                 $('#datepicker').datepicker('show');
             })
             $(document).on('click','.move_appointment',function(e){
-                var resultElement = document.getElementById("clientDetails"),
-                details =  `<div class='app_sum'>
-                                <div class="summry-header"><span class="ico-clock me-2 fs-4"></span> Appointment Summary</div>
-                            </div>`;
-                resultElement.innerHTML += details;
+                // var resultElement = document.getElementById("clientDetails"),
+                // details =  `<div class='app_sum'>
+                //                 <div class="summry-header"><span class="ico-clock me-2 fs-4"></span> Appointment Summary</div>
+                //             </div>`;
+                // resultElement.innerHTML += details;
 
                 // $("#selected_services > li").each(function(){
                     // var $this           = $(this),
@@ -556,7 +556,8 @@ var DU = {};
                     appId               = $('.orange-box').next().find('#edit_appointment').attr('event_id');
                     // $('#mycalendar').remove();
                     $('#external-events').removeAttr('style');
-                    $('#external-events').append(`
+                    // $('#external-events').remove();
+                    $('#external-events').html(`
                     <div class="drag-box mb-3">
                         <div class="head mb-2"><b>Drag and drop on</b> to a day on the appointment book
                             <i class="ico-noun-arrow"></i></div>
@@ -569,8 +570,9 @@ var DU = {};
                 //for reload all services & selected services
                 $("#all_ser").load(location.href+" #all_ser>*","");
                 $("#selected_services").empty();
-                $('#editEventData').remove();
-
+                // $('#editEventData').remove();//comment
+                $('.orange-box').hide();
+                $('orange-box').after('#external-events');
                 //appointment rebook end
 
 
@@ -592,6 +594,8 @@ var DU = {};
                 });
                 // Show datepicker
                 $('#datepicker').datepicker('show');
+                // Cut and paste external-events after orange-box
+                $('#external-events').insertAfter('.orange-box');
             })
             $(document).on('click','.cancel_rebook',function(e){
                 $('.history_appointments').show();

@@ -71,7 +71,7 @@
                                 <label class="form-label">Duration</label>
                                 <div class="input-group">
                                     <input type="text" class="form-control" placeholder="0" id="duration" name="duration" maxlength="3">
-                                    <span class="input-group-text font-12">Mins</span>
+                                    <span class="input-group-text font-12 duration_error">Mins</span>
                                     </div>
                                 </div>
                         </div>
@@ -272,6 +272,13 @@ $(document).ready(function() {
             },
             duration:{
                 required: true,
+            }
+        },
+        errorPlacement: function(error, element) {
+            if (element.attr("name") == "duration") {
+                error.insertAfter(".duration_error");
+            } else {
+                error.insertAfter(element);
             }
         }
     });
