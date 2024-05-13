@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('waitlist_client', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('client_id'); // Define client_id column
+            $table->unsignedBigInteger('client_id')->nullable(); // Define client_id column
             $table->unsignedBigInteger('user_id')->nullable();
             $table->date('preferred_from_date')->nullable();
             $table->date('preferred_to_date')->nullable();
