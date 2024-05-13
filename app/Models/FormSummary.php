@@ -28,4 +28,7 @@ class FormSummary extends Model
         'by_whom',
         'status'
     ];
+
+    const DRAFT  = 0;
+    const LIVE   = 1;
 }

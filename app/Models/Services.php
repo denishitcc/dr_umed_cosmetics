@@ -31,6 +31,7 @@ class Services extends Model
         'code',
         'appear_on_calendar',
         'standard_price',
+        'forms'
     ];
 
     /**

@@ -21,11 +21,17 @@ class FormsController extends Controller
 
             ->addIndexColumn()
             ->addColumn('action', function($row){
-                    $btn = '<div class="action-box"><button type="button" class="btn btn-sm black-btn round-6 dt-edit" ids='.$row->id.'><i class="ico-edit"></i></button><button type="button" class="btn btn-sm black-btn round-6 dt-delete" ids='.$row->id.'><i class="ico-trash"></i></button></div>';
+                    $btn = '<div class="action-box">
+                                <button type="button" class="btn btn-sm black-btn round-6 dt-edit" ids='.$row->id.'>
+                                    <i class="ico-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm black-btn round-6 dt-delete deleteFormBtn" data-formid='.$row->id.' >
+                                    <i class="ico-trash"></i>
+                                </button>
+                            </div>';
                     return $btn;
             })
             ->make(true);
-
         }
         return view('forms.index', compact('forms'));
     }

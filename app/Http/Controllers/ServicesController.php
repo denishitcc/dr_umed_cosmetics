@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Category;
+use App\Models\FormSummary;
 use App\Models\Locations;
 use App\Models\Services;
 use App\Models\ServicesAvailability;
@@ -37,12 +38,14 @@ class ServicesController extends Controller
     public function create()
     {
         // Fetch all categories for display
-        $list_cat = Category::get();
-        $locations = Locations::get();
-        $services = Services::get();
-        $users = User::get();
-        $list_parent_cat = Category::get();
-        return view('services.create',compact('list_cat','locations','services','users','list_parent_cat'));
+        $list_cat           = Category::get();
+        $locations          = Locations::get();
+        $services           = Services::get();
+        $users              = User::get();
+        $list_parent_cat    = Category::get();
+        $forms              = FormSummary::where('status',FormSummary::LIVE)->get();
+
+        return view('services.create',compact('list_cat','locations','services','users','list_parent_cat','forms'));
     }
 
     /**
@@ -50,7 +53,11 @@ class ServicesController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
+        $forms = '';
+        if(isset($request->forms))
+        {
+            $forms = implode(',',$request->forms);
+        }
         $newService = Services::create([
             'service_name' => $request->service_name,
             'category_id' => $request->parent_category,
@@ -58,6 +65,7 @@ class ServicesController extends Controller
             'code' => $request->code,
             'appear_on_calendar' => $request->appear_on_calendar,
             'standard_price' => $request->standard_price,
+            'forms'         => $forms
         ]);
         if($newService){
             //store appear on calendar data
@@ -110,14 +118,10 @@ class ServicesController extends Controller
      */
     public function show(string $id)
     {
-        $list_cat = Category::get();
-        $list_parent_cat = Category::get();
-        $locations = Locations::get();
-        // $services = Services::where('id',$id)->first();
-        // $services = Services::join('services_appear_on_calendars', 'services.id', '=', 'services_appear_on_calendars.service_id')
-        //     ->where('services.id',$id)
-        //     ->first();
-        $services = Services::leftJoin('services_appear_on_calendars', 'services.id', '=', 'services_appear_on_calendars.service_id')
+        $list_cat               = Category::get();
+        $list_parent_cat        = Category::get();
+        $locations              = Locations::get();
+        $services               = Services::leftJoin('services_appear_on_calendars', 'services.id', '=', 'services_appear_on_calendars.service_id')
         ->select('services.*', 'services_appear_on_calendars.duration','services_appear_on_calendars.processing_time','services_appear_on_calendars.fast_duration',
         'services_appear_on_calendars.slow_duration','services_appear_on_calendars.usual_next_service','services_appear_on_calendars.dont_include_reports',
         'services_appear_on_calendars.technical_service','services_appear_on_calendars.available_on_online_booking','services_appear_on_calendars.require_a_room',
@@ -126,12 +130,12 @@ class ServicesController extends Controller
         // ->whereNull('services.deleted_at') // Changed this line
         ->where('services.id',$id)
         ->first();
-        // dd($services);
-        $service_availability =ServicesAvailability::where('service_id',$id)->get();
-        $all_services = Services::whereNotIn('id', [$id])->get();
-        // dd($all_services);
-        $users = User::get();
-        return view('services.edit',compact('list_cat','locations','services','service_availability','all_services','users','list_parent_cat'));
+        $service_availability   = ServicesAvailability::where('service_id',$id)->get();
+        $all_services           = Services::whereNotIn('id', [$id])->get();
+        $users                  = User::get();
+        $forms                  = FormSummary::where('status',FormSummary::LIVE)->get();
+
+        return view('services.edit',compact('list_cat','locations','services','service_availability','all_services','users','list_parent_cat','forms'));
     }
 
     /**
@@ -147,7 +151,11 @@ class ServicesController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // dd($request->all());
+        $forms = '';
+        if(isset($request->forms))
+        {
+            $forms = implode(',',$request->forms);
+        }
         $editService = Services::updateOrCreate(['id' => $id],[
             'service_name' => $request->service_name,
             'category_id' => $request->parent_category,
@@ -155,6 +163,7 @@ class ServicesController extends Controller
             'code' => $request->code,
             'appear_on_calendar' => $request->appear_on_calendar,
             'standard_price' => $request->standard_price,
+            'forms' => $forms
         ]);
         if($editService){
             //update appear on calendar data

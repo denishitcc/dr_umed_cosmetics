@@ -85,10 +85,9 @@ var DU = {};
 
         formDelete: function(){
             var context = this;
-            $('#deleteFormBtn').on('click' ,function(e){
-
+            $('.deleteFormBtn').on('click' ,function(e){
                 if(confirm("Are you sure you want to delete this form?")){
-                    var id = $("#deleteFormBtn").data('formid');
+                    var id = $(".deleteFormBtn").data('formid');
 
                     $.ajax({
                         url: moduleConfig.deleteForm,

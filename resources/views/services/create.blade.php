@@ -1,4 +1,5 @@
-@extends('layouts/sidebar')
+@extends('layouts.sidebar')
+@section('title', 'Add Service')
 @section('content')
 <meta name="csrf-token" content="{{ csrf_token() }}" />
 
@@ -191,8 +192,27 @@
                         @endforeach
                     </ul>
                     @endif
-                    
-                    
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="d-flex justify-content-between mb-2">
+                    <label class="form-label mb-0">Select Forms</label>
+                </div>
+                <div class="bor-box pd-20">
+                    @if (count($forms) > 0)
+                        <ul class="list-group list-group-flush ad-flus">
+                            @foreach ($forms as $loc)
+                                <li class="list-group-item">
+                                    <label class="cst-check d-flex align-items-center">
+                                        <input type="checkbox" value="{{ $loc->id }}" name="forms[]" id="forms" class="forms">
+                                        <span class="checkmark me-2"></span>
+                                        {{ $loc->title }}
+                                    </label>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
                 </div>
             </div>
         </div>

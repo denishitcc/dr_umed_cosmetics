@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('form_summary', function (Blueprint $table) {
+        Schema::create('form_summaries', function (Blueprint $table) {
             $table->id();
             $table->string('title', 100)->nullable();
             $table->text('description')->nullable(); // Changed to 'text' type for potentially longer descriptions
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('form_summary');
+        Schema::dropIfExists('form_summaries');
     }
 };
