@@ -46,7 +46,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label class="form-label">Title</label>
-                        <input type="text" class="form-control" name="title" maxlength="50" value="{{ $forms->title }}">
+                        <input type="text" class="form-control" name="title" value="{{ $forms->title }}">
                         <input type="hidden" name="form_id" value="{{ $forms->id }}">
                     </div>
                     <div class="form-group">
