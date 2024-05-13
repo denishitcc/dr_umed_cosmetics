@@ -71,7 +71,7 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label class="form-label">Title</label>
-                    <input type="text" class="form-control" name="title" maxlength="50">
+                    <input type="text" class="form-control" name="title">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Description</label>
