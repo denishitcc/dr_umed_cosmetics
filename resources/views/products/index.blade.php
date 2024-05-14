@@ -237,6 +237,74 @@
     </div>
     </div>
 </div>
+<div class="modal fade" id="Product_Performance" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h4 class="modal-title me-3">Product Performance</h4> 
+        <a href="{{ route('products.show', ['product' => ':productId']) }}" class="simple-link p_details">Product Details</a>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="invo-notice mb-3">
+                <div class="inv-left"><b class="product_detail_name">Test products</b></div>
+                
+            </div>
+            
+            <table class="table all-db-table align-middle w-50">
+                <tr>
+                    <td><b>Price(incl. GST)</b></td>
+                    <td class="product_detail_price_inc_gst">$19.00</td>
+                </tr>
+                <tr>
+                    <td><b>Price(excl. GST)</b></td>
+                    <td class="product_detail_price_exc_gst">$19.00</td>
+                </tr>
+                <tr>
+                    <td><b>Cost</b></td>
+                    <td class="product_detail_cost">$19.00</td>
+                </tr>
+                <tr>
+                    <td><b>Margin($)</b></td>
+                    <td class="product_detail_margin_dollar">$19.00</td>
+                </tr>
+                <tr>
+                    <td><b>Margin(%)</b></td>
+                    <td class="product_detail_margin_per">$19.00</td>
+                </tr>
+            </table>
+            
+            <div class="table-responsive">
+                <table class="table all-db-table align-middle">
+                    <thead>
+                    <tr>
+                        <th class="mine-shaft" width="45%" ></th>
+                        <th class="mine-shaft" width="30%" aria-sort="ascending">Stock on hand (Units)</th>
+                        <th class="mine-shaft" width="25%">Stock on hand (Value)</th>
+                        
+                    </tr>
+                </thead>
+                <tbody class="prod_details">
+                    <tr>
+                        <td><b>Total</b></td>
+                        <td><span class="blue-bold">$0.00 </span></td>
+                        <!-- <td><span class="blue-bold">$0.00 </span></td> -->
+                    </tr>
+                    <tr>
+                        <td>item1</td>
+                        <td class="product_quantitity">0</td>
+                        <!-- <td>$0.00</td> -->
+                    </tr>
+                </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="modal-footer">
+        <button type="button" class="btn btn-light btn-md" data-bs-dismiss="modal" aria-label="Close">Close</button>
+        </div>
+    </div>
+    </div>
+</div>
 <!-- </main> -->
      
 @stop
@@ -644,6 +712,72 @@ $(document).on('change','#import_product',function(e){
     var data = new FormData(this);
     submitImportProductForm(data);
 });
+$(document).on('click','.product_statistics',function(e){
+    var id = $(this).attr('ids');
+
+    var route = "{{ route('products.show', ['product' => ':productId']) }}";
+    
+    // Replace ':productId' in the route string with the actual product ID
+    var updatedRoute = route.replace(':productId', id);
+    
+    // Update the href attribute of the anchor tag
+    $('.p_details').attr('href', updatedRoute);
+
+    $('#Product_Performance').modal('show');
+    
+    $.ajax({
+        headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        url: "{{route('products.product-performance')}}",
+        type: "post",
+        data: {id:id},
+        success: function(response) {
+            // Show a Sweet Alert message after the form is submitted.
+            if (response.success) {
+                $('.product_detail_name').text(response.data.product_name);
+                $('.product_detail_price_inc_gst').text('$'+response.data.price);
+                $('.product_detail_price_exc_gst').text('$' + (response.data.price - (response.data.price / 11).toFixed(2)).toFixed(2));
+                $('.product_detail_cost').text('$'+response.data.cost);
+                $('.product_detail_margin_dollar').text('$'+parseFloat(response.data.price - (response.data.price / 11) - response.data.cost).toFixed(2));
+                $('.product_detail_margin_per').text(parseFloat(response.data.product_margin).toFixed(2));
+
+                // Clear existing tbody content
+                $('.prod_details').empty();
+
+                // Calculate total quantity and price
+                var totalQuantity = response.productQuantities.reduce((acc, val) => acc + (parseInt(val) || 0), 0);
+                var totalPrice = response.productPrice.reduce((acc, val) => acc + (parseFloat(val) || 0), 0);
+
+                // Append total row
+                var totalRow = '<tr><td><b>Total</b></td><td class="total_quantity">' + totalQuantity + '</td><td class="total_price">$' + totalPrice.toFixed(2) + '</td></tr>';
+                $('.prod_details').append(totalRow);
+
+                // Append rows for each product location
+                for (var i = 0; i < response.productLocations.length; i++) {
+                    var location = response.productLocations[i];
+                    var quantity = parseInt(response.productQuantities[i]) || 0;
+                    var price = parseFloat(response.productPrice[i]) || 0;
+                    var productStatus = response.productStatus[i];
+
+                    // Check if product status is "Available"
+                    if (productStatus === "Available") {
+                        var row = '<tr><td>' + location + '</td><td class="product_quantity">' + quantity + '</td><td class="product_price">$' + price.toFixed(2) + '</td></tr>';
+                        $('.prod_details').append(row);
+                    } else {
+                        // If product status is not "Available", do not display quantity and price
+                        var row = '<tr><td>' + location + '</td><td class="product_quantity">Not Available</td><td class="product_price"></td></tr>';
+                        $('.prod_details').append(row);
+                    }
+                }
+            } else {
+                Swal.fire({
+                    title: "Error!",
+                    text: response.message,
+                    type: "error",
+                });
+            }
+        },
+    });
+})
 function submitUpdateProductCategoryForm(data){
     $.ajax({
         headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },

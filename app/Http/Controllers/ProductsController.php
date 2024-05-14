@@ -72,7 +72,7 @@ class ProductsController extends Controller
 
             ->addIndexColumn()
             ->addColumn('action', function($row){
-                    $btn = '<div class="action-box"><button type="button" class="btn btn-sm black-btn round-6 dt-edit" ids='.$row->id.'><i class="ico-edit"></i></button><button type="button" class="btn btn-sm black-btn round-6" ids='.$row->id.'><i class="ico-graph"></i></button></div>';
+                    $btn = '<div class="action-box"><button type="button" class="btn btn-sm black-btn round-6 dt-edit" ids='.$row->id.'><i class="ico-edit"></i></button><button type="button" class="btn btn-sm black-btn round-6 product_statistics" ids='.$row->id.'><i class="ico-graph"></i></button></div>';
                     return $btn;
             })
             ->make(true);
@@ -841,5 +841,65 @@ class ProductsController extends Controller
             'message' => 'Errors occurred while importing CSV data. ' . $errorMsg,
             'type' => 'error',
         ]);
+    }
+    public function productPerformance(Request $request)
+    {
+        $product = Products::where('id',$request->id)->first();
+
+        if ($product->cost != 0) {
+            $dis = $product->price / 11;
+            $dis1 = $product->price - $dis;
+    
+            $margin = (($dis1 - $product->cost) / $dis1) * 100;
+            $margin = min($margin, 100);
+    
+            // Round up the margin to the nearest integer value
+            $margin = round($margin);
+    
+            $product->product_margin = $margin . '%';
+        } else {
+            $product->product_margin = '100'; // Or any other appropriate value to handle division by zero
+        }
+        
+        // dd($product);
+        $productAvailability = ProductAvailabilities::where('product_id', $request->id)
+        ->select(
+            'quantity',
+            'price',
+            'location_name',
+            'availability'
+        )
+        ->get();
+        // dd($productAvailability);
+
+        $product->availability = $productAvailability;
+
+        $productLocations = []; // Initialize an array to store location names
+        $productQuantities = []; // Initialize an array to store location names
+        $productPrice = []; // Initialize an array to store location names
+        $productStatus = [];
+        
+        $productAvailability->each(function ($availability) use (&$productLocations,&$productQuantities,&$productPrice,&$productStatus) {
+            $location = Locations::find($availability->location_name);
+            if ($location) {
+                $productLocations[] = $location->location_name;
+            }
+            $productQuantities[] = $availability->quantity;
+            $productPrice[] = $availability->price;
+            $productStatus[] = $availability->availability;
+        });
+        // dd($productQuantities);
+
+        $response = [
+            'success' => true,
+            'message' => 'Product fetch successfully!',
+            'type' => 'success',
+            'data' => $product,
+            'productLocations' => $productLocations,
+            'productQuantities'=> $productQuantities,
+            'productPrice'=>$productPrice,
+            'productStatus'=>$productStatus
+        ];
+        return response()->json($response);
     }
 }
