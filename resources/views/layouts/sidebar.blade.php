@@ -213,8 +213,8 @@
                                         </div>
                                         <ul>
                                             <li><a href="{{ route('settings') }}"> My Account</a></li>
-                                            <li><a href="#"> Support</a></li>
-                                            <li><a href="#"> Notifications </a></li>
+                                            <!-- <li><a href="#"> Support</a></li> -->
+                                            <!-- <li><a href="#"> Notifications </a></li> -->
                                             <li><a href="{{ route('logout') }}">Logout</a></li>
                                           </ul>
                                     </div>

@@ -20,9 +20,9 @@
                         <li class="nav-item">
                             <a class="nav-link" data-bs-toggle="tab" href="#tab_5"><i class="ico-appt-reminder"></i> Appt Reminders</a>
                         </li>
-                        <li class="nav-item">
+                        <!-- <li class="nav-item">
                             <a class="nav-link" data-bs-toggle="tab" href="#tab_6"><i class="ico-payment-gateway"></i> Payment Gateways</a>
-                        </li>
+                        </li> -->
                     </ul>
                     <div class="tab-content" id="myTabContent">
                         <div class="tab-pane fade show active" id="tab_1" role="tabpanel">
