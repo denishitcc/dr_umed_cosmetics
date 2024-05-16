@@ -3,9 +3,9 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <!-- <main> -->
     <div class="card">
-        <div class="card-head">
         @if(Auth::check() && (Auth::user()->role_type == 'admin'))
-        <div class="toolbar mb-0">
+        <div class="card-head">
+            <div class="toolbar mb-0">
                 <div class="tool-left">
                     <a href="{{ route('clients.create') }}" class="btn btn-primary btn-md me-2">Add New Client</a>
                     <a href="#" id="openWaitListModalBtn" class="btn btn-primary btn-md me-2">Add New Waitlist Client</a>
@@ -14,7 +14,8 @@
             </div>
         </div>
         @elseif(Auth::user()->checkPermission('clients') != 'View Only')
-        <div class="toolbar mb-0">
+        <div class="card-head">
+            <div class="toolbar mb-0">
                 <div class="tool-left">
                     <a href="{{ route('clients.create') }}" class="btn btn-primary btn-md me-2">Add New Client</a>
                     <a href="#" id="openWaitListModalBtn" class="btn btn-primary btn-md me-2">Add New Waitlist Client</a>
@@ -760,8 +761,16 @@ $(document).ready(function() {
             {data: 'autoId', name: 'autoId'},
             {data: 'username', name: 'username',
                 "render": function(data, type, row, meta){
-                    data = '<a class="blue-bold" href="clients/' + row.id + '">' + data + '</a>';
-                    return data;
+                    var link = ''; // Initialize link variable
+                    // Check permission here
+                    if ("{{ $permission }}" != 'View Only') {
+                        // Permission allows viewing
+                        link = '<a class="blue-bold" href="clients/' + row.id + '">' + data + '</a>';
+                    } else {
+                        // Permission does not allow viewing
+                        link = '<a class="blue-bold" href="javascript:void(0);">' + data + '</a>';
+                    }
+                    return link;
                 }
             },
             {data: 'email', name: 'email'},

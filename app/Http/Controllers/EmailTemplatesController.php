@@ -13,24 +13,29 @@ class EmailTemplatesController extends Controller
      */
     public function index(Request $request)
     {
-        $email_templates = EmailTemplates::all();
-        // if ($request->ajax()) {
-        //     $data = EmailTemplates::select('*');
-        //     return Datatables::of($data)
+        $permission = \Auth::user()->checkPermission('email-templates');
+        if ($permission === 'View & Make Changes' || $permission === true) {
+            $email_templates = EmailTemplates::all();
+            // if ($request->ajax()) {
+            //     $data = EmailTemplates::select('*');
+            //     return Datatables::of($data)
 
-        //         ->addIndexColumn()
+            //         ->addIndexColumn()
 
-        //         ->addColumn('action', function($row){
-        //                 $btn = '<div class="action-box"><button type="button" class="btn btn-sm black-btn round-6 dt-edit" ids='.$row->id.'><i class="ico-edit"></i></button><button type="button" class="btn btn-sm black-btn round-6 dt-delete" ids='.$row->id.'><i class="ico-trash"></i></button></div>';
-        //                 return $btn;
-        //         })
+            //         ->addColumn('action', function($row){
+            //                 $btn = '<div class="action-box"><button type="button" class="btn btn-sm black-btn round-6 dt-edit" ids='.$row->id.'><i class="ico-edit"></i></button><button type="button" class="btn btn-sm black-btn round-6 dt-delete" ids='.$row->id.'><i class="ico-trash"></i></button></div>';
+            //                 return $btn;
+            //         })
 
-        //         ->rawColumns(['action'])
+            //         ->rawColumns(['action'])
 
-        //         ->make(true);
+            //         ->make(true);
 
-        // }
-        return view('email_templates.index', compact('email_templates'));
+            // }
+            return view('email_templates.index', compact('email_templates'));
+        }else{
+            abort(403, 'You are not authorized to access this page.');
+        }
     }
 
     /**
@@ -38,7 +43,7 @@ class EmailTemplatesController extends Controller
      */
     public function create()
     {
-        return view('email_templates.create');
+        // return view('email_templates.create');
     }
 
     /**
@@ -64,8 +69,13 @@ class EmailTemplatesController extends Controller
      */
     public function show(string $id)
     {
-        $email_templates = EmailTemplates::where('id',$id)->first();
-        return view('email_templates.edit', compact('email_templates'));
+        $permission = \Auth::user()->checkPermission('email-templates');
+        if ($permission === 'View & Make Changes' || $permission === true) {
+            $email_templates = EmailTemplates::where('id',$id)->first();
+            return view('email_templates.edit', compact('email_templates'));
+        }else{
+            abort(403, 'You are not authorized to access this page.');
+        }
     }
 
     /**

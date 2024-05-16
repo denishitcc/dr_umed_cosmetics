@@ -9,7 +9,11 @@
                     <h4 class="small-title mb-0">Suppliers</h4>
                 </div>
                 <div class="tool-right">
+                    @if(Auth::check() && (Auth::user()->role_type == 'admin'))
                     <a href="{{ route('suppliers.create') }}" class="btn btn-primary btn-md">Create New Supplier</a>
+                    @elseif(Auth::user()->checkPermission('suppliers') != 'View Only')
+                    <a href="{{ route('suppliers.create') }}" class="btn btn-primary btn-md">Create New Supplier</a>
+                    @endif
                     <a href="{{ route('products.index') }}" class="btn btn-primary btn-md">Back to Products</a>
                 </div>
             </div>
@@ -58,8 +62,16 @@ $(document).ready(function() {
         columns: [
             {data: 'business_name', name: 'business_name',
                 "render": function(data, type, row, meta){
-                    data = '<a class="blue-bold" href="suppliers/' + row.id + '">' + data + '</a>';
-                    return data;
+                    var link = ''; // Initialize link variable
+                    // Check permission here
+                    if ("{{ $permission }}" != 'View Only') {
+                        // Permission allows viewing
+                        link = '<a class="blue-bold" href="suppliers/' + row.id + '">' + data + '</a>';
+                    } else {
+                        // Permission does not allow viewing
+                        link = '<a class="blue-bold" href="javascript:void(0);">' + data + '</a>';
+                    }
+                    return link;
                 }
             },
             {data: 'action', name: 'action'},

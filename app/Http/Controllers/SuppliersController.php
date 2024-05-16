@@ -13,20 +13,32 @@ class SuppliersController extends Controller
      */
     public function index(Request $request)
     {
-        $suppliers = Suppliers::all();
-        if ($request->ajax()) {
-            $data = Suppliers::select('*');
-            return Datatables::of($data)
-                
-            ->addIndexColumn()
-            ->addColumn('action', function($row){
-                    $btn = '<div class="action-box"><button type="button" class="btn btn-sm black-btn round-6 dt-edit" ids='.$row->id.'><i class="ico-edit"></i></button><button type="button" class="btn btn-sm black-btn round-6 dt-delete" ids='.$row->id.'><i class="ico-trash"></i></button></div>';
-                    return $btn;
-            })
-            ->make(true);
+        $permission = \Auth::user()->checkPermission('suppliers');
+        if ($permission === 'View & Make Changes' || $permission === 'Both' || $permission === 'View Only' || $permission === true) {
+            $suppliers = Suppliers::all();
+            if ($request->ajax()) {
+                $data = Suppliers::select('*');
+                return Datatables::of($data)
+                    
+                ->addIndexColumn()
+                ->addColumn('action', function($row){
+                        $permission = \Auth::user()->checkPermission('suppliers');
+                        if ($permission === 'View Only') {
+                            $btn = '<div class="action-box"><button type="button" class="btn btn-sm black-btn round-6 dt-edit" ids='.$row->id.' disabled><i class="ico-edit"></i></button><button type="button" class="btn btn-sm black-btn round-6 dt-delete" ids='.$row->id.' disabled><i class="ico-trash"></i></button></div>';
+                            return $btn;
+                        }else{
+                            $btn = '<div class="action-box"><button type="button" class="btn btn-sm black-btn round-6 dt-edit" ids='.$row->id.'><i class="ico-edit"></i></button><button type="button" class="btn btn-sm black-btn round-6 dt-delete" ids='.$row->id.'><i class="ico-trash"></i></button></div>';
+                            return $btn;
+                        }
+                        
+                })
+                ->make(true);
 
+            }
+            return view('suppliers.index', compact('suppliers','permission'));
+        }else{
+            abort(403, 'You are not authorized to access this page.');
         }
-        return view('suppliers.index', compact('suppliers'));
     }
 
     /**
@@ -34,7 +46,12 @@ class SuppliersController extends Controller
      */
     public function create()
     {
-        return view('suppliers/create');
+        $permission = \Auth::user()->checkPermission('suppliers');
+        if ($permission === 'View & Make Changes' || $permission === 'Both' || $permission === true) {
+            return view('suppliers/create');
+        }else{
+            abort(403, 'You are not authorized to access this page.');
+        }
     }
 
     /**
@@ -82,8 +99,13 @@ class SuppliersController extends Controller
      */
     public function show(string $id)
     {
-        $suppliers = Suppliers::find($id);
-        return view('suppliers/edit', compact('suppliers'));
+        $permission = \Auth::user()->checkPermission('suppliers');
+        if ($permission === 'View & Make Changes' || $permission === 'Both' || $permission === true) {
+            $suppliers = Suppliers::find($id);
+            return view('suppliers/edit', compact('suppliers'));
+        }else{
+            abort(403, 'You are not authorized to access this page.');
+        }
     }
 
     /**

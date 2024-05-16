@@ -6,15 +6,20 @@
   <!-- <main> -->
           <div class="card">
               <div class="card-head">
-              <div class="toolbar mb-0">
-                <div class="tool-left">
-                    <h4 class="small-title mb-0">Finance Management</h4>
+                <div class="toolbar mb-0">
+                    <div class="tool-left">
+                        <h4 class="small-title mb-0">Finance Management</h4>
+                    </div>
+                    @if(Auth::check() && (Auth::user()->role_type == 'admin'))
+                        <div class="tool-right">
+                            <a href="#" class="btn btn-primary btn-md make_sale">Make Sale</a>
+                        </div>
+                    @elseif(Auth::user()->checkPermission('finance') != 'View Only')
+                        <div class="tool-right">
+                            <a href="#" class="btn btn-primary btn-md make_sale">Make Sale</a>
+                        </div>
+                    @endif
                 </div>
-                <div class="tool-right">
-                    <a href="#" class="btn btn-primary btn-md make_sale">Make Sale</a>
-                </div>
-            </div>
-                
               </div>
               <div class="card-head py-3">
                 <div class="toolbar">
@@ -750,7 +755,15 @@ $(document).ready(function() {
             data: 'id', 
             name: 'id',
             render: function (data, type, row) {
-                var link = '<a class="blue-bold paid_invoice" inv_id="'+row.id+'" href="javascript:void(0)">INV' + data + '</a>';
+                var link = ''; // Initialize link variable
+                // Check permission here
+                if ("{{ $permission }}" != 'View Only') {
+                    // Permission allows viewing
+                    link = '<a class="blue-bold paid_invoice" inv_id="' + row.id + '" href="javascript:void(0)">INV' + data + '</a>';
+                } else {
+                    // Permission does not allow viewing
+                    link = '<a class="blue-bold" href="javascript:void(0);">INV' + data + '</a>';
+                }
                 return link;
             }
         },

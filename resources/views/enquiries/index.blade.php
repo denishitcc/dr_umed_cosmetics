@@ -4,19 +4,26 @@
 <meta name="csrf-token" content="{{ csrf_token() }}" />
 <!-- <script src="https://code.jquery.com/jquery-3.5.1.js"></script>   -->
   <!-- <main> -->
-          <div class="card">
-              <div class="card-head">
-              <div class="toolbar">
-                <div class="tool-left">
-                    <a href="{{ route('enquiries.create') }}" class="btn btn-primary btn-md me-2">New Enquiry</a>
-                    <!-- <a href="#" class="btn btn-primary btn-md">Import Enquiry</a> -->
+            <div class="card">
+                @if(Auth::check() && (Auth::user()->role_type == 'admin'))
+                <div class="card-head">
+                    <div class="toolbar">
+                        <div class="tool-left">
+                            <a href="{{ route('enquiries.create') }}" class="btn btn-primary btn-md me-2">New Enquiry</a>
+                            <!-- <a href="#" class="btn btn-primary btn-md">Import Enquiry</a> -->
+                        </div>
+                    </div>
                 </div>
-                <!-- <div class="tool-right">
-                    <a href="#" class="btn tag icon-btn-left btn-md btn-light-grey"><i class="ico-filter me-2 fs-6"></i> Filter By</a>
-                </div> -->
-            </div>
-                
-        </div>
+                @elseif(Auth::user()->checkPermission('enquiries') != 'View Only')
+                <div class="card-head">
+                    <div class="toolbar">
+                        <div class="tool-left">
+                            <a href="{{ route('enquiries.create') }}" class="btn btn-primary btn-md me-2">New Enquiry</a>
+                            <!-- <a href="#" class="btn btn-primary btn-md">Import Enquiry</a> -->
+                        </div>
+                    </div>
+                </div>
+                @endif
         <div class="card-head pt-3">
             <h4 class="small-title mb-3">Enquiries Summary</h4>
             
@@ -131,8 +138,18 @@ $(document).ready(function() {
     columns: [
         {data: 'username', name: 'username',
             "render": function(data, type, row, meta){
-                data = '<a class="blue-bold" href="enquiries/' + row.id + '">' + data + '</a>';
-                return data;
+                // data = '<a class="blue-bold" href="enquiries/' + row.id + '">' + data + '</a>';
+                // return data;
+                var link = ''; // Initialize link variable
+                // Check permission here
+                if ("{{ $permission }}" != 'View Only') {
+                    // Permission allows viewing
+                    link = '<a class="blue-bold" href="enquiries/' + row.id + '">' + data + '</a>';
+                } else {
+                    // Permission does not allow viewing
+                    link = '<a class="blue-bold" href="javascript:void(0);">' + data + '</a>';
+                }
+                return link;
             }
         },
         {data: 'email', name: 'email'},

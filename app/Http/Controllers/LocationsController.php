@@ -13,55 +13,65 @@ class LocationsController extends Controller
 {
     public function index(Request $request)
     {
-        $locations = Locations::all();
-        if ($request->ajax()) {
-            // if($request->search != '')
-            // {
-            //     $data = Locations::where('location_name','LIKE','%'.$request->search.'%')
-            //             ->orWhere('phone','LIKE','%'.$request->search.'%')
-            //             ->orWhere('email','LIKE','%'.$request->search.'%')
-            //             ->orWhere('street_address','LIKE','%'.$request->search.'%')
-            //             ->orWhere('suburb','LIKE','%'.$request->search.'%')
-            //             ->orWhere('city','LIKE','%'.$request->search.'%')
-            //             ->orWhere('state','LIKE','%'.$request->search.'%')
-            //             ->orWhere('postcode','LIKE','%'.$request->search.'%')
-            //             ->orWhere('latitude','LIKE','%'.$request->search.'%')
-            //             ->orWhere('longitude','LIKE','%'.$request->search.'%')
-            //     ->get();
-            // }
-            // else if($request->pagination != '')
-            // {
-            //     $data = Locations::paginate(10, ['*'], 'page', $request->pagination);
-            //     // dd($data);
-            // }
-            // else
-            // {
-                $data = Locations::select('*');
-            // }
-            
-            // dd($data);
-            return Datatables::of($data)
+        $permission = \Auth::user()->checkPermission('locations');
+        if ($permission === 'View & Make Changes' || $permission === true) {
+            $locations = Locations::all();
+            if ($request->ajax()) {
+                // if($request->search != '')
+                // {
+                //     $data = Locations::where('location_name','LIKE','%'.$request->search.'%')
+                //             ->orWhere('phone','LIKE','%'.$request->search.'%')
+                //             ->orWhere('email','LIKE','%'.$request->search.'%')
+                //             ->orWhere('street_address','LIKE','%'.$request->search.'%')
+                //             ->orWhere('suburb','LIKE','%'.$request->search.'%')
+                //             ->orWhere('city','LIKE','%'.$request->search.'%')
+                //             ->orWhere('state','LIKE','%'.$request->search.'%')
+                //             ->orWhere('postcode','LIKE','%'.$request->search.'%')
+                //             ->orWhere('latitude','LIKE','%'.$request->search.'%')
+                //             ->orWhere('longitude','LIKE','%'.$request->search.'%')
+                //     ->get();
+                // }
+                // else if($request->pagination != '')
+                // {
+                //     $data = Locations::paginate(10, ['*'], 'page', $request->pagination);
+                //     // dd($data);
+                // }
+                // else
+                // {
+                    $data = Locations::select('*');
+                // }
+                
+                // dd($data);
+                return Datatables::of($data)
 
-                    ->addIndexColumn()
+                        ->addIndexColumn()
 
-                    ->addColumn('action', function($row){
-                            $btn = '<div class="action-box"><button type="button" class="btn btn-sm black-btn round-6 dt-edit" ids='.$row->id.'><i class="ico-edit"></i></button><button type="button" class="btn btn-sm black-btn round-6 dt-delete" ids='.$row->id.'><i class="ico-trash"></i></button></div>';
-                            return $btn;
-                    })
-                    ->addColumn('street_addresses', function ($row) { 
-                        return $row->street_address.' '.$row->suburb.' '.$row->suburb.' '.$row->city.' '.$row->state.' '.$row->postcode;
-                    })
-                    ->rawColumns(['action'])
+                        ->addColumn('action', function($row){
+                                $btn = '<div class="action-box"><button type="button" class="btn btn-sm black-btn round-6 dt-edit" ids='.$row->id.'><i class="ico-edit"></i></button><button type="button" class="btn btn-sm black-btn round-6 dt-delete" ids='.$row->id.'><i class="ico-trash"></i></button></div>';
+                                return $btn;
+                        })
+                        ->addColumn('street_addresses', function ($row) { 
+                            return $row->street_address.' '.$row->suburb.' '.$row->suburb.' '.$row->city.' '.$row->state.' '.$row->postcode;
+                        })
+                        ->rawColumns(['action'])
 
-                    ->make(true);
+                        ->make(true);
 
+            }
+            return view('locations.index', compact('locations'));
+        }else{
+            abort(403, 'You are not authorized to access this page.');
         }
-        return view('locations.index', compact('locations'));
     }
 
     public function create()
     {
-        return view('locations.create');
+        $permission = \Auth::user()->checkPermission('locations');
+        if ($permission === 'View & Make Changes' || $permission === true) {
+            return view('locations.create');
+        }else{
+            abort(403, 'You are not authorized to access this page.');
+        }
     }
     public function store(Request $request)
     {
@@ -143,16 +153,20 @@ class LocationsController extends Controller
     }
     public function show(Request $request,$id)
     {
-        
-        $locations = Locations::find($id);
-        $working_hours_location = Locations::join('business_working_hours', 'business_working_hours.location_id', '=', 'locations.id')
-        ->where('business_working_hours.location_id',$id)
-        ->get();
+        $permission = \Auth::user()->checkPermission('locations');
+        if ($permission === 'View & Make Changes' || $permission === true) {
+            $locations = Locations::find($id);
+            $working_hours_location = Locations::join('business_working_hours', 'business_working_hours.location_id', '=', 'locations.id')
+            ->where('business_working_hours.location_id',$id)
+            ->get();
 
-        $loc_discount = LocationDiscount::where('location_id',$id)->get();
-        $loc_surcharge = LocationSurcharge::where('location_id',$id)->get();
+            $loc_discount = LocationDiscount::where('location_id',$id)->get();
+            $loc_surcharge = LocationSurcharge::where('location_id',$id)->get();
 
-        return view('locations.edit', compact('locations','working_hours_location','loc_discount','loc_surcharge'));
+            return view('locations.edit', compact('locations','working_hours_location','loc_discount','loc_surcharge'));
+        }else{
+            abort(403, 'You are not authorized to access this page.');
+        }
     }
     // public function edit(Request $request)
     // {

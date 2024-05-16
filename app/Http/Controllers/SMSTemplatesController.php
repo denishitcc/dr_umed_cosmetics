@@ -12,9 +12,14 @@ class SMSTemplatesController extends Controller
      */
     public function index()
     {
-        $sms_templates = SmsTemplates::all();
-        // dd($sms_templates);
-        return view('sms_templates.index', compact('sms_templates'));
+        $permission = \Auth::user()->checkPermission('sms-templates');
+        if ($permission === 'View & Make Changes' || $permission === true) {
+            $sms_templates = SmsTemplates::all();
+            // dd($sms_templates);
+            return view('sms_templates.index', compact('sms_templates'));
+        }else{
+            abort(403, 'You are not authorized to access this page.');
+        }
     }
 
     /**
@@ -38,8 +43,13 @@ class SMSTemplatesController extends Controller
      */
     public function show(string $id)
     {
-        $sms_templates = smsTemplates::where('id',$id)->first();
-        return view('sms_templates.edit', compact('sms_templates'));
+        $permission = \Auth::user()->checkPermission('sms-templates');
+        if ($permission === 'View & Make Changes' || $permission === true) {
+            $sms_templates = smsTemplates::where('id',$id)->first();
+            return view('sms_templates.edit', compact('sms_templates'));
+        }else{
+            abort(403, 'You are not authorized to access this page.');
+        }
     }
 
     /**
