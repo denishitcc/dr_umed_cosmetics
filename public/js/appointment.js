@@ -888,6 +888,21 @@ var DU = {};
                     console.error('Error fetching resources:', error);
                 }
             });
+
+            //for user login location selected by default 
+            $.ajax({
+                url: moduleConfig.getUserSelectedLocation, // Replace with your actual API endpoint
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                },
+                success: function (data) {
+                    if(data.type != 'admin')
+                    {
+                        $('#locations').val(data.staff_loc);
+                    }
+                }
+            });
         },
 
         editEvent:function (eventId){

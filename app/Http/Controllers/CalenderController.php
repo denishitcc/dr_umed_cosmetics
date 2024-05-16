@@ -2336,4 +2336,20 @@ class CalenderController extends Controller
 
         return response()->json(['success' => true]);
     }
+    public function getUserSelectedLocation(Request $request)
+    {
+        if (Auth::check()) {
+            $userId = Auth::id();
+            $user = User::where('id', $userId)->first();
+            $roleType = $user->role_type;
+            if ($roleType === 'admin') {
+                // Admin logic here (if needed)
+                $staff_loc = $user->staff_member_location;
+                return response()->json(['success' => true, 'staff_loc' => $staff_loc,'type'=>'admin']);
+            } else {
+                $staff_loc = $user->staff_member_location;
+                return response()->json(['success' => true, 'staff_loc' => $staff_loc,'type'=>'user']);
+            }
+        }
+    }
 }

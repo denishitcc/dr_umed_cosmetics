@@ -199,7 +199,7 @@
                 <div class="d-flex justify-content-between mb-2">
                     <label class="form-label mb-0">Select Forms</label>
                 </div>
-                <div class="bor-box pd-20">
+                <div class="bor-box pd-20 scroll-y">
                     @if (count($forms) > 0)
                         <ul class="list-group list-group-flush ad-flus">
                             @foreach ($forms as $loc)

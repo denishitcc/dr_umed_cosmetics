@@ -12,8 +12,10 @@ use App\Models\Appointment;
 use App\Models\Category;
 use App\Models\Services;
 use App\Models\User;
+use App\Models\Permissions;
 use DB;
 use Carbon\Carbon;
+use Auth;
 
 class ClientsController extends Controller
 {
@@ -22,110 +24,116 @@ class ClientsController extends Controller
      */
     public function index(Request $request)
     {
-        $clients = Clients::all();
-        if ($request->ajax()) {
-            $currentDateTime = now()->timezone('Asia/Kolkata')->format('Y-m-d H:i:s');
-            
-            $data = Clients::leftJoin('appointment', function($join) use ($currentDateTime) {
-                    $join->on('clients.id', '=', 'appointment.client_id')
-                        ->where('appointment.start_date', '>=', $currentDateTime);
-                })
-                ->leftJoin('services', 'appointment.service_id', '=', 'services.id')
-                ->leftJoin('users', 'appointment.staff_id', '=', 'users.id')
-                ->leftJoin('locations', 'users.staff_member_location', '=', 'locations.id')
-                ->leftJoin('appointments_notes', 'appointments_notes.appointment_id', '=', 'appointment.id')
-                ->select('clients.id', 
-                        'clients.firstname', 
-                        'clients.lastname', 
-                        'clients.email', 
-                        'clients.mobile_number', 
-                        'clients.status', 
-                        DB::raw('GROUP_CONCAT(DISTINCT CONCAT(DATE_FORMAT(appointment.start_date, "%Y-%m-%d %h:%i %p"), "", services.service_name, " with ", CONCAT(users.first_name, " ", users.last_name))) as appointment_dates'),
-                        DB::raw('GROUP_CONCAT(CASE appointment.status 
-                            WHEN 1 THEN "Booked" 
-                            WHEN 2 THEN "Confirmed"
-                            WHEN 3 THEN "Started" 
-                            WHEN 4 THEN "Completed"
-                            WHEN 5 THEN "No answer" 
-                            WHEN 6 THEN "Left message"
-                            WHEN 7 THEN "Pencilied in" 
-                            WHEN 8 THEN "Turned up"
-                            WHEN 9 THEN "No show" 
-                            WHEN 10 THEN "Cancelled"
-                        END) as app_status'),
-                        DB::raw('GROUP_CONCAT(users.staff_member_location) as staff_member_location'),
-                        DB::raw('GROUP_CONCAT(DISTINCT appointments_notes.common_notes SEPARATOR "<br>") as common_notes'),
-                        DB::raw('GROUP_CONCAT(DISTINCT appointments_notes.treatment_notes SEPARATOR "<br>") as treatment_notes')
-                )
-                ->groupBy('clients.id', 
-                        'clients.firstname', 
-                        'clients.lastname', 
-                        'clients.email', 
-                        'clients.mobile_number', 
-                        'clients.status'
-                )
-                ->get();
+        // Check permissions for accessing the index page
+        $permission = \Auth::user()->checkPermission('clients');
+        if ($permission === 'View & Make Changes' || $permission === 'Both' || $permission === 'View Only' || $permission === true) {
+            $clients = Clients::all();
+            if ($request->ajax()) {
+                $currentDateTime = now()->timezone('Asia/Kolkata')->format('Y-m-d H:i:s');
                 
-            foreach($data as $datas){
-                $loc= explode(',',$datas->staff_member_location);
-                $locationsArray = [];
-                foreach($loc as $locs){
-                    $locations = Locations::where('id', $locs)->pluck('location_name')->toArray();
-                    $locationsArray[] = implode(", ", $locations);
-                }
-                $datas->staff_location = implode(", ", $locationsArray);
-            }
-            return Datatables::of($data)
-
-                ->addIndexColumn()
-
-                ->addColumn('autoId', function ($row) {
-                    $lastuserId = $row->id;
-                    $lastIncreament = substr($lastuserId, -3);
-                    $newUserId = str_pad($lastIncreament, 3, 0, STR_PAD_LEFT);
-                    $row->autoId = $newUserId;
-                    return $row->autoId;
-                })
-                ->addColumn('username', function ($row) {
-                    return $row->firstname.' '.$row->lastname;
-                })
-                ->addColumn('date_and_time', function ($row) {
-                    return date('d/m/Y  H:i:s', strtotime($row->created_at));
-                })
-                ->addColumn('addresses', function ($row) {
-                    return $row->street_address.', '.$row->suburb. ', '.$row->city.', '.$row->postcode;
-                })
-                // ->addColumn('staff_location', function ($row) {
-                //     $loc_id = explode(',', $row->staff_member_location);
-                //     $locations = Locations::whereIn('id', $loc_id)->pluck('location_name')->toArray();
-                //     return implode(',', $locations);
-                // })
-                
-                ->addColumn('status_bar', function($row){
-                    if($row->status == 'active')
-                    {
-                        $row->status_bar = 'checked';
-                    }
-                    return $row->status_bar;
-                })
-                ->make(true);
-
-        }
-        $today = Carbon::today()->toDateString(); // Get today's date in 'Y-m-d' format
-
-        //count today appointment 
-        $count_today_appointments = Appointment::whereDate('start_date', $today)
-        ->join('clients', 'clients.id', '=', 'appointment.client_id')
-        ->select('clients.id', 'clients.firstname', 'clients.lastname', 'appointment.start_date', 'appointment.end_date')
-        ->get();
-
-        $categories = Category::get();
-
-        $services   = Services::with(['appearoncalender'])
-                    ->where('appear_on_calendar',1)
+                $data = Clients::leftJoin('appointment', function($join) use ($currentDateTime) {
+                        $join->on('clients.id', '=', 'appointment.client_id')
+                            ->where('appointment.start_date', '>=', $currentDateTime);
+                    })
+                    ->leftJoin('services', 'appointment.service_id', '=', 'services.id')
+                    ->leftJoin('users', 'appointment.staff_id', '=', 'users.id')
+                    ->leftJoin('locations', 'users.staff_member_location', '=', 'locations.id')
+                    ->leftJoin('appointments_notes', 'appointments_notes.appointment_id', '=', 'appointment.id')
+                    ->select('clients.id', 
+                            'clients.firstname', 
+                            'clients.lastname', 
+                            'clients.email', 
+                            'clients.mobile_number', 
+                            'clients.status', 
+                            DB::raw('GROUP_CONCAT(DISTINCT CONCAT(DATE_FORMAT(appointment.start_date, "%Y-%m-%d %h:%i %p"), "", services.service_name, " with ", CONCAT(users.first_name, " ", users.last_name))) as appointment_dates'),
+                            DB::raw('GROUP_CONCAT(CASE appointment.status 
+                                WHEN 1 THEN "Booked" 
+                                WHEN 2 THEN "Confirmed"
+                                WHEN 3 THEN "Started" 
+                                WHEN 4 THEN "Completed"
+                                WHEN 5 THEN "No answer" 
+                                WHEN 6 THEN "Left message"
+                                WHEN 7 THEN "Pencilied in" 
+                                WHEN 8 THEN "Turned up"
+                                WHEN 9 THEN "No show" 
+                                WHEN 10 THEN "Cancelled"
+                            END) as app_status'),
+                            DB::raw('GROUP_CONCAT(users.staff_member_location) as staff_member_location'),
+                            DB::raw('GROUP_CONCAT(DISTINCT appointments_notes.common_notes SEPARATOR "<br>") as common_notes'),
+                            DB::raw('GROUP_CONCAT(DISTINCT appointments_notes.treatment_notes SEPARATOR "<br>") as treatment_notes')
+                    )
+                    ->groupBy('clients.id', 
+                            'clients.firstname', 
+                            'clients.lastname', 
+                            'clients.email', 
+                            'clients.mobile_number', 
+                            'clients.status'
+                    )
                     ->get();
-        $users = User::all();
-        return view('clients.index', compact('clients','count_today_appointments','categories','services','users'));
+                    
+                foreach($data as $datas){
+                    $loc= explode(',',$datas->staff_member_location);
+                    $locationsArray = [];
+                    foreach($loc as $locs){
+                        $locations = Locations::where('id', $locs)->pluck('location_name')->toArray();
+                        $locationsArray[] = implode(", ", $locations);
+                    }
+                    $datas->staff_location = implode(", ", $locationsArray);
+                }
+                return Datatables::of($data)
+
+                    ->addIndexColumn()
+
+                    ->addColumn('autoId', function ($row) {
+                        $lastuserId = $row->id;
+                        $lastIncreament = substr($lastuserId, -3);
+                        $newUserId = str_pad($lastIncreament, 3, 0, STR_PAD_LEFT);
+                        $row->autoId = $newUserId;
+                        return $row->autoId;
+                    })
+                    ->addColumn('username', function ($row) {
+                        return $row->firstname.' '.$row->lastname;
+                    })
+                    ->addColumn('date_and_time', function ($row) {
+                        return date('d/m/Y  H:i:s', strtotime($row->created_at));
+                    })
+                    ->addColumn('addresses', function ($row) {
+                        return $row->street_address.', '.$row->suburb. ', '.$row->city.', '.$row->postcode;
+                    })
+                    // ->addColumn('staff_location', function ($row) {
+                    //     $loc_id = explode(',', $row->staff_member_location);
+                    //     $locations = Locations::whereIn('id', $loc_id)->pluck('location_name')->toArray();
+                    //     return implode(',', $locations);
+                    // })
+                    
+                    ->addColumn('status_bar', function($row){
+                        if($row->status == 'active')
+                        {
+                            $row->status_bar = 'checked';
+                        }
+                        return $row->status_bar;
+                    })
+                    ->make(true);
+
+            }
+            $today = Carbon::today()->toDateString(); // Get today's date in 'Y-m-d' format
+
+            //count today appointment 
+            $count_today_appointments = Appointment::whereDate('start_date', $today)
+            ->join('clients', 'clients.id', '=', 'appointment.client_id')
+            ->select('clients.id', 'clients.firstname', 'clients.lastname', 'appointment.start_date', 'appointment.end_date')
+            ->get();
+
+            $categories = Category::get();
+
+            $services   = Services::with(['appearoncalender'])
+                        ->where('appear_on_calendar',1)
+                        ->get();
+            $users = User::all();
+            return view('clients.index', compact('clients','count_today_appointments','categories','services','users','permission'));
+        } else {
+            abort(403, 'You are not authorized to access this page.');
+        }
     }
 
     /**
@@ -133,7 +141,12 @@ class ClientsController extends Controller
      */
     public function create()
     {
-        return view('clients.create');
+        $permission = \Auth::user()->checkPermission('clients');
+        if ($permission === 'View & Make Changes' || $permission === 'Both' || $permission === true) {
+            return view('clients.create');
+        } else {
+            abort(403, 'You are not authorized to access this page.');
+        }
     }
 
     /**
@@ -220,14 +233,20 @@ class ClientsController extends Controller
      */
     public function show(string $id)
     {
-        $client             = Clients::where('id',$id)->first();
-        $client_photos      = $client->photos;
-        $client_documents   = ClientsDocuments::where('client_id',$client->id)->get();
-        $todayDate          = Carbon::today()->toDateTimeString();
+        // Check permissions for showing a client
+        $permission = \Auth::user()->checkPermission('clients');
+        if ($permission === 'View & Make Changes' || $permission === 'Both' || $permission === true) {
+            $client             = Clients::where('id',$id)->first();
+            $client_photos      = $client->photos;
+            $client_documents   = ClientsDocuments::where('client_id',$client->id)->get();
+            $todayDate          = Carbon::today()->toDateTimeString();
 
-        $futureappointments = $client->allappointments()->where('created_at','>=', $todayDate)->orderby('created_at','desc')->get();
-        $pastappointments   = $client->allappointments()->where('created_at','<=', $todayDate)->orderby('created_at','desc')->get();
-        return view('clients.edit',compact('client','client_photos','client_documents','futureappointments','pastappointments'));
+            $futureappointments = $client->allappointments()->where('created_at','>=', $todayDate)->orderby('created_at','desc')->get();
+            $pastappointments   = $client->allappointments()->where('created_at','<=', $todayDate)->orderby('created_at','desc')->get();
+            return view('clients.edit',compact('client','client_photos','client_documents','futureappointments','pastappointments'));
+        } else {
+            abort(403, 'You are not authorized to access this page.');
+        }
     }
 
     /**

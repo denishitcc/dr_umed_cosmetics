@@ -27,8 +27,8 @@
                                 </tr>
                                 @foreach($appointment_client as $app)
                                 <tr>
-                                    <td class="text-left"> {{$app->name}}</td>
-                                    <input type="hidden" name="name[]" value="{{$app->name}}">
+                                    <td class="text-left"> {{$app->sub_name}}</td>
+                                    <input type="hidden" name="name[]" value="{{$app->sub_name}}">
                                     <input type="hidden" name="targets[]" value="{{  ($app->targets == 1) ? 1 : 0}}" id="targets_content">
                                     <td class="text-center"><label class="cst-check blue"><input type="checkbox" name="targets[]" class="targets" value="1" {{  ($app->targets == 1 ? ' checked' : '') }}><span class="checkmark"></span></label></td>
                                     <input type="hidden" name="limited[]" value="{{  ($app->limited == 1) ? 1 : 0}}" id="limited_content">

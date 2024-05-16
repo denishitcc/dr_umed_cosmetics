@@ -20,46 +20,51 @@ class UsersController extends Controller
      */
     public function index(Request $request)
     {
-        $users = User::all();
-        $locations = Locations::all();
-        if ($request->ajax()) {
-            $data = User::select('*')->where('role_type','!=','admin');
-            return Datatables::of($data)
-                ->addIndexColumn()
+        $permission = \Auth::user()->checkPermission('users');
+        if ($permission === 'View & Make Changes' || $permission === 'Both' || $permission === 'View Only' || $permission === true) {
+            $users = User::all();
+            $locations = Locations::all();
+            if ($request->ajax()) {
+                $data = User::select('*')->where('role_type','!=','admin');
+                return Datatables::of($data)
+                    ->addIndexColumn()
 
-                ->addColumn('action', function($row){
-                        $btn = '<div class="action-box"><button type="button" class="btn btn-sm black-btn round-6 dt-edit" ids='.$row->id.'><i class="ico-edit"></i></button><button type="button" class="btn btn-sm black-btn round-6 dt-delete" ids='.$row->id.'><i class="ico-trash"></i></button></div>';
-                        return $btn;
-                })
-                ->addColumn('image', function ($row) { 
-                    return $row->image;
-                })
-                ->addColumn('autoId', function ($row) { 
-                    $lastuserId = $row->id;
-                    $lastIncreament = substr($lastuserId, -3);
-                    $newUserId = str_pad($lastIncreament, 3, 0, STR_PAD_LEFT);
-                    $row->autoId = $newUserId;
-                    return $row->autoId;
-                })
-                ->addColumn('username', function ($row) { 
-                    return $row->first_name.' '.$row->last_name;
-                })
-                ->addColumn('locations', function ($row) {
-                    $loc = Locations::where('id',$row->staff_member_location)->first(); 
-                    return $loc->location_name??null;
-                })
-                ->addColumn('status_bar', function($row){
-                    if($row->status == 'active')
-                    {
-                        $row->status_bar = 'checked';
-                    }
-                    return $row->status_bar;
-                })
-                ->rawColumns(['action'])
+                    ->addColumn('action', function($row){
+                            $btn = '<div class="action-box"><button type="button" class="btn btn-sm black-btn round-6 dt-edit" ids='.$row->id.'><i class="ico-edit"></i></button><button type="button" class="btn btn-sm black-btn round-6 dt-delete" ids='.$row->id.'><i class="ico-trash"></i></button></div>';
+                            return $btn;
+                    })
+                    ->addColumn('image', function ($row) { 
+                        return $row->image;
+                    })
+                    ->addColumn('autoId', function ($row) { 
+                        $lastuserId = $row->id;
+                        $lastIncreament = substr($lastuserId, -3);
+                        $newUserId = str_pad($lastIncreament, 3, 0, STR_PAD_LEFT);
+                        $row->autoId = $newUserId;
+                        return $row->autoId;
+                    })
+                    ->addColumn('username', function ($row) { 
+                        return $row->first_name.' '.$row->last_name;
+                    })
+                    ->addColumn('locations', function ($row) {
+                        $loc = Locations::where('id',$row->staff_member_location)->first(); 
+                        return $loc->location_name??null;
+                    })
+                    ->addColumn('status_bar', function($row){
+                        if($row->status == 'active')
+                        {
+                            $row->status_bar = 'checked';
+                        }
+                        return $row->status_bar;
+                    })
+                    ->rawColumns(['action'])
 
-                ->make(true);
+                    ->make(true);
+            }
+            return view('users.index', compact('users','locations'));
+        }else{
+            abort(403, 'You are not authorized to access this page.');
         }
-        return view('users.index', compact('users','locations'));
     }
 
     /**
@@ -67,9 +72,14 @@ class UsersController extends Controller
      */
     public function create()
     {
-        $userRole = UserRoles::get();
-        $locations = Locations::all();
-        return view('users.create',compact('userRole','locations'));
+        $permission = \Auth::user()->checkPermission('users');
+        if ($permission === 'View & Make Changes' || $permission === 'Both' || $permission === true) {
+            $userRole = UserRoles::get();
+            $locations = Locations::all();
+            return view('users.create',compact('userRole','locations'));
+        }else{
+            abort(403, 'You are not authorized to access this page.');
+        }
     }
 
     /**
@@ -165,10 +175,15 @@ class UsersController extends Controller
      */
     public function show(string $id)
     {
-        $users      = User::find($id);
-        $userRole   = UserRoles::get();
-        $locations  = Locations::all();
-        return view('users.edit', compact('users','userRole','locations'));
+        $permission = \Auth::user()->checkPermission('users');
+        if ($permission === 'View & Make Changes' || $permission === 'Both' || $permission === true) {
+            $users      = User::find($id);
+            $userRole   = UserRoles::get();
+            $locations  = Locations::all();
+            return view('users.edit', compact('users','userRole','locations'));
+        }else{
+            abort(403, 'You are not authorized to access this page.');
+        }
     }
 
     /**

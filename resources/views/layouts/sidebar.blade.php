@@ -44,21 +44,32 @@
                     <li class="{{ (request()->is('dashboard')) ? 'active' : '' }}">
                         <a href="{{ route('dashboard') }}"><i class="ico-dashboard"></i>Dashboard</a>
                     </li>
+                    @if(\Auth::user()->checkPermission('calender') == "true" || \Auth::user()->checkPermission('calender') != "No permission")
                     <li class="{{ Route::is('calender.*') ? 'active' : '' }}">
                         <a href="{{ route('calender.index') }}"><i class="ico-calendar"></i>Calendar</a>
                     </li>
-                    <li class="{{ (request()->is('clients')) ? 'active' : '' }} || {{ (request()->is('clients/*')) ? 'active' : '' }}">
-                        <a href="{{ route('clients.index') }}"><i class="ico-client"></i>Clients</a>
-                    </li>
+                    @endif
+                    @if(\Auth::user()->checkPermission('clients') == "true" || \Auth::user()->checkPermission('clients') != "No permission")
+                        <li class="{{ (request()->is('clients')) ? 'active' : '' }} || {{ (request()->is('clients/*')) ? 'active' : '' }}">
+                            <a href="{{ route('clients.index') }}"><i class="ico-client"></i>Clients</a>
+                        </li>
+                    @endif
+                    @if(\Auth::user()->checkPermission('enquiries') == "true" || \Auth::user()->checkPermission('enquiries') != "No permission")
                     <li class="{{ (request()->is('enquiries')) ? 'active' : '' }} || {{ (request()->is('enquiries/*')) ? 'active' : '' }}">
                         <a href="{{ route('enquiries.index') }}"><i class="ico-enquiries"></i>Enquiries</a>
                     </li>
+                    @endif
+                    @if(\Auth::user()->checkPermission('finance') == "true" || \Auth::user()->checkPermission('finance') != "No permission")
                     <li class="{{ (request()->is('finance')) ? 'active' : '' }} || {{ (request()->is('finance/*')) ? 'active' : '' }}">
                         <a href="{{ route('finance.index') }}"><i class="ico-finance"></i>Finance</a>
                     </li>
+                    @endif
+                    @if(\Auth::user()->checkPermission('reports') == "true" || \Auth::user()->checkPermission('reports') != "No permission")
                     <li>
                         <a href="#"><i class="ico-reports"></i>Reports</a>
                     </li>
+                    @endif
+                    @if(\Auth::user()->checkPermission('services') == "true" || \Auth::user()->checkPermission('services') != "No permission")
                     <!-- dropdown -->
                     <li class="{{ (request()->is('services')) ? 'active' : '' }} || {{ (request()->is('services/*')) ? 'active' : '' }}">
                         <a href="{{ route('services.index') }}"><i class="ico-services"></i>Services</a>
@@ -69,12 +80,18 @@
                             <li><a href="#">Recurring</a></li>
                         </ul> -->
                     </li>
+                    @endif
+                    @if(\Auth::user()->checkPermission('suppliers') == "true" || \Auth::user()->checkPermission('suppliers') != "No permission")
                     <li class="{{ (request()->is('suppliers')) ? 'active' : '' }} || {{ (request()->is('suppliers/*')) ? 'active' : '' }}">
                         <a href="{{ route('suppliers.index') }}"><i class="ico-location1"></i>Suppliers</a>
                     </li>
+                    @endif
+                    @if(\Auth::user()->checkPermission('products') == "true" || \Auth::user()->checkPermission('products') != "No permission")
                     <li class="{{ (request()->is('products')) ? 'active' : '' }} || {{ (request()->is('products/*')) ? 'active' : '' }}">
                         <a href="{{ route('products.index') }}"><i class="ico-products"></i>Products</a>
                     </li>
+                    @endif
+                    @if(\Auth::user()->checkPermission('gift-card') == "true" || \Auth::user()->checkPermission('discount-coupons') == "true" || \Auth::user()->checkPermission('gift-card') != "No permission" || \Auth::user()->checkPermission('discount-coupons') != "No permission")
                     <li class="dropdown">
                         <a href="#"><i class="ico-promotion"></i>Promotions </a>
                         <ul>
@@ -82,9 +99,13 @@
                             <li><a href="#">Discount Coupons</a></li>
                         </ul>
                     </li>
+                    @endif
+                    @if(\Auth::user()->checkPermission('forms') == "true" || \Auth::user()->checkPermission('forms') != "No permission")
                     <li class="{{ (request()->is('forms')) ? 'active' : '' }} || {{ (request()->is('forms/*')) ? 'active' : '' }}">
                         <a href="{{ route('forms.index') }}"><i class="ico-forms"></i>Forms</a>
                     </li>
+                    @endif
+                    @if(\Auth::user()->checkPermission('email-templates') == "true" || \Auth::user()->checkPermission('sms-templates') == "true" || \Auth::user()->checkPermission('email-templates') != "No permission" || \Auth::user()->checkPermission('sms-templates') != "No permission")
                     <li class="dropdown {{ (request()->is('email-templates')) ? 'show' : '' }} || {{ (request()->is('email-templates')) ? 'active' : '' }} || {{ (request()->is('sms-templates')) ? 'show' : '' }} || {{ (request()->is('sms-templates')) ? 'active' : '' }} || {{ (request()->is('email-templates/*')) ? 'show' : '' }} || {{ (request()->is('sms-templates/*')) ? 'show' : '' }}">
                         <a href="#"><i class="ico-templates"></i>Templates</a>
                         <ul>
@@ -96,12 +117,18 @@
                             </li>
                         </ul>
                     </li>
+                    @endif
+                    @if(\Auth::user()->checkPermission('locations') == "true" || \Auth::user()->checkPermission('locations') != "No permission")
                     <li class="{{ (request()->is('locations')) ? 'active' : '' }} || {{ (request()->is('locations/*')) ? 'active' : '' }}">
                         <a href="{{ route('locations.index') }}"><i class="ico-locations"></i>Locations </a>
                     </li>
+                    @endif
+                    @if(\Auth::user()->checkPermission('users') == "true" || \Auth::user()->checkPermission('users') != "No permission")
                     <li class="{{ (request()->is('users')) ? 'active' : '' }} || {{ (request()->is('users/*')) ? 'active' : '' }}">
                         <a href="{{ route('users.index') }}"><i class="ico-staff"></i>Staffs</a>
                     </li>
+                    @endif
+                    @if(\Auth::user()->checkPermission('settings') == "true" || \Auth::user()->checkPermission('settings') != "No permission")
                     <li class="dropdown {{ (request()->is('settings')) ? 'active' : '' }} || {{ (request()->is('settings')) ? 'show' : '' }} || {{ (request()->is('users-roles')) ? 'active' : '' }} || {{ (request()->is('users-roles/*')) ? 'active' : '' }} || {{ (request()->is('users-roles')) ? 'show' : '' }} || {{ (request()->is('access-level')) ? 'show' : '' }} || {{ (request()->is('access-level')) ? 'active' : '' }}">
                         <a href="#"><i class="ico-templates"></i>Settings </a>
                         <ul>
@@ -115,6 +142,7 @@
                             </li>
                         </ul>
                     </li>
+                    @endif
                 </ul>
             </div>
             @php

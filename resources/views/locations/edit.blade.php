@@ -465,28 +465,28 @@
 <!-- </main> -->
 @endsection
 @section('script')
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBR652zv0sbcR8AkNDA7PbQ3y33_yrzW0Q&libraries=places&callback=initAutocomplete" async></script>
+<!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBR652zv0sbcR8AkNDA7PbQ3y33_yrzW0Q&libraries=places&callback=initAutocomplete" async></script> -->
 <script>
 
-    let autocomplete;
+    // let autocomplete;
 
-    /* ------------------------- Initialize Autocomplete ------------------------ */
-    function initAutocomplete() {
-        const input = document.getElementById("placeInput");
-        const options = {
-            componentRestrictions: { country: "IN" }
-        }
-        autocomplete = new google.maps.places.Autocomplete(input, options);
-        autocomplete.addListener("place_changed", onPlaceChange)
-    }
+    // /* ------------------------- Initialize Autocomplete ------------------------ */
+    // function initAutocomplete() {
+    //     const input = document.getElementById("placeInput");
+    //     const options = {
+    //         componentRestrictions: { country: "IN" }
+    //     }
+    //     autocomplete = new google.maps.places.Autocomplete(input, options);
+    //     autocomplete.addListener("place_changed", onPlaceChange)
+    // }
 
-    /* --------------------------- Handle Place Change -------------------------- */
-    function onPlaceChange() {
-        const place = autocomplete.getPlace();
-        console.log(place.formatted_address)
-        console.log(place.geometry.location.lat())
-        console.log(place.geometry.location.lng())
-    }
+    // /* --------------------------- Handle Place Change -------------------------- */
+    // function onPlaceChange() {
+    //     const place = autocomplete.getPlace();
+    //     console.log(place.formatted_address)
+    //     console.log(place.geometry.location.lat())
+    //     console.log(place.geometry.location.lng())
+    // }
     $(document).ready(function() {
         // Add new row
         $("body").on("click", ".add_node_btn_frm_field", function (e) {

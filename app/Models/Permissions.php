@@ -23,6 +23,7 @@ class Permissions extends Model
     protected $fillable = [
         'id',
         'name',
+        'sub_name',
         'targets',
         'limited',
         'standard',

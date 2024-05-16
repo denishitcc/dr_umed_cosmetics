@@ -1186,6 +1186,7 @@
         getLocation:                  "{!! route('get-all-locations') !!}",
         getSelectedLocation:          "{!! route('calendar.get-selected-location') !!}",
         getCategoriesAndServices:     "{!! route('calendar.get-categories-and-services') !!}",
+        getUserSelectedLocation:      "{!! route('calender.get-user-selected-location') !!}",
     };
 
     $(document).ready(function()

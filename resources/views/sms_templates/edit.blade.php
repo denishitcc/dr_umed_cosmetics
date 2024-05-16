@@ -41,10 +41,7 @@
                     required: true,
                 },
                 sms_template_description:{
-                    required: function() 
-                    {
-                        CKEDITOR.instances.sms_template_description.updateElement();
-                    },
+                    required: true,
                 }
             },
         });
