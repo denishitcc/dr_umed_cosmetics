@@ -55,57 +55,61 @@ class CalenderController extends Controller
     public function index(Request $request)
     {
         $permission = \Auth::user()->checkPermission('calender');
-        $permissionValue = ($permission === 'View & Make Changes' || $permission === 'Both' || $permission === true) ? '1' : '0';
+        if ($permission === 'View & Make Changes' || $permission === 'Both' || $permission === 'View Only' || $permission === true) {
+            $permissionValue = ($permission === 'View & Make Changes' || $permission === 'Both' || $permission === true) ? '1' : '0';
 
-        $categories = Category::get();
+            $categories = Category::get();
 
-        $services   = Services::with(['appearoncalender'])->get();
-        $staffs     = User::all();
-        $todayDate  = date('Y-m-d'); // Get current date in 'YYYY-MM-DD' format
-        $waitlist   = WaitlistClient::select('waitlist_client.*', 'clients.firstname','clients.lastname','clients.mobile_number','clients.email', 'users.first_name as user_firstname', 'users.last_name as user_lastname')
-            ->leftjoin('clients', 'waitlist_client.client_id', '=', 'clients.id')
-            ->leftjoin('users', 'waitlist_client.user_id', '=', 'users.id')
-            ->where('preferred_from_date',$todayDate)
-            ->get();
+            $services   = Services::with(['appearoncalender'])->get();
+            $staffs     = User::all();
+            $todayDate  = date('Y-m-d'); // Get current date in 'YYYY-MM-DD' format
+            $waitlist   = WaitlistClient::select('waitlist_client.*', 'clients.firstname','clients.lastname','clients.mobile_number','clients.email', 'users.first_name as user_firstname', 'users.last_name as user_lastname')
+                ->leftjoin('clients', 'waitlist_client.client_id', '=', 'clients.id')
+                ->leftjoin('users', 'waitlist_client.user_id', '=', 'users.id')
+                ->where('preferred_from_date',$todayDate)
+                ->get();
 
-        foreach($waitlist as $wait)
-        {
-            $ser_id = explode(',',$wait->service_id);
-            $service_names = [];
-            $service_durations = [];
-            $serv_id = [];
-            foreach ($ser_id as $ser) {
-                $service = Services::find($ser); // Assuming Services model has 'id' as primary key
-                $service_appear = ServicesAppearOnCalendar::where('service_id',$ser)->first();
-                if ($service) {
-                    $service_names[] = $service->service_name;
-                    $serv_id[] = $ser;
+            foreach($waitlist as $wait)
+            {
+                $ser_id = explode(',',$wait->service_id);
+                $service_names = [];
+                $service_durations = [];
+                $serv_id = [];
+                foreach ($ser_id as $ser) {
+                    $service = Services::find($ser); // Assuming Services model has 'id' as primary key
+                    $service_appear = ServicesAppearOnCalendar::where('service_id',$ser)->first();
+                    if ($service) {
+                        $service_names[] = $service->service_name;
+                        $serv_id[] = $ser;
+                    }
+                    if ($service_appear) {
+                        $service_durations[] = $service_appear->duration;
+                    }
                 }
-                if ($service_appear) {
-                    $service_durations[] = $service_appear->duration;
-                }
+                $wait->service_name = $service_names;
+                $wait->servid = $serv_id;
+                $wait->duration = $service_durations;
             }
-            $wait->service_name = $service_names;
-            $wait->servid = $serv_id;
-            $wait->duration = $service_durations;
-        }
-        //discount /surcharge data get
-        $loc_dis = LocationDiscount::all();
-        $loc_sur = LocationSurcharge::all();
-        
+            //discount /surcharge data get
+            $loc_dis = LocationDiscount::all();
+            $loc_sur = LocationSurcharge::all();
+            
 
-        return view('calender.index')->with(
-            [
-                'categories' => $categories,
-                'services'   => $services,
-                'waitlist'   => $waitlist,
-                'staffs'     => $staffs,
-                'productServiceJson'   => '',
-                'loc_dis'    =>$loc_dis,
-                'loc_sur'    =>$loc_sur,
-                'permissions'=>$permissionValue
-            ]
-        );
+            return view('calender.index')->with(
+                [
+                    'categories' => $categories,
+                    'services'   => $services,
+                    'waitlist'   => $waitlist,
+                    'staffs'     => $staffs,
+                    'productServiceJson'   => '',
+                    'loc_dis'    =>$loc_dis,
+                    'loc_sur'    =>$loc_sur,
+                    'permissions'=>$permissionValue
+                ]
+            );
+        }else{
+            abort(403, 'You are not authorized to access this page.');
+        }
     }
 
     /**
