@@ -32,6 +32,9 @@ class Appointment extends Model
         'start_date',
         'end_date',
         'duration',
+        'forms',
+        'forms_sent_sms',
+        'forms_sent_email',
         'status'
     ];
 

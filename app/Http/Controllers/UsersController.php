@@ -152,8 +152,7 @@ class UsersController extends Controller
                     $message->from('support@itcc.net.au',$sub);
                 });
             }
-            
-            
+
             $response = [
                 'success'   => true,
                 'message'   => 'User Created successfully!',

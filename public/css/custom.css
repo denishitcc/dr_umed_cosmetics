@@ -121,7 +121,7 @@ img{ max-width: 100%;}
 .btn-light{color: var(--l-grey);}
 .btn-light:hover{}
 
-.btn-light-grey{ border: 1px solid #E6E9EB; background: #F1F5F7; color: #888C9F;}
+.btn:disabled, .btn-light-grey{ border: 1px solid #E6E9EB; background: #F1F5F7; color: #888C9F;}
 .btn-light-grey:hover, .btn-light-grey:focus, .btn-light-grey:active{border-color: #E6E9EB}
 
 .btn-light-grey50{ border: 1px solid #EEE; background: rgba(238, 238, 238, 0.93); color: #A6A6A6;}

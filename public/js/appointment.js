@@ -8,6 +8,9 @@ var DU = {};
             repeatAppointmentModal:     jQuery('#repeat_Appointment'),
             newAppointmentBtn:          jQuery('#appointment'),
             repeatAppointmentForm:      jQuery("#addwaiterform"),
+            appointmentForms:           jQuery("#appointment_Forms"),
+            copyexistingFormModal:      jQuery("#copy_exist"),
+            sendFormsModal:             jQuery("#send_forms_modal"),
         },
         init: function (){
             this.addHandler();
@@ -36,6 +39,16 @@ var DU = {};
             context.locationDropdown();
             context.staffchangeafterlocation();
             context.staffchangecalendar();
+            // context.sendAptDetails();
+            context.openAppointmentFormsModal();
+            context.copyForms();
+            context.addNewForms();
+            context.checkedBox();
+            context.addForms();
+            context.deleteForms();
+            context.allCheckboxChecked();
+            context.sendFormsemailModal();
+            context.changeSMSEmail();
 
             $('#clientmodal').hide();
             $('#service_error').hide();
@@ -989,11 +1002,11 @@ var DU = {};
                             </div>
                             <div class="btns mb-3">
                                 <button class="btn btn-secondary btn-sm" id="edit_appointment" event_id="${response.data.id}" staff_id="${response.data.staff_id}" appointment_date="${response.data.appointment_date}" appointment_time="${response.data.appointment_time}" staff_name="${response.data.staff_name}" service_name="${response.data.services_name}" duration="${response.data.duration}" category_id="${response.data.category_id}" services_id="${response.data.service_id}" client-id="${response.data.id}" client-name="${response.data.client_data.first_name + ' ' + response.data.client_data.last_name}" edit-service-name="${response.data.service_id}" ${response.data.status_no == 4 ? 'disabled' : ''}>Edit Appt</button>
-                                <button class="btn btn-secondary btn-sm">Edit Forms</button>
+                                <button class="btn btn-secondary btn-sm" id="edit_forms" data-appt_id="${response.data.id}">Edit Forms</button>
                                 <button class="btn btn-secondary btn-sm rebook">Rebook</button>
                                 <button class="btn btn-secondary btn-sm repeat_appt">Repeat Appt</button>
                                 <button class="btn btn-secondary btn-sm">Messages</button>
-                                <button class="btn btn-secondary btn-sm">Send appt details</button>
+                                <button class="btn btn-secondary btn-sm" id="send_apt_details">Send appt details</button>
                                 ${response.data.status_no == 4 ? `<button class="btn btn-secondary btn-sm view_invoice" walk_in_ids="${response.data.walk_in_id}">View paid invoice</button>` : '<button class="btn btn-secondary btn-sm view_invoice" walk_in_ids="${response.data.walk_in_id}"  style="display:none;">View paid invoice</button>'}
                             </div>
                             ${response.data.status_no != 4 ? `<a href="#" id="make_sale" class="btn btn-primary btn-md mb-2 d-block make_sale" product_id="${response.data.service_id}" product_name="${response.data.services_name}" product_price="${response.data.standard_price}" appt_id="${response.data.id}" staff_id="${response.data.staff_id}">Make Sale</a>` : ''}
@@ -1115,6 +1128,218 @@ var DU = {};
                     });
                 }
             });
+        },
+
+        // send appointment details for client
+        // sendAptDetails: function(){
+        //     var context = this;
+        //     $(document).on("click", '#send_apt_details', function() {
+        //         var appointmentId       = $('#clientDetails').find('input:hidden[name=appointment_id]').val();
+        //         console.log(appointmentId);
+        //     });
+        // },
+
+        openAppointmentFormsModal: function(){
+            var context = this;
+            $(document).on('click','#edit_forms',function(e){
+                var appointmentId = $('#edit_forms').data('appt_id');
+                context.getAppointmentForms(appointmentId);
+                context.selectors.appointmentForms.modal('show');
+            });
+        },
+
+        getAppointmentForms: function(appointmentId){
+            var context = this;
+            $.ajax({
+                url: moduleConfig.getAppointmentForms.replace(':ID', appointmentId), // Replace with your actual API endpoint
+                type: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                },
+                success: function (data) {
+                    $('#forms').empty();
+                    $('#forms').prepend(data.formshtml);
+                    $('#update_forms_client').html(`Give to ${data.clientname} to fill out form`);
+                    $('#form_sent_time').text(`Forms sent by email at ${data.email_time}`);
+
+                    // copy existing form
+                    $('#existing_modal_name').text(`Copy of one of ${data.clientname}'s existing forms to add to this appointment.`)
+                    $('#copy_existing_form_list').empty();
+                    $('#copy_existing_form_list').prepend(data.existingformshtml);
+                },
+                error: function (error) {
+                    console.error('Error fetching on appointment forms:', error);
+                }
+            });
+        },
+
+        //TODO: copy forms
+        copyForms: function(){
+            var context = this;
+            $(document).on('click','.copy_existing_forms',function(e){
+                var appointmentId = $('#edit_forms').data('appt_id');
+                context.getAppointmentForms(appointmentId);
+                context.selectors.copyexistingFormModal.modal('show');
+                console.log(appointmentId);
+            });
+        },
+
+        addNewForms: function(){
+            var context = this;
+            $(document).on('click','#add_new_forms',function(e){
+                $('#form_dropdown').dropdown();
+            });
+        },
+
+        checkedBox: function(){
+            var context = this;
+            $(document).on('change','input[name="forms_check"][type="checkbox"]',function(e){
+                var checkedCount = $('input[name="forms_check"][type="checkbox"]:checked').length;
+                context.sendFormAndGiveFormbtn(checkedCount);
+            });
+        },
+
+        allCheckboxChecked: function(){
+            var context = this;
+            $(document).on('click','input[name="all_forms_check"][type="checkbox"]',function(e){
+                if ($(this).is(':checked')) {
+                    $('input[name="forms_check"][type="checkbox"]').attr('checked', true);
+                    var checkedCount = $('input[name="forms_check"][type="checkbox"]:checked').length;
+                    context.sendFormAndGiveFormbtn(checkedCount-1);
+                } else {
+                    $('input[name="forms_check"][type="checkbox"]').attr('checked', false);
+                    var checkedCount = $('input[name="forms_check"][type="checkbox"]:checked').length;
+                    context.sendFormAndGiveFormbtn(checkedCount);
+                }
+            });
+        },
+
+        sendFormAndGiveFormbtn: function(checkedCount){
+            $('#form_check_count').html(`${checkedCount} forms selected`);
+
+            if(checkedCount > 0){
+                $(".send_forms").prop({disabled: false});
+                $('.send_forms').removeClass('btn-light-grey50');
+                $('.send_forms').addClass('btn-primary');
+
+                $(".update_forms").prop({disabled: false});
+                $('.update_forms').removeClass('btn-light-grey50');
+                $('.update_forms').addClass('btn-primary');
+            }else{
+                $('.send_forms').removeClass('btn-primary');
+                $('.send_forms').addClass('btn-light-grey50');
+                $(".send_forms").prop({disabled: true});
+
+                $('.update_forms').removeClass('btn-primary');
+                $('.update_forms').addClass('btn-light-grey50');
+                $(".update_forms").prop({disabled: true});
+            }
+        },
+
+        addForms: function(){
+            var context = this;
+            $(document).on('click','.add_forms',function(e){
+                var $this           = $(this),
+                    appointmentId   = $this.data('appointment_id'),
+                    form_id         = $this.data('form_id');
+
+                $.ajax({
+                    url: moduleConfig.addAppointmentForms,
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {
+                        'appointment_id'  : appointmentId,
+                        'form_id'         : form_id
+                    },
+                    success: function (data) {
+                        if (data.success) {
+                            Swal.fire({
+                                title: "Appointment Forms!",
+                                text: data.message,
+                                info: "success",
+                            }).then(function() {
+                                context.selectors.copyexistingFormModal.modal('hide');
+                                context.getAppointmentForms(appointmentId);
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Error!",
+                                text: data.message,
+                                info: "error",
+                            });
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Error fetching events:', error);
+                    }
+                });
+            });
+        },
+
+        deleteForms: function(){
+            var context = this;
+            $(document).on('click','#delete_forms',function(e){
+                var $this               = $(this),
+                    apptform_id         = $this.data('apptform_id'),
+                    appointmentId       = $this.data('appointment_id');
+
+                $.ajax({
+                    url: moduleConfig.deleteAppointmentForms.replace(':ID',apptform_id),
+                    type: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function (data) {
+                        if (data.success) {
+                            Swal.fire({
+                                title: "Appointment Forms!",
+                                text: data.message,
+                                info: "success",
+                            }).then(function() {
+                                context.selectors.copyexistingFormModal.modal('hide');
+                                context.getAppointmentForms(appointmentId);
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Error!",
+                                text: data.message,
+                                info: "error",
+                            });
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Error fetching events:', error);
+                    }
+                });
+            });
+        },
+
+        sendFormsemailModal: function(){
+            var context = this;
+            $(document).on('click','.send_forms',function(e){
+                context.selectors.appointmentForms.modal('hide');
+                context.selectors.sendFormsModal.modal('show');
+            });
+        },
+
+        changeSMSEmail: function(){
+            var context = this;
+            jQuery('.sms_email').change(function(){
+                context.smsEmailStatus();
+            });
+        },
+
+        smsEmailStatus: function(){
+            if ($("input[name='sms_email'][value='1']").prop("checked"))
+            {
+                $('.sms').show();
+                $('.email').hide();
+            }else{
+                $('.email').show();
+                $('.sms').hide();
+            }
         },
 
         // For events list

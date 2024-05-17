@@ -8,6 +8,7 @@ use App\Http\Resources\CategoryListResource;
 use App\Http\Resources\ClientResource;
 use App\Http\Resources\StaffListResource;
 use App\Models\Appointment;
+use App\Models\AppointmentForms;
 use App\Models\AppointmentNotes;
 use App\Models\Category;
 use App\Models\Services;
@@ -37,6 +38,7 @@ use App\Models\LocationSurcharge;
 use App\Models\ServicesAvailability;
 use App\Models\ProductAvailabilities;
 use App\Models\EmailTemplates;
+use App\Models\FormSummary;
 use Mail;
 
 class CalenderController extends Controller
@@ -225,7 +227,8 @@ class CalenderController extends Controller
      */
     public function createAppointments(Request $request)
     {
-        // dd($request->all());
+        $location = Locations::find($request->location_id);
+
         if(!isset($request->app_id)) {
             $service_ex = explode(',',$request->service_id);
             $duration_ex = explode(',',$request->duration);
@@ -235,16 +238,17 @@ class CalenderController extends Controller
             try {
                 DB::beginTransaction(); // Begin a transaction
                 foreach($service_ex as $key => $ser) {
-                    $single_ser = Services::where('id',$ser)->first();
-                    $startDateTime = Carbon::parse($request->start_time);
-                    $duration = $duration_ex[$key];
+                    $single_ser     = Services::where('id',$ser)->first();
+                    $startDateTime  = Carbon::parse($request->start_time);
+                    $duration       = $duration_ex[$key];
+
                     // Add duration to start_date
                     if($key > 0) {
                         $startDateTime = Carbon::parse($data[$key - 1]['data']['end_date']); // Use previous end_date
                     }
 
-                    $endDateTime = $startDateTime->copy()->addMinutes($duration);
-                    $formattedEndDateTime = $endDateTime->format('Y-m-d\TH:i:s');
+                    $endDateTime            = $startDateTime->copy()->addMinutes($duration);
+                    $formattedEndDateTime   = $endDateTime->format('Y-m-d\TH:i:s');
 
                     $appointmentsData = [
                         'client_id'     => $request->client_id,
@@ -259,7 +263,12 @@ class CalenderController extends Controller
                         'location_id'   => $request->location_id
                     ];
 
-                    Appointment::create($appointmentsData);
+                    $appointment = Appointment::create($appointmentsData);
+
+                    $this->attachForms($single_ser,$appointment);
+
+                    $this->sendForms($request ,$single_ser,$location,$appointment);
+
                     $data[] = [
                         'success' => true,
                         'message' => 'Appointment data prepared!',
@@ -280,6 +289,7 @@ class CalenderController extends Controller
                     'type'    => 'success',
                 ];
             } catch (\Throwable $th) {
+                dd($th);
                 DB::rollback(); // Rollback the transaction on exception
                 $data[] = [
                     'success' => false,
@@ -304,16 +314,19 @@ class CalenderController extends Controller
             ];
 
             try {
-                $findAppointment = Appointment::where('id',$request->app_id)->first();
+                $single_ser                 = Services::where('id', $request->service_id)->first();
+                $findAppointment            = Appointment::where('id',$request->app_id)->first();
 
                 if( isset($findAppointment->id) ){
                     $findAppointment->update($appointmentsData);
+                    $this->attachForms($single_ser,$findAppointment);
                 }
                 else
                 {
-                    Appointment::create($appointmentsData);
+                    $appointment = Appointment::create($appointmentsData);
+                    $this->attachForms($single_ser,$appointment);
                 }
-
+                $this->sendForms($request ,$single_ser,$location,$appointment);
                 DB::commit();
                 $data = [
                     'success' => true,
@@ -332,6 +345,66 @@ class CalenderController extends Controller
             }
         }
         return response()->json($data);
+    }
+
+    /**
+     * Method sendForms
+     *
+     * @param $request $request [explicite description]
+     * @param $single_ser $single_ser [explicite description]
+     *
+     * @return void
+     */
+    public function sendForms($request ,$single_ser,$location,$appointment)
+    {
+        $clientData     = Clients::where('id',$request->client_id)->first();
+        $to_email       = $clientData['email'];
+        // $subject     = 'Before your appointment at '.env('APP_NAME').' '.$location['location_name'];
+
+        $forms      = explode(',',$single_ser['forms']);
+
+        foreach ($forms as $key => $form) {
+            $forms = FormSummary::find($form);
+            $subject    = 'Before your appointment at  fill this form - '.$forms['title'];
+            $userData   = [
+                'name'          => $clientData['firstname'],
+                'company_name'  => env('APP_NAME') .$location['location_name'],
+                'form_url'      => route('serviceforms.formUser',$appointment->id)
+            ];
+            Mail::send('email.forms', $userData, function($message) use ($to_email,$subject) {
+                $message->to($to_email)
+                ->subject($subject);
+                $message->from('support@itcc.net.au',$subject);
+            });
+
+            $data['forms_sent_email'] = carbon::now();
+            $appointment->update($data);
+        }
+    }
+
+
+    /**
+     * Method attachForms
+     *
+     * @param $single_ser $single_ser [explicite description]
+     * @param $appointment $appointment [explicite description]
+     *
+     * @return void
+     */
+    public function attachForms($single_ser,$appointment)
+    {
+        $appointmentFormsData = [];
+        $appointmentform      = explode(',',$single_ser['forms']);
+
+        foreach ($appointmentform as $value) {
+            $appointmentFormsData[] = [
+                'appointment_id'    => $appointment->id,
+                'form_id'           => $value,
+                'status'            => AppointmentForms::NEW
+            ];
+        }
+
+        return AppointmentForms::insert($appointmentFormsData);
     }
 
     /**
@@ -2369,5 +2442,78 @@ class CalenderController extends Controller
                 return response()->json(['success' => true, 'staff_loc' => $staff_loc,'type'=>'user']);
             }
         }
+    }
+     /**
+     * Method getAppointmentForms
+     *
+     * @return mixed
+     */
+    public function getAppointmentForms($appointmentId)
+    {
+        $appointmentForms   = [];
+        $forms              = AppointmentForms::where('appointment_id',$appointmentId)->get();
+        $appointment        = Appointment::find($appointmentId);
+        $clientName         = $appointment->clients->firstname;
+        $email_time         = Carbon::parse($appointment->forms_sent_email)->format('H:i a, D dS M Y');
+        $html               = view('calender.partials.attachforms',     [ 'forms' => $forms ])->render();
+        $existingformshtml  = view('calender.partials.copy-form-list',  [ 'forms' => $forms ])->render();
+
+        return response()->json([
+            'status'            => true,
+            'message'           => 'Details found.',
+            'formshtml'         => $html,
+            'existingformshtml' => $existingformshtml,
+            'clientname'        => $clientName,
+            'email_time'        => $email_time
+        ], 200);
+    }
+
+    public function addAppointmentForms(Request $request)
+    {
+        try {
+            $appointmentFormsData[] = [
+                'appointment_id'    => $request->appointment_id,
+                'form_id'           => $request->form_id,
+                'status'            => AppointmentForms::NEW
+            ];
+
+            $appointment        = AppointmentForms::insert($appointmentFormsData);
+            $data = [
+                'success' => true,
+                'message' => 'Appointment form added successfully!',
+                'type'    => 'success',
+            ];
+        } catch (\Throwable $th) {
+            $data = [
+                'success' => false,
+                'message' => $th->getMessage(),
+                'type'    => 'fail',
+            ];
+        }
+        return $data;
+    }
+
+    public function deleteAppointmentForms($id)
+    {
+        try {
+
+            $deleteappointmentforms = AppointmentForms::find($id);
+            $deleteappointmentforms->delete();
+
+            $data = [
+                'success' => true,
+                'message' => 'Appointment form deleted successfully!',
+                'type'    => 'success',
+            ];
+        } catch (\Throwable $th) {
+            //throw $th;
+            $data = [
+                'success' => false,
+                'message' => $th->getMessage(),
+                'type'    => 'fail',
+            ];
+        }
+
+        return $data;
     }
 }

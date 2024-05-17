@@ -1178,6 +1178,9 @@
 
     @include('calender.partials.client-modal')
     @include('calender.partials.repeat-appointment-modal')
+    @include('calender.partials.appointment-forms-modal')
+    @include('calender.partials.exising-form')
+    @include('calender.partials.send_forms_modal')
 </div>
 @stop
 @section('script')
@@ -1203,6 +1206,9 @@
         getSelectedLocation:          "{!! route('calendar.get-selected-location') !!}",
         getCategoriesAndServices:     "{!! route('calendar.get-categories-and-services') !!}",
         getUserSelectedLocation:      "{!! route('calender.get-user-selected-location') !!}",
+        getAppointmentForms:          "{!! route('calendar.get-appointment-forms', ':ID')!!}",
+        addAppointmentForms:          "{!! route('calendar.add-appointment-forms') !!}",
+        deleteAppointmentForms:       "{!! route('calendar.delete-appointment-forms', ':ID' ) !!}",
     };
 
     $(document).ready(function()

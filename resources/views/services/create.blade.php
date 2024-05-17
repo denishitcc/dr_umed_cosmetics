@@ -174,17 +174,14 @@
                             </div>
                         </div>
                     </div>
-
-                    
                 </div>
-
             </div>
             <div class="col-lg-5">
                 <div class="d-flex justify-content-between mb-2">
-                    <label class="form-label mb-0">Availability</label>  
+                    <label class="form-label mb-0">Availability</label>
                     <div class="small-tool">Select:   <a href="javascript:void(0);" class="me-2 ms-2 btn-link select_all">All</a>  |   <a href="javascript:void(0);" class="ms-2 btn-link select_none">None</a></div>
                 </div>
-                <div class="bor-box pd-20">
+                <div class="bor-box pd-20 scroll-y mb-3">
                     @if(count($locations)>0)
                     <ul class="list-group list-group-flush ad-flus">
                         @foreach($locations as $loc)
@@ -193,9 +190,6 @@
                     </ul>
                     @endif
                 </div>
-            </div>
-
-            <div class="col-lg-5">
                 <div class="d-flex justify-content-between mb-2">
                     <label class="form-label mb-0">Select Forms</label>
                 </div>

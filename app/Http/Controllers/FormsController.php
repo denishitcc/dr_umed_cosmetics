@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Appointment;
 use Illuminate\Http\Request;
 use App\Models\FormSummary;
 use DataTables;
@@ -253,5 +254,21 @@ class FormsController extends Controller
         }else{
             abort(403, 'You are not authorized to access this page.');
         }
+    }
+
+    /**
+     * Method formUser
+     *
+     * @param $id $id [explicite description]
+     *
+     * @return void
+     */
+    public function formUser($id)
+    {
+        $appointment  = Appointment::find($id);
+        $user         = Auth::user();
+        $forms        = FormSummary::whereIn('id',explode(',',$appointment->forms))->get();
+
+        return view('forms.userform',compact('forms','user'));
     }
 }

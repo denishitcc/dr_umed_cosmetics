@@ -211,6 +211,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('calendar/send-payment-mail', [CalenderController::class, 'sendPaymentMail'])->name('calendar.send-payment-mail');
         Route::post('/get-staff-list', [CalenderController::class,'getStaffList'])->name('get-staff-list');
         Route::post('/calender.get-user-selected-location', [CalenderController::class,'getUserSelectedLocation'])->name('calender.get-user-selected-location');
+        Route::get('calender/get-appointment-forms/{id}',[CalenderController::class, 'getAppointmentForms'])->name('calendar.get-appointment-forms');
+        Route::post('calender/add-appointment-forms',[CalenderController::class, 'addAppointmentForms'])->name('calendar.add-appointment-forms');
+        Route::delete('calender/delete-appointment-forms/{id}',[CalenderController::class, 'deleteAppointmentForms'])->name('calendar.delete-appointment-forms');
     });
 
     //finance
@@ -219,3 +222,6 @@ Route::middleware(['auth'])->group(function () {
         Route::post('finance/table',[FinanceController::class, 'index'])->name('finance.table');
     });
 });
+Route::post('/get-staff-list', [CalenderController::class,'getStaffList'])->name('get-staff-list');
+Route::post('forms/deleteform',[FormsController::class, 'formDelete'])->name('serviceforms.formDelete');
+Route::get('forms/userform/{id}',[FormsController::class, 'formUser'])->name('serviceforms.formUser');
