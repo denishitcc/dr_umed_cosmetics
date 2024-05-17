@@ -771,7 +771,15 @@ $(document).ready(function() {
             data: 'client_name', 
             name: 'client_name',
             render: function (data, type, row) {
-                var link = '<a class="blue-bold" href="clients/' + row.client_id + '">' + data + '</a>';
+                var link = ''; // Initialize link variable
+                // Check permission here
+                if ("{{ $permission }}" != 'View Only') {
+                    // Permission allows viewing
+                    link = '<a class="blue-bold" href="clients/' + row.client_id + '">' + data + '</a>';
+                } else {
+                    // Permission does not allow viewing
+                    link = '<a class="blue-bold" href="javascript:void(0);">' + data + '</a>';
+                }
                 return link;
             }
         },
