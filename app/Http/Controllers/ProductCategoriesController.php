@@ -13,20 +13,33 @@ class ProductCategoriesController extends Controller
      */
     public function index(Request $request)
     {
-        $products_categories = ProductsCategories::all();
-        if ($request->ajax()) {
-            $data = ProductsCategories::select('*');
-            return Datatables::of($data)
-                
-            ->addIndexColumn()
-            ->addColumn('action', function($row){
-                    $btn = '<div class="action-box"><button type="button" class="btn btn-sm black-btn round-6 dt-edit" ids="'.$row->id.'"  cat_name="'.$row->category_name.'"  parent_cat_name="'.$row->sub_category_name.'" data-bs-toggle="modal" data-bs-target="#edit_product_Category"><i class="ico-edit"></i></button><button type="button" class="btn btn-sm black-btn round-6 dt-delete" ids='.$row->id.'><i class="ico-trash"></i></button></div>';
-                    return $btn;
-            })
-            ->make(true);
+        $permission = \Auth::user()->checkPermission('products');
+        if ($permission === 'View & Make Changes' || $permission === 'Both' || $permission === 'View Only' || $permission === true) {
+            $products_categories = ProductsCategories::all();
+            if ($request->ajax()) {
+                $data = ProductsCategories::select('*');
+                return Datatables::of($data)
+                    
+                ->addIndexColumn()
+                ->addColumn('action', function($row){
+                        $permission = \Auth::user()->checkPermission('products');
+                        // dd($permission);
+                        if ($permission === 'View Only')
+                        {
+                            $btn = '<div class="action-box"><button type="button" class="btn btn-sm black-btn round-6 dt-edit" ids="'.$row->id.'"  cat_name="'.$row->category_name.'"  parent_cat_name="'.$row->sub_category_name.'" data-bs-toggle="modal" data-bs-target="#edit_product_Category" disabled><i class="ico-edit"></i></button><button type="button" class="btn btn-sm black-btn round-6 dt-delete" ids='.$row->id.' disabled><i class="ico-trash"></i></button></div>';
+                            return $btn;
+                        }else{
+                            $btn = '<div class="action-box"><button type="button" class="btn btn-sm black-btn round-6 dt-edit" ids="'.$row->id.'"  cat_name="'.$row->category_name.'"  parent_cat_name="'.$row->sub_category_name.'" data-bs-toggle="modal" data-bs-target="#edit_product_Category"><i class="ico-edit"></i></button><button type="button" class="btn btn-sm black-btn round-6 dt-delete" ids='.$row->id.'><i class="ico-trash"></i></button></div>';
+                            return $btn;
+                        }
+                })
+                ->make(true);
 
+            }
+            return view('products-categories.index', compact('products_categories'));
+        }else{
+            abort(403, 'You are not authorized to access this page.');
         }
-        return view('products-categories.index', compact('products_categories'));
     }
 
     /**

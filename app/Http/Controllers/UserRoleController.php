@@ -13,24 +13,29 @@ class UserRoleController extends Controller
      */
     public function index(Request $request)
     {
-        $user_role = UserRoles::all();
-        if ($request->ajax()) {
-            $data = UserRoles::select('*');
-            return Datatables::of($data)
+        $permission = \Auth::user()->checkPermission('settings');
+        if ($permission === 'View & Make Changes' || $permission === true) {
+            $user_role = UserRoles::all();
+            if ($request->ajax()) {
+                $data = UserRoles::select('*');
+                return Datatables::of($data)
 
-                ->addIndexColumn()
+                    ->addIndexColumn()
 
-                ->addColumn('action', function($row){
-                        $btn = '<div class="action-box"><button type="button" class="btn btn-sm black-btn round-6 dt-edit" ids='.$row->id.'><i class="ico-edit"></i></button><button type="button" class="btn btn-sm black-btn round-6 dt-delete" ids='.$row->id.'><i class="ico-trash"></i></button></div>';
-                        return $btn;
-                })
+                    ->addColumn('action', function($row){
+                            $btn = '<div class="action-box"><button type="button" class="btn btn-sm black-btn round-6 dt-edit" ids='.$row->id.'><i class="ico-edit"></i></button><button type="button" class="btn btn-sm black-btn round-6 dt-delete" ids='.$row->id.'><i class="ico-trash"></i></button></div>';
+                            return $btn;
+                    })
 
-                ->rawColumns(['action'])
+                    ->rawColumns(['action'])
 
-                ->make(true);
+                    ->make(true);
 
+            }
+            return view('user_role.index', compact('user_role'));
+        }else{
+            abort(403, 'You are not authorized to access this page.');
         }
-        return view('user_role.index', compact('user_role'));
     }
 
     /**
@@ -38,7 +43,12 @@ class UserRoleController extends Controller
      */
     public function create()
     {
-        return view('user_role.create');
+        $permission = \Auth::user()->checkPermission('settings');
+        if ($permission === 'View & Make Changes' || $permission === true) {
+            return view('user_role.create');
+        }else{
+            abort(403, 'You are not authorized to access this page.');
+        }
     }
 
     /**
@@ -72,8 +82,13 @@ class UserRoleController extends Controller
      */
     public function show(string $id)
     {
-        $users = UserRoles::find($id);
-        return view('user_role.edit', compact('users'));
+        $permission = \Auth::user()->checkPermission('settings');
+        if ($permission === 'View & Make Changes' || $permission === true) {
+            $users = UserRoles::find($id);
+            return view('user_role.edit', compact('users'));
+        }else{
+            abort(403, 'You are not authorized to access this page.');
+        }
     }
 
     /**

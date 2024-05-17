@@ -14,26 +14,31 @@ class FormsController extends Controller
      */
     public function index(Request $request)
     {
-        $forms = FormSummary::all();
-        if ($request->ajax()) {
-            $data = FormSummary::select('*');
-            return Datatables::of($data)
+        $permission = \Auth::user()->checkPermission('forms');
+        if ($permission === 'View & Make Changes' || $permission === true) {
+            $forms = FormSummary::all();
+            if ($request->ajax()) {
+                $data = FormSummary::select('*');
+                return Datatables::of($data)
 
-            ->addIndexColumn()
-            ->addColumn('action', function($row){
-                    $btn = '<div class="action-box">
-                                <button type="button" class="btn btn-sm black-btn round-6 dt-edit" ids='.$row->id.'>
-                                    <i class="ico-edit"></i>
-                                </button>
-                                <button type="button" class="btn btn-sm black-btn round-6 dt-delete deleteFormBtn" data-formid='.$row->id.' >
-                                    <i class="ico-trash"></i>
-                                </button>
-                            </div>';
-                    return $btn;
-            })
-            ->make(true);
+                ->addIndexColumn()
+                ->addColumn('action', function($row){
+                        $btn = '<div class="action-box">
+                                    <button type="button" class="btn btn-sm black-btn round-6 dt-edit" ids='.$row->id.'>
+                                        <i class="ico-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm black-btn round-6 dt-delete deleteFormBtn" data-formid='.$row->id.' >
+                                        <i class="ico-trash"></i>
+                                    </button>
+                                </div>';
+                        return $btn;
+                })
+                ->make(true);
+            }
+            return view('forms.index', compact('forms'));
+        }else{
+            abort(403, 'You are not authorized to access this page.');
         }
-        return view('forms.index', compact('forms'));
     }
 
     /**
@@ -79,8 +84,13 @@ class FormsController extends Controller
      */
     public function show(string $id)
     {
-        $forms = FormSummary::find($id);
-        return view('forms.edit',compact('forms'));
+        $permission = \Auth::user()->checkPermission('forms');
+        if ($permission === 'View & Make Changes' || $permission === true) {
+            $forms = FormSummary::find($id);
+            return view('forms.edit',compact('forms'));
+        }else{
+            abort(403, 'You are not authorized to access this page.');
+        }
     }
 
     /**
@@ -234,9 +244,14 @@ class FormsController extends Controller
      */
     public function formPreview($id)
     {
-        $forms  = FormSummary::find($id);
-        $user   = Auth::user();
+        $permission = \Auth::user()->checkPermission('forms');
+        if ($permission === 'View & Make Changes' || $permission === true) {
+            $forms  = FormSummary::find($id);
+            $user   = Auth::user();
 
-        return view('forms.preview',compact('forms','user'));
+            return view('forms.preview',compact('forms','user'));
+        }else{
+            abort(403, 'You are not authorized to access this page.');
+        }
     }
 }

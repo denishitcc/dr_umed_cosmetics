@@ -3,24 +3,69 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <!-- <main> -->
     <div class="card">
-    <div class="card-head">
-    <div class="toolbar">
-        <div class="tool-left d-flex">
-            <a href="{{ route('products.create') }}" class="btn btn-primary btn-md icon-btn-left me-2"><i class="ico-add me-2 fs-5"></i> Add One Product</a>
-            <a href="{{ route('products-categories.index') }}" class="btn btn-orange btn-md icon-btn-left me-2"><i class="ico-forms me-2 fs-5"></i> Categories</a>
-            <a href="{{ route('suppliers.index') }}" class="btn btn-sea-green btn-md icon-btn-left me-2"><i class="ico-truck me-2 fs-4"></i> Suppliers</a>
-            <form id="import_product" name="import_product" class="form d-flex align-items-center">
-            @csrf
-            <label for="import" class="btn btn-primary btn-md icon-btn-left me-2"><i class="ico-import me-2 fs-4"></i> Import a Product List</label>
-            <a href="{{ asset('/storage/csv_files/sample_products.csv') }}" class="simple-link">Download sample file</a>
-            <input type="file" id="import" name="csv_file" style="display:none;" accept=".csv">    
-            </form>
+    @if(Auth::check() && (Auth::user()->role_type == 'admin'))
+        <div class="card-head">
+            <div class="toolbar">
+                <div class="tool-left d-flex">
+                    <a href="{{ route('products.create') }}" class="btn btn-primary btn-md icon-btn-left me-2">
+                        <i class="ico-add me-2 fs-5"></i> Add One Product
+                    </a>
+                    <a href="{{ route('products-categories.index') }}" class="btn btn-orange btn-md icon-btn-left me-2">
+                        <i class="ico-forms me-2 fs-5"></i> Categories
+                    </a>
+                    <a href="{{ route('suppliers.index') }}" class="btn btn-sea-green btn-md icon-btn-left me-2">
+                        <i class="ico-truck me-2 fs-4"></i> Suppliers
+                    </a>
+                    <form id="import_product" name="import_product" class="form d-flex align-items-center">
+                        @csrf
+                        <label for="import" class="btn btn-primary btn-md icon-btn-left me-2">
+                            <i class="ico-import me-2 fs-4"></i> Import a Product List
+                        </label>
+                        <a href="{{ asset('/storage/csv_files/sample_products.csv') }}" class="simple-link">Download sample file</a>
+                        <input type="file" id="import" name="csv_file" style="display:none;" accept=".csv">
+                    </form>
+                </div>
+                <div class="tool-right">
+                    <!-- <a href="#" class="btn icon-btn-left btn-md btn-light-grey"><i class="ico-filter me-2 fs-6"></i> Filter By</a> -->
+                </div>
+            </div>
         </div>
-        <div class="tool-right">
-            <!-- <a href="#" class="btn icon-btn-left btn-md btn-light-grey"><i class="ico-filter me-2 fs-6"></i> Filter By</a> -->
+    @else
+        @if(Auth::user()->checkPermission('products') != 'View Only' || Auth::user()->checkPermission('suppliers') != 'No permission')
+        <div class="card-head">
+            <div class="toolbar">
+                <div class="tool-left d-flex">
+                    @if(Auth::user()->checkPermission('products') != 'View Only')
+                        <a href="{{ route('products.create') }}" class="btn btn-primary btn-md icon-btn-left me-2">
+                            <i class="ico-add me-2 fs-5"></i> Add One Product
+                        </a>
+                        <a href="{{ route('products-categories.index') }}" class="btn btn-orange btn-md icon-btn-left me-2">
+                            <i class="ico-forms me-2 fs-5"></i> Categories
+                        </a>
+                    @endif
+                    @if(Auth::user()->checkPermission('suppliers') != 'No permission')
+                        <a href="{{ route('suppliers.index') }}" class="btn btn-sea-green btn-md icon-btn-left me-2">
+                            <i class="ico-truck me-2 fs-4"></i> Suppliers
+                        </a>
+                    @endif
+                    @if(Auth::user()->checkPermission('products') != 'View Only')
+                    <form id="import_product" name="import_product" class="form d-flex align-items-center">
+                        @csrf
+                        <label for="import" class="btn btn-primary btn-md icon-btn-left me-2">
+                            <i class="ico-import me-2 fs-4"></i> Import a Product List
+                        </label>
+                        <a href="{{ asset('/storage/csv_files/sample_products.csv') }}" class="simple-link">Download sample file</a>
+                        <input type="file" id="import" name="csv_file" style="display:none;" accept=".csv">
+                    </form>
+                    @endif
+                </div>
+                <div class="tool-right">
+                    <!-- <a href="#" class="btn icon-btn-left btn-md btn-light-grey"><i class="ico-filter me-2 fs-6"></i> Filter By</a> -->
+                </div>
+            </div>
         </div>
-    </div>
-    </div>
+        @endif
+    @endif
         <div class="card-head">
             <h4 class="small-title mb-3">Products Summary</h4>
             
@@ -67,7 +112,11 @@
                     <tr>
                     <th>
                         <label class="cst-check blue">
+                            @if ($permission != 'View Only')
                             <input type="checkbox" id="select-all"class="checkbox">
+                            @else
+                            <input type="checkbox" id="select-all"class="checkbox" disabled>
+                            @endif
                             <span class="checkmark"></span>
                         </label>
                     </th>
@@ -377,16 +426,36 @@ $(document).ready(function() {
             {
             data: null,
                 "render": function(data, type, row, meta){
-                        data = '<label class="cst-check blue"><input type="checkbox" data-ids="' + row.id + '" id="select-all" class="checkbox checked_data"><span class="checkmark"></span></label>';
-                        return data;
+                    var link = ''; // Initialize link variable
+                    // Check permission here
+                    if ("{{ $permission }}" != 'View Only') {
+                        // Permission allows viewing
+                        link = '<label class="cst-check blue"><input type="checkbox" data-ids="' + row.id + '" id="select-all" class="checkbox checked_data"><span class="checkmark"></span></label>';
+                        return link;
+                    } else {
+                        // Permission does not allow viewing
+                        link = '<label class="cst-check blue"><input type="checkbox" data-ids="' + row.id + '" id="select-all" class="checkbox checked_data" disabled><span class="checkmark"></span></label>';
+                        return link;
+                    }
+                    return link;
                     },
                 orderable: false,
             },
             {
                 data: 'product_name', name: 'product_name',
                 "render": function(data, type, row, meta){
-                    data = '<a class="blue-bold" href="products/' + row.id + '">' + data + '</a>';
-                    return data;
+                    var link = ''; // Initialize link variable
+                    // Check permission here
+                    if ("{{ $permission }}" != 'View Only') {
+                        // Permission allows viewing
+                        link = '<a class="blue-bold" href="products/' + row.id + '">' + data + '</a>';
+                        return link;
+                    } else {
+                        // Permission does not allow viewing
+                        link = '<a class="blue-bold" href="javascript:void(0);">' + data + '</a>';
+                        return link;
+                    }
+                    return link;
                 }
             },
             {data: 'type', name: 'type'},

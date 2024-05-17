@@ -24,10 +24,10 @@ class AppointmentListResource extends JsonResource
             'className'     => "edit_appointment",
             'extendedProps' =>[
                 'client_id'     => $this->client_id,
-                'client_name'   => $this->clients->firstname.' '.$this->clients->lastname,
+                'client_name'   => (isset($this->clients->firstname) ? $this->clients->firstname : '') . ' ' . (isset($this->clients->lastname) ? $this->clients->lastname : ''),
                 'service_id'    => $this->service_id,
                 'category_id'   => $this->category_id
             ],
-        ];
+        ];        
     }
 }

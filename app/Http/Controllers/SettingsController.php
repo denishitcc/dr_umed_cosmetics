@@ -14,15 +14,20 @@ use Illuminate\Support\Facades\Storage;
 class SettingsController extends Controller
 {
     public function settings(){
-        $auth = auth();
-        $user = User::find($auth->user()->id);
-        $locations = Locations::get();
-        $locs = Locations::first();
-        $users_data = User::join('business_settings', 'business_settings.user_id', '=', 'users.id')
-                    ->where('users.id',$auth->user()->id)
-                    ->where('business_settings.business_details_for','Dr Umed Enterprise')
-              		->first();
-        return view('settings',compact('user','locations','users_data','locs'));
+        $permission = \Auth::user()->checkPermission('settings');
+        if ($permission === 'View & Make Changes' || $permission === true) {
+            $auth = auth();
+            $user = User::find($auth->user()->id);
+            $locations = Locations::get();
+            $locs = Locations::first();
+            $users_data = User::join('business_settings', 'business_settings.user_id', '=', 'users.id')
+                        ->where('users.id',$auth->user()->id)
+                        ->where('business_settings.business_details_for','Dr Umed Enterprise')
+                        ->first();
+            return view('settings',compact('user','locations','users_data','locs'));
+        }else{
+            abort(403, 'You are not authorized to access this page.');
+        }
     }
     public function changePasswordSave(Request $request)
     {

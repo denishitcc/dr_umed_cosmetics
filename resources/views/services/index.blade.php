@@ -13,12 +13,21 @@
                     </span>
                     <input type="search" class="form-control input-sm" placeholder="Search Services" id="search_services">
                     </div>
+                    @if(Auth::check() && (Auth::user()->role_type == 'admin'))
                     <form id="import_service" name="import_service" class="form d-flex align-items-center">
                         @csrf
                         <label for="import" class="btn btn-primary btn-md icon-btn-left me-2"><i class="ico-import me-2 fs-4"></i> Import a Services List</label>
                         <a href="{{ asset('/storage/csv_files/sample_services.csv') }}" class="simple-link">Download sample file</a>
                         <input type="file" id="import" name="csv_file" style="display:none;" accept=".csv">    
                     </form>
+                    @elseif(Auth::user()->checkPermission('services') != 'View Only')
+                    <form id="import_service" name="import_service" class="form d-flex align-items-center">
+                        @csrf
+                        <label for="import" class="btn btn-primary btn-md icon-btn-left me-2"><i class="ico-import me-2 fs-4"></i> Import a Services List</label>
+                        <a href="{{ asset('/storage/csv_files/sample_services.csv') }}" class="simple-link">Download sample file</a>
+                        <input type="file" id="import" name="csv_file" style="display:none;" accept=".csv">    
+                    </form>
+                    @endif
             </div>
         </div>
     </div>
@@ -60,7 +69,11 @@
                     <div class="pe-4 py-4">
                         <h6 class="mb-4 service_name">All Services & Tasks</h6>
                         <div class="mb-4 d-flex">
+                            @if(Auth::check() && (Auth::user()->role_type == 'admin'))
                             <a href="{{URL::to('services/create')}}" class="btn btn-primary btn-md me-2">+ Add New Service</a>
+                            @elseif(Auth::user()->checkPermission('services') != 'View Only')
+                            <a href="{{URL::to('services/create')}}" class="btn btn-primary btn-md me-2">+ Add New Service</a>
+                            @endif
                             <a href="#" id="" style="display:none"; class="btn btn-secondary btn-md icon-btn-left edit_service" data-bs-toggle="modal" data-bs-target="#edit_Category";><i class="ico-edit me-2 fs-4"></i>  <!-- Icon element for "Edit Category" -->Edit Category  <!-- Text content for the hyperlink --></a>
                             <a href="#" style="display:none"; class="btn simple-link set_availability" data-bs-toggle="modal" data-bs-target="#change_Availability">Set availability for this category</a>
                         </div>

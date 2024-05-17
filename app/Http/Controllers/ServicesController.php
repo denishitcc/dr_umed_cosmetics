@@ -18,18 +18,23 @@ class ServicesController extends Controller
      */
     public function index()
     {
-        // Fetch all distinct parent categories
-        $categories = Category::get();
+        $permission = \Auth::user()->checkPermission('services');
+        if ($permission === 'View & Make Changes' || $permission === 'Both' || $permission === 'View Only' || $permission === true) {
+            // Fetch all distinct parent categories
+            $categories = Category::get();
 
-        // Fetch all categories for display
-        $list_cat = Category::get();
+            // Fetch all categories for display
+            $list_cat = Category::get();
 
-        //services
-        $list_service = Services::get();
+            //services
+            $list_service = Services::get();
 
-        //locations
-        $locations = Locations::get();
-        return view('services.index', compact('list_cat','list_service','locations','categories'));
+            //locations
+            $locations = Locations::get();
+            return view('services.index', compact('list_cat','list_service','locations','categories'));
+        }else{
+            abort(403, 'You are not authorized to access this page.');
+        }
     }
 
     /**
@@ -37,15 +42,20 @@ class ServicesController extends Controller
      */
     public function create()
     {
-        // Fetch all categories for display
-        $list_cat           = Category::get();
-        $locations          = Locations::get();
-        $services           = Services::get();
-        $users              = User::get();
-        $list_parent_cat    = Category::get();
-        $forms              = FormSummary::where('status',FormSummary::LIVE)->get();
+        $permission = \Auth::user()->checkPermission('services');
+        if ($permission === 'View & Make Changes' || $permission === 'Both' || $permission === true) {
+            // Fetch all categories for display
+            $list_cat           = Category::get();
+            $locations          = Locations::get();
+            $services           = Services::get();
+            $users              = User::get();
+            $list_parent_cat    = Category::get();
+            $forms              = FormSummary::where('status',FormSummary::LIVE)->get();
 
-        return view('services.create',compact('list_cat','locations','services','users','list_parent_cat','forms'));
+            return view('services.create',compact('list_cat','locations','services','users','list_parent_cat','forms'));
+        }else{
+            abort(403, 'You are not authorized to access this page.');
+        }
     }
 
     /**
@@ -118,24 +128,29 @@ class ServicesController extends Controller
      */
     public function show(string $id)
     {
-        $list_cat               = Category::get();
-        $list_parent_cat        = Category::get();
-        $locations              = Locations::get();
-        $services               = Services::leftJoin('services_appear_on_calendars', 'services.id', '=', 'services_appear_on_calendars.service_id')
-        ->select('services.*', 'services_appear_on_calendars.duration','services_appear_on_calendars.processing_time','services_appear_on_calendars.fast_duration',
-        'services_appear_on_calendars.slow_duration','services_appear_on_calendars.usual_next_service','services_appear_on_calendars.dont_include_reports',
-        'services_appear_on_calendars.technical_service','services_appear_on_calendars.available_on_online_booking','services_appear_on_calendars.require_a_room',
-        'services_appear_on_calendars.unpaid_time','services_appear_on_calendars.require_a_follow_on_service','services_appear_on_calendars.follow_on_services',
-        'services_appear_on_calendars.deleted_at')
-        // ->whereNull('services.deleted_at') // Changed this line
-        ->where('services.id',$id)
-        ->first();
-        $service_availability   = ServicesAvailability::where('service_id',$id)->get();
-        $all_services           = Services::whereNotIn('id', [$id])->get();
-        $users                  = User::get();
-        $forms                  = FormSummary::where('status',FormSummary::LIVE)->get();
+        $permission = \Auth::user()->checkPermission('services');
+        if ($permission === 'View & Make Changes' || $permission === 'Both' || $permission === true) {
+            $list_cat               = Category::get();
+            $list_parent_cat        = Category::get();
+            $locations              = Locations::get();
+            $services               = Services::leftJoin('services_appear_on_calendars', 'services.id', '=', 'services_appear_on_calendars.service_id')
+            ->select('services.*', 'services_appear_on_calendars.duration','services_appear_on_calendars.processing_time','services_appear_on_calendars.fast_duration',
+            'services_appear_on_calendars.slow_duration','services_appear_on_calendars.usual_next_service','services_appear_on_calendars.dont_include_reports',
+            'services_appear_on_calendars.technical_service','services_appear_on_calendars.available_on_online_booking','services_appear_on_calendars.require_a_room',
+            'services_appear_on_calendars.unpaid_time','services_appear_on_calendars.require_a_follow_on_service','services_appear_on_calendars.follow_on_services',
+            'services_appear_on_calendars.deleted_at')
+            // ->whereNull('services.deleted_at') // Changed this line
+            ->where('services.id',$id)
+            ->first();
+            $service_availability   = ServicesAvailability::where('service_id',$id)->get();
+            $all_services           = Services::whereNotIn('id', [$id])->get();
+            $users                  = User::get();
+            $forms                  = FormSummary::where('status',FormSummary::LIVE)->get();
 
-        return view('services.edit',compact('list_cat','locations','services','service_availability','all_services','users','list_parent_cat','forms'));
+            return view('services.edit',compact('list_cat','locations','services','service_availability','all_services','users','list_parent_cat','forms'));
+        }else{
+            abort(403, 'You are not authorized to access this page.');
+        }
     }
 
     /**

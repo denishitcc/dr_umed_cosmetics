@@ -8,8 +8,13 @@ use App\Models\Permissions;
 class AccessLevelController extends Controller
 {
     public function access_level(){
-        $appointment_client = Permissions::get();
-        return view('access_level',compact('appointment_client'));
+        $permission = \Auth::user()->checkPermission('settings');
+        if ($permission === 'View & Make Changes' || $permission === true) {
+            $appointment_client = Permissions::get();
+            return view('access_level',compact('appointment_client'));
+        }else{
+            abort(403, 'You are not authorized to access this page.');
+        }
     }
     public function update_appointment_client(Request $request)
     {

@@ -241,12 +241,16 @@ var DU = {};
                     }
                 },
                 eventClick: function(info){
-                    var eventId = info.event._def.publicId;
-                    context.editEvent(eventId);
+                    if(localStorage.getItem('permissionValue') == '1'){
+                        var eventId = info.event._def.publicId;
+                        context.editEvent(eventId);
+                    }
                 },
                 dayMaxEvents: true,
                 select: function(start, end, allDays){
-                    $('#New_appointment').modal('toggle');
+                    if(localStorage.getItem('permissionValue') == '1'){
+                        $('#New_appointment').modal('toggle');
+                    }
                 },
                 datesSet: function (info) {
                     const resources = context.calendar.getOption('resources');

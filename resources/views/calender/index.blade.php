@@ -15,7 +15,12 @@
             <div class="col-lg-3">
                 <div class="main_calendar">
                 <div class="mb-3 d-flex">
-                    <div class="dropdown d-flex w-100">
+                @php
+                    $isDisabled = !(Auth::check() && (Auth::user()->role_type == 'admin' || Auth::user()->checkPermission('calender') != 'View Only'));
+                @endphp
+
+                <div class="dropdown d-flex w-100">
+                    @if (Auth::check() && !$isDisabled)
                         <button class="btn btn-primary btn-md me-3 w-100 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Add
                         </button>
@@ -23,15 +28,26 @@
                             <li><a class="dropdown-item" id="appointment" href="javascript:void(0);">New appointment</a></li>
                             <li><a class="dropdown-item" id="new_walk_in_sale" href="javascript:void(0);">New walk-in sale</a></li>
                         </ul>
+                    @endif
+                </div>
+
+                @if (Auth::check() && !$isDisabled)
+                    <a href="javascript:void(0);" class="btn btn-wait-list waitlist_btn">
+                        <i class="ico-calendar"></i>
+                    </a>
+                @endif
+                </div>
+                </div>
+                @php
+                    $isDisabled = !(Auth::check() && (Auth::user()->role_type == 'admin' || Auth::user()->checkPermission('calender') != 'View Only'));
+                @endphp
+
+                @if (!$isDisabled)
+                    <div class="form-group icon searh_data">
+                        <input type="text" id="search" class="form-control" autocomplete="off" placeholder="Search for a client" onkeyup="changeInput(this.value)">
+                        <i class="ico-search"></i>
                     </div>
-                    <!-- <a href="javascript:void(0);" class="btn btn-primary btn-md me-3 w-100" id="appointment">New Appointment</a> -->
-                    <a href="javascript:void(0);" class="btn btn-wait-list waitlist_btn"><i class="ico-calendar"></i></a>
-                </div>
-                </div>
-                <div class="form-group icon searh_data">
-                    <input type="text" id="search" class="form-control " autocomplete="off" placeholder="Search for a client" onkeyup="changeInput(this.value)">
-                    <i class="ico-search"></i>
-                </div>
+                @endif
                 <div class="detaild-theos-scroll">
                 <div id="clientDetails" class="detaild-theos pt-3"></div>
                 <div id='external-events'></div>
@@ -1191,6 +1207,10 @@
 
     $(document).ready(function()
     {
+        //for permission check store value in localstorage
+        var permissionValue = "{{ $permissions }}";
+        localStorage.setItem('permissionValue', permissionValue);
+
         var product_details = [];
         // var discount_types_details = [];
         // var surcharge_types_details = [];

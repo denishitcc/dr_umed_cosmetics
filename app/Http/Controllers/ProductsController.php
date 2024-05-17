@@ -17,68 +17,80 @@ class ProductsController extends Controller
      */
     public function index(Request $request)
     {
-        $products = Products::all();
-        $all_product_categories = ProductsCategories::all();
-        $locations = Locations::get();
-        if ($request->ajax()) {
-            $data = Products::all();
-            return Datatables::of($data)
-            
-            ->addIndexColumn()
-            ->addColumn('supplier_name', function ($row) {
-                $sup = Suppliers::where('id',$row->supplier_id)->first();
-                return $sup->business_name;
-            })
+        $permission = \Auth::user()->checkPermission('products');
+        if ($permission === 'View & Make Changes' || $permission === 'Both' || $permission === 'View Only' || $permission === true) {
+            $products = Products::all();
+            $all_product_categories = ProductsCategories::all();
+            $locations = Locations::get();
+            if ($request->ajax()) {
+                $data = Products::all();
+                return Datatables::of($data)
+                
+                ->addIndexColumn()
+                ->addColumn('supplier_name', function ($row) {
+                    $sup = Suppliers::where('id',$row->supplier_id)->first();
+                    return $sup->business_name;
+                })
 
-            ->addIndexColumn()
-            ->addColumn('category_name', function ($row) {
-                $cat = ProductsCategories::where('id',$row->category_id)->first();
-                return $cat->category_name;
-            })
+                ->addIndexColumn()
+                ->addColumn('category_name', function ($row) {
+                    $cat = ProductsCategories::where('id',$row->category_id)->first();
+                    return $cat->category_name;
+                })
 
-            ->addIndexColumn()
-            ->addColumn('margin', function ($row) {
-                if ($row->cost != 0) {
-                    $dis = $row->price / 11;
-                    $dis1 = $row->price - $dis;
-            
-                    $margin = (($dis1 - $row->cost) / $dis1) * 100;
-                    $margin = min($margin, 100);
-            
-                    // Round up the margin to the nearest integer value
-                    $margin = round($margin);
-            
-                    return $margin . '%';
-                } else {
-                    return '100'; // Or any other appropriate value to handle division by zero
-                }
-            })   
+                ->addIndexColumn()
+                ->addColumn('margin', function ($row) {
+                    if ($row->cost != 0) {
+                        $dis = $row->price / 11;
+                        $dis1 = $row->price - $dis;
+                
+                        $margin = (($dis1 - $row->cost) / $dis1) * 100;
+                        $margin = min($margin, 100);
+                
+                        // Round up the margin to the nearest integer value
+                        $margin = round($margin);
+                
+                        return $margin . '%';
+                    } else {
+                        return '100'; // Or any other appropriate value to handle division by zero
+                    }
+                })   
 
-            ->addIndexColumn()
-            ->addColumn('on_hand', function ($row) {
-                $totalOnHand = ProductAvailabilities::where('product_id', $row->id)->sum('quantity');
-                return $totalOnHand;
-            })
+                ->addIndexColumn()
+                ->addColumn('on_hand', function ($row) {
+                    $totalOnHand = ProductAvailabilities::where('product_id', $row->id)->sum('quantity');
+                    return $totalOnHand;
+                })
 
-            ->addIndexColumn()
-            ->addColumn('on_hand_price', function ($row) {
-                $product = Products::findOrFail($row->id); // Retrieve product details
-                $totalOnHand = ProductAvailabilities::where('product_id', $row->id)->sum('quantity');
-                $totalCost = $product->cost * $totalOnHand; // Calculate total cost of on-hand products
-                return '$' . number_format($totalCost, 2); // Format and return total cost
-            })
+                ->addIndexColumn()
+                ->addColumn('on_hand_price', function ($row) {
+                    $product = Products::findOrFail($row->id); // Retrieve product details
+                    $totalOnHand = ProductAvailabilities::where('product_id', $row->id)->sum('quantity');
+                    $totalCost = $product->cost * $totalOnHand; // Calculate total cost of on-hand products
+                    return '$' . number_format($totalCost, 2); // Format and return total cost
+                })
 
 
 
-            ->addIndexColumn()
-            ->addColumn('action', function($row){
-                    $btn = '<div class="action-box"><button type="button" class="btn btn-sm black-btn round-6 dt-edit" ids='.$row->id.'><i class="ico-edit"></i></button><button type="button" class="btn btn-sm black-btn round-6 product_statistics" ids='.$row->id.'><i class="ico-graph"></i></button></div>';
-                    return $btn;
-            })
-            ->make(true);
+                ->addIndexColumn()
+                ->addColumn('action', function($row){
+                        $permission = \Auth::user()->checkPermission('products');
+                        if ($permission === 'View Only')
+                        {
+                            $btn = '<div class="action-box"><button type="button" class="btn btn-sm black-btn round-6 dt-edit" ids='.$row->id.' disabled><i class="ico-edit"></i></button><button type="button" class="btn btn-sm black-btn round-6 product_statistics" ids='.$row->id.' disabled><i class="ico-graph"></i></button></div>';
+                            return $btn;
+                        }else{
+                            $btn = '<div class="action-box"><button type="button" class="btn btn-sm black-btn round-6 dt-edit" ids='.$row->id.'><i class="ico-edit"></i></button><button type="button" class="btn btn-sm black-btn round-6 product_statistics" ids='.$row->id.'><i class="ico-graph"></i></button></div>';
+                            return $btn;
+                        }
+                })
+                ->make(true);
 
+            }
+            return view('products.index', compact('products','all_product_categories','locations','permission'));
+        }else{
+            abort(403, 'You are not authorized to access this page.');
         }
-        return view('products.index', compact('products','all_product_categories','locations'));
     }
 
     /**
@@ -86,10 +98,15 @@ class ProductsController extends Controller
      */
     public function create()
     {
-        $suppliers = Suppliers::get();
-        $locations = Locations::get();
-        $product_category = ProductsCategories::get();
-        return view('products.create',compact('suppliers','locations','product_category'));
+        $permission = \Auth::user()->checkPermission('products');
+        if ($permission === 'View & Make Changes' || $permission === 'Both' || $permission === true) {
+            $suppliers = Suppliers::get();
+            $locations = Locations::get();
+            $product_category = ProductsCategories::get();
+            return view('products.create',compact('suppliers','locations','product_category'));
+        }else{
+            abort(403, 'You are not authorized to access this page.');
+        }
     }
 
     /**
@@ -169,22 +186,27 @@ class ProductsController extends Controller
      */
     public function show(string $id)
     {
-        $suppliers = Suppliers::get();
-        $locations = Locations::get();
-        $product_category = ProductsCategories::get();
+        $permission = \Auth::user()->checkPermission('products');
+        if ($permission === 'View & Make Changes' || $permission === 'Both' || $permission === true) {
+            $suppliers = Suppliers::get();
+            $locations = Locations::get();
+            $product_category = ProductsCategories::get();
 
-        $product = Products::where('id',$id)->first();
-        $productAvailability = ProductAvailabilities::where('product_id',$product->id)
-        ->select(
-            'quantity',
-            'price',
-            'location_name',
-            'availability'
-        )
-        ->get();
-        $product->availability = $productAvailability;
-        // dd(count($product->availability));
-        return view('products.edit',compact('suppliers','locations','product','product_category','productAvailability'));
+            $product = Products::where('id',$id)->first();
+            $productAvailability = ProductAvailabilities::where('product_id',$product->id)
+            ->select(
+                'quantity',
+                'price',
+                'location_name',
+                'availability'
+            )
+            ->get();
+            $product->availability = $productAvailability;
+            // dd(count($product->availability));
+            return view('products.edit',compact('suppliers','locations','product','product_category','productAvailability'));
+        }else{
+            abort(403, 'You are not authorized to access this page.');
+        }
     }
 
     /**

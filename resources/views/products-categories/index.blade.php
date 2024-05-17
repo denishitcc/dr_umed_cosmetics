@@ -9,7 +9,11 @@
                     <h4 class="small-title mb-0">Product Categories</h4>
                 </div>
                 <div class="tool-right">
+                    @if(Auth::check() && (Auth::user()->role_type == 'admin'))
                     <a href="#" class="btn btn-primary btn-md" data-bs-toggle="modal" data-bs-target="#new_Category">+ New Category</a>
+                    @elseif(Auth::user()->checkPermission('products') != 'View Only')
+                    <a href="#" class="btn btn-primary btn-md" data-bs-toggle="modal" data-bs-target="#new_Category">+ New Category</a>
+                    @endif
                     <!-- <a href="#" class="btn btn-primary btn-md">Back to Products Categories</a> -->
                     <a href="{{ route('products.index') }}" class="btn btn-primary btn-md">Back to Products</a>
                 </div>

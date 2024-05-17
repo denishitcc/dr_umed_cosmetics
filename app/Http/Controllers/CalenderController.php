@@ -54,6 +54,9 @@ class CalenderController extends Controller
      */
     public function index(Request $request)
     {
+        $permission = \Auth::user()->checkPermission('calender');
+        $permissionValue = ($permission === 'View & Make Changes' || $permission === 'Both' || $permission === true) ? '1' : '0';
+
         $categories = Category::get();
 
         $services   = Services::with(['appearoncalender'])->get();
@@ -99,7 +102,8 @@ class CalenderController extends Controller
                 'staffs'     => $staffs,
                 'productServiceJson'   => '',
                 'loc_dis'    =>$loc_dis,
-                'loc_sur'    =>$loc_sur
+                'loc_sur'    =>$loc_sur,
+                'permissions'=>$permissionValue
             ]
         );
     }
@@ -370,6 +374,16 @@ class CalenderController extends Controller
         }
 
         $events = $events->get();
+
+        // $permission = \Auth::user()->checkPermission('calender');
+        // $permissionValue = ($permission === 'View & Make Changes' || $permission === 'Both' || $permission === true) ? '1' : '0';
+
+        // // Add permission to each event
+        // $events->each(function ($event) use ($permissionValue) {
+        //     $event->permission = $permissionValue;
+        // });
+        // dd($events);
+
         return response()->json(AppointmentListResource::collection($events));
     }
 

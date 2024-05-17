@@ -3,6 +3,7 @@
 <!-- Page content wrapper-->
 <meta name="csrf-token" content="{{ csrf_token() }}" />
 <div class="card">
+    @if(Auth::check() && (Auth::user()->role_type == 'admin'))
     <div class="card-head">
         <div class="toolbar">
             <div class="tool-left">
@@ -10,9 +11,17 @@
                 <!-- <a href="#" class="btn btn-primary btn-md">Import Form</a> -->
             </div>
         </div>
-
+    </div>
+    @elseif(Auth::user()->checkPermission('forms') != 'View Only')
+    <div class="card-head">
+        <div class="toolbar">
+            <div class="tool-left">
+                <a href="#" class="btn btn-primary btn-md me-2" data-bs-toggle="modal" data-bs-target="#new_form">New Form</a>
+                <!-- <a href="#" class="btn btn-primary btn-md">Import Form</a> -->
+            </div>
         </div>
-
+    </div>
+    @endif
     <div class="card-head">
         <h4 class="small-title mb-3">Forms Summary</h4>
 
