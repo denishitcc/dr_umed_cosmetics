@@ -264,10 +264,11 @@ class CalenderController extends Controller
                     ];
 
                     $appointment = Appointment::create($appointmentsData);
-
-                    $this->attachForms($single_ser,$appointment);
-
-                    $this->sendForms($request ,$single_ser,$location,$appointment);
+                    if($single_ser->forms != null)
+                    {
+                        $this->attachForms($single_ser,$appointment);
+                        $this->sendForms($request ,$single_ser,$location,$appointment);
+                    }
 
                     $data[] = [
                         'success' => true,
@@ -319,14 +320,21 @@ class CalenderController extends Controller
 
                 if( isset($findAppointment->id) ){
                     $findAppointment->update($appointmentsData);
-                    $this->attachForms($single_ser,$findAppointment);
+                    if($single_ser->forms != null)
+                    {
+                        $this->attachForms($single_ser,$findAppointment);
+                        $this->sendForms($request ,$single_ser,$location,$findAppointment);
+                    }
                 }
                 else
                 {
                     $appointment = Appointment::create($appointmentsData);
-                    $this->attachForms($single_ser,$appointment);
+                    if($single_ser->forms != null)
+                    {
+                        $this->attachForms($single_ser,$appointment);
+                        $this->sendForms($request ,$single_ser,$location,$appointment);
+                    }
                 }
-                $this->sendForms($request ,$single_ser,$location,$appointment);
                 DB::commit();
                 $data = [
                     'success' => true,
