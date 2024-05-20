@@ -42,6 +42,10 @@
                         <a href="{{ route('products-categories.index') }}" class="btn btn-orange btn-md icon-btn-left me-2">
                             <i class="ico-forms me-2 fs-5"></i> Categories
                         </a>
+                    @else
+                        <a href="{{ route('products-categories.index') }}" class="btn btn-orange btn-md icon-btn-left me-2">
+                            <i class="ico-forms me-2 fs-5"></i> Categories
+                        </a>
                     @endif
                     @if(Auth::user()->checkPermission('suppliers') != 'No permission')
                         <a href="{{ route('suppliers.index') }}" class="btn btn-sea-green btn-md icon-btn-left me-2">
