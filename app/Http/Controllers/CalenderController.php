@@ -2559,7 +2559,7 @@ class CalenderController extends Controller
 
             $data = [
                 'success' => true,
-                'message' => 'Appointment form deleted successfully!',
+                'message' => 'Appointment form sent successfully!',
                 'type'    => 'success',
             ];
         } catch (\Throwable $th) {
