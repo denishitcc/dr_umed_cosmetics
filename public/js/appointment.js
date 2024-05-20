@@ -49,6 +49,7 @@ var DU = {};
             context.allCheckboxChecked();
             context.sendFormsemailModal();
             context.changeSMSEmail();
+            context.sentSmsEmail();
 
             $('#clientmodal').hide();
             $('#service_error').hide();
@@ -1161,6 +1162,11 @@ var DU = {};
                     $('#forms').prepend(data.formshtml);
                     $('#update_forms_client').html(`Give to ${data.clientname} to fill out form`);
                     $('#form_sent_time').text(`Forms sent by email at ${data.email_time}`);
+                    $('#mobile_no').val(data.clientphone);
+                    $('#clientemail').val(data.clientemail);
+                    $('#client_name').val(data.clientname);
+                    $('#location_name').val(data.apptlocation);
+                    $('#apptid').val(data.apptid);
 
                     // copy existing form
                     $('#existing_modal_name').text(`Copy of one of ${data.clientname}'s existing forms to add to this appointment.`)
@@ -1193,8 +1199,9 @@ var DU = {};
 
         checkedBox: function(){
             var context = this;
-            $(document).on('change','input[name="forms_check"][type="checkbox"]',function(e){
-                var checkedCount = $('input[name="forms_check"][type="checkbox"]:checked').length;
+            $(document).on('change','input[name="forms_check[]"][type="checkbox"]',function(e){
+                var checkedCount = $('input[name="forms_check[]"][type="checkbox"]:checked').length,
+                    forms_check  = $('input[name="forms_check[]"][type="checkbox"]:checked').val();
                 context.sendFormAndGiveFormbtn(checkedCount);
             });
         },
@@ -1203,12 +1210,12 @@ var DU = {};
             var context = this;
             $(document).on('click','input[name="all_forms_check"][type="checkbox"]',function(e){
                 if ($(this).is(':checked')) {
-                    $('input[name="forms_check"][type="checkbox"]').attr('checked', true);
-                    var checkedCount = $('input[name="forms_check"][type="checkbox"]:checked').length;
+                    $('input[name="forms_check[]"][type="checkbox"]').attr('checked', true);
+                    var checkedCount = $('input[name="forms_check[]"][type="checkbox"]:checked').length;
                     context.sendFormAndGiveFormbtn(checkedCount-1);
                 } else {
-                    $('input[name="forms_check"][type="checkbox"]').attr('checked', false);
-                    var checkedCount = $('input[name="forms_check"][type="checkbox"]:checked').length;
+                    $('input[name="forms_check[]"][type="checkbox"]').attr('checked', false);
+                    var checkedCount = $('input[name="forms_check[]"][type="checkbox"]:checked').length;
                     context.sendFormAndGiveFormbtn(checkedCount);
                 }
             });
@@ -1340,6 +1347,57 @@ var DU = {};
                 $('.email').show();
                 $('.sms').hide();
             }
+        },
+
+        sentSmsEmail: function(){
+            var context = this;
+            $(document).on('click','#sent_sms_email',function(e){
+                var sms_email   = $('input[name="sms_email"]:checked').val(),
+                clientemail     = $('#clientemail').val(),
+                clientname      = $('#client_name').val(),
+                mobile_no       = $('#mobile_no').val(),
+                apptlocation    = $('#location_name').val(),
+                apptid          = $('#apptid').val(),
+                forms_id        = $('input[name="forms_check[]"]').filter(':checked').map(function(e,i){ return this.value; }).get();
+
+                $.ajax({
+                    url: moduleConfig.sentForms,
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {
+                        'sms_email'     : sms_email,
+                        'clientemail'   : clientemail,
+                        'client_name'   : clientname,
+                        'mobile_no'     : mobile_no,
+                        'forms_id'      : forms_id,
+                        'apptlocation'  : apptlocation,
+                        'apptid'        : apptid
+                    },
+                    success: function (data) {
+                        if (data.success) {
+                            Swal.fire({
+                                title: "Appointment Forms!",
+                                text: data.message,
+                                info: "success",
+                            }).then(function() {
+                                context.selectors.sendFormsModal.modal('hide');
+                                // context.getAppointmentForms(appointmentId);
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Error!",
+                                text: data.message,
+                                info: "error",
+                            });
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Error fetching events:', error);
+                    }
+                });
+            });
         },
 
         // For events list

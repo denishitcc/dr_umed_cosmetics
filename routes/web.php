@@ -214,6 +214,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('calender/get-appointment-forms/{id}',[CalenderController::class, 'getAppointmentForms'])->name('calendar.get-appointment-forms');
         Route::post('calender/add-appointment-forms',[CalenderController::class, 'addAppointmentForms'])->name('calendar.add-appointment-forms');
         Route::delete('calender/delete-appointment-forms/{id}',[CalenderController::class, 'deleteAppointmentForms'])->name('calendar.delete-appointment-forms');
+        Route::post('calendar/sent-forms',[CalenderController::class, 'sentForms'])->name('calendar.sent-forms');
     });
 
     //finance

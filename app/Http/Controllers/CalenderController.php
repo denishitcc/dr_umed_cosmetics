@@ -2462,6 +2462,10 @@ class CalenderController extends Controller
         $forms              = AppointmentForms::where('appointment_id',$appointmentId)->get();
         $appointment        = Appointment::find($appointmentId);
         $clientName         = $appointment->clients->firstname;
+        $clientEmail        = $appointment->clients->email;
+        $clientPhone        = $appointment->clients->mobile_number;
+        $apptlocation       = $appointment->location->location_name;
+        $apptid             = $appointment->id;
         $email_time         = Carbon::parse($appointment->forms_sent_email)->format('H:i a, D dS M Y');
         $html               = view('calender.partials.attachforms',     [ 'forms' => $forms ])->render();
         $existingformshtml  = view('calender.partials.copy-form-list',  [ 'forms' => $forms ])->render();
@@ -2472,6 +2476,10 @@ class CalenderController extends Controller
             'formshtml'         => $html,
             'existingformshtml' => $existingformshtml,
             'clientname'        => $clientName,
+            'clientemail'       => $clientEmail,
+            'clientphone'       => $clientPhone,
+            'apptlocation'      => $apptlocation,
+            'apptid'            => $apptid,
             'email_time'        => $email_time
         ], 200);
     }
@@ -2521,7 +2529,49 @@ class CalenderController extends Controller
                 'type'    => 'fail',
             ];
         }
+        return $data;
+    }
+
+    public function sentForms(Request $request)
+    {
+        try {
+            $formsId        = $request['forms_id'];
+            $appointment    = Appointment::find($request->apptid);
+            $to_email       = $request->clientemail;
+            foreach ($formsId as $key => $form) {
+                $forms = FormSummary::find($form);
+                // dump($forms);
+                $subject    = 'Before your appointment at  fill this form - '.$forms['title'];
+                $userData   = [
+                    'name'          => $request->client_name,
+                    'company_name'  => env('APP_NAME') .$request->apptlocation,
+                    'form_url'      => route('serviceforms.formUser',$appointment->id)
+                ];
+                Mail::send('email.forms', $userData, function($message) use ($to_email,$subject) {
+                    $message->to($to_email)
+                    ->subject($subject);
+                    $message->from('support@itcc.net.au',$subject);
+                });
+
+                $dat['forms_sent_email'] = carbon::now();
+                $appointment->update($dat);
+            }
+
+            $data = [
+                'success' => true,
+                'message' => 'Appointment form deleted successfully!',
+                'type'    => 'success',
+            ];
+        } catch (\Throwable $th) {
+            //throw $th;
+            $data = [
+                'success' => false,
+                'message' => $th->getMessage(),
+                'type'    => 'fail',
+            ];
+        }
 
         return $data;
+
     }
 }

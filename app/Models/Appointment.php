@@ -112,4 +112,14 @@ class Appointment extends Model
         return $this->hasOne(AppointmentNotes::class, 'appointment_id', 'id');
     }
 
+    /**
+     * Get the location that owns the Appointment
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function location(): BelongsTo
+    {
+        return $this->belongsTo(Locations::class, 'location_id', 'id');
+    }
+
 }
