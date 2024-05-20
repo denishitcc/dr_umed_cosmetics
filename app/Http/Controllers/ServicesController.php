@@ -31,7 +31,7 @@ class ServicesController extends Controller
 
             //locations
             $locations = Locations::get();
-            return view('services.index', compact('list_cat','list_service','locations','categories'));
+            return view('services.index', compact('list_cat','list_service','locations','categories','permission'));
         }else{
             abort(403, 'You are not authorized to access this page.');
         }

@@ -105,18 +105,28 @@
                         <a href="{{ route('forms.index') }}"><i class="ico-forms"></i>Forms</a>
                     </li>
                     @endif
-                    @if(\Auth::user()->checkPermission('email-templates') == "true" || \Auth::user()->checkPermission('sms-templates') == "true" || \Auth::user()->checkPermission('email-templates') != "No permission" || \Auth::user()->checkPermission('sms-templates') != "No permission")
-                    <li class="dropdown {{ (request()->is('email-templates')) ? 'show' : '' }} || {{ (request()->is('email-templates')) ? 'active' : '' }} || {{ (request()->is('sms-templates')) ? 'show' : '' }} || {{ (request()->is('sms-templates')) ? 'active' : '' }} || {{ (request()->is('email-templates/*')) ? 'show' : '' }} || {{ (request()->is('sms-templates/*')) ? 'show' : '' }}">
-                        <a href="#"><i class="ico-templates"></i>Templates</a>
-                        <ul>
-                            <li class="{{ (request()->is('email-templates')) ? 'active' : '' }} || {{ (request()->is('email-templates/*')) ? 'active' : '' }}">
-                                <a href="{{ route('email-templates.index') }}">Email Templates</a>
-                            </li>
-                            <li class="{{ (request()->is('sms-templates')) ? 'active' : '' }} || {{ (request()->is('sms-templates/*')) ? 'active' : '' }}">
-                                <a href="{{ route('sms-templates.index') }}">SMS Templates</a>
-                            </li>
-                        </ul>
-                    </li>
+                    @php
+                        $canViewEmailTemplates = \Auth::user()->checkPermission('email-templates') == "true" || \Auth::user()->checkPermission('email-templates') != "No permission";
+                        $canViewSmsTemplates = \Auth::user()->checkPermission('sms-templates') == "true" || \Auth::user()->checkPermission('sms-templates') != "No permission";
+                    @endphp
+
+                    @if($canViewEmailTemplates || $canViewSmsTemplates)
+                        <li class="dropdown 
+                            {{ (request()->is('email-templates') || request()->is('sms-templates') || request()->is('email-templates/*') || request()->is('sms-templates/*')) ? 'show active' : '' }}">
+                            <a href="#"><i class="ico-templates"></i>Templates</a>
+                            <ul>
+                                @if($canViewEmailTemplates)
+                                    <li class="{{ (request()->is('email-templates') || request()->is('email-templates/*')) ? 'active' : '' }}">
+                                        <a href="{{ route('email-templates.index') }}">Email Templates</a>
+                                    </li>
+                                @endif
+                                @if($canViewSmsTemplates)
+                                    <li class="{{ (request()->is('sms-templates') || request()->is('sms-templates/*')) ? 'active' : '' }}">
+                                        <a href="{{ route('sms-templates.index') }}">SMS Templates</a>
+                                    </li>
+                                @endif
+                            </ul>
+                        </li>
                     @endif
                     @if(\Auth::user()->checkPermission('locations') == "true" || \Auth::user()->checkPermission('locations') != "No permission")
                     <li class="{{ (request()->is('locations')) ? 'active' : '' }} || {{ (request()->is('locations/*')) ? 'active' : '' }}">

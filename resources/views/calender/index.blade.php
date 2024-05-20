@@ -38,16 +38,10 @@
                 @endif
                 </div>
                 </div>
-                @php
-                    $isDisabled = !(Auth::check() && (Auth::user()->role_type == 'admin' || Auth::user()->checkPermission('calender') != 'View Only'));
-                @endphp
-
-                @if (!$isDisabled)
-                    <div class="form-group icon searh_data">
-                        <input type="text" id="search" class="form-control" autocomplete="off" placeholder="Search for a client" onkeyup="changeInput(this.value)">
-                        <i class="ico-search"></i>
-                    </div>
-                @endif
+                <div class="form-group icon searh_data">
+                    <input type="text" id="search" class="form-control" autocomplete="off" placeholder="Search for a client" onkeyup="changeInput(this.value)">
+                    <i class="ico-search"></i>
+                </div>
                 <div class="detaild-theos-scroll">
                 <div id="clientDetails" class="detaild-theos pt-3"></div>
                 <div id='external-events'></div>
@@ -5631,43 +5625,56 @@
 
         // Iterate over client_details to find a matching value
         for (const key in client_details) {
-            console.log(client_details);
-            if (client_details.hasOwnProperty(key)) {
-                const client = client_details[key];
-                // Check if value matches any field in the client object
-                if (client.email === value || client.mobile_number === value || client.name === value) {
-                    console.log(client);
-                    // If a match is found, dynamically bind HTML to clientDetails element
-                    $('#clientDetails').html(
-                            `<div class="client-name">
-                                <div class="drop-cap" style="background: #D0D0D0; color:#fff;">${client.name.charAt(0).toUpperCase()}
-                                </div>
-                                <div class="client-info">
-                                    <input type='hidden' name='client_name' value='${client.name} ${client.lastname}'>
-                                    <input type='hidden' id="client_id" name='client_id' value='${client.id}'>
-                                    <h4 class="blue-bold">${client.name}  ${client.lastname}</h4>
-                                </div>
-                            </div>
-                            <div class="mb-2">
-                                <a href="#" class="river-bed"><b>${client.mobile_number}</b></a><br>
-                                <a href="#" class="river-bed"><b>${client.email}</b></a>
-                            </div>
-                            <hr>
-                            <div class="btns">
-                                <button class="btn btn-secondary btn-sm open-client-card-btn" data-client-id="${client.id}" >Client Card</button>
-                                <button class="btn btn-secondary btn-sm history" data-client-id="${client.id}" >History</button>
-                                <button class="btn btn-secondary btn-sm upcoming" data-client-id="${client.id}" >Upcoming</button>
-                            </div>
-                            <hr>`
-                    );
+        console.log(client_details);
+        if (client_details.hasOwnProperty(key)) {
+            const client = client_details[key];
+            // Check if value matches any field in the client object
+            if (client.email === value || client.mobile_number === value || client.name === value) {
+                console.log(client);
+                // Generate the client details HTML
+                let clientDetailsHTML = `
+                    <div class="client-name">
+                        <div class="drop-cap" style="background: #D0D0D0; color:#fff;">${client.name.charAt(0).toUpperCase()}</div>
+                        <div class="client-info">
+                            <input type='hidden' name='client_name' value='${client.name} ${client.lastname}'>
+                            <input type='hidden' id="client_id" name='client_id' value='${client.id}'>
+                            <h4 class="blue-bold">${client.name} ${client.lastname}</h4>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <a href="#" class="river-bed"><b>${client.mobile_number}</b></a><br>
+                        <a href="#" class="river-bed"><b>${client.email}</b></a>
+                    </div>
+                    <hr>
+                    <div class="btns">`;
 
-                    document.getElementById('search').value = '';
-                    // Trigger the click event of the history button
-                    $('.history').click();
-                    break; // Stop iterating once a match is found
+                // Add buttons conditionally based on the permission value
+                if (localStorage.getItem('permissionValue') == '1') {
+                    clientDetailsHTML += `
+                        <button class="btn btn-secondary btn-sm open-client-card-btn" data-client-id="${client.id}">Client Card</button>
+                        <button class="btn btn-secondary btn-sm history" data-client-id="${client.id}">History</button>
+                        <button class="btn btn-secondary btn-sm upcoming" data-client-id="${client.id}">Upcoming</button>
+                    `;
+                }else{
+                    clientDetailsHTML += `
+                        <button class="btn btn-secondary btn-sm open-client-card-btn" data-client-id="${client.id}" disabled>Client Card</button>
+                        <button class="btn btn-secondary btn-sm history" data-client-id="${client.id}" disabled>History</button>
+                        <button class="btn btn-secondary btn-sm upcoming" data-client-id="${client.id}" disabled>Upcoming</button>
+                    `;
                 }
+
+                clientDetailsHTML += `</div><hr>`;
+
+                // Dynamically bind the HTML to clientDetails element
+                $('#clientDetails').html(clientDetailsHTML);
+
+                document.getElementById('search').value = '';
+                // Trigger the click event of the history button
+                $('.history').click();
+                break; // Stop iterating once a match is found
             }
         }
+    }
     }
 
     //search and set clients modal

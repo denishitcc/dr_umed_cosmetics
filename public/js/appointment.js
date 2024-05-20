@@ -255,10 +255,10 @@ var DU = {};
                     }
                 },
                 eventClick: function(info){
-                    if(localStorage.getItem('permissionValue') == '1'){
+                    // if(localStorage.getItem('permissionValue') == '1'){
                         var eventId = info.event._def.publicId;
                         context.editEvent(eventId);
-                    }
+                    // }
                 },
                 dayMaxEvents: true,
                 select: function(start, end, allDays){
@@ -932,6 +932,7 @@ var DU = {};
                     'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
                 },
                 success: function (response) {
+                    const disabledAttr = localStorage.getItem('permissionValue') !== '1' ? 'disabled' : '';
                     $('#clientDetails').html(
                         `<div class="client-name">
                                 <div class="drop-cap" style="background: #D0D0D0; color:#fff;">${response.data.client_data.first_name.charAt(0).toUpperCase()}
@@ -953,9 +954,9 @@ var DU = {};
                             </div>
                             <hr>
                             <div class="btns">
-                                <button class="btn btn-secondary btn-sm open-client-card-btn" data-client-id="${response.data.client_data.id}" >Client Card</button>
-                                <button class="btn btn-secondary btn-sm history" data-client-id="${response.data.client_data.id}" >History</button>
-                                <button class="btn btn-secondary btn-sm upcoming" data-client-id="${response.data.client_data.id}" >Upcoming</button>
+                                <button class="btn btn-secondary btn-sm open-client-card-btn" data-client-id="${response.data.client_data.id}" ${disabledAttr}>Client Card</button>
+                                <button class="btn btn-secondary btn-sm history" data-client-id="${response.data.client_data.id}" ${disabledAttr}>History</button>
+                                <button class="btn btn-secondary btn-sm upcoming" data-client-id="${response.data.client_data.id}" ${disabledAttr}>Upcoming</button>
                             </div>
                             <hr>
                             <div id="editEventData">
@@ -965,12 +966,12 @@ var DU = {};
                                 <b>${response.data.appointment_date}</b>
                             </div>
                             <div class="mb-3">
-                                <a href="#" class="btn btn-primary btn-md blue-alter move_appointment">Move Appointment</a>
+                                <button class="btn btn-primary btn-md blue-alter move_appointment" ${disabledAttr}>Move Appointment</button>
                             </div>
                             <div class="form-group mb-3">
                                 <label class="form-label">Status </label>
                                 <input type="hidden" name="appointment_id" value=${response.data.id}>
-                                <select class="form-select form-control change_status" id="appointment_status">
+                                <select class="form-select form-control change_status" id="appointment_status" ${disabledAttr}>
                                     <option value="1" ${response.data.status_no == 1 ? 'selected' : ''}>Booked</option>
                                     <option value="2" ${response.data.status_no == 2 ? 'selected' : ''}>Confirmed</option>
                                     <option value="3" ${response.data.status_no == 3 ? 'selected' : ''}>Started</option>
@@ -1002,23 +1003,23 @@ var DU = {};
                                 <input type="hidden" id="staff_id" value="${response.data.staff_id}">
                             </div>
                             <div class="btns mb-3">
-                                <button class="btn btn-secondary btn-sm" id="edit_appointment" event_id="${response.data.id}" staff_id="${response.data.staff_id}" appointment_date="${response.data.appointment_date}" appointment_time="${response.data.appointment_time}" staff_name="${response.data.staff_name}" service_name="${response.data.services_name}" duration="${response.data.duration}" category_id="${response.data.category_id}" services_id="${response.data.service_id}" client-id="${response.data.id}" client-name="${response.data.client_data.first_name + ' ' + response.data.client_data.last_name}" edit-service-name="${response.data.service_id}" ${response.data.status_no == 4 ? 'disabled' : ''}>Edit Appt</button>
-                                <button class="btn btn-secondary btn-sm" id="edit_forms" data-appt_id="${response.data.id}">Edit Forms</button>
-                                <button class="btn btn-secondary btn-sm rebook">Rebook</button>
-                                <button class="btn btn-secondary btn-sm repeat_appt">Repeat Appt</button>
-                                <button class="btn btn-secondary btn-sm">Messages</button>
-                                <button class="btn btn-secondary btn-sm" id="send_apt_details">Send appt details</button>
-                                ${response.data.status_no == 4 ? `<button class="btn btn-secondary btn-sm view_invoice" walk_in_ids="${response.data.walk_in_id}">View paid invoice</button>` : '<button class="btn btn-secondary btn-sm view_invoice" walk_in_ids="${response.data.walk_in_id}"  style="display:none;">View paid invoice</button>'}
+                                <button class="btn btn-secondary btn-sm" id="edit_appointment" event_id="${response.data.id}" staff_id="${response.data.staff_id}" appointment_date="${response.data.appointment_date}" appointment_time="${response.data.appointment_time}" staff_name="${response.data.staff_name}" service_name="${response.data.services_name}" duration="${response.data.duration}" category_id="${response.data.category_id}" services_id="${response.data.service_id}" client-id="${response.data.id}" client-name="${response.data.client_data.first_name + ' ' + response.data.client_data.last_name}" edit-service-name="${response.data.service_id}" ${response.data.status_no == 4 ? 'disabled' : ''} ${disabledAttr}>Edit Appt</button>
+                                <button class="btn btn-secondary btn-sm" id="edit_forms" data-appt_id="${response.data.id}" ${disabledAttr}>Edit Forms</button>
+                                <button class="btn btn-secondary btn-sm rebook" ${disabledAttr}>Rebook</button>
+                                <button class="btn btn-secondary btn-sm repeat_appt" ${disabledAttr}>Repeat Appt</button>
+                                <button class="btn btn-secondary btn-sm" ${disabledAttr}>Messages</button>
+                                <button class="btn btn-secondary btn-sm" id="send_apt_details" ${disabledAttr}>Send appt details</button>
+                                ${response.data.status_no == 4 ? `<button class="btn btn-secondary btn-sm view_invoice" walk_in_ids="${response.data.walk_in_id}" ${disabledAttr}>View paid invoice</button>` : '<button class="btn btn-secondary btn-sm view_invoice" walk_in_ids="${response.data.walk_in_id}"  style="display:none;">View paid invoice</button>'}
                             </div>
-                            ${response.data.status_no != 4 ? `<a href="#" id="make_sale" class="btn btn-primary btn-md mb-2 d-block make_sale" product_id="${response.data.service_id}" product_name="${response.data.services_name}" product_price="${response.data.standard_price}" appt_id="${response.data.id}" staff_id="${response.data.staff_id}">Make Sale</a>` : ''}
+                            ${response.data.status_no != 4 ? `<button id="make_sale" class="btn btn-primary btn-md mb-2 d-block make_sale w-100" product_id="${response.data.service_id}" product_name="${response.data.services_name}" product_price="${response.data.standard_price}" appt_id="${response.data.id}" staff_id="${response.data.staff_id}" ${disabledAttr}>Make Sale</button>` : ''}
 
-                            ${response.data.status_no != 4 ? `<div class="text-end"><a href="javascript:void(0)" class="btn btn-primary btn-md blue-alter" id="deleteAppointment">Delete</a></div>`:''}
+                            ${response.data.status_no != 4 ? `<div class="text-end"><button class="btn btn-primary btn-md blue-alter" id="deleteAppointment" ${disabledAttr}>Delete</button></div>`:''}
                             <hr>
                             <div class="form-group">
                                 <label class="form-label">Notes</label>
-                                <textarea rows="4" class="form-control" placeholder="Click to edit" id="commonNotes"></textarea>
+                                <textarea rows="4" class="form-control" placeholder="Click to edit" id="commonNotes" ${disabledAttr}></textarea>
                                 <label class="form-label">Treatment Notes</label>
-                                <textarea rows="4" class="form-control" placeholder="Click to edit" id="treatmentNotes"></textarea>
+                                <textarea rows="4" class="form-control" placeholder="Click to edit" id="treatmentNotes" ${disabledAttr}></textarea>
                             </div>
                             </div>`
                     );

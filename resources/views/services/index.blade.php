@@ -38,7 +38,11 @@
                     <div class="ctg-greybox h-100">
                         <div class="p-4">
                             <h6 class="mb-4">Categories</h6>
+                            @if(Auth::check() && (Auth::user()->role_type == 'admin'))
                             <a href="#" class="btn btn-primary btn-md" data-bs-toggle="modal" data-bs-target="#new_Category">+ New Category</a>
+                            @elseif(Auth::user()->checkPermission('services') != 'View Only')
+                            <a href="#" class="btn btn-primary btn-md" data-bs-toggle="modal" data-bs-target="#new_Category">+ New Category</a>
+                            @endif
                         </div>
                         
                         <ul class="ctg-tree">
@@ -71,11 +75,13 @@
                         <div class="mb-4 d-flex">
                             @if(Auth::check() && (Auth::user()->role_type == 'admin'))
                             <a href="{{URL::to('services/create')}}" class="btn btn-primary btn-md me-2">+ Add New Service</a>
-                            @elseif(Auth::user()->checkPermission('services') != 'View Only')
-                            <a href="{{URL::to('services/create')}}" class="btn btn-primary btn-md me-2">+ Add New Service</a>
-                            @endif
                             <a href="#" id="" style="display:none"; class="btn btn-secondary btn-md icon-btn-left edit_service" data-bs-toggle="modal" data-bs-target="#edit_Category";><i class="ico-edit me-2 fs-4"></i>  <!-- Icon element for "Edit Category" -->Edit Category  <!-- Text content for the hyperlink --></a>
                             <a href="#" style="display:none"; class="btn simple-link set_availability" data-bs-toggle="modal" data-bs-target="#change_Availability">Set availability for this category</a>
+                            @elseif(Auth::user()->checkPermission('services') != 'View Only')
+                            <a href="{{URL::to('services/create')}}" class="btn btn-primary btn-md me-2">+ Add New Service</a>
+                            <a href="#" id="" style="display:none"; class="btn btn-secondary btn-md icon-btn-left edit_service" data-bs-toggle="modal" data-bs-target="#edit_Category";><i class="ico-edit me-2 fs-4"></i>  <!-- Icon element for "Edit Category" -->Edit Category  <!-- Text content for the hyperlink --></a>
+                            <a href="#" style="display:none"; class="btn simple-link set_availability" data-bs-toggle="modal" data-bs-target="#change_Availability">Set availability for this category</a>
+                            @endif
                         </div>
 
                         <div class="table-responsive">
@@ -248,7 +254,11 @@ $(document).ready(function() {
                     }else{
                         var dur = '0';
                     }
-                    $('.table-striped').append("<tr><td><a href='" + url + "' style='color: #282828;'><b>" + res.service_name + "</b></a></td><td>" + dur + " mins</td></tr>");
+                    if ("{{ $permission }}" != 'View Only') {
+                        $('.table-striped').append("<tr><td><a href='" + url + "' style='color: #282828;'><b>" + res.service_name + "</b></a></td><td>" + dur + " mins</td></tr>");
+                    }else{
+                        $('.table-striped').append("<tr><td><a href='javascript:void(0);' style='color: #282828;'><b>" + res.service_name + "</b></a></td><td>" + dur + " mins</td></tr>");
+                    }
                 });
                 $('.table-responsive').append("</tbody></table>");
             }
@@ -366,7 +376,11 @@ $(document).ready(function() {
                     $.each(res.data, function(index, res) {
                         var url = '{{ URL::to("services/") }}/' + res.id; // Corrected URL formatting
                         var duration = res.duration != null ? res.duration : "0";
-                        $('.table-striped').append("<tr><td><a href='" + url + "' style='color: #282828;'><b>" + res.service_name + "</b></a></td><td>" + duration + " mins</td></tr>");
+                        if ("{{ $permission }}" != 'View Only') {
+                            $('.table-striped').append("<tr><td><a href='" + url + "' style='color: #282828;'><b>" + res.service_name + "</b></a></td><td>" + duration + " mins</td></tr>");
+                        }else{
+                            $('.table-striped').append("<tr><td><a href='javascript:void(0);' style='color: #282828;'><b>" + res.service_name + "</b></a></td><td>" + duration + " mins</td></tr>");
+                        }
                     });
                     $('.table-responsive').append("</tbody></table>");
                 }
@@ -496,7 +510,11 @@ $(document).ready(function() {
                     $.each(res.data, function(index, res) {
                         var url = '{{ URL::to("services/") }}/' + res.id; // Corrected URL formatting
                         var duration = res.duration != null ? res.duration : "0";
-                        $('.table-striped').append("<tr><td><a href='" + url + "' style='color: #282828;'><b>" + res.service_name + "</b></a></td><td>" + duration + " mins</td></tr>");
+                        if ("{{ $permission }}" != 'View Only') {
+                            $('.table-striped').append("<tr><td><a href='" + url + "' style='color: #282828;'><b>" + res.service_name + "</b></a></td><td>" + duration + " mins</td></tr>");
+                        }else{
+                            $('.table-striped').append("<tr><td><a href='javascript:void(0);' style='color: #282828;'><b>" + res.service_name + "</b></a></td><td>" + duration + " mins</td></tr>");
+                        }
                     });
                     $('.table-responsive').append("</tbody></table>");
                 }
@@ -582,7 +600,11 @@ $(document).ready(function() {
                         }else{
                             var dur = '0';
                         }
-                        $('.table-striped').append("<tr><td><a href='" + url + "' style='color: #282828;'><b>" + res.service_name + "</b></a></td><td>" + dur + " mins</td></tr>");
+                        if ("{{ $permission }}" != 'View Only') {
+                            $('.table-striped').append("<tr><td><a href='" + url + "' style='color: #282828;'><b>" + res.service_name + "</b></a></td><td>" + dur + " mins</td></tr>");
+                        }else{
+                            $('.table-striped').append("<tr><td><a href='javascript:void(0);' style='color: #282828;'><b>" + res.service_name + "</b></a></td><td>" + dur + " mins</td></tr>");
+                        }
                     });
                     $('.table-responsive').append("</tbody></table>");
                 }
