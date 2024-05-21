@@ -1203,7 +1203,8 @@
         getAppointmentForms:          "{!! route('calendar.get-appointment-forms', ':ID')!!}",
         addAppointmentForms:          "{!! route('calendar.add-appointment-forms') !!}",
         deleteAppointmentForms:       "{!! route('calendar.delete-appointment-forms', ':ID' ) !!}",
-        sentForms:                    "{!! route('calendar.sent-forms') !!}"
+        sentForms:                    "{!! route('calendar.sent-forms') !!}",
+        getforms:                     "{!! route('get-forms') !!}"
     };
 
     $(document).ready(function()

@@ -57,6 +57,7 @@ Route::middleware(['auth'])->group(function () {
     
     //get all locations
     Route::post('/get-all-locations', [UsersController::class, 'get_all_locations'])->name('get-all-locations');
+    Route::post('/get-forms', [UsersController::class, 'getForms'])->name('get-forms');
     //get selected locations
     Route::post('calendar/get-selected-location', [CalenderController::class, 'GetLocation'])->name('calendar.get-selected-location');
     //get category services
