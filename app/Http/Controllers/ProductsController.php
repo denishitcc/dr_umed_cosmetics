@@ -77,7 +77,7 @@ class ProductsController extends Controller
                         $permission = \Auth::user()->checkPermission('products');
                         if ($permission === 'View Only')
                         {
-                            $btn = '<div class="action-box"><button type="button" class="btn btn-sm black-btn round-6 dt-edit" ids='.$row->id.' disabled><i class="ico-edit"></i></button><button type="button" class="btn btn-sm black-btn round-6 product_statistics" ids='.$row->id.' disabled><i class="ico-graph"></i></button></div>';
+                            $btn = '<div class="action-box"><button type="button" class="btn btn-sm black-btn round-6 dt-edit" ids='.$row->id.' disabled><i class="ico-edit"></i></button><button type="button" class="btn btn-sm black-btn round-6 product_statistics" ids='.$row->id.'><i class="ico-graph"></i></button></div>';
                             return $btn;
                         }else{
                             $btn = '<div class="action-box"><button type="button" class="btn btn-sm black-btn round-6 dt-edit" ids='.$row->id.'><i class="ico-edit"></i></button><button type="button" class="btn btn-sm black-btn round-6 product_statistics" ids='.$row->id.'><i class="ico-graph"></i></button></div>';
