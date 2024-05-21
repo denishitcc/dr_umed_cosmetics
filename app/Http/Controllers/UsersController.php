@@ -11,6 +11,7 @@ use Mail;
 use Illuminate\Support\Str;
 use DataTables;
 use App\Models\EmailTemplates;
+use App\Models\FormSummary;
 use App\Models\Locations;
 
 class UsersController extends Controller
@@ -313,5 +314,21 @@ class UsersController extends Controller
         $loc = Locations::all();
         return response()->json(LocationsResource::collection($loc));
         // return response()->json($loc);
+    }
+
+    /**
+     * Method getForms
+     *
+     * @return void
+     */
+    public function getForms()
+    {
+        $forms              = FormSummary::where('status',FormSummary::LIVE)->get();
+        $html               = view('calender.partials.addforms',     [ 'forms' => $forms ])->render();
+        return response()->json([
+            'status'            => true,
+            'message'           => 'Details found.',
+            'formshtml'         => $html,
+        ], 200);
     }
 }

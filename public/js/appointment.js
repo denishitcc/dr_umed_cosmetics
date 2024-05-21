@@ -50,6 +50,8 @@ var DU = {};
             context.sendFormsemailModal();
             context.changeSMSEmail();
             context.sentSmsEmail();
+            context.givetoUser();
+            context.addNewFormCheckbox();
 
             $('#clientmodal').hide();
             $('#service_error').hide();
@@ -1195,6 +1197,31 @@ var DU = {};
             var context = this;
             $(document).on('click','#add_new_forms',function(e){
                 $('#form_dropdown').dropdown();
+
+                $.ajax({
+                    url: moduleConfig.getforms,
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function (data) {
+                        // $('#form_dropdown').remove();
+                        $('#form_dropdown').append(data.formshtml);
+                    },
+                    error: function (error) {
+                        console.error('Error fetching events:', error);
+                    }
+                });
+            });
+        },
+
+        addNewFormCheckbox: function(){
+            var context = this;
+            $(document).on('change','input[name="forms_check"][type="checkbox"]',function(e){
+                var $this     = $(this),
+                    forms_id  = $this.val();
+                    apptid    = $('#apptid').val();
+                context.addAppointmentForms(apptid,forms_id);
             });
         },
 
@@ -1244,45 +1271,49 @@ var DU = {};
             }
         },
 
+        addAppointmentForms: function(appointmentId,form_id){
+            var context = this;
+            $.ajax({
+                url: moduleConfig.addAppointmentForms,
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    'appointment_id'  : appointmentId,
+                    'form_id'         : form_id
+                },
+                success: function (data) {
+                    if (data.success) {
+                        Swal.fire({
+                            title: "Appointment Forms!",
+                            text: data.message,
+                            info: "success",
+                        }).then(function() {
+                            context.selectors.copyexistingFormModal.modal('hide');
+                            context.getAppointmentForms(appointmentId);
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Error!",
+                            text: data.message,
+                            info: "error",
+                        });
+                    }
+                },
+                error: function (error) {
+                    console.error('Error fetching events:', error);
+                }
+            });
+        },
+
         addForms: function(){
             var context = this;
             $(document).on('click','.add_forms',function(e){
                 var $this           = $(this),
                     appointmentId   = $this.data('appointment_id'),
                     form_id         = $this.data('form_id');
-
-                $.ajax({
-                    url: moduleConfig.addAppointmentForms,
-                    type: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
-                    },
-                    data: {
-                        'appointment_id'  : appointmentId,
-                        'form_id'         : form_id
-                    },
-                    success: function (data) {
-                        if (data.success) {
-                            Swal.fire({
-                                title: "Appointment Forms!",
-                                text: data.message,
-                                info: "success",
-                            }).then(function() {
-                                context.selectors.copyexistingFormModal.modal('hide');
-                                context.getAppointmentForms(appointmentId);
-                            });
-                        } else {
-                            Swal.fire({
-                                title: "Error!",
-                                text: data.message,
-                                info: "error",
-                            });
-                        }
-                    },
-                    error: function (error) {
-                        console.error('Error fetching events:', error);
-                    }
-                });
+                context.addAppointmentForms(appointmentId,form_id);
             });
         },
 
@@ -1398,6 +1429,13 @@ var DU = {};
                         console.error('Error fetching events:', error);
                     }
                 });
+            });
+        },
+
+        givetoUser: function(){
+            var context = this;
+            $(document).on('click','#update_forms_client',function(e){
+                location.href = "https://stackoverflow.com/questions/16562577/how-can-i-make-a-button-redirect-my-page-to-another-page";
             });
         },
 

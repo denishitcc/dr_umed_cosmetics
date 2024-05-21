@@ -12,12 +12,6 @@
                         {{-- data-bs-toggle="dropdown" --}}
                     <div class="dropdown-menu p-3 w-100 shaded-dropdown scroll-y">
                         <ul id="form_dropdown" class="list-group list-group-flush ad-flus">
-                            <li class="list-group-item">
-                                <label class="cst-check d-flex align-items-center">
-                                    <input type="checkbox" name="forms_check" value="">
-                                    <span class="checkmark me-2"></span> BBL/Laser Skin Procedures - CONSULTATION FORM
-                                </label>
-                            </li>
                         </ul>
                     </div>
                     <button type="button" class="btn btn-secondary btn-md icon-btn-left copy_existing_forms">
@@ -46,7 +40,7 @@
                     <button class="btn btn-light-grey50 btn-md icon-btn-left me-2 send_forms" disabled>
                         <i class="ico-directbox-notify me-2 fs-6"></i> Send forms
                     </button>
-                    <button class="btn btn-light-grey50 btn-md icon-btn-left me-2 update_forms" id="update_forms_client" disabled>
+                    <button class="btn btn-light-grey50 btn-md icon-btn-left me-2 update_forms" id="update_forms_client"  disabled>
                         <i class="ico-user2 me-2 fs-6"></i>
                     </button>
                 </div>

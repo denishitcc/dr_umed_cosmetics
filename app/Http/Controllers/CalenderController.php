@@ -2539,8 +2539,7 @@ class CalenderController extends Controller
             $appointment    = Appointment::find($request->apptid);
             $to_email       = $request->clientemail;
             foreach ($formsId as $key => $form) {
-                $forms = FormSummary::find($form);
-                // dump($forms);
+                $forms      = FormSummary::find($form);
                 $subject    = 'Before your appointment at  fill this form - '.$forms['title'];
                 $userData   = [
                     'name'          => $request->client_name,
