@@ -1217,11 +1217,11 @@ var DU = {};
 
         addNewFormCheckbox: function(){
             var context = this;
-            $(document).on('change','input[name="forms_check"][type="checkbox"]',function(e){
+            $(document).on('change','input[name="add_forms_check"][type="checkbox"]',function(e){
                 var $this     = $(this),
                     forms_id  = $this.val();
                     apptid    = $('#apptid').val();
-                context.addAppointmentForms(apptid,forms_id);
+                context.addAppointmentFormschecked(apptid,forms_id);
             });
         },
 
@@ -1271,7 +1271,7 @@ var DU = {};
             }
         },
 
-        addAppointmentForms: function(appointmentId,form_id){
+        addAppointmentFormschecked: function(appointmentId,form_id){
             var context = this;
             $.ajax({
                 url: moduleConfig.addAppointmentForms,
@@ -1313,7 +1313,7 @@ var DU = {};
                 var $this           = $(this),
                     appointmentId   = $this.data('appointment_id'),
                     form_id         = $this.data('form_id');
-                context.addAppointmentForms(appointmentId,form_id);
+                context.addAppointmentFormschecked(appointmentId,form_id);
             });
         },
 

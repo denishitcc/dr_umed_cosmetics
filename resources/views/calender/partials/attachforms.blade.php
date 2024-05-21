@@ -8,14 +8,14 @@
     <td></td>
     <td class="text-center"></td>
 </tr>
+<input type="hidden" name="client_name" id="client_name">
+<input type="hidden" name="location_name" id="location_name">
+<input type="hidden" name="apptid" id="apptid">
 @if ($forms->count())
     @foreach ($forms as $form)
         <tr>
             <td>
                 <input type="checkbox" name="forms_check[]" value="{{ $form->form_id }}">
-                <input type="hidden" name="client_name" id="client_name">
-                <input type="hidden" name="location_name" id="location_name">
-                <input type="hidden" name="apptid" id="apptid">
             </td>
             <td class="blue">{{ $form->forms->title }}</td>
             <td>
