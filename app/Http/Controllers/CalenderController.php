@@ -2573,4 +2573,64 @@ class CalenderController extends Controller
         return $data;
 
     }
+    public function apptConfirmation(Request $request)
+    {
+        $appointment = Appointment::find($request->id);
+
+        if ($appointment) {
+            $formattedDate = Carbon::parse($appointment->start_date)->format('D, d-M h:ia');
+
+            $client = Clients::where('id',$appointment->client_id)->first();
+            $client_email = $client->email;
+            $username = $client->firstname.' '.$client->lastname;
+
+            $user = User::where('id',$appointment->staff_id)->first();
+            $phone = $user->phone;
+
+            $location = Locations::where('id',$appointment->location_id)->first();
+            $location_name = $location->location_name?? '';
+
+            $emailtemplate = EmailTemplates::where('email_template_type', 'Appointment Confirmation')->first();
+            
+            $_data = array('date_time'=>$formattedDate,'username'=>$username,'subject' => $emailtemplate->subject,'location_name'=>$location_name,'phone'=>$phone);
+            
+            if($emailtemplate)
+            {
+                $templateContent = $emailtemplate->email_template_description;
+                // Replace placeholders in the template with actual values
+                $parsedContent = str_replace(
+                    ['{{username}}','{{location_name}}','{{date_time}}','{{phone}}'],
+                    [$_data['username'],$_data['location_name'],$_data['date_time'],$_data['phone']],
+                    $templateContent
+                );
+                $data = ([
+                    'from_email'    => 'support@itcc.net.au',
+                    'emailbody'     => $parsedContent,
+                    'subject'       => $_data['subject'],
+                    'username' => $username,
+                ]);
+                $sub = $location_name .', '.$data['subject'];
+
+                $to_email = $client_email;
+                Mail::send('email.appt_confirmation', $data, function($message) use ($to_email,$sub) {
+                    $message->to($to_email)
+                    ->subject($sub);
+                    $message->from('support@itcc.net.au',$sub);
+                });
+            }
+
+            $response = [
+                'success'   => true,
+                'message'   => 'Appt Confirmation send successfully!',
+                'type'      => 'success',
+            ];
+        } else {
+            $response = [
+                'error'     => true,
+                'message'   => 'Error !',
+                'type'      => 'error',
+            ];
+        }
+        return response()->json($response);
+    }
 }

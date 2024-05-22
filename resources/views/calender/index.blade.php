@@ -1204,6 +1204,7 @@
         addAppointmentForms:          "{!! route('calendar.add-appointment-forms') !!}",
         deleteAppointmentForms:       "{!! route('calendar.delete-appointment-forms', ':ID' ) !!}",
         sentForms:                    "{!! route('calendar.sent-forms') !!}",
+        apptConfirmation:             "{!! route('calendar.appt-confirmation') !!}",
         getforms:                     "{!! route('get-forms') !!}"
     };
 

@@ -39,7 +39,7 @@ var DU = {};
             context.locationDropdown();
             context.staffchangeafterlocation();
             context.staffchangecalendar();
-            // context.sendAptDetails();
+            context.sendAptDetails();
             context.openAppointmentFormsModal();
             context.copyForms();
             context.addNewForms();
@@ -1135,13 +1135,31 @@ var DU = {};
         },
 
         // send appointment details for client
-        // sendAptDetails: function(){
-        //     var context = this;
-        //     $(document).on("click", '#send_apt_details', function() {
-        //         var appointmentId       = $('#clientDetails').find('input:hidden[name=appointment_id]').val();
-        //         console.log(appointmentId);
-        //     });
-        // },
+        sendAptDetails: function(){
+            var context = this;
+            $(document).on("click", '#send_apt_details', function() {
+                var appointmentId       = $('#clientDetails').find('input:hidden[name=appointment_id]').val();
+                console.log(appointmentId);
+                $.ajax({
+                    url: moduleConfig.apptConfirmation, // Replace with your actual API endpoint
+                    type: 'POST',
+                    data:{"id":appointmentId},
+                    headers: {
+                        'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function (data) {
+                        Swal.fire({
+                            title: "Appointment Confirmation!",
+                            text: "Appointment Confirmation Mail Send Successfully",
+                            info: "success",
+                        }).then(function() {
+                            // Reload the current page
+                            location.reload();
+                        });
+                    },
+                });
+            });
+        },
 
         openAppointmentFormsModal: function(){
             var context = this;

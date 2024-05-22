@@ -216,6 +216,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('calender/add-appointment-forms',[CalenderController::class, 'addAppointmentForms'])->name('calendar.add-appointment-forms');
         Route::delete('calender/delete-appointment-forms/{id}',[CalenderController::class, 'deleteAppointmentForms'])->name('calendar.delete-appointment-forms');
         Route::post('calendar/sent-forms',[CalenderController::class, 'sentForms'])->name('calendar.sent-forms');
+        Route::post('calendar/appt-confirmation',[CalenderController::class, 'apptConfirmation'])->name('calendar.appt-confirmation');
     });
 
     //finance

@@ -293,7 +293,9 @@
     <div class="modal-content">
         <div class="modal-header">
         <h4 class="modal-title me-3">Product Performance</h4> 
+        @if ($permission != 'View Only')
         <a href="{{ route('products.show', ['product' => ':productId']) }}" class="simple-link p_details">Product Details</a>
+        @endif
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
