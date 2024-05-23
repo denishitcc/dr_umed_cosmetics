@@ -88,7 +88,7 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-        $password = str_pad(mt_rand(1,99999999),8,'0',STR_PAD_LEFT);
+        $password = $this->generatePassword(8);
 
         $file = $request->file('image');
         if($file != null)
@@ -142,7 +142,8 @@ class UsersController extends Controller
                 $data = ([
                     'from_email'    => 'support@itcc.net.au',
                     'emailbody'     => $parsedContent,
-                    'subject'       => $_data['subject']
+                    'subject'       => $_data['subject'],
+                    'username'=>$_data['username'],
                 ]);
                 $sub = $data['subject'];
 
@@ -330,5 +331,17 @@ class UsersController extends Controller
             'message'           => 'Details found.',
             'formshtml'         => $html,
         ], 200);
+    }
+    private function generatePassword($length)
+    {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomPassword = '';
+        
+        for ($i = 0; $i < $length; $i++) {
+            $randomPassword .= $characters[mt_rand(0, $charactersLength - 1)];
+        }
+
+        return $randomPassword;
     }
 }

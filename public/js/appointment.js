@@ -175,7 +175,8 @@ var DU = {};
                         start_time          = moment(info.event.startStr).format('YYYY-MM-DDTHH:mm:ss'),
                         end_time            = moment(start_time).add(duration,'minutes').format('YYYY-MM-DDTHH:mm:ss');
                         app_id              = info.event.extendedProps.app_id,
-                        context.createAppointmentDetails(resourceId,start_date,start_time,end_time,duration,client_id,service_id,category_id,app_id,location_id);
+                        appt_type           = info.event.extendedProps.appt_type,
+                        context.createAppointmentDetails(resourceId,start_date,start_time,end_time,duration,client_id,service_id,category_id,app_id,location_id,appt_type);
                 },
                 eventDrop: function (events) {
                     var resourceId          = events.event._def.resourceIds[0],
@@ -515,14 +516,15 @@ var DU = {};
                     duration            = $('#duration').val();
                     clientName          = $('#client_name').val();
                     clientId            = $('#client_id').val();
-
+                    locationId          = $('#walk_in_location_id').val();
+                    appt_type           = 'rebook';
                     // $('#mycalendar').remove();
                     $('#external-events').removeAttr('style');
                     $('#external-events').append(`
                     <div class="drag-box mb-3">
                         <div class="head mb-2"><b>Drag and drop on</b> to a day on the appointment book
                             <i class="ico-noun-arrow"></i></div>
-                        <div class="treatment fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event" data-service_id="${eventId}" data-client_name="${clientName}" data-duration="${duration}" data-client_id="${clientId}" data-category_id="${categoryId}">${eventName}
+                        <div class="treatment fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event" data-service_id="${eventId}" data-client_name="${clientName}" data-duration="${duration}" data-client_id="${clientId}" data-category_id="${categoryId}" data-location_id="${locationId}" data-appt_type="${appt_type}">${eventName}
                         </div>
                     </div>
                     <div class="text-end">
@@ -574,6 +576,8 @@ var DU = {};
                     clientName          = $('.orange-box').find('#client_name').val();
                     clientId            = $('.orange-box').find('#client_id').val();
                     appId               = $('.orange-box').next().find('#edit_appointment').attr('event_id');
+                    locationId          = $('.orange-box').find('#location_id').val();
+                    appt_type           = 'move_appt';
                     // $('#mycalendar').remove();
                     $('#external-events').removeAttr('style');
                     // $('#external-events').remove();
@@ -581,7 +585,7 @@ var DU = {};
                     <div class="drag-box mb-3">
                         <div class="head mb-2"><b>Drag and drop on</b> to a day on the appointment book
                             <i class="ico-noun-arrow"></i></div>
-                        <div class="treatment fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event" data-app_id="${appId}" data-service_id="${eventId}" data-client_name="${clientName}" data-duration="${duration}" data-client_id="${clientId}" data-category_id="${categoryId}">${eventName}
+                        <div class="treatment fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event" data-app_id="${appId}" data-service_id="${eventId}" data-client_name="${clientName}" data-duration="${duration}" data-client_id="${clientId}" data-category_id="${categoryId}" data-location_id="${locationId}" data-appt_type="${appt_type}">${eventName}
                         </div>
                     </div>`);
                 // });
@@ -641,7 +645,8 @@ var DU = {};
                             category_id :dataset.category_id,
                             duration    :dataset.duration,
                             app_id      :dataset.app_id,
-                            location_id :dataset.location_id
+                            location_id :dataset.location_id,
+                            appt_type :dataset.appt_type
                         }
                     };
                 }
@@ -1003,9 +1008,10 @@ var DU = {};
                                 <input type="hidden" id="appointment_time" value="${response.data.appointment_time}">
                                 <input type="hidden" id="staff_name" value="${response.data.staff_name}">
                                 <input type="hidden" id="staff_id" value="${response.data.staff_id}">
+                                <input type="hidden" id="location_id" value="${response.data.location_id}">
                             </div>
                             <div class="btns mb-3">
-                                <button class="btn btn-secondary btn-sm" id="edit_appointment" event_id="${response.data.id}" staff_id="${response.data.staff_id}" appointment_date="${response.data.appointment_date}" appointment_time="${response.data.appointment_time}" staff_name="${response.data.staff_name}" service_name="${response.data.services_name}" duration="${response.data.duration}" category_id="${response.data.category_id}" services_id="${response.data.service_id}" client-id="${response.data.id}" client-name="${response.data.client_data.first_name + ' ' + response.data.client_data.last_name}" edit-service-name="${response.data.service_id}" ${response.data.status_no == 4 ? 'disabled' : ''} ${disabledAttr}>Edit Appt</button>
+                                <button class="btn btn-secondary btn-sm" id="edit_appointment" event_id="${response.data.id}" staff_id="${response.data.staff_id}" appointment_date="${response.data.appointment_date}" appointment_time="${response.data.appointment_time}" staff_name="${response.data.staff_name}" service_name="${response.data.services_name}" duration="${response.data.duration}" category_id="${response.data.category_id}" location_id="${response.data.location_id}" services_id="${response.data.service_id}" client-id="${response.data.id}" client-name="${response.data.client_data.first_name + ' ' + response.data.client_data.last_name}" edit-service-name="${response.data.service_id}" ${response.data.status_no == 4 ? 'disabled' : ''} ${disabledAttr}>Edit Appt</button>
                                 <button class="btn btn-secondary btn-sm" id="edit_forms" data-appt_id="${response.data.id}" ${disabledAttr}>Edit Forms</button>
                                 <button class="btn btn-secondary btn-sm rebook" ${disabledAttr}>Rebook</button>
                                 <button class="btn btn-secondary btn-sm repeat_appt" ${disabledAttr}>Repeat Appt</button>
@@ -1136,6 +1142,7 @@ var DU = {};
 
         // send appointment details for client
         sendAptDetails: function(){
+
             var context = this;
             $(document).on("click", '#send_apt_details', function() {
                 var appointmentId       = $('#clientDetails').find('input:hidden[name=appointment_id]').val();
@@ -1518,7 +1525,7 @@ var DU = {};
         },
 
         // For create appointment
-        createAppointmentDetails: function(resourceId,start_date,start_time,end_time,durationInMinutes,client_id,service_id,category_id,app_id,location_id){
+        createAppointmentDetails: function(resourceId,start_date,start_time,end_time,durationInMinutes,client_id,service_id,category_id,app_id,location_id,appt_type){
             $.ajax({
                 url: moduleConfig.createAppointment,
                 type: 'POST',
@@ -1535,7 +1542,8 @@ var DU = {};
                     'service_id'  : service_id,
                     'category_id' : category_id,
                     'app_id'      : app_id,
-                    'location_id' : location_id
+                    'location_id' : location_id,
+                    'appt_type'   : appt_type
                 },
                 success: function (data) {
                     if (data.success) {
@@ -1766,9 +1774,10 @@ var DU = {};
                         serviceTitle    = $this.text();
                         var app_date = $('#latest_start_time').val();//$('#edit_appointment').attr('appointment_date'); 
                         var app_time =$('#latest_end_time').val();//$('#edit_appointment').attr('appointment_time'); 
-                        var staff_name = $('#edit_appointment').attr('staff_name');                        ;
+                        var staff_name = $('#edit_appointment').attr('staff_name');        
+                        var location_id = $('#location_id').val();
 
-                    $("#edit_selected_services").append(`<li class='selected remove'  data-appointment_date= "${app_date}" data-appointment_time= "${app_time}" data-staff_name= "${staff_name}"  data-services_id= ${serviceId}  data-category_id= ${categoryId}  data-duration='${duration}'><a href='javascript:void(0);' > ${serviceTitle} </a><span class='btn btn-cross cross-red remove_services'><i class='ico-close'></i></span></li>`);
+                    $("#edit_selected_services").append(`<li class='selected remove'  data-appointment_date= "${app_date}" data-appointment_time= "${app_time}" data-staff_name= "${staff_name}"  data-services_id= ${serviceId}  data-category_id= ${categoryId}  data-duration='${duration}' data-location_id='${location_id}'><a href='javascript:void(0);' > ${serviceTitle} </a><span class='btn btn-cross cross-red remove_services'><i class='ico-close'></i></span></li>`);
                 });
 
                 $('#waitlist_sub_services').on('click', '.services', function(e) {
@@ -2167,6 +2176,7 @@ var DU = {};
                                     appointmentTime = $(this).data('appointment_time'),
                                     staffId = $(this).data('staff_name'),
                                     staffName = $(this).data('staff_name');
+                                    locationId = $(this).data('location_id');
                         
                                 const parsedDate = moment(appointmentDate, 'ddd DD MMM YYYY').format('YYYY-MM-DD');
                                 const parsedTime = moment(appointmentTime, 'hh:mm a').format('HH:mm:ss');
@@ -2183,6 +2193,7 @@ var DU = {};
                                     'service_id': eventId,
                                     'category_id': categoryId,
                                     'event_id': $('#event_id').val(),//$('#edit_appointment').attr('event_id'),
+                                    'location_id': locationId
                                 });
                                 if($('#is_app_created').val() == '1'){
                                     
@@ -2289,6 +2300,7 @@ var DU = {};
                                 appointmentTime = $(this).data('appointment_time'),
                                 staffId = $(this).data('staff_name'),
                                 staffName = $(this).data('staff_name');
+                                locationId = $(this).data('location_id');
                     
                             const parsedDate = moment(appointmentDate, 'ddd DD MMM YYYY').format('YYYY-MM-DD');
                             const parsedTime = moment(appointmentTime, 'hh:mm a').format('HH:mm:ss');
@@ -2305,6 +2317,7 @@ var DU = {};
                                 'service_id': eventId,
                                 'category_id': categoryId,
                                 'event_id': $('#event_id').val(),//$('#edit_appointment').attr('event_id'),
+                                'location_id': locationId
                             });
                             if($("#is_app_created").val()=='1'){
                                 

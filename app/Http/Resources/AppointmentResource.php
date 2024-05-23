@@ -32,6 +32,7 @@ class AppointmentResource extends JsonResource
             'client_data'       => isset($this->clients) ? new ClientResource($this->clients) : [],
             'standard_price'    => $this->services->standard_price,
             'walk_in_id'        => $this->walk_in_id,
+            'location_id'       => $this->location_id,
         ];
     }
 }

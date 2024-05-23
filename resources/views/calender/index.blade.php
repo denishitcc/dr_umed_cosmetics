@@ -2981,6 +2981,7 @@
         var staff_name = $(this).attr('staff_name');
         var staff_id = $(this).attr('staff_id');
         var event_id = $(this).attr('event_id');
+        var location_id = $(this).attr('location_id');
         $('#latest_staff_id').val(staff_id);
         $('#latest_start_time').val(app_date);
         $('#latest_end_time').val(app_time);
@@ -3014,7 +3015,7 @@
             }
         });
 
-        $("#edit_selected_services").append(`<li class='selected remove' test="1" data-appointment_date= "${app_date}"  data-appointment_time= "${app_time}" data-staff_name= "${staff_name}" data-services_id= ${serviceId}  data-category_id= ${categoryId}  data-duration='${duration}'><a href='javascript:void(0);' > ${serviceTitle} </a><span class='btn btn-cross cross-red remove_services'><i class='ico-close'></i></span></li>`);
+        $("#edit_selected_services").append(`<li class='selected remove' test="1" data-appointment_date= "${app_date}"  data-appointment_time= "${app_time}" data-staff_name= "${staff_name}" data-services_id= ${serviceId}  data-category_id= ${categoryId}  data-duration='${duration}' data-location_id='${location_id}'><a href='javascript:void(0);' > ${serviceTitle} </a><span class='btn btn-cross cross-red remove_services'><i class='ico-close'></i></span></li>`);
     });
     $(document).on('click','#edit_created_appointment', function(e){
         e.preventDefault();

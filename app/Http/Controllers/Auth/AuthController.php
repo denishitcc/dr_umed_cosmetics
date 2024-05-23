@@ -150,8 +150,7 @@ class AuthController extends Controller
             $users=User::where('email',$request->email)->first();
             $emailtemplate = EmailTemplates::where('email_template_type', 'Forgot Password')->first();
             $_data = [
-                'first_name' => $users->first_name,
-                'last_name' =>$users->last_name,
+                'username'=>$users->first_name.' '.$users->last_name,
                 'url' => "<a class='abtn' href=".$url."/reset-password/".($token).">Reset</a>&nbsp;&nbsp;&nbsp;",
                 'subject' => $emailtemplate->subject,
             ];
@@ -161,15 +160,16 @@ class AuthController extends Controller
                 $templateContent = $emailtemplate->email_template_description;
                 // Replace placeholders in the template with actual values
                 $parsedContent = str_replace(
-                    ['{{first_name}}', '{{last_name}}', '{{url}}', '{{subject}}'],
-                    [$_data['first_name'], $_data['last_name'] ?? '', $_data['url'] ?? '', $_data['subject'] ?? ''],
+                    ['{{username}}', '{{url}}', '{{subject}}'],
+                    [$_data['username'] ?? '', $_data['url'] ?? '', $_data['subject'] ?? ''],
                     $templateContent
                 );
 
                 $data = ([
                     'from_email'=>'support@itcc.net.au',
                     'emailbody' => $parsedContent,
-                    'subject'=>$_data['subject']
+                    'subject'=>$_data['subject'],
+                    'username'=>$_data['username'],
                 ]);
                 $sub = $data['subject'];
                 $to_email = $request->email;
