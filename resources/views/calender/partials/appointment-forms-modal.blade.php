@@ -1,4 +1,4 @@
-<div class="modal fade" id="appointment_Forms" tabindex="-1">
+<div class="modal fade" id="appointment_Forms" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
