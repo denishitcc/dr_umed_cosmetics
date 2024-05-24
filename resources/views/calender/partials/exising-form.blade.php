@@ -1,4 +1,4 @@
-<div class="modal fade" id="copy_exist" tabindex="-1">
+<div class="modal fade" id="copy_exist" tabindex="-1" aria-hidden="false">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">

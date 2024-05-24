@@ -733,6 +733,12 @@ class CalenderController extends Controller
         $pastappointments   = $client->allappointments()->with(['note'])->where('created_at','<=', $todayDate)->orderby('created_at','desc')->get();
         $clientPhotos       = $client->photos;
 
+        $allappointments    = $client->allAppointments()->pluck('id');
+        $allforms           = AppointmentForms::whereIn('appointment_id',$allappointments)->get()->groupBy(function ($val) {
+            return Carbon::parse($val->created_at)->format('d M Y');
+        });
+        $allformscount      = AppointmentForms::whereIn('appointment_id',$allappointments)->count();
+
         if($client->last_appointment)
         {
             $appointmentNotes   = AppointmentNotes::where(['appointment_id' => $client->last_appointment->id])->first();
@@ -748,6 +754,7 @@ class CalenderController extends Controller
                                     'appointmentNotes'  => $appointmentNotes,
                                     'clientPhotos'      => $clientPhotos
                             ])->render();
+        $formhistoryhtml    = view('calender.partials.form_history_table',['allforms' => $allforms])->render();
 
         return response()->json([
             'status'                => true,
@@ -755,7 +762,9 @@ class CalenderController extends Controller
             'data'                  => $html,
             'appointmenthtml'       => $appointmenthtml,
             'clientnoteshtml'       => $clientnoteshtml,
-            'client'                => $client
+            'client'                => $client,
+            'allformscount'         => $allformscount,
+            'allformshtml'          => $formhistoryhtml
         ], 200);
     }
 
