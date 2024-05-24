@@ -176,6 +176,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('forms/updatehtml',[FormsController::class, 'formHTMLUpdate'])->name('serviceforms.formHTMLUpdate');
         Route::get('forms/preview/{id}',[FormsController::class, 'formPreview'])->name('serviceforms.formPreview');
         Route::post('forms/deleteform',[FormsController::class, 'formDelete'])->name('serviceforms.formDelete');
+        Route::post('forms/updateform',[FormsController::class, 'serviceFormUpdate'])->name('serviceforms.serviceFormUpdate');
     });
 
     //Calender
@@ -227,4 +228,4 @@ Route::middleware(['auth'])->group(function () {
 });
 Route::post('/get-staff-list', [CalenderController::class,'getStaffList'])->name('get-staff-list');
 Route::post('forms/deleteform',[FormsController::class, 'formDelete'])->name('serviceforms.formDelete');
-Route::get('forms/userform/{id}',[FormsController::class, 'formUser'])->name('serviceforms.formUser');
+Route::get('forms/userform/{apptid}/{id}',[FormsController::class, 'formUser'])->name('serviceforms.formUser');

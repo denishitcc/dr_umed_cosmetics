@@ -545,22 +545,28 @@ class CalenderController extends Controller
         $forms      = explode(',',$single_ser['forms']);
 
         foreach ($forms as $key => $form) {
-            $forms = FormSummary::find($form);
-            $subject    = 'Before your appointment at  fill this form - '.$forms['title'];
-            $userData   = [
-                'name'          => $clientData['firstname'],
-                'company_name'  => env('APP_NAME') .$location['location_name'],
-                'form_url'      => route('serviceforms.formUser',$appointment->id)
+            $forms      = FormSummary::find($form);
+            $formData[] = [
+                'form_url'      => route('serviceforms.formUser',[$appointment->id,$forms['id']]),
+                'form_title'    => $forms['title']
             ];
-            Mail::send('email.forms', $userData, function($message) use ($to_email,$subject) {
-                $message->to($to_email)
-                ->subject($subject);
-                $message->from('support@itcc.net.au',$subject);
-            });
+            $subject    = 'Before your appointment at  fill this forms';
+            $userData   = [
+                'name'          => $request->client_name,
+                'company_name'  => env('APP_NAME').', ' .$request->apptlocation,
+                // 'form_url'      => route('serviceforms.formUser',$appointment->id)
+                'formslinks'    => $formData
+            ];
 
-            $data['forms_sent_email'] = carbon::now();
-            $appointment->update($data);
         }
+        Mail::send('email.forms', $userData, function($message) use ($to_email,$subject) {
+            $message->to($to_email)
+            ->subject($subject);
+            $message->from('support@itcc.net.au',$subject);
+        });
+
+        $dat['forms_sent_email'] = carbon::now();
+        $appointment->update($dat);
     }
 
 
@@ -2765,21 +2771,27 @@ class CalenderController extends Controller
             $to_email       = $request->clientemail;
             foreach ($formsId as $key => $form) {
                 $forms      = FormSummary::find($form);
-                $subject    = 'Before your appointment at  fill this form - '.$forms['title'];
+                $formData[] = [
+                    'form_url'      => route('serviceforms.formUser',[$appointment->id,$forms['id']]),
+                    'form_title'    => $forms['title']
+                ];
+                $subject    = 'Before your appointment at  fill this forms';
                 $userData   = [
                     'name'          => $request->client_name,
-                    'company_name'  => env('APP_NAME') .$request->apptlocation,
-                    'form_url'      => route('serviceforms.formUser',$appointment->id)
+                    'company_name'  => env('APP_NAME').', ' .$request->apptlocation,
+                    // 'form_url'      => route('serviceforms.formUser',$appointment->id)
+                    'formslinks'    => $formData
                 ];
-                Mail::send('email.forms', $userData, function($message) use ($to_email,$subject) {
-                    $message->to($to_email)
-                    ->subject($subject);
-                    $message->from('support@itcc.net.au',$subject);
-                });
 
-                $dat['forms_sent_email'] = carbon::now();
-                $appointment->update($dat);
             }
+            Mail::send('email.forms', $userData, function($message) use ($to_email,$subject) {
+                $message->to($to_email)
+                ->subject($subject);
+                $message->from('support@itcc.net.au',$subject);
+            });
+
+            $dat['forms_sent_email'] = carbon::now();
+            $appointment->update($dat);
 
             $data = [
                 'success' => true,

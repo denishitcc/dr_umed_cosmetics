@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Appointment;
+use App\Models\AppointmentForms;
 use Illuminate\Http\Request;
 use App\Models\FormSummary;
 use DataTables;
@@ -263,12 +264,41 @@ class FormsController extends Controller
      *
      * @return void
      */
-    public function formUser($id)
+    public function formUser($apptid,$id)
     {
-        $appointment  = Appointment::find($id);
+        $appointment  = AppointmentForms::where('appointment_id',$apptid)->first();
         $user         = Auth::user();
-        $forms        = FormSummary::whereIn('id',explode(',',$appointment->forms))->get();
+        $forms        = FormSummary::find($id);
 
-        return view('forms.userform',compact('forms','user'));
+        return view('forms.userform',compact('forms','user','appointment'));
+    }
+
+    public function serviceFormUpdate(Request $request)
+    {
+        try {
+            $userdata = [
+                'form_user_data'    => $request->form_user_data,
+                'status'            => AppointmentForms::IN_PRORESS
+            ];
+
+            $appointmentform = AppointmentForms::find($request->appointment_form_id);
+            if($appointmentform){
+                $appointmentform->update($userdata);
+            }
+            $data = [
+                'success' => true,
+                'message' => 'Appointment deleted successfully!',
+                'type'    => 'success',
+            ];
+        } catch (\Throwable $th) {
+
+            $data = [
+                'success' => false,
+                'message' => $th,
+                'type'    => 'fail',
+            ];
+        }
+
+        return response()->json($data);
     }
 }

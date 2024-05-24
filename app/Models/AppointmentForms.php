@@ -24,6 +24,7 @@ class AppointmentForms extends Model
         'appointment_id',
         'form_id',
         'status',
+        'form_user_data',
     ];
 
     const NEW         = 0;

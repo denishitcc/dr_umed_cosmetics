@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('appointment_id');
             $table->unsignedBigInteger('form_id');
+            $table->text('form_user_data')->nullable();
             $table->integer('status')->comment('in_progress,new,completed');
             $table->timestamps();
             $table->softDeletes();
