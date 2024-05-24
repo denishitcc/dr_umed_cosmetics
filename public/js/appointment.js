@@ -1207,14 +1207,12 @@ var DU = {};
             });
         },
 
-        //TODO: copy forms
         copyForms: function(){
             var context = this;
             $(document).on('click','.copy_existing_forms',function(e){
                 var appointmentId = $('#edit_forms').data('appt_id');
                 context.getAppointmentForms(appointmentId);
                 context.selectors.copyexistingFormModal.modal('show');
-                console.log(appointmentId);
             });
         },
 
@@ -2407,6 +2405,7 @@ var DU = {};
                         'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
                     },
                     success: function (response) {
+                        console.log(response);
                         // remove client info with first div
                         $('#client_info').find('#client-invo-notice').remove();
                         $('#client_info').prepend(response.data);
@@ -2416,6 +2415,9 @@ var DU = {};
 
                         $('#client_info').find('#ClientNotesData').remove();
                         $('#clientNotes').prepend(response.clientnoteshtml);
+
+                        $('#total_forms').text(response.allformscount);
+                        $('#form_history_table').append(response.allformshtml);
                     },
                     error: function (error) {
                         console.error('Error fetching resources:', error);
