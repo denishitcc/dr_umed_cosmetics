@@ -2419,7 +2419,7 @@ var DU = {};
                         $('#clientNotes').prepend(response.clientnoteshtml);
 
                         $('#total_forms').text(response.allformscount);
-                        $('#form_history_table').append(response.allformshtml);
+                        $('#form_history_table').html(response.allformshtml);
                     },
                     error: function (error) {
                         console.error('Error fetching resources:', error);
