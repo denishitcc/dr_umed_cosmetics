@@ -76,104 +76,95 @@
                             <i class="ico-noun-arrow"></i></div>
                     </div>
                     <ul class="drop-list light-green" id="waitlist-events">
-                    @if(count($waitlist)>0)
-                    @foreach($waitlist as $waitlists)
-                        @foreach($waitlists->servid as $wait)
+                    @if(count($waitlist) > 0)
+                        @foreach($waitlist as $waitlists)
                             @php
-                                $ser_ids[] = $wait;
+                                // Initialize arrays for each waitlist
+                                $ser_ids = [];
+                                $ser_names = [];
                             @endphp
-                        @endforeach
-                        @php
-                        $ser_ids_str = implode(',', $ser_ids); // Convert array to comma-separated string
-                        @endphp
-                        @foreach($waitlists->service_name as $key => $ser)
-                            @php
-                                $ser_names[] = $ser;
-                            @endphp
-                        @endforeach
-                        @php
-                        $ser_names_str = implode(',', $ser_names); // Convert array to comma-separated string
-                        $dur_str = implode(',',$waitlists->duration);
-                        @endphp
-                        <li class="fc-event" data-app_id="{{$waitlists->id}}" data-client_id="{{$waitlists->client_id}}" data-category_id="{{$waitlists->category_id}}" data-duration="{{$dur_str}}" data-service_name="{{$ser_names_str}}" data-service_id="{{$ser_ids_str}}" data-client_name="{{$waitlists->firstname.' '.$waitlists->lastname}}">
-                            <div class="hist-strip">
-                                @php
-                                    // Convert the date string to a DateTime object
-                                    $date = new DateTime($waitlists->preferred_from_date ?? null);
-                                    
-                                    // Format the date as "D d F" (e.g., "Thu 28 March")
-                                    $formattedDate = $date->format('D d F');
-                                @endphp
-                                {{$formattedDate ?? 'Anytime'}}
-                                <span><i class="ico-clock me-1 fs-5"></i> {{ \Carbon\Carbon::parse($waitlists->updated_at)->diffForHumans() }}</span>
-                            </div>
-                            <div class="client-name">
-                                <div class="drop-cap" style="background: #D0D0D0; color:#fff;">
-                                    {{ $waitlists->firstname ? strtoupper(substr($waitlists->firstname, 0, 1)) : 'N' }}
-                                </div>
-                                <div class="client-info">
-                                    <h4 class="blue-bold" data-clientid="{{ $waitlists->id }}">
-                                        {{ $waitlists->firstname ? $waitlists->firstname . ' ' . $waitlists->lastname : 'No client' }}
-                                    </h4>
-                                </div>
-                            </div>
-                            <div class="mb-2">
-                                <a href="#" class="river-bed"><b>{{ $waitlists->mobile_number }}</b></a><br>
-                                <a href="#" class="river-bed"><b>{{ $waitlists->email }}</b></a>
-                            </div>
-                            <!-- Your other content -->
-                            @php
-                            $ser_names = [];
-                            @endphp
-                            @foreach($waitlists->service_name as $key => $ser)
-                                @php
-                                    $ser_names[] = $ser;
-                                    $dur = isset($waitlists->duration[$key]) ? $waitlists->duration[$key] : '';
-                                    $userFirstName = isset($waitlists->user_firstname) ? $waitlists->user_firstname : '';
-                                    $userLastName = isset($waitlists->user_lastname) ? $waitlists->user_lastname : '';
-                                    $userName = trim($userFirstName . ' ' . $userLastName);
-                                @endphp
-                                <p>{{$ser}}</p>
-                                <p>{{$dur}} Mins with {{$userName ? $userName : 'Anyone'}}</p>
-                            @endforeach
-                            @php
-                            $ser_names_str = implode(',', $ser_names); // Convert array to comma-separated string
-                            @endphp
-                            @php
-                            $ser_ids = [];
-                            @endphp
+
                             @foreach($waitlists->servid as $wait)
                                 @php
                                     $ser_ids[] = $wait;
                                 @endphp
                             @endforeach
                             @php
-                            $ser_ids_str = implode(',', $ser_ids); // Convert array to comma-separated string
+                                $ser_ids_str = implode(',', $ser_ids); // Convert array to comma-separated string
                             @endphp
-                            <p class="additional_notes" style="display:none;">{{$waitlists->additional_notes}}
-                            <div class="mt-2">
-                                <span class="dropdown show">
-                                    <a class="btn btn-primary font-13 alter btn-sm slot-btn me-1 dropdown-toggle more-options-btn" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        More Options
-                                    </a>
 
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                        <a class="dropdown-item edit-btn" href="javascript:void(0)" waitlist_id="{{$waitlists->id}}" id="edit_waitlist_clients" client_id="{{$waitlists->client_id}}" category_id="{{$waitlists->category_id}}" duration="{{$dur}}" service_name="{{$ser_names_str}}" services_id="{{ $ser_ids_str }}" preferred-from-date="{{$waitlists->preferred_from_date}}" user-id="{{$waitlists->user_id}}" preferred-to-date="{{$waitlists->preferred_to_date}}" additional-notes="{{$waitlists->additional_notes}}" client-name="{{$waitlists->firstname.' '.$waitlists->lastname}}">Edit</a>
-                                        <a class="dropdown-item delete-btn delete_waitlist_client" href="#"  waitlist_id="{{$waitlists->id}}">Delete</a>
+                            @foreach($waitlists->service_name as $ser)
+                                @php
+                                    $ser_names[] = $ser;
+                                @endphp
+                            @endforeach
+                            @php
+                                $ser_names_str = implode(',', $ser_names); // Convert array to comma-separated string
+                                $dur_str = implode(',', $waitlists->duration);
+                            @endphp
+
+                            <li class="fc-event" data-app_id="{{$waitlists->id}}" data-client_id="{{$waitlists->client_id}}" data-category_id="{{$waitlists->category_id}}" data-duration="{{$dur_str}}" data-service_name="{{$ser_names_str}}" data-service_id="{{$ser_ids_str}}" data-client_name="{{$waitlists->firstname.' '.$waitlists->lastname}}">
+                                <div class="hist-strip">
+                                    @php
+                                        // Convert the date string to a DateTime object
+                                        $date = new DateTime($waitlists->preferred_from_date ?? null);
+
+                                        // Format the date as "D d F" (e.g., "Thu 28 March")
+                                        $formattedDate = $date ? $date->format('D d F') : 'Anytime';
+                                    @endphp
+                                    {{$formattedDate}}
+                                    <span><i class="ico-clock me-1 fs-5"></i> {{ \Carbon\Carbon::parse($waitlists->updated_at)->diffForHumans() }}</span>
+                                </div>
+                                <div class="client-name">
+                                    <div class="drop-cap" style="background: #D0D0D0; color:#fff;">
+                                        {{ $waitlists->firstname ? strtoupper(substr($waitlists->firstname, 0, 1)) : 'N' }}
                                     </div>
-                                </span>
-                                @if(!empty($waitlists->additional_notes))
-                                    <a href="#" class="btn btn-primary font-13 alter btn-sm slot-btn show_notes"> Show notes</a>
-                                @else
-                                    <a href="#" class="btn btn-primary font-13 alter btn-sm slot-btn show_notes" disabled style="color: darkgray;"> Show notes</a>
-                                @endif
-                            </div>
-                        </li>
-                    @endforeach
+                                    <div class="client-info">
+                                        <h4 class="blue-bold" data-clientid="{{ $waitlists->id }}">
+                                            {{ $waitlists->firstname ? $waitlists->firstname . ' ' . $waitlists->lastname : 'No client' }}
+                                        </h4>
+                                    </div>
+                                </div>
+                                <div class="mb-2">
+                                    <a href="#" class="river-bed"><b>{{ $waitlists->mobile_number }}</b></a><br>
+                                    <a href="#" class="river-bed"><b>{{ $waitlists->email }}</b></a>
+                                </div>
+
+                                @foreach($waitlists->service_name as $key => $ser)
+                                    @php
+                                        $dur = isset($waitlists->duration[$key]) ? $waitlists->duration[$key] : '';
+                                        $userFirstName = isset($waitlists->user_firstname) ? $waitlists->user_firstname : '';
+                                        $userLastName = isset($waitlists->user_lastname) ? $waitlists->user_lastname : '';
+                                        $userName = trim($userFirstName . ' ' . $userLastName);
+                                    @endphp
+                                    <p>{{ $ser }}</p>
+                                    <p>{{ $dur }} Mins with {{ $userName ?: 'Anyone' }}</p>
+                                @endforeach
+
+                                <p class="additional_notes" style="display:none;">{{ $waitlists->additional_notes }}</p>
+                                <div class="mt-2">
+                                    <span class="dropdown show">
+                                        <a class="btn btn-primary font-13 alter btn-sm slot-btn me-1 dropdown-toggle more-options-btn" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            More Options
+                                        </a>
+
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                            <a class="dropdown-item edit-btn" href="javascript:void(0)" waitlist_id="{{ $waitlists->id }}" id="edit_waitlist_clients" client_id="{{ $waitlists->client_id }}" category_id="{{ $waitlists->category_id }}" duration="{{ $dur }}" service_name="{{ $ser_names_str }}" services_id="{{ $ser_ids_str }}" preferred-from-date="{{ $waitlists->preferred_from_date }}" user-id="{{ $waitlists->user_id }}" preferred-to-date="{{ $waitlists->preferred_to_date }}" additional-notes="{{ $waitlists->additional_notes }}" client-name="{{ $waitlists->firstname.' '.$waitlists->lastname }}">Edit</a>
+                                            <a class="dropdown-item delete-btn delete_waitlist_client" href="#" waitlist_id="{{ $waitlists->id }}">Delete</a>
+                                        </div>
+                                    </span>
+                                    @if(!empty($waitlists->additional_notes))
+                                        <a href="#" class="btn btn-primary font-13 alter btn-sm slot-btn show_notes"> Show notes</a>
+                                    @else
+                                        <a href="#" class="btn btn-primary font-13 alter btn-sm slot-btn show_notes" disabled style="color: darkgray;"> Show notes</a>
+                                    @endif
+                                </div>
+                            </li>
+                        @endforeach
                     @else
-                    <span>No data found
-                    </ul>
+                        <span>No data found</span>
                     @endif
+
                 </div>
                 </div>
                 {{-- <img src="img/demo-calander.png" alt="" class="search_client"> onkeyup="changeInput(this.value)" --}}
@@ -6490,8 +6481,11 @@
                         client_id: dataset.client_id,
                         category_id: dataset.category_id,
                         duration: dataset.duration,
-                        app_id: dataset.app_id,
-                        service_name: dataset.service_name
+                        waitlist_id: dataset.app_id,
+                        service_name: dataset.service_name,
+                        location_id :$('#walk_in_location_id').val(),
+                        appt_type:'waitlist',
+                        app_id:dataset.app_id,
                     }
                 };
             }

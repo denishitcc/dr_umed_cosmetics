@@ -671,7 +671,9 @@ var DU = {};
                             category_id :dataset.category_id,
                             duration    :dataset.duration,
                             app_id:dataset.app_id,
-                            service_name:dataset.service_name
+                            service_name:dataset.service_name,
+                            location_id:$('#walk_in_location_id').val(),
+                            appt_type:'waitlist'
                         }
                     };
                 }
@@ -2715,12 +2717,14 @@ var DU = {};
                 service_id      = $('#clientDetails').find('input:hidden[name=service_id]').val(),
                 staff_id        = $('#clientDetails').find('input:hidden[name=staff_id]').val();
                 duration        = $('#clientDetails').find('input:hidden[name=appointment_duration]').val();
+                location_id     = $('#walk_in_location_id').val();
 
                 Form.append('client_id',client_id);
                 Form.append('category_id',category_id);
                 Form.append('service_id',service_id);
                 Form.append('staff_id',staff_id);
                 Form.append('duration',duration);
+                Form.append('location_id',location_id);
 
                 $.ajax({
                     headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
