@@ -28,8 +28,9 @@ class AppointmentForms extends Model
     ];
 
     const NEW         = 0;
-    const IN_PRORESS  = 1;
-    const COMPLETED   = 2;
+    const SUBMITTED   = 1;
+    const IN_PRORESS  = 2;
+    const COMPLETED   = 3;
 
     /**
      * Get the forms associated with the AppointmentForms
