@@ -244,7 +244,11 @@ class CalenderController extends Controller
                     $duration       = $duration_ex[$key];
 
                     // Add duration to start_date
-                    if($key > 0) {
+                    // if($key > 0) {
+                    //     $startDateTime = Carbon::parse($data[$key - 1]['data']['end_date']); // Use previous end_date
+                    // }
+                    // Add duration to start_date
+                    if($key > 0 && isset($data[$key - 1]['data']['end_date'])) {
                         $startDateTime = Carbon::parse($data[$key - 1]['data']['end_date']); // Use previous end_date
                     }
 
@@ -267,64 +271,66 @@ class CalenderController extends Controller
                     $appointment = Appointment::create($appointmentsData);
                     if($appointment){
                         $formattedDate = Carbon::parse($startDateTime->format('Y-m-d\TH:i:s'))->format('D, d-M h:ia');
-
-                        $client = Clients::where('id',$request->client_id)->first();
-                        $client_email = $client->email;
-                        $username = $client->firstname.' '.$client->lastname;
-
-                        $user = User::where('id',$request->staff_id)->first();
-                        $phone = $user->phone;
-
-                        $location = Locations::where('id',$request->location_id)->first();
-                        $location_name = $location->location_name?? '';
-                        
-                        $service = Services::where('id',$appointment->service_id)->first();
-                        $service_name = $service->service_name;
-                        if(isset($request->appt_type) && $request->appt_type == 'rebook')
+                        if($request->client_id != null)
                         {
-                            $emailtemplate = EmailTemplates::where('email_template_type', 'Rebook Appointment')->first();
-                        }else if(isset($request->appt_type) && $request->appt_type == 'move_appt'){
-                            $emailtemplate = EmailTemplates::where('email_template_type', 'Move Appointment')->first();
+                            $client = Clients::where('id',$request->client_id)->first();
+                            $client_email = $client->email;
+                            $username = $client->firstname.' '.$client->lastname;
+    
+                            $user = User::where('id',$request->staff_id)->first();
+                            $phone = $user->phone;
+    
+                            $location = Locations::where('id',$request->location_id)->first();
+                            $location_name = $location->location_name?? '';
+                            
+                            $service = Services::where('id',$appointment->service_id)->first();
+                            $service_name = $service->service_name;
+                            if(isset($request->appt_type) && $request->appt_type == 'rebook')
+                            {
+                                $emailtemplate = EmailTemplates::where('email_template_type', 'Rebook Appointment')->first();
+                            }else if(isset($request->appt_type) && $request->appt_type == 'move_appt'){
+                                $emailtemplate = EmailTemplates::where('email_template_type', 'Move Appointment')->first();
+                            }
+                            else if(isset($request->appt_type) && $request->appt_type == 'waitlist'){
+                                $emailtemplate = EmailTemplates::where('email_template_type', 'Waitlist Appointment')->first();
+                            }
+                            else{
+                                $emailtemplate = EmailTemplates::where('email_template_type', 'Appointment Create')->first();
+                            }
+                            
+                            $_data = array('date_time'=>$formattedDate,'username'=>$username,'subject' => $emailtemplate->subject,'location_name'=>$location_name,'phone'=>$phone,'service_name'=>$service_name);
+                            
+                            if($emailtemplate)
+                            {
+                                $templateContent = $emailtemplate->email_template_description;
+                                // Replace placeholders in the template with actual values
+                                $parsedContent = str_replace(
+                                    ['{{username}}','{{location_name}}','{{date_time}}','{{phone}}','{{service_name}}'],
+                                    [$_data['username'],$_data['location_name'],$_data['date_time'],$_data['phone'],$_data['service_name']],
+                                    $templateContent
+                                );
+                                $data = ([
+                                    'from_email'    => 'support@itcc.net.au',
+                                    'emailbody'     => $parsedContent,
+                                    'subject'       => $_data['subject'],
+                                    'username' => $username,
+                                ]);
+                                $sub = $location_name .', '.$data['subject'];
+    
+                                $to_email = $client_email;
+                                Mail::send('email.appt_confirmation', $data, function($message) use ($to_email,$sub) {
+                                    $message->to($to_email)
+                                    ->subject($sub);
+                                    $message->from('support@itcc.net.au',$sub);
+                                });
+                            }
                         }
-                        else if(isset($request->appt_type) && $request->appt_type == 'waitlist'){
-                            $emailtemplate = EmailTemplates::where('email_template_type', 'Waitlist Appointment')->first();
-                        }
-                        else{
-                            $emailtemplate = EmailTemplates::where('email_template_type', 'Appointment Create')->first();
-                        }
-                        
-                        $_data = array('date_time'=>$formattedDate,'username'=>$username,'subject' => $emailtemplate->subject,'location_name'=>$location_name,'phone'=>$phone,'service_name'=>$service_name);
-                        
-                        if($emailtemplate)
-                        {
-                            $templateContent = $emailtemplate->email_template_description;
-                            // Replace placeholders in the template with actual values
-                            $parsedContent = str_replace(
-                                ['{{username}}','{{location_name}}','{{date_time}}','{{phone}}','{{service_name}}'],
-                                [$_data['username'],$_data['location_name'],$_data['date_time'],$_data['phone'],$_data['service_name']],
-                                $templateContent
-                            );
-                            $data = ([
-                                'from_email'    => 'support@itcc.net.au',
-                                'emailbody'     => $parsedContent,
-                                'subject'       => $_data['subject'],
-                                'username' => $username,
-                            ]);
-                            $sub = $location_name .', '.$data['subject'];
-
-                            $to_email = $client_email;
-                            Mail::send('email.appt_confirmation', $data, function($message) use ($to_email,$sub) {
-                                $message->to($to_email)
-                                ->subject($sub);
-                                $message->from('support@itcc.net.au',$sub);
-                            });
-                        }
-
                         $response = [
                             'success'   => true,
                             'message'   => 'Appt Confirmation send successfully!',
                             'type'      => 'success',
                         ];
+                        
                     }
                     if($single_ser->forms != null)
                     {
@@ -384,61 +390,62 @@ class CalenderController extends Controller
                     $findAppointment->update($appointmentsData);
                     if($findAppointment){
                         $formattedDate = Carbon::parse($request->start_time)->format('D, d-M h:ia');
-
-                        $client = Clients::where('id',$request->client_id)->first();
-                        
-                        $client_email = $client->email;
-                        $username = $client->firstname.' '.$client->lastname;
-
-                        $user = User::where('id',$request->staff_id)->first();
-                        $phone = $user->phone;
-
-                        $location = Locations::where('id',$request->location_id)->first();
-                        $location_name = $location->location_name?? '';
-                        
-                        $service = Services::where('id',$request->service_id)->first();
-                        $service_name = $service->service_name;
-
-                        if(isset($request->appt_type) && $request->appt_type == 'rebook')
+                        if($request->client_id != null)
                         {
-                            $emailtemplate = EmailTemplates::where('email_template_type', 'Rebook Appointment')->first();
-                        }else if(isset($request->appt_type) && $request->appt_type == 'move_appt'){
-                            $emailtemplate = EmailTemplates::where('email_template_type', 'Move Appointment')->first();
-                        }
-                        else if(isset($request->appt_type) && $request->appt_type == 'waitlist'){
-                            $emailtemplate = EmailTemplates::where('email_template_type', 'Waitlist Appointment')->first();
-                        }
-                        else{
-                            $emailtemplate = EmailTemplates::where('email_template_type', 'Appointment Create')->first();
-                        }
-                        
-                        $_data = array('date_time'=>$formattedDate,'username'=>$username,'subject' => $emailtemplate->subject,'location_name'=>$location_name,'phone'=>$phone,'service_name'=>$service_name);
-                        
-                        if($emailtemplate)
-                        {
-                            $templateContent = $emailtemplate->email_template_description;
-                            // Replace placeholders in the template with actual values
-                            $parsedContent = str_replace(
-                                ['{{username}}','{{location_name}}','{{date_time}}','{{phone}}','{{service_name}}'],
-                                [$_data['username'],$_data['location_name'],$_data['date_time'],$_data['phone'],$_data['service_name']],
-                                $templateContent
-                            );
-                            $data = ([
-                                'from_email'    => 'support@itcc.net.au',
-                                'emailbody'     => $parsedContent,
-                                'subject'       => $_data['subject'],
-                                'username' => $username,
-                            ]);
-                            $sub = $location_name .', '.$data['subject'];
+                            $client = Clients::where('id',$request->client_id)->first();
+                            
+                            $client_email = $client->email;
+                            $username = $client->firstname.' '.$client->lastname;
 
-                            $to_email = $client_email;
-                            Mail::send('email.appt_confirmation', $data, function($message) use ($to_email,$sub) {
-                                $message->to($to_email)
-                                ->subject($sub);
-                                $message->from('support@itcc.net.au',$sub);
-                            });
-                        }
+                            $user = User::where('id',$request->staff_id)->first();
+                            $phone = $user->phone;
 
+                            $location = Locations::where('id',$request->location_id)->first();
+                            $location_name = $location->location_name?? '';
+                            
+                            $service = Services::where('id',$request->service_id)->first();
+                            $service_name = $service->service_name;
+
+                            if(isset($request->appt_type) && $request->appt_type == 'rebook')
+                            {
+                                $emailtemplate = EmailTemplates::where('email_template_type', 'Rebook Appointment')->first();
+                            }else if(isset($request->appt_type) && $request->appt_type == 'move_appt'){
+                                $emailtemplate = EmailTemplates::where('email_template_type', 'Move Appointment')->first();
+                            }
+                            else if(isset($request->appt_type) && $request->appt_type == 'waitlist'){
+                                $emailtemplate = EmailTemplates::where('email_template_type', 'Waitlist Appointment')->first();
+                            }
+                            else{
+                                $emailtemplate = EmailTemplates::where('email_template_type', 'Appointment Create')->first();
+                            }
+                            
+                            $_data = array('date_time'=>$formattedDate,'username'=>$username,'subject' => $emailtemplate->subject,'location_name'=>$location_name,'phone'=>$phone,'service_name'=>$service_name);
+                            
+                            if($emailtemplate)
+                            {
+                                $templateContent = $emailtemplate->email_template_description;
+                                // Replace placeholders in the template with actual values
+                                $parsedContent = str_replace(
+                                    ['{{username}}','{{location_name}}','{{date_time}}','{{phone}}','{{service_name}}'],
+                                    [$_data['username'],$_data['location_name'],$_data['date_time'],$_data['phone'],$_data['service_name']],
+                                    $templateContent
+                                );
+                                $data = ([
+                                    'from_email'    => 'support@itcc.net.au',
+                                    'emailbody'     => $parsedContent,
+                                    'subject'       => $_data['subject'],
+                                    'username' => $username,
+                                ]);
+                                $sub = $location_name .', '.$data['subject'];
+
+                                $to_email = $client_email;
+                                Mail::send('email.appt_confirmation', $data, function($message) use ($to_email,$sub) {
+                                    $message->to($to_email)
+                                    ->subject($sub);
+                                    $message->from('support@itcc.net.au',$sub);
+                                });
+                            }
+                        }
                         $response = [
                             'success'   => true,
                             'message'   => 'Appt Confirmation send successfully!',
@@ -1624,7 +1631,79 @@ class CalenderController extends Controller
         return response()->json($data);
     }    
     public function CreateWaitListClient(Request $request){
-        WaitlistClient::create($request->appointments[0]);
+        // dd($request->appointments[0]);
+        $waitlistclient = WaitlistClient::create($request->appointments[0]);
+        if($waitlistclient)
+        {
+            if($request->appointments[0]['client_id'] != null)
+            {
+                $client = Clients::where('id',$request->appointments[0]['client_id'])->first();
+                $client_email = $client->email;
+                $username = $client->firstname.' '.$client->lastname;
+
+                // dd($request->appointments[0]['user_id']);
+                if($request->appointments[0]['user_id'] != null)
+                {
+                    $staff_member = User::where('id',$request->appointments[0]['user_id'])->first();
+                    $staff_member = $staff_member['first_name'].' '.$staff_member['last_name'];
+                }else{
+                    $staff_member = 'Anyone';
+                }
+                
+                // $phone = $user->phone;
+                $ser_ids = explode(',', $request->appointments[0]['service_id']);
+                // dd($ser_ids);
+                $service_names = [];
+                foreach($ser_ids as $ser)
+                {
+                    $service = Services::where('id', $ser)->first();
+                    if ($service) {
+                        $service_names[] = $service->service_name;
+                    }
+                }
+
+                // Format service names for email template
+                $formatted_service_names = implode('<br> ', array_map(function($name, $index) {
+                    return ($index + 1) . ') ' . $name;
+                }, $service_names, array_keys($service_names)));
+                
+                $emailtemplate = EmailTemplates::where('email_template_type', 'New Waitlist Client')->first();
+                // dd($emailtemplate);
+                $_data = array('username'=>$username,'subject' => $emailtemplate->subject,'service_name'=>$formatted_service_names,'staff_member'=>$staff_member);
+                
+                if($emailtemplate)
+                {
+                    $templateContent = $emailtemplate->email_template_description;
+                    // Replace placeholders in the template with actual values
+                    $parsedContent = str_replace(
+                        ['{{username}}','{{staff_member}}','{{service_name}}'],
+                        [$_data['username'],$_data['staff_member'],$_data['service_name']],
+                        $templateContent
+                    );
+                    $data = ([
+                        'from_email'    => 'support@itcc.net.au',
+                        'emailbody'     => $parsedContent,
+                        'subject'       => $_data['subject'],
+                        'username' => $username,
+                    ]);
+                    $sub = $data['subject'];
+
+                    $to_email = $client_email;
+                    Mail::send('email.new_waitlist_client', $data, function($message) use ($to_email,$sub) {
+                        $message->to($to_email)
+                        ->subject($sub);
+                        $message->from('support@itcc.net.au',$sub);
+                    });
+                }
+            }
+            
+
+            // $response = [
+            //     'success'   => true,
+            //     'message'   => 'Waitlist client mail send successfully!',
+            //     'type'      => 'success',
+            // ];
+        }
         $response = [
             'success' => true,
             'message' => 'Waitlist Client Created successfully!',

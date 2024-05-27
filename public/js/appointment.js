@@ -167,7 +167,7 @@ var DU = {};
                 eventReceive: function (info) {
                     var resourceId          = info.event._def.resourceIds[0],
                         start_date          = moment(info.event.startStr).format('YYYY-MM-DD'),
-                        client_id           = info.event.extendedProps.client_id,
+                        client_id           = info.event.extendedProps.client_id == "null" ?'':info.event.extendedProps.client_id,
                         service_id          = info.event.extendedProps.service_id,
                         category_id         = info.event.extendedProps.category_id,
                         duration            = info.event.extendedProps.duration,
