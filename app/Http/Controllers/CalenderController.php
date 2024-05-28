@@ -40,6 +40,7 @@ use App\Models\ProductAvailabilities;
 use App\Models\EmailTemplates;
 use App\Models\FormSummary;
 use Mail;
+use Illuminate\Support\Facades\Storage;
 
 class CalenderController extends Controller
 {
@@ -314,15 +315,29 @@ class CalenderController extends Controller
                                     'emailbody'     => $parsedContent,
                                     'subject'       => $_data['subject'],
                                     'username' => $username,
+                                    'date_time' => $formattedDate,
+                                    'location_name' => $location_name,
+                                    'phone' => $phone,
+                                    'service_name' => $service_name
                                 ]);
                                 $sub = $location_name .', '.$data['subject'];
-    
+                                
+                                // Generate the ICS file content
+                                $icsContent = $this->generateICS($appointment, $client, $user, $service, $location);
+                                $icsFileName = 'appointment-' . $appointment->id . '.ics';
+                                Storage::put($icsFileName, $icsContent);
+                                
                                 $to_email = $client_email;
-                                Mail::send('email.appt_confirmation', $data, function($message) use ($to_email,$sub) {
+                                Mail::send('email.appt_confirmation', $data, function($message) use ($to_email,$sub,$icsFileName) {
                                     $message->to($to_email)
-                                    ->subject($sub);
-                                    $message->from('support@itcc.net.au',$sub);
+                                    ->subject($sub)
+                                    ->from('support@itcc.net.au',$sub)
+                                    ->attach(storage_path('app/' . $icsFileName), [
+                                        'mime' => 'text/calendar'
+                                    ]);
                                 });
+                                // Delete the ICS file after sending the email
+                                Storage::delete($icsFileName);
                             }
                         }
                         $response = [
@@ -435,15 +450,29 @@ class CalenderController extends Controller
                                     'emailbody'     => $parsedContent,
                                     'subject'       => $_data['subject'],
                                     'username' => $username,
+                                    'date_time' => $formattedDate,
+                                    'location_name' => $location_name,
+                                    'phone' => $phone,
+                                    'service_name' => $service_name
                                 ]);
                                 $sub = $location_name .', '.$data['subject'];
 
+                                // Generate the ICS file content
+                                $icsContent = $this->generateICS($findAppointment, $client, $user, $service, $location);
+                                $icsFileName = 'appointment-' . $findAppointment->id . '.ics';
+                                Storage::put($icsFileName, $icsContent);
+                                
                                 $to_email = $client_email;
-                                Mail::send('email.appt_confirmation', $data, function($message) use ($to_email,$sub) {
+                                Mail::send('email.appt_confirmation', $data, function($message) use ($to_email,$sub,$icsFileName) {
                                     $message->to($to_email)
-                                    ->subject($sub);
-                                    $message->from('support@itcc.net.au',$sub);
+                                    ->subject($sub)
+                                    ->from('support@itcc.net.au',$sub)
+                                    ->attach(storage_path('app/' . $icsFileName), [
+                                        'mime' => 'text/calendar'
+                                    ]);
                                 });
+                                // Delete the ICS file after sending the email
+                                Storage::delete($icsFileName);
                             }
                         }
                         $response = [
@@ -507,15 +536,29 @@ class CalenderController extends Controller
                                 'emailbody'     => $parsedContent,
                                 'subject'       => $_data['subject'],
                                 'username' => $username,
+                                'date_time' => $formattedDate,
+                                'location_name' => $location_name,
+                                'phone' => $phone,
+                                'service_name' => $service_name
                             ]);
                             $sub = $location_name .', '.$data['subject'];
 
+                            // Generate the ICS file content
+                            $icsContent = $this->generateICS($appointment, $client, $user, $service, $location);
+                            $icsFileName = 'appointment-' . $appointment->id . '.ics';
+                            Storage::put($icsFileName, $icsContent);
+
                             $to_email = $client_email;
-                            Mail::send('email.appt_confirmation', $data, function($message) use ($to_email,$sub) {
+                            Mail::send('email.appt_confirmation', $data, function($message) use ($to_email,$sub,$icsFileName) {
                                 $message->to($to_email)
-                                ->subject($sub);
-                                $message->from('support@itcc.net.au',$sub);
+                                ->subject($sub)
+                                ->from('support@itcc.net.au',$sub)
+                                ->attach(storage_path('app/' . $icsFileName), [
+                                    'mime' => 'text/calendar'
+                                ]);
                             });
+                            // Delete the ICS file after sending the email
+                            Storage::delete($icsFileName);
                         }
 
                         $response = [
@@ -561,36 +604,94 @@ class CalenderController extends Controller
      *
      * @return void
      */
-    public function sendForms($request ,$single_ser,$location,$appointment)
-    {
-        $clientData     = Clients::where('id',$request->client_id)->first();
-        $to_email       = $clientData['email'];
-        // $subject     = 'Before your appointment at '.env('APP_NAME').' '.$location['location_name'];
+    // public function sendForms($request ,$single_ser,$location,$appointment)
+    // {
+    //     $clientData     = Clients::where('id',$request->client_id)->first();
+    //     $to_email       = $clientData['email'];
+    //     // $subject     = 'Before your appointment at '.env('APP_NAME').' '.$location['location_name'];
 
-        $forms      = explode(',',$single_ser['forms']);
+    //     $forms      = explode(',',$single_ser['forms']);
+
+    //     foreach ($forms as $key => $form) {
+    //         $forms      = FormSummary::find($form);
+    //         $formData[] = [
+    //             'form_url'      => route('serviceforms.formUser',[$appointment->id,$forms['id']]),
+    //             'form_title'    => $forms['title']
+    //         ];
+    //         $subject    = 'Before your appointment at  fill this forms';
+    //         $userData   = [
+    //             'name'          => $request->client_name,
+    //             'company_name'  => env('APP_NAME').', ' .$request->apptlocation,
+    //             // 'form_url'      => route('serviceforms.formUser',$appointment->id)
+    //             'formslinks'    => $formData
+    //         ];
+
+    //     }
+    //     Mail::send('email.forms', $userData, function($message) use ($to_email,$subject) {
+    //         $message->to($to_email)
+    //         ->subject($subject);
+    //         $message->from('support@itcc.net.au',$subject);
+    //     });
+
+    //     $dat['forms_sent_email'] = carbon::now();
+    //     $appointment->update($dat);
+    // }
+    public function sendForms($request, $single_ser, $location, $appointment)
+    {
+        $clientData = Clients::where('id', $request->client_id)->first();
+        $username = $clientData['firstname'] . ' ' . $clientData['lastname'];
+        $to_email = $clientData['email'];
+        
+        $forms = explode(',', $single_ser['forms']);
+        $formData = [];
 
         foreach ($forms as $key => $form) {
-            $forms      = FormSummary::find($form);
+            $formRecord = FormSummary::find($form);
             $formData[] = [
-                'form_url'      => route('serviceforms.formUser',[$appointment->id,$forms['id']]),
-                'form_title'    => $forms['title']
+                'form_url' => route('serviceforms.formUser', [$appointment->id, $formRecord['id']]),
+                'form_title' => $formRecord['title']
             ];
-            $subject    = 'Before your appointment at  fill this forms';
-            $userData   = [
-                'name'          => $request->client_name,
-                'company_name'  => env('APP_NAME').', ' .$request->apptlocation,
-                // 'form_url'      => route('serviceforms.formUser',$appointment->id)
-                'formslinks'    => $formData
-            ];
-
         }
-        Mail::send('email.forms', $userData, function($message) use ($to_email,$subject) {
+
+        $emailtemplate = EmailTemplates::where('email_template_type', 'Before your appointment at fill this forms')->first();
+        $_data = [
+            'username' => $username,
+            'subject' => $emailtemplate->subject,
+            'form_url' => $formData,
+            // 'company_name' =>env('APP_NAME') . ', ' . $location['location_name'],
+        ];
+
+        // Process the form URLs to be included in the email body
+        $formUrlsText = '';
+        foreach ($formData as $form) {
+            $formUrlsText .= "<a href='{$form['form_url']}'>{$form['form_title']}</a><br>";
+        }
+
+        // Replace placeholders in the template with actual values
+        $parsedContent = str_replace(
+            ['{{username}}', '{{form_url}}'],
+            [$_data['username'], $formUrlsText],
+            $emailtemplate->email_template_description
+        );
+
+        $userData = [
+            'name' => $request->client_name,
+            // 'company_name' => env('APP_NAME') . ', ' . $location['location_name'],
+            'form_url' => $formUrlsText,
+            'username' => $clientData['firstname'] . ' ' . $clientData['lastname'],
+            'subject' => $emailtemplate->subject,
+            'emailbody' => $parsedContent,
+        ];
+
+        $subject = $userData['subject'];
+
+        Mail::send('email.forms', $userData, function ($message) use ($to_email, $subject) {
             $message->to($to_email)
-            ->subject($subject);
-            $message->from('support@itcc.net.au',$subject);
+                ->subject($subject);
+            $message->from('support@itcc.net.au', env('APP_NAME'));
         });
 
-        $dat['forms_sent_email'] = carbon::now();
+        $dat['forms_sent_email'] = \Carbon\Carbon::now();
         $appointment->update($dat);
     }
 
@@ -993,19 +1094,22 @@ class CalenderController extends Controller
             //mail send
             if($data){
                 foreach($newdata as $new){
-                    $formattedDate = Carbon::parse($new['start_date'])->format('D, d-M h:ia');
-
-                    $client = Clients::where('id',$new['client_id'])->first();
+                    // dd($data);
+                    $newObject = (object) $new;
+                    // dd($newObject->start_date);
+                    $formattedDate = Carbon::parse($newObject->start_date)->format('D, d-M h:ia');
+                    
+                    $client = Clients::where('id',$newObject->client_id)->first();
                     $client_email = $client->email;
                     $username = $client->firstname.' '.$client->lastname;
 
-                    $user = User::where('id',$new['staff_id'])->first();
+                    $user = User::where('id',$newObject->staff_id)->first();
                     $phone = $user->phone;
 
-                    $location = Locations::where('id',$new['location_id'])->first();
+                    $location = Locations::where('id',$newObject->location_id)->first();
                     $location_name = $location->location_name?? '';
 
-                    $service = Services::where('id',$new['service_id'])->first();
+                    $service = Services::where('id',$newObject->service_id)->first();
                     $service_name = $service->service_name;
 
                     $emailtemplate = EmailTemplates::where('email_template_type', 'Repeat Appointment')->first();
@@ -1026,15 +1130,29 @@ class CalenderController extends Controller
                             'emailbody'     => $parsedContent,
                             'subject'       => $_data['subject'],
                             'username' => $username,
+                            'date_time' => $formattedDate,
+                            'location_name' => $location_name,
+                            'phone' => $phone,
+                            'service_name' => $service_name
                         ]);
                         $sub = $location_name .', '.$data['subject'];
+                        // dd($newObject);
+                        // Generate the ICS file content
+                        $icsContent = $this->generateICS($newObject, $client, $user, $service, $location);
+                        $icsFileName = 'appointment-' . $newObject->client_id . '.ics';
+                        Storage::put($icsFileName, $icsContent);
 
                         $to_email = $client_email;
-                        Mail::send('email.appt_confirmation', $data, function($message) use ($to_email,$sub) {
+                        Mail::send('email.appt_confirmation', $data, function($message) use ($to_email,$sub,$icsFileName) {
                             $message->to($to_email)
-                            ->subject($sub);
-                            $message->from('support@itcc.net.au',$sub);
+                            ->subject($sub)
+                            ->from('support@itcc.net.au',$sub)
+                            ->attach(storage_path('app/' . $icsFileName), [
+                                'mime' => 'text/calendar'
+                            ]);
                         });
+                        // Delete the ICS file after sending the email
+                        Storage::delete($icsFileName);  
                     }
 
                     $response = [
@@ -1595,15 +1713,29 @@ class CalenderController extends Controller
                             'emailbody'     => $parsedContent,
                             'subject'       => $_data['subject'],
                             'username' => $username,
+                            'date_time' => $formattedDate,
+                            'location_name' => $location_name,
+                            'phone' => $phone,
+                            'service_name' => $service_name
                         ]);
                         $sub = $location_name .', '.$data['subject'];
 
+                        // Generate the ICS file content
+                        $icsContent = $this->generateICS($appointment, $client, $user, $service, $location);
+                        $icsFileName = 'appointment-' . $appointment->id . '.ics';
+                        Storage::put($icsFileName, $icsContent);
+
                         $to_email = $client_email;
-                        Mail::send('email.appt_confirmation', $data, function($message) use ($to_email,$sub) {
+                        Mail::send('email.appt_confirmation', $data, function($message) use ($to_email,$sub,$icsFileName) {
                             $message->to($to_email)
-                            ->subject($sub);
-                            $message->from('support@itcc.net.au',$sub);
+                            ->subject($sub)
+                            ->from('support@itcc.net.au',$sub)
+                            ->attach(storage_path('app/' . $icsFileName), [
+                                'mime' => 'text/calendar'
+                            ]);
                         });
+                        // Delete the ICS file after sending the email
+                        Storage::delete($icsFileName);
                     }
 
                     $response = [
@@ -2979,60 +3111,102 @@ class CalenderController extends Controller
         if ($appointment) {
             $formattedDate = Carbon::parse($appointment->start_date)->format('D, d-M h:ia');
 
-            $client = Clients::where('id',$appointment->client_id)->first();
+            $client = Clients::where('id', $appointment->client_id)->first();
             $client_email = $client->email;
-            $username = $client->firstname.' '.$client->lastname;
+            $username = $client->firstname . ' ' . $client->lastname;
 
-            $user = User::where('id',$appointment->staff_id)->first();
+            $user = User::where('id', $appointment->staff_id)->first();
             $phone = $user->phone;
 
-            $service = Services::where('id',$appointment->service_id)->first();
+            $service = Services::where('id', $appointment->service_id)->first();
             $service_name = $service->service_name;
 
-            $location = Locations::where('id',$appointment->location_id)->first();
-            $location_name = $location->location_name?? '';
+            $location = Locations::where('id', $appointment->location_id)->first();
+            $location_name = $location->location_name ?? '';
 
             $emailtemplate = EmailTemplates::where('email_template_type', 'Appointment Confirmation')->first();
-            
-            $_data = array('date_time'=>$formattedDate,'username'=>$username,'subject' => $emailtemplate->subject,'location_name'=>$location_name,'phone'=>$phone,'service_name'=>$service_name);
-            
-            if($emailtemplate)
-            {
+
+            $_data = [
+                'date_time' => $formattedDate,
+                'username' => $username,
+                'subject' => $emailtemplate->subject,
+                'location_name' => $location_name,
+                'phone' => $phone,
+                'service_name' => $service_name
+            ];
+
+            if ($emailtemplate) {
                 $templateContent = $emailtemplate->email_template_description;
-                // Replace placeholders in the template with actual values
                 $parsedContent = str_replace(
-                    ['{{username}}','{{location_name}}','{{date_time}}','{{phone}}','{{service_name}}'],
-                    [$_data['username'],$_data['location_name'],$_data['date_time'],$_data['phone'],$_data['service_name']],
+                    ['{{username}}', '{{location_name}}', '{{date_time}}', '{{phone}}', '{{service_name}}'],
+                    [$_data['username'], $_data['location_name'], $_data['date_time'], $_data['phone'], $_data['service_name']],
                     $templateContent
                 );
-                $data = ([
-                    'from_email'    => 'support@itcc.net.au',
-                    'emailbody'     => $parsedContent,
-                    'subject'       => $_data['subject'],
+                $data = [
+                    'from_email' => 'support@itcc.net.au',
+                    'emailbody' => $parsedContent,
+                    'subject' => $_data['subject'],
                     'username' => $username,
-                ]);
-                $sub = $location_name .', '.$data['subject'];
+                    'date_time' => $formattedDate,
+                    'location_name' => $location_name,
+                    'phone' => $phone,
+                    'service_name' => $service_name
+                ];
+                $sub = $location_name . ', ' . $data['subject'];
+
+                // Generate the ICS file content
+                $icsContent = $this->generateICS($appointment, $client, $user, $service, $location);
+                $icsFileName = 'appointment-' . $appointment->id . '.ics';
+                Storage::put($icsFileName, $icsContent);
 
                 $to_email = $client_email;
-                Mail::send('email.appt_confirmation', $data, function($message) use ($to_email,$sub) {
+                Mail::send('email.appt_confirmation', $data, function ($message) use ($to_email, $sub, $icsFileName) {
                     $message->to($to_email)
-                    ->subject($sub);
-                    $message->from('support@itcc.net.au',$sub);
+                        ->subject($sub)
+                        ->from('support@itcc.net.au', $sub)
+                        ->attach(storage_path('app/' . $icsFileName), [
+                            'mime' => 'text/calendar'
+                        ]);
                 });
+
+                // Delete the ICS file after sending the email
+                Storage::delete($icsFileName);
             }
 
             $response = [
-                'success'   => true,
-                'message'   => 'Appt Confirmation send successfully!',
-                'type'      => 'success',
+                'success' => true,
+                'message' => 'Appt Confirmation sent successfully!',
+                'type' => 'success',
             ];
         } else {
             $response = [
-                'error'     => true,
-                'message'   => 'Error !',
-                'type'      => 'error',
+                'error' => true,
+                'message' => 'Error !',
+                'type' => 'error',
             ];
         }
         return response()->json($response);
+    }
+    public function generateICS($appointment, $client, $user, $service, $location)
+    {
+        $startDateTime = Carbon::parse($appointment->start_date)->format('Ymd\THis');
+        $endDateTime = Carbon::parse($appointment->end_date)->format('Ymd\THis'); // Assuming you have an end_date
+
+        $icsContent = "BEGIN:VCALENDAR\r\n";
+        $icsContent .= "VERSION:2.0\r\n";
+        $icsContent .= "PRODID:-//Your Organization//NONSGML v1.0//EN\r\n";
+        $icsContent .= "CALSCALE:GREGORIAN\r\n";
+        $icsContent .= "BEGIN:VEVENT\r\n";
+        $icsContent .= "UID:" . uniqid() . "@yourdomain.com\r\n";
+        $icsContent .= "DTSTAMP:" . now()->format('Ymd\THis') . "\r\n";
+        $icsContent .= "DTSTART:$startDateTime\r\n";
+        $icsContent .= "DTEND:$endDateTime\r\n";
+        $icsContent .= "SUMMARY:" . $service->service_name . "\r\n";
+        $icsContent .= "DESCRIPTION:Appointment with " . $user->first_name.' '.$user->last_name . "\r\n";
+        $icsContent .= "LOCATION:" . $location->location_name . "\r\n";
+        $icsContent .= "END:VEVENT\r\n";
+        $icsContent .= "END:VCALENDAR\r\n";
+
+        return $icsContent;
     }
 }
