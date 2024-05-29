@@ -1,6 +1,7 @@
 @extends('layouts.sidebar')
 @section('title', 'Calender')
 @section('content')
+<link rel="stylesheet" href="{{ asset('js/formiojs/dist/formio.full.min.css') }}">
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <div class="card">
     <div class="card-head">
@@ -1162,6 +1163,7 @@
     </div>
 
     @include('calender.partials.client-modal')
+    @include('calender.partials.client-services-form')
     @include('calender.partials.repeat-appointment-modal')
     @include('calender.partials.appointment-forms-modal')
     @include('calender.partials.exising-form')
@@ -1169,6 +1171,12 @@
 </div>
 @stop
 @section('script')
+{{-- <script src="{{ asset('js/jquery/dist/jquery.min.js') }}"></script> --}}
+<script src="{{ asset('js/@formio/js/dist/formio.form.min.js') }}"></script>
+<script src="{{ asset('js/formiojs/dist/formio.full.min.js') }}"></script>
+<script src="{{ asset('js/@formio/js/dist/formio.full.js') }}"></script>
+<script src="{{ asset('js/section_break.js') }}"></script>
+<script src="{{ asset('js/index.js') }}"></script>
 <script src="{{ asset('js/fullcalendar-scheduler-6.1.10/dist/index.global.js') }}"></script>
 <script src="{{ asset('js/fullcalendar-scheduler-6.1.10/dist/index.global.min.js') }}"></script>
 <script src="{{ asset('js/appointment.js') }}"></script>
@@ -1196,7 +1204,8 @@
         deleteAppointmentForms:       "{!! route('calendar.delete-appointment-forms', ':ID' ) !!}",
         sentForms:                    "{!! route('calendar.sent-forms') !!}",
         apptConfirmation:             "{!! route('calendar.appt-confirmation') !!}",
-        getforms:                     "{!! route('get-forms') !!}"
+        getforms:                     "{!! route('get-forms') !!}",
+        getClientFormsData:           "{!! route('calendar.get-client-forms-data', ':ID' ) !!}",
     };
 
     $(document).ready(function()

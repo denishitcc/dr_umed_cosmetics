@@ -2778,16 +2778,68 @@ var DU = {};
             var context = this;
 
             $(document).on('click','.form_filled', function(e){
-                $('#copy_exist1').modal('show');
+                var client_forms_id = $(this).data('client_forms_id');
+
+                $.ajax({
+                    url: moduleConfig.getClientFormsData.replace(':ID', client_forms_id), // Replace with your actual API endpoint
+                    type: 'GET',
+                    headers: {
+                        'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function (response) {
+                        $('#clientformsmodal').empty();
+                        $('#clientformsmodal').html(response.data);
+                        var formjson = response.formjson,
+                            originalForm = response.original_form;
+                        context.clientformrender(formjson,originalForm);
+                    },
+                    error: function (error) {
+                        console.error('Error fetching resources:', error);
+                    }
+                });
+                $('#client_service_forms').modal('show');
             });
 
-            $('#copy_exist1').on('show.bs.modal', function () {
+            $('#client_service_forms').on('show.bs.modal', function () {
                 $('#Client_card').css('z-index', 1039);
             });
 
-            $('#copy_exist1').on('hidden.bs.modal', function () {
+            $('#client_service_forms').on('hidden.bs.modal', function () {
                 document.getElementById('Client_card').style.removeProperty('z-index');
             });
+        },
+
+        clientformrender: function(formjson,originalForm){
+            // Formio.createForm(document.getElementById('fb-editor'), originalForm).then((form) => {
+            //     // Load the submission data
+            //     Formio.loadSubmission(formjson).then((submission) => {
+            //       // Set the submission data to the form
+            //       form.submission = submission;
+            //     }).catch((err) => {
+            //       console.error('Error loading submission:', err);
+            //     });
+            // }).catch((err) => {
+            //     console.error('Error loading form:', err);
+            // });
+
+            Formio.createForm(document.getElementById('fb-editor'), originalForm, {
+                // readOnly: true
+            }).then(function (form) {
+                form.submission = {
+                    data: {
+                        firstName: 'Joe',
+                        lastName: 'Smith'
+                    }
+                };
+                form.on('submit', (submission) => {
+                    console.log(submission);
+                    // submission.emit(true);
+                    console.log('The form was just submitted!!!');
+                });
+                form.on('change', function(changed) {
+                    console.log('Form was changed', changed);
+                });
+            })
         },
     }
 
