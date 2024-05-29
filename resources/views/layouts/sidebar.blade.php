@@ -96,7 +96,7 @@
                         <a href="#"><i class="ico-promotion"></i>Promotions </a>
                         <ul>
                             <li><a href="#">Gift Cards</a></li>
-                            <li><a href="#">Discount Coupons</a></li>
+                            <li><a href="{{ route('discount-coupons.index') }}">Discount Coupons</a></li>
                         </ul>
                     </li>
                     @endif

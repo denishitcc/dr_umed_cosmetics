@@ -19,6 +19,7 @@ use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\FormsController;
 use App\Http\Controllers\ProductCategoriesController;
 use App\Http\Controllers\FinanceController;
+use App\Http\Controllers\DiscountCouponsController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -225,6 +226,12 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware('permission:finance')->group(function () {
         Route::resource('finance', FinanceController::class);
         Route::post('finance/table',[FinanceController::class, 'index'])->name('finance.table');
+    });
+
+    //discount coupons
+    Route::middleware('permission:discount-coupons')->group(function () {
+        Route::resource('discount-coupons', DiscountCouponsController::class);
+        Route::post('discount-coupons/table',[DiscountCouponsController::class, 'index'])->name('discount-coupons.table');
     });
 });
 Route::post('/get-staff-list', [CalenderController::class,'getStaffList'])->name('get-staff-list');

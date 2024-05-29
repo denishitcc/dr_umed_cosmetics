@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\Locations;
 use App\Models\BusinessWorkingHours;
 use DataTables;
-use App\Models\LocationDiscount;
 use App\Models\LocationSurcharge;
 
 class LocationsController extends Controller
@@ -111,18 +110,6 @@ class LocationsController extends Controller
                 }
             }
         }
-        foreach ($request->discount_type as $key => $value) {
-            if(isset($value) && $value != "") {
-                // Assuming $request->discount_percentage[$key] corresponds to the discount percentage for each discount type
-                $discountPercentage = $request->discount_percentage[$key];
-                
-                $dis_type = LocationDiscount::create([
-                    'location_id' => $newLocation->id,
-                    'discount_type' => $value,
-                    'discount_percentage'=> $discountPercentage,
-                ]);
-            }
-        }
         foreach ($request->surcharge_type as $key => $value) {
             if(isset($value) && $value != "") {
                 // Assuming $request->discount_percentage[$key] corresponds to the discount percentage for each discount type
@@ -160,10 +147,9 @@ class LocationsController extends Controller
             ->where('business_working_hours.location_id',$id)
             ->get();
 
-            $loc_discount = LocationDiscount::where('location_id',$id)->get();
             $loc_surcharge = LocationSurcharge::where('location_id',$id)->get();
 
-            return view('locations.edit', compact('locations','working_hours_location','loc_discount','loc_surcharge'));
+            return view('locations.edit', compact('locations','working_hours_location','loc_surcharge'));
         }else{
             abort(403, 'You are not authorized to access this page.');
         }
@@ -192,24 +178,7 @@ class LocationsController extends Controller
             'latitude'=> $request->latitude,
             'longitude'=> $request->longitude,
         ]);
-        LocationDiscount::where('location_id', $request->id)->delete();
         LocationSurcharge::where('location_id', $request->id)->delete();
-        foreach ($request->discount_type as $key => $dis_value) {
-            if(isset($dis_value) && $dis_value != "") {
-                // Assuming $request->discount_percentage[$key] corresponds to the discount percentage for each discount type
-                $discountPercentage = $request->discount_percentage[$key];
-                
-                // Use the index of the loop as the ID to update or create a new record
-                $dis_type = LocationDiscount::create(
-                    // ['id' => $key + 1, 'location_id' => $request->id], // Use key + 1 as ID to avoid updating the same record
-                    [
-                        'location_id' => $request->id,
-                        'discount_type' => $dis_value,
-                        'discount_percentage' => $discountPercentage,
-                    ]
-                );
-            }
-        }
         
         foreach ($request->surcharge_type as $key => $sur_value) {
             if(isset($sur_value) && $sur_value != "") {

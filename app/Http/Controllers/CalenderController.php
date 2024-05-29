@@ -33,7 +33,7 @@ use App\Models\WalkInRetailSale;
 use App\Models\WalkInProducts;
 use App\Models\WalkInDiscountSurcharge;
 use App\Models\Payment;
-use App\Models\LocationDiscount;
+use App\Models\DiscountCoupon;
 use App\Models\LocationSurcharge;
 use App\Models\ServicesAvailability;
 use App\Models\ProductAvailabilities;
@@ -93,7 +93,7 @@ class CalenderController extends Controller
                 $wait->duration = $service_durations;
             }
             //discount /surcharge data get
-            $loc_dis = LocationDiscount::all();
+            $loc_dis = DiscountCoupon::all();
             $loc_sur = LocationSurcharge::all();
 
 
@@ -2640,8 +2640,8 @@ class CalenderController extends Controller
         // Convert the merged array to JSON format
         $mergedProductService = $mergedArray;
         // dd($mergedProductService);
-        $loc_dis = LocationDiscount::where('location_id', $location_id)->get();
-        $loc_sur = LocationSurcharge::where('location_id', $location_id)->get();
+        $loc_dis = DiscountCoupon::where('location_id',$location_id)->get();
+        $loc_sur = LocationSurcharge::where('location_id',$location_id)->get();
 
         $data = [
             'mergedProductService' => $mergedProductService,

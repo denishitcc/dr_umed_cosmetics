@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('location_discount', function (Blueprint $table) {
+        Schema::create('discount_coupons', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('location_id')->nullable(); // Define client_id column
             $table->string('discount_type', 100)->nullable();
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('location_discount');
+        Schema::dropIfExists('discount_coupons');
     }
 };
