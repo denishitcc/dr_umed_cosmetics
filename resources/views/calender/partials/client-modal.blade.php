@@ -29,8 +29,8 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="tab" href="#ptab_5" aria-selected="false" tabindex="-1"
-                            role="tab"><i class="ico-appt-reminder"></i> Forms <span
-                                class="badge badge-circle ms-2" id="total_forms">0</span></a>
+                            role="tab"><i class="ico-appt-reminder"></i> Forms <span class="badge badge-circle ms-2"
+                                id="total_forms">0</span></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="tab" href="#ptab_6" aria-selected="false" tabindex="-1"
@@ -64,8 +64,8 @@
                                     <div class="col-lg-4">
                                         <div class="form-group">
                                             <label class="form-label">First Name</label>
-                                            <input type="text" class="form-control" placeholder=""
-                                                name="firstname" id="firstname" maxlength="50" value="">
+                                            <input type="text" class="form-control" placeholder="" name="firstname"
+                                                id="firstname" maxlength="50" value="">
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
@@ -390,6 +390,54 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="copy_exist1" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Copy Exist Form</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <p class="mb-4">Gravida aliquet parturient curae porta vel sit praesent praesent ac posuere venenatis
+                    senectus venenatis ullamcorper ullamcorper pulvinar urna luctus hac ad dictumst.A adipiscing
+                    condimentum ut ullamcorper vestibulum ipsum ante scelerisque massa et a a velit morbi aliquam
+                    egestas.</p>
+
+
+
+                <table class="table all-db-table align-middle mb-4">
+                    <thead>
+                        <tr>
+                            <th colspan="2"><b>3 jun</b></th>
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td><a href="#" class="simple-link">Skin Needling - CONSULTATION FORM</a></td>
+                            <td><span class="badge text-bg-green badge-md badge-rounded">New</span></td>
+
+                        </tr>
+                        <tr>
+                            <td><a href="#" class="simple-link">Skin Needling - CONSULTATION FORM</a></td>
+                            <td><span class="badge text-bg-secondary badge-md badge-rounded">In Progress</span></td>
+
+                        </tr>
+                    </tbody>
+                </table>
+
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-md" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

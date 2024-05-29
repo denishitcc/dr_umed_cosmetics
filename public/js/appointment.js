@@ -52,6 +52,7 @@ var DU = {};
             context.sentSmsEmail();
             context.givetoUser();
             context.addNewFormCheckbox();
+            context.openeditServiceFormModal();
 
             $('#clientmodal').hide();
             $('#service_error').hide();
@@ -1215,6 +1216,14 @@ var DU = {};
                 var appointmentId = $('#edit_forms').data('appt_id');
                 context.getAppointmentForms(appointmentId);
                 context.selectors.copyexistingFormModal.modal('show');
+            });
+
+            $('#copy_exist').on('show.bs.modal', function () {
+                context.selectors.appointmentForms.css('z-index', 1039);
+            });
+
+            $('#copy_exist').on('hidden.bs.modal', function () {
+                document.getElementById('appointment_Forms').style.removeProperty('z-index');
             });
         },
 
@@ -2762,6 +2771,22 @@ var DU = {};
                     }
                 });
 
+            });
+        },
+
+        openeditServiceFormModal: function(){
+            var context = this;
+
+            $(document).on('click','.form_filled', function(e){
+                $('#copy_exist1').modal('show');
+            });
+
+            $('#copy_exist1').on('show.bs.modal', function () {
+                $('#Client_card').css('z-index', 1039);
+            });
+
+            $('#copy_exist1').on('hidden.bs.modal', function () {
+                document.getElementById('Client_card').style.removeProperty('z-index');
             });
         },
     }
