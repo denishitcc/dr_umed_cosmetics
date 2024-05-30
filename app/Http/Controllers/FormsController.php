@@ -188,7 +188,14 @@ class FormsController extends Controller
                     'message' => 'Form updated successfully!',
                     'type' => 'success',
                 ];
+            } else {
+                $data = [
+                    'success' => false,
+                    'message' => 'Something went wrong',
+                    'type'    => 'success',
+                ];
             }
+
 
         } catch (\Throwable $th) {
 
@@ -264,11 +271,11 @@ class FormsController extends Controller
      *
      * @return void
      */
-    public function formUser($apptid,$id)
+    public function formUser($apptid,$formid)
     {
-        $appointment  = AppointmentForms::where('appointment_id',$apptid)->first();
+        $appointment  = AppointmentForms::where('appointment_id',$apptid)->where('form_id',$formid)->first();
         $user         = Auth::user();
-        $forms        = FormSummary::find($id);
+        $forms        = FormSummary::find($formid);
 
         return view('forms.userform',compact('forms','user','appointment'));
     }

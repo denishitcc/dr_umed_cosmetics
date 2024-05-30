@@ -2810,36 +2810,19 @@ var DU = {};
         },
 
         clientformrender: function(formjson,originalForm){
-            // Formio.createForm(document.getElementById('fb-editor'), originalForm).then((form) => {
-            //     // Load the submission data
-            //     Formio.loadSubmission(formjson).then((submission) => {
-            //       // Set the submission data to the form
-            //       form.submission = submission;
-            //     }).catch((err) => {
-            //       console.error('Error loading submission:', err);
-            //     });
-            // }).catch((err) => {
-            //     console.error('Error loading form:', err);
-            // });
 
-            Formio.createForm(document.getElementById('fb-editor'), originalForm, {
-                // readOnly: true
-            }).then(function (form) {
-                form.submission = {
-                    data: {
-                        firstName: 'Joe',
-                        lastName: 'Smith'
-                    }
-                };
-                form.on('submit', (submission) => {
-                    console.log(submission);
-                    // submission.emit(true);
-                    console.log('The form was just submitted!!!');
-                });
-                form.on('change', function(changed) {
-                    console.log('Form was changed', changed);
-                });
-            })
+            var json        = $.parseJSON(originalForm),
+                formvalue   = $.parseJSON(formjson);
+
+            Formio.createForm(document.getElementById('fb-editor'), json, {
+                readOnly: true
+            }).then((form) => {
+                // Set the submission data
+                form.submission = formvalue;
+            }).catch((err) => {
+                console.error('Error loading form:', err);
+                alert('Error loading form: ' + err.message);
+            });
         },
     }
 

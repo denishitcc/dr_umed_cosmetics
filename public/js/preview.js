@@ -7,7 +7,7 @@ jQuery(function ($) {
             var form_id                 = $('#form_id').val(),
                 appointment_id          = $('#appointment_id').val(),
                 appointment_form_id     = $('#appointment_form_id').val(),
-                formfilleddata  = submission.data;
+                formfilleddata          = submission;
 
             $.ajax({
                 url: moduleConfig.serviceFormUpdate,

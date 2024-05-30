@@ -3002,6 +3002,52 @@ class CalenderController extends Controller
         return $data;
     }
 
+    // public function sentForms(Request $request)
+    // {
+    //     try {
+    //         $formsId        = $request['forms_id'];
+    //         $appointment    = Appointment::find($request->apptid);
+    //         $to_email       = $request->clientemail;
+    //         foreach ($formsId as $key => $form) {
+    //             $forms      = FormSummary::find($form);
+    //             $formData[] = [
+    //                 'form_url'      => route('serviceforms.formUser', [$appointment->id, $forms['id']]),
+    //                 'form_title'    => $forms['title']
+    //             ];
+    //             $subject    = 'Before your appointment at  fill this forms';
+    //             $userData   = [
+    //                 'name'          => $request->client_name,
+    //                 'company_name'  => env('APP_NAME') . ', ' . $request->apptlocation,
+    //                 // 'form_url'      => route('serviceforms.formUser',$appointment->id)
+    //                 'formslinks'    => $formData
+    //             ];
+    //         }
+    //         Mail::send('email.forms', $userData, function ($message) use ($to_email, $subject) {
+    //             $message->to($to_email)
+    //                 ->subject($subject);
+    //             $message->from('support@itcc.net.au', $subject);
+    //         });
+
+    //         $dat['forms_sent_email'] = carbon::now();
+    //         $appointment->update($dat);
+
+    //         $data = [
+    //             'success' => true,
+    //             'message' => 'Appointment form sent successfully!',
+    //             'type'    => 'success',
+    //         ];
+    //     } catch (\Throwable $th) {
+    //         //throw $th;
+    //         $data = [
+    //             'success' => false,
+    //             'message' => $th->getMessage(),
+    //             'type'    => 'fail',
+    //         ];
+    //     }
+
+    //     return $data;
+    // }
+
     public function sentForms(Request $request)
     {
         try {
@@ -3014,14 +3060,38 @@ class CalenderController extends Controller
                     'form_url'      => route('serviceforms.formUser', [$appointment->id, $forms['id']]),
                     'form_title'    => $forms['title']
                 ];
-                $subject    = 'Before your appointment at  fill this forms';
+                $emailtemplate = EmailTemplates::where('email_template_type', 'Before your appointment at fill this forms')->first();
+                $subject    = $emailtemplate->subject;
                 $userData   = [
-                    'name'          => $request->client_name,
+                    'username'          => $request->client_name,
                     'company_name'  => env('APP_NAME') . ', ' . $request->apptlocation,
                     // 'form_url'      => route('serviceforms.formUser',$appointment->id)
-                    'formslinks'    => $formData
+                    'form_url'    => $formData,
+                    'subject' => $emailtemplate->subject,
                 ];
             }
+
+            // Process the form URLs to be included in the email body
+            $formUrlsText = '';
+            foreach ($formData as $form) {
+                $formUrlsText .= "<a href='{$form['form_url']}'>{$form['form_title']}</a><br>";
+            }
+
+            // Replace placeholders in the template with actual values
+            $parsedContent = str_replace(
+                ['{{username}}', '{{form_url}}'],
+                [$userData['username'], $formUrlsText],
+                $emailtemplate->email_template_description
+            );
+
+            $userData = [
+                'name' => $request->client_name,
+                // 'company_name' => env('APP_NAME') . ', ' . $location['location_name'],
+                'form_url' => $formUrlsText,
+                'username' => $request->client_name,
+                'subject' => $emailtemplate->subject,
+                'emailbody' => $parsedContent,
+            ];
             Mail::send('email.forms', $userData, function ($message) use ($to_email, $subject) {
                 $message->to($to_email)
                     ->subject($subject);
@@ -3047,6 +3117,7 @@ class CalenderController extends Controller
 
         return $data;
     }
+
     public function apptConfirmation(Request $request)
     {
         $appointment = Appointment::find($request->id);
