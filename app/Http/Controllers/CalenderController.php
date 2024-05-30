@@ -314,21 +314,21 @@ class CalenderController extends Controller
                                 $sub = $location_name . ', ' . $data['subject'];
 
                                 // Generate the ICS file content
-                                // $icsContent = $this->generateICS($appointment, $client, $user, $service, $location);
-                                // $icsFileName = 'appointment-' . $appointment->id . '.ics';
-                                // Storage::put($icsFileName, $icsContent);
+                                $icsContent = $this->generateICS($appointment, $client, $user, $service, $location);
+                                $icsFileName = 'appointment-' . $appointment->id . '.ics';
+                                Storage::put($icsFileName, $icsContent);
 
                                 $to_email = $client_email;
-                                Mail::send('email.appt_confirmation', $data, function ($message) use ($to_email, $sub) { //,$icsFileName
+                                Mail::send('email.appt_confirmation', $data, function ($message) use ($to_email, $sub,$icsFileName) {
                                     $message->to($to_email)
                                         ->subject($sub)
-                                        ->from('support@itcc.net.au', $sub);
-                                    // ->attach(storage_path('app/' . $icsFileName), [
-                                    //     'mime' => 'text/calendar'
-                                    // ]);
+                                        ->from('support@itcc.net.au', $sub)
+                                    ->attach(storage_path('app/' . $icsFileName), [
+                                        'mime' => 'text/calendar'
+                                    ]);
                                 });
                                 // Delete the ICS file after sending the email
-                                // Storage::delete($icsFileName);
+                                Storage::delete($icsFileName);
                             }
                         }
                         $response = [
@@ -440,21 +440,21 @@ class CalenderController extends Controller
                                 $sub = $location_name . ', ' . $data['subject'];
 
                                 // Generate the ICS file content
-                                // $icsContent = $this->generateICS($findAppointment, $client, $user, $service, $location);
-                                // $icsFileName = 'appointment-' . $findAppointment->id . '.ics';
-                                // Storage::put($icsFileName, $icsContent);
+                                $icsContent = $this->generateICS($findAppointment, $client, $user, $service, $location);
+                                $icsFileName = 'appointment-' . $findAppointment->id . '.ics';
+                                Storage::put($icsFileName, $icsContent);
 
                                 $to_email = $client_email;
-                                Mail::send('email.appt_confirmation', $data, function ($message) use ($to_email, $sub) { //,$icsFileName
+                                Mail::send('email.appt_confirmation', $data, function ($message) use ($to_email, $sub,$icsFileName) { //
                                     $message->to($to_email)
                                         ->subject($sub)
-                                        ->from('support@itcc.net.au', $sub);
-                                    // ->attach(storage_path('app/' . $icsFileName), [
-                                    //     'mime' => 'text/calendar'
-                                    // ]);
+                                        ->from('support@itcc.net.au', $sub)
+                                    ->attach(storage_path('app/' . $icsFileName), [
+                                        'mime' => 'text/calendar'
+                                    ]);
                                 });
                                 // Delete the ICS file after sending the email
-                                // Storage::delete($icsFileName);
+                                Storage::delete($icsFileName);
                             }
                         }
                         $response = [
@@ -519,21 +519,21 @@ class CalenderController extends Controller
                             $sub = $location_name . ', ' . $data['subject'];
 
                             // Generate the ICS file content
-                            // $icsContent = $this->generateICS($appointment, $client, $user, $service, $location);
-                            // $icsFileName = 'appointment-' . $appointment->id . '.ics';
-                            // Storage::put($icsFileName, $icsContent);
+                            $icsContent = $this->generateICS($appointment, $client, $user, $service, $location);
+                            $icsFileName = 'appointment-' . $appointment->id . '.ics';
+                            Storage::put($icsFileName, $icsContent);
 
                             $to_email = $client_email;
-                            Mail::send('email.appt_confirmation', $data, function ($message) use ($to_email, $sub) { //,$icsFileName
+                            Mail::send('email.appt_confirmation', $data, function ($message) use ($to_email, $sub,$icsFileName) { //
                                 $message->to($to_email)
                                     ->subject($sub)
-                                    ->from('support@itcc.net.au', $sub);
-                                // ->attach(storage_path('app/' . $icsFileName), [
-                                //     'mime' => 'text/calendar'
-                                // ]);
+                                    ->from('support@itcc.net.au', $sub)
+                                ->attach(storage_path('app/' . $icsFileName), [
+                                    'mime' => 'text/calendar'
+                                ]);
                             });
                             // Delete the ICS file after sending the email
-                            // Storage::delete($icsFileName);
+                            Storage::delete($icsFileName);
                         }
 
                         $response = [
@@ -1101,21 +1101,21 @@ class CalenderController extends Controller
                         $sub = $location_name . ', ' . $data['subject'];
                         // dd($newObject);
                         // Generate the ICS file content
-                        // $icsContent = $this->generateICS($newObject, $client, $user, $service, $location);
-                        // $icsFileName = 'appointment-' . $newObject->client_id . '.ics';
-                        // Storage::put($icsFileName, $icsContent);
+                        $icsContent = $this->generateICS($newObject, $client, $user, $service, $location);
+                        $icsFileName = 'appointment-' . $newObject->client_id . '.ics';
+                        Storage::put($icsFileName, $icsContent);
 
                         $to_email = $client_email;
-                        Mail::send('email.appt_confirmation', $data, function ($message) use ($to_email, $sub) { //,$icsFileName
+                        Mail::send('email.appt_confirmation', $data, function ($message) use ($to_email, $sub,$icsFileName) { //
                             $message->to($to_email)
                                 ->subject($sub)
-                                ->from('support@itcc.net.au', $sub);
-                            // ->attach(storage_path('app/' . $icsFileName), [
-                            //     'mime' => 'text/calendar'
-                            // ]);
+                                ->from('support@itcc.net.au', $sub)
+                            ->attach(storage_path('app/' . $icsFileName), [
+                                'mime' => 'text/calendar'
+                            ]);
                         });
                         // Delete the ICS file after sending the email
-                        // Storage::delete($icsFileName);  
+                        Storage::delete($icsFileName);  
                     }
 
                     $response = [
@@ -1684,21 +1684,21 @@ class CalenderController extends Controller
                         $sub = $location_name . ', ' . $data['subject'];
 
                         // Generate the ICS file content
-                        // $icsContent = $this->generateICS($appointment, $client, $user, $service, $location);
-                        // $icsFileName = 'appointment-' . $appointment->id . '.ics';
-                        // Storage::put($icsFileName, $icsContent);
+                        $icsContent = $this->generateICS($appointment, $client, $user, $service, $location);
+                        $icsFileName = 'appointment-' . $appointment->id . '.ics';
+                        Storage::put($icsFileName, $icsContent);
 
                         $to_email = $client_email;
-                        Mail::send('email.appt_confirmation', $data, function ($message) use ($to_email, $sub) { //,$icsFileName
+                        Mail::send('email.appt_confirmation', $data, function ($message) use ($to_email, $sub,$icsFileName) { //
                             $message->to($to_email)
                                 ->subject($sub)
-                                ->from('support@itcc.net.au', $sub);
-                            // ->attach(storage_path('app/' . $icsFileName), [
-                            //     'mime' => 'text/calendar'
-                            // ]);
+                                ->from('support@itcc.net.au', $sub)
+                            ->attach(storage_path('app/' . $icsFileName), [
+                                'mime' => 'text/calendar'
+                            ]);
                         });
                         // Delete the ICS file after sending the email
-                        // Storage::delete($icsFileName);
+                        Storage::delete($icsFileName);
                     }
 
                     $response = [
@@ -3098,22 +3098,22 @@ class CalenderController extends Controller
                 $sub = $location_name . ', ' . $data['subject'];
 
                 // Generate the ICS file content
-                // $icsContent = $this->generateICS($appointment, $client, $user, $service, $location);
-                // $icsFileName = 'appointment-' . $appointment->id . '.ics';
-                // Storage::put($icsFileName, $icsContent);
+                $icsContent = $this->generateICS($appointment, $client, $user, $service, $location);
+                $icsFileName = 'appointment-' . $appointment->id . '.ics';
+                Storage::put($icsFileName, $icsContent);
 
                 $to_email = $client_email;
-                Mail::send('email.appt_confirmation', $data, function ($message) use ($to_email, $sub) { //, $icsFileName
+                Mail::send('email.appt_confirmation', $data, function ($message) use ($to_email, $sub, $icsFileName) {
                     $message->to($to_email)
                         ->subject($sub)
-                        ->from('support@itcc.net.au', $sub);
-                    // ->attach(storage_path('app/' . $icsFileName), [
-                    //     'mime' => 'text/calendar'
-                    // ]);
+                        ->from('support@itcc.net.au', $sub)
+                        ->attach(storage_path('app/' . $icsFileName), [
+                            'mime' => 'text/calendar'
+                        ]);
                 });
 
                 // Delete the ICS file after sending the email
-                // Storage::delete($icsFileName);
+                Storage::delete($icsFileName);
             }
 
             $response = [
