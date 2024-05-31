@@ -1,21 +1,22 @@
 <div class="table-card-body">
-                    <h5> {{ $clientforms->forms->title }} </h5>
-                </div>
-                <div class="table-card-body">
-                    <div class="d-flex mb-4">
-                        <a href="#" class="btn btn-light-grey50 btn-md icon-btn-left">
-                            <i class="ico-user2 me-2 fs-6"></i> Give to {{ $clientforms->appointment->clients->firstname }} to Update Details</a>
-                    </div>
-                    @if ($clientforms->status == \App\Models\AppointmentForms::COMPLETED)
-                        <div class="alert alert-green alert-xs">
-                            This form is read-only because it's been completed.
-                            <a href="#" class="alert-close"><i class="ico-close"></i></a>
-                        </div>
-                    @endif
+    <h5> {{ $clientforms->forms->title }} </h5>
+</div>
+<div class="table-card-body">
+    <div class="d-flex mb-4">
+        <a href="#" class="btn btn-light-grey50 btn-md icon-btn-left">
+            <i class="ico-user2 me-2 fs-6"></i> Give to {{ $clientforms->appointment->clients->firstname }} to Update Details</a>
+    </div>
+    <label id="appointment_form_id" data-appointment_form_id="{{ $clientforms->id }}" data-appointment_id="{{ $clientforms->appointment_id }}" data-form_id="{{ $clientforms->form_id }}"></label>
+    @if ($clientforms->status == \App\Models\AppointmentForms::COMPLETED)
+    <div class="alert alert-green alert-xs">
+        This form is read-only because it's been completed.
+        <a href="#" class="alert-close"><i class="ico-close"></i></a>
+    </div>
+    @endif
 
-                    <label data-form_user_data="{{ $clientforms->form_user_data }}" id="client_form_data"></label>
-                    <div id="fb-editor"></div>
-                    {{-- <p>Dr Umed Shekhawat<br>
+    <label data-form_user_data="{{ $clientforms->form_user_data }}" id="client_form_data"></label>
+    <div id="fb-editor"></div>
+    {{-- <p>Dr Umed Shekhawat<br>
                         Cosmetic Physician (Specialist Registration General Practice)<br>
                         MBBS, FRACGP, Diploma of Skin Cancer / The Injecting Nurse has
                         explained the products and procedure to me.<br><br>
@@ -109,7 +110,7 @@
                     <div class="mb-4"><img src="img/demo-signature.png" alt="">
                     </div> --}}
 
-                    {{-- <label>9:43 am 22 Sep 2023</label><br><br>
+    {{-- <label>9:43 am 22 Sep 2023</label><br><br>
 
                     <div class="row">
                         <div class="col-lg-4">
@@ -118,19 +119,18 @@
                             </div>
                         </div>
                     </div> --}}
-                </div>
-                <div class="table-card-footer">
-                    <div class="tf-left">
-                        <a href="#" class="btn btn-primary btn-md icon-btn-left"><i
-                                class="ico-user2 me-2 fs-6"></i>
-                            Download</a>
-                    </div>
-                    <div class="tf-right">
-                        <button type="button" class="btn btn-light btn-md me-2" data-bs-dismiss="modal">Cancel</button>
-                        @if ($clientforms->status == \App\Models\AppointmentForms::COMPLETED)
-                            <button type="submit" class="btn btn-primary btn-md">Edit Form</button>
-                        @else
-                            <button type="submit" class="btn btn-primary btn-md" id="form_complete">Complete</button>
-                        @endif
-                    </div>
-                </div>
+</div>
+<div class="table-card-footer">
+    <div class="tf-left">
+        <a href="#" class="btn btn-primary btn-md icon-btn-left"><i class="ico-user2 me-2 fs-6"></i>
+            Download</a>
+    </div>
+    <div class="tf-right">
+        <button type="button" class="btn btn-light btn-md me-2" data-bs-dismiss="modal">Cancel</button>
+        @if ($clientforms->status == \App\Models\AppointmentForms::COMPLETED)
+        <button type="submit" class="btn btn-primary btn-md">Edit Form</button>
+        @else
+        <button type="submit" class="btn btn-primary btn-md" id="form_complete">Complete</button>
+        @endif
+    </div>
+</div>

@@ -221,6 +221,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('calendar/sent-forms',[CalenderController::class, 'sentForms'])->name('calendar.sent-forms');
         Route::post('calendar/appt-confirmation',[CalenderController::class, 'apptConfirmation'])->name('calendar.appt-confirmation');
         Route::get('calender/get-client-forms-data/{id}',[CalenderController::class, 'getClientFormsData'])->name('calendar.get-client-forms-data');
+        Route::post('calender/update-client-status-form',[CalenderController::class, 'updateClientStatusForm'])->name('calendar.update-client-status-form');
     });
 
     //finance

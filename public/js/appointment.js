@@ -53,6 +53,7 @@ var DU = {};
             context.givetoUser();
             context.addNewFormCheckbox();
             context.openeditServiceFormModal();
+            context.CompleteClientForms();
 
             $('#clientmodal').hide();
             $('#service_error').hide();
@@ -2789,8 +2790,8 @@ var DU = {};
                     success: function (response) {
                         $('#clientformsmodal').empty();
                         $('#clientformsmodal').html(response.data);
-                        var formjson = response.formjson,
-                            originalForm = response.original_form;
+                        var formjson        = response.formjson,
+                            originalForm    = response.original_form;
                         context.clientformrender(formjson,originalForm);
                     },
                     error: function (error) {
@@ -2810,7 +2811,6 @@ var DU = {};
         },
 
         clientformrender: function(formjson,originalForm){
-
             var json        = $.parseJSON(originalForm),
                 formvalue   = $.parseJSON(formjson);
 
@@ -2822,6 +2822,53 @@ var DU = {};
             }).catch((err) => {
                 console.error('Error loading form:', err);
                 alert('Error loading form: ' + err.message);
+            });
+        },
+
+        CompleteClientForms: function(){
+            var context = this;
+            $(document).on('click','#form_complete', function(e){
+                var appointment_form_id = $('#appointment_form_id').data('appointment_form_id'),
+                    appointment_id      = $('#appointment_form_id').data('appointment_id') ,
+                    form_id             = $('#appointment_form_id').data('form_id') ;
+                console.log(appointment_form_id);
+                console.log(appointment_id);
+                console.log(form_id);
+
+                $.ajax({
+                    headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    url: moduleConfig.updateClientStatusForm,
+                    type: 'POST',
+                    data: {
+                        'appointment_form_id'   : appointment_form_id,
+                        'appointment_id'        : appointment_id,
+                        'form_id'               : form_id
+                    },
+                    // headers: {
+                    //     'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                    // },
+                    success: function (data) {
+                        if (data.success) {
+                            Swal.fire({
+                                title: "Appointment!",
+                                text: data.message,
+                                info: "success",
+                            }).then(function() {
+                                // Reload the current page
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Error!",
+                                text: data.message,
+                                info: "error",
+                            });
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Error fetching events:', error);
+                    }
+                });
             });
         },
     }

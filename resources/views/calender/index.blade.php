@@ -1206,6 +1206,7 @@
         apptConfirmation:             "{!! route('calendar.appt-confirmation') !!}",
         getforms:                     "{!! route('get-forms') !!}",
         getClientFormsData:           "{!! route('calendar.get-client-forms-data', ':ID' ) !!}",
+        updateClientStatusForm:       "{!! route('calendar.update-client-status-form') !!}",
     };
 
     $(document).ready(function()

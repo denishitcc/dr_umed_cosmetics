@@ -3244,4 +3244,28 @@ class CalenderController extends Controller
             'original_form'         => $clientforms->forms->form_json
         ], 200);
     }
+
+    public function updateClientStatusForm(Request $request)
+    {
+        try {
+            $appointmentforms = AppointmentForms::find($request->appointment_form_id);
+            if($appointmentforms->id)
+            {
+                $data['status'] = AppointmentForms::COMPLETED;
+                $appointmentforms->update($data);
+            }
+            $response = [
+                'success' => true,
+                'message' => 'Forms status updated!',
+                'type' => 'success',
+            ];
+        } catch (\Throwable $th) {
+            $response = [
+                'error' => true,
+                'message' => 'Error !',
+                'type' => 'error',
+            ];
+        }
+        return response()->json($response);
+    }
 }
