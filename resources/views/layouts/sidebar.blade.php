@@ -91,12 +91,23 @@
                         <a href="{{ route('products.index') }}"><i class="ico-products"></i>Products</a>
                     </li>
                     @endif
-                    @if(\Auth::user()->checkPermission('gift-card') == "true" || \Auth::user()->checkPermission('discount-coupons') == "true" || \Auth::user()->checkPermission('gift-card') != "No permission" || \Auth::user()->checkPermission('discount-coupons') != "No permission")
-                    <li class="dropdown">
+
+                    @php
+                        $canViewGiftCards = \Auth::user()->checkPermission('gift-card') == "true" || \Auth::user()->checkPermission('gift-card') != "No permission";
+                        $canViewDiscountCoupons = \Auth::user()->checkPermission('discount-coupons') == "true" || \Auth::user()->checkPermission('discount-coupons') != "No permission";
+                        $isActiveParentMenu = request()->is('gift-card') || request()->is('discount-coupons') || request()->is('gift-card/*') || request()->is('discount-coupons/*') ? 'show active' : '';
+                    @endphp
+
+                    @if($canViewGiftCards || $canViewDiscountCoupons)
+                    <li class="dropdown {{ $isActiveParentMenu }}">
                         <a href="#"><i class="ico-promotion"></i>Promotions </a>
                         <ul>
-                            <li><a href="#">Gift Cards</a></li>
-                            <li><a href="{{ route('discount-coupons.index') }}">Discount Coupons</a></li>
+                            @if($canViewGiftCards)
+                            <li class="{{ (request()->is('gift-card') || request()->is('gift-card/*')) ? 'active' : '' }}"><a href="{{ route('gift-card.index') }}">Gift Cards</a></li>
+                            @endif
+                            @if($canViewDiscountCoupons)
+                            <li class="{{ (request()->is('discount-coupons') || request()->is('discount-coupons/*')) ? 'active' : '' }}"><a href="{{ route('discount-coupons.index') }}">Discount Coupons</a></li>
+                            @endif
                         </ul>
                     </li>
                     @endif

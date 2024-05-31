@@ -20,6 +20,7 @@ use App\Http\Controllers\FormsController;
 use App\Http\Controllers\ProductCategoriesController;
 use App\Http\Controllers\FinanceController;
 use App\Http\Controllers\DiscountCouponsController;
+use App\Http\Controllers\GiftCardsController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -232,6 +233,14 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware('permission:discount-coupons')->group(function () {
         Route::resource('discount-coupons', DiscountCouponsController::class);
         Route::post('discount-coupons/table',[DiscountCouponsController::class, 'index'])->name('discount-coupons.table');
+    });
+
+    //gift cards
+    Route::middleware('permission:gift-card')->group(function () {
+        Route::resource('gift-card', GiftCardsController::class);
+        Route::post('gift-card/table',[GiftCardsController::class, 'index'])->name('gift-card.table');
+        Route::post('gift-card/transactions',[GiftCardsController::class, 'transactions'])->name('gift-card.transactions');
+        Route::post('gift-card/cancel',[GiftCardsController::class, 'cancel_gift_card'])->name('gift-card.cancel');
     });
 });
 Route::post('/get-staff-list', [CalenderController::class,'getStaffList'])->name('get-staff-list');
