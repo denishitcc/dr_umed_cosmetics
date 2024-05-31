@@ -105,6 +105,7 @@
                 <form id="edit_gift_card" name="edit_gift_card" class="form">
                 @csrf
                 <input type="hidden" name="hdn_id" id="hdn_id" value="">
+                <input type="hidden" name="is_expired_hidden" id="is_expired_hidden" value="0">
                 <div class="modal-body">
 
                 <div class="row">
@@ -129,7 +130,7 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="form-group">
-                                <input type="checkbox" name="is_expired" id="is_expired" onchange="toggleExpiryDate()">
+                                <input type="checkbox" name="is_expired" id="is_expired" value="1" onchange="toggleExpiryDate()">
                                 <label class="form-label">Expires</label><br>
                                 <input type="date" name="edit_expiry_date" id="edit_expiry_date">
                             </div>

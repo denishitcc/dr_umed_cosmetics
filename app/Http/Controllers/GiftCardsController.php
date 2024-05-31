@@ -34,7 +34,7 @@ class GiftCardsController extends Controller
                                         <div class="gift-card-notes" style="color: #000;background-color: #FCF8E3">'.htmlspecialchars($row->notes).'</div>
                                     </div>';
                         return $details;
-                    })
+                    })  
                     ->addColumn('remaining_value', function($row) {
                         $remainingValue = '$' . number_format($row->remaining_value, 2) . ' remaining';
                         $usageStatus = 'Not used yet';
@@ -44,17 +44,17 @@ class GiftCardsController extends Controller
                             $expiryDate = 'Never Expires';
                         } else {
                             // Parse the expiry date and check if it's expired
-                            $expiryDate = Carbon::parse($row->expiry_date);
-                            if ($expiryDate->isPast()) {
+                            $expiryDate = Carbon::parse($row->expiry_date)->endOfDay();
+                            $currentDate = Carbon::now()->endOfDay();
+                    
+                            if ($expiryDate->isBefore($currentDate)) {
                                 // Gift card has expired
                                 $expiryDate = '<span style="color:red;">Expired ' . $expiryDate->format('d M Y') . '</span>';
-                            } else if($row->cancelled == 'yes'){
+                            } else if ($row->cancelled == 'yes') {
                                 $cancelDate = Carbon::parse($row->cancelled_at);
-                                // dd($cancelDate);
-                                // Gift card is still valid, calculate remaining time until expiry
                                 $expiryDate = '<span style="color:red;">Cancelled ' . $cancelDate->format('d M Y') . '</span>';
                             } else {
-                                // Gift card is still valid, calculate remaining time until expiry
+                                // Gift card is still valid, display the expiry date
                                 $expiryDate = 'Expires ' . $expiryDate->format('d M Y');
                             }
                         }
@@ -64,30 +64,33 @@ class GiftCardsController extends Controller
                                    $usageStatus . '<br>' .
                                    $expiryDate .
                                '</div>';
-                    })                    
+                    })                  
                     ->addColumn('action', function($row){
                         $transactions_count = GiftCardTransaction::where('gift_card_id', $row->id)->count();
                         $permission = \Auth::user()->checkPermission('gift-card');
-                        $isCanceled = $row->cancelled == 'yes'; // Assuming 'cancelled' is the field indicating cancellation status
-    
-                        // Check if the gift card is canceled
-                        if ($isCanceled) {
-                            // If canceled, return an empty string to hide all buttons
-                            return '';
+                        $btn = '<div class="action-box vertical-buttons" style="flex-direction: column;">';
+                    
+                        // Check if the gift card is cancelled
+                        if ($row->cancelled === 'yes') {
+                            // All buttons hidden if cancelled
+                            return $btn . '</div>';
                         }
-                        // dd($permission);
+                    
+                        // Add Transactions button
+                        $btn .= '<button type="button" class="btn btn-secondary p-2 dt-transaction" ids="'.$row->id.'" tracking_number="'.$row->tracking_number.'" data-bs-toggle="modal" data-bs-target="#edit_transactions">
+                                    Transactions <span>('.$transactions_count.')</span>
+                                </button>';
+                    
                         if ($permission === 'View Only') {
-                            $btn = '<div class="action-box vertical-buttons" style="flex-direction: column;">
-                                        <button type="button" class="btn btn-secondary p-2 dt-transaction" ids="'.$row->id.'" tracking_number="'.$row->tracking_number.'" data-bs-toggle="modal" data-bs-target="#edit_transactions">
-                                            Transactions <span>('.$transactions_count.')</span>
-                                        </button>
-                                        <button type="button" class="btn btn-secondary p-2 dt-edit" ids="'.$row->id.'" initial_value="'.$row->value.'" remaining_value="'.$row->remaining_value.'" notes="'.$row->notes.'" expiry_date="'.$row->expiry_date.'" tracking_number="'.$row->tracking_number.'" data-bs-toggle="modal" data-bs-target="#edit_gift_cards" disabled>
-                                            Edit Gift Card
-                                        </button>';
-                        
+                            $btn .= '<button type="button" class="btn btn-secondary p-2 dt-edit" ids="'.$row->id.'" initial_value="'.$row->value.'" remaining_value="'.$row->remaining_value.'" notes="'.$row->notes.'" expiry_date="'.$row->expiry_date.'" tracking_number="'.$row->tracking_number.'" data-bs-toggle="modal" data-bs-target="#edit_gift_cards" disabled>
+                                        Edit Gift Card
+                                    </button>';
+                    
                             // Check if the expiry date has not passed
-                            $expiryDate = Carbon::parse($row->expiry_date);
-                            if (!$expiryDate->isPast()) {
+                            $expiryDate = Carbon::parse($row->expiry_date)->endOfDay();
+                            $currentDate = Carbon::now()->endOfDay();
+                            
+                            if ($row->expiry_date === null || !$expiryDate->isBefore($currentDate)) {
                                 $btn .= '<button type="button" class="btn btn-secondary p-2 dt-edit" ids="'.$row->id.'" initial_value="'.$row->value.'" remaining_value="'.$row->remaining_value.'" notes="'.$row->notes.'" expiry_date="'.$row->expiry_date.'" tracking_number="'.$row->tracking_number.'" data-bs-toggle="modal" data-bs-target="#email_voucher" disabled>
                                             Email Gift Card
                                         </button>
@@ -95,31 +98,28 @@ class GiftCardsController extends Controller
                                             Cancel Gift Card
                                         </button>';
                             }
-                        
-                            $btn .= '</div>';
-                            return $btn;
-                        }else {
-                            $btn = '<div class="action-box vertical-buttons" style="flex-direction: column;">
-                                        <button type="button" class="btn btn-secondary p-2 dt-transaction" ids="'.$row->id.'" tracking_number="'.$row->tracking_number.'" data-bs-toggle="modal" data-bs-target="#edit_transactions">
-                                            Transactions <span>('.$transactions_count.')</span>
+                        } else {
+                            $btn .= '<button type="button" class="btn btn-secondary p-2 dt-edit" ids="'.$row->id.'" initial_value="'.$row->value.'" remaining_value="'.$row->remaining_value.'" notes="'.$row->notes.'" expiry_date="'.$row->expiry_date.'" tracking_number="'.$row->tracking_number.'" data-bs-toggle="modal" data-bs-target="#edit_gift_cards">
+                                        Edit Gift Card
+                                    </button>';
+                    
+                            // Check if the expiry date has not passed
+                            $expiryDate = Carbon::parse($row->expiry_date)->endOfDay();
+                            $currentDate = Carbon::now()->endOfDay();
+                    
+                            if ($row->expiry_date === null || !$expiryDate->isBefore($currentDate)) {
+                                $btn .= '<button type="button" class="btn btn-secondary p-2 dt-edit" ids="'.$row->id.'" initial_value="'.$row->value.'" remaining_value="'.$row->remaining_value.'" notes="'.$row->notes.'" expiry_date="'.$row->expiry_date.'" tracking_number="'.$row->tracking_number.'" data-bs-toggle="modal" data-bs-target="#email_voucher">
+                                            Email Gift Card
                                         </button>
-                                        <button type="button" class="btn btn-secondary p-2 dt-edit" ids="'.$row->id.'" initial_value="'.$row->value.'" remaining_value="'.$row->remaining_value.'" notes="'.$row->notes.'" expiry_date="'.$row->expiry_date.'" tracking_number="'.$row->tracking_number.'" data-bs-toggle="modal" data-bs-target="#edit_gift_cards">
-                                            Edit Gift Card
+                                        <button type="button" class="btn p-2 btn-danger cancel-gift" ids="'.$row->id.'" tracking_number="'.$row->tracking_number.'" data-bs-toggle="modal" data-bs-target="#cancel_gift_card">
+                                            Cancel Gift Card
                                         </button>';
-                                        // Check if the expiry date has not passed
-                                        $expiryDate = Carbon::parse($row->expiry_date);
-                                        if (!$expiryDate->isPast()) {
-                                            $btn .= '<button type="button" class="btn btn-secondary p-2 dt-edit" ids="'.$row->id.'" initial_value="'.$row->value.'" remaining_value="'.$row->remaining_value.'" notes="'.$row->notes.'" expiry_date="'.$row->expiry_date.'" tracking_number="'.$row->tracking_number.'" data-bs-toggle="modal" data-bs-target="#email_voucher">
-                                                        Email Gift Card
-                                                    </button>
-                                                    <button type="button" class="btn p-2 btn-danger cancel-gift" ids="'.$row->id.'" tracking_number="'.$row->tracking_number.'" data-bs-toggle="modal" data-bs-target="#cancel_gift_card">
-                                                        Cancel Gift Card
-                                                    </button>';
-                                        }
-                                        $btn .= '</div>';
-                                        return $btn;
-                        }                            
-                    })
+                            }
+                        }
+                    
+                        $btn .= '</div>';
+                        return $btn;
+                    })                    
                     ->rawColumns(['action', 'details', 'remaining_value'])
                     ->make(true);
             }
@@ -247,7 +247,7 @@ class GiftCardsController extends Controller
         }
         $update = GiftCard::updateOrCreate(['id' => $request->hdn_id],[
             'remaining_value' => $request->remaining_value,
-            'expiry_date' => $request->edit_expiry_date,
+            'expiry_date' => isset($request->is_expired)?$request->edit_expiry_date:null,
             'notes' => $request->edit_notes
         ]);
 
