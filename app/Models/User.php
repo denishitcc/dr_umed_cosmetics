@@ -12,6 +12,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 // use Laravel\Jetstream\HasProfilePhoto;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Permissions;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Auth;
 
 class User extends Authenticatable
@@ -352,6 +353,16 @@ class User extends Authenticatable
             }
             return "No permission";
         }
+    }
+
+    /**
+     * Get all of the user_services for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function user_services(): HasMany
+    {
+        return $this->hasMany(UsersServices::class, 'user_id', 'id');
     }
 
 

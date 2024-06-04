@@ -1,4 +1,5 @@
-@extends('layouts/sidebar')
+@extends('layouts.sidebar')
+@section('title', 'Edit User')
 @section('content')
 <meta name="csrf-token" content="{{ csrf_token() }}" />
     <!-- Page content-->
@@ -146,7 +147,47 @@
                     <button type="button" class="btn btn-sm black-btn round-6 dt-delete remove_image">
                         <i class="ico-trash"></i>
                         </button>
-                    
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-lg-3">
+                    <label class="form-label">Performs all services</label>
+                    <div class="toggle form-group">
+                        <input type="radio" name="all_services" value="0" id="no1" checked="checked">
+                        <label for="no1">No <i class="ico-tick"></i></label>
+                        <input type="radio" name="all_services" value="1" id="yes1">
+                        <label for="yes1">Yes <i class="ico-tick"></i></label>
+                    </div>
+                </div>
+                <label for="" class="hide_services">Set capabilities below or <a
+                        href="javascript:void(0);">copy another staff member's capabilities.</a></label>
+            </div>
+
+            <div class="row form-group hide_services">
+                <div class="col-lg-6">
+                    <div class="d-flex justify-content-between mb-2">
+                        <label class="form-label mb-0">Services</label>
+                        <div class="small-tool">Select:
+                            <a href="javascript:void(0);" class="me-2 ms-2 btn-link select_all">All</a> | <a
+                                href="javascript:void(0);" class="ms-2 btn-link select_none">None</a>
+                        </div>
+                    </div>
+                    <div class="bor-box pd-20 scroll-y mb-3">
+                        @if (count($services) > 0)
+                            <ul class="list-group list-group-flush ad-flus">
+                                @foreach ($services as $service)
+                                    <li class="list-group-item">
+                                        <label class="cst-check d-flex align-items-center">
+                                            <input type="checkbox" value="{{ $service->id }}" name="services[]" class="services" {{ in_array($service->id, $users->user_services->pluck('services_id')->toArray()) ? 'checked' : '' }}>
+                                            <span
+                                                class="checkmark me-2"></span>{{ $service->service_name }}
+                                        </label>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @endif
+                    </div>
                 </div>
             </div>
 

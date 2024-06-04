@@ -13,6 +13,8 @@ use DataTables;
 use App\Models\EmailTemplates;
 use App\Models\FormSummary;
 use App\Models\Locations;
+use App\Models\Services;
+use App\Models\UsersServices;
 
 class UsersController extends Controller
 {
@@ -77,7 +79,8 @@ class UsersController extends Controller
         if ($permission === 'View & Make Changes' || $permission === 'Both' || $permission === true) {
             $userRole = UserRoles::get();
             $locations = Locations::all();
-            return view('users.create',compact('userRole','locations'));
+            $services = Services::all();
+            return view('users.create',compact('userRole','locations','services'));
         }else{
             abort(403, 'You are not authorized to access this page.');
         }
@@ -88,6 +91,7 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         $password = $this->generatePassword(8);
 
         $file = $request->file('image');
@@ -123,13 +127,22 @@ class UsersController extends Controller
             'available_in_online_booking'   => $request->available_in_online_booking,
             'calendar_color'                => $request->calendar_color
         ]);
-        
+
         if($newUser){
+            $services = $request->services;
+
+            foreach ($services as $value) {
+                $userservices[] = [
+                    'services_id' => $value,
+                    'user_id'     => $newUser->id,
+                ];
+            }
+            $user_services   = UsersServices::insert($userservices);
 
             $emailtemplate = EmailTemplates::where('email_template_type', 'User Register')->first();
-            
+
             $_data = array('email'=>$request->email,'username'=>$request->first_name.' '.$request->last_name,'password'=>$password,'subject' => $emailtemplate->subject);
-            
+
             if($emailtemplate)
             {
                 $templateContent = $emailtemplate->email_template_description;
@@ -181,7 +194,8 @@ class UsersController extends Controller
             $users      = User::find($id);
             $userRole   = UserRoles::get();
             $locations  = Locations::all();
-            return view('users.edit', compact('users','userRole','locations'));
+            $services   = Services::all();
+            return view('users.edit', compact('users','userRole','locations','services'));
         }else{
             abort(403, 'You are not authorized to access this page.');
         }
@@ -236,7 +250,18 @@ class UsersController extends Controller
             'available_in_online_booking'   => $request->available_in_online_booking,
             'calendar_color'                => $request->calendar_color
         ]);
-        
+
+        $services = $request->services;
+        UsersServices::where('user_id',$request->id)->delete();
+
+        foreach ($services as $value) {
+            $userservices[] = [
+                'services_id' => $value,
+                'user_id'     => $newUser->id,
+            ];
+        }
+        $user_services   = UsersServices::insert($userservices);
+
         if($newUser){
             $response = [
                 'success'   => true,

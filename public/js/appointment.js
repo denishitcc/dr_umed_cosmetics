@@ -2831,9 +2831,6 @@ var DU = {};
                 var appointment_form_id = $('#appointment_form_id').data('appointment_form_id'),
                     appointment_id      = $('#appointment_form_id').data('appointment_id') ,
                     form_id             = $('#appointment_form_id').data('form_id') ;
-                console.log(appointment_form_id);
-                console.log(appointment_id);
-                console.log(form_id);
 
                 $.ajax({
                     headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
