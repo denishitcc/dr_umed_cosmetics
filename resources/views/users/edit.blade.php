@@ -188,6 +188,20 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label class="form-label">First date to appear on calendar</label>
+                        <input type="date" class="form-control" name="first_date" id="first_name" value="{{ $users->first_date_appear_on_calnedar }}" >
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label class="form-label">Last date to appear on calendar</label>
+                        <input type="date" class="form-control" name="last_date" id="first_name" value="{{ $users->last_date_appear_on_calnedar }}"  >
+                    </div>
+                </div>
+            </div>
 
             <div class="col-lg-12 text-lg-end mt-4">
                 <button type="button" class="btn btn-light me-2" onclick="window.location='{{ url("users") }}'">Discard</button>

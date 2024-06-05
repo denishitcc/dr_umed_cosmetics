@@ -47,7 +47,9 @@ class User extends Authenticatable
         'staff_member_location',
         'last_login',
         'available_in_online_booking',
-        'calendar_color'
+        'calendar_color',
+        'first_date_appear_on_calnedar',
+        'last_date_appear_on_calnedar'
     ];
 
     /**

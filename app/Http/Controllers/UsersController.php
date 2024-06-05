@@ -117,20 +117,22 @@ class UsersController extends Controller
             }
         }
         $newUser = User::create([
-            'first_name'                    => $request->first_name,
-            'last_name'                     => $request->last_name,
-            'phone'                         => $request->phone,
-            'email'                         => $request->email,
-            'password'                      => Hash::make($password),
-            'gender'                        => $request->gender,
-            'role_type'                     => $request->role_type,
-            'access_level'                  => $request->access_level,
-            'image'                         => $img,
-            'is_staff_memeber'              => $request->is_staff_memeber,
-            'staff_member_location'         => $request->staff_member_location,
-            'available_in_online_booking'   => $request->available_in_online_booking,
-            'calendar_color'                => $request->calendar_color,
-            'all_services'                  => $request->all_services,
+            'first_name'                        => $request->first_name,
+            'last_name'                         => $request->last_name,
+            'phone'                             => $request->phone,
+            'email'                             => $request->email,
+            'password'                          => Hash::make($password),
+            'gender'                            => $request->gender,
+            'role_type'                         => $request->role_type,
+            'access_level'                      => $request->access_level,
+            'image'                             => $img,
+            'is_staff_memeber'                  => $request->is_staff_memeber,
+            'staff_member_location'             => $request->staff_member_location,
+            'available_in_online_booking'       => $request->available_in_online_booking,
+            'calendar_color'                    => $request->calendar_color,
+            'all_services'                      => $request->all_services,
+            'first_date_appear_on_calnedar'     => $request->first_date,
+            'last_date_appear_on_calnedar'      => $request->last_date,
         ]);
 
         if($newUser){
@@ -242,20 +244,22 @@ class UsersController extends Controller
             }
         }
         $newUser = User::updateOrCreate(['id' => $request->id],[
-            'first_name'                    => $request->first_name,
-            'last_name'                     => $request->last_name,
-            'phone'                         => $request->phone,
-            // 'email'                      => $request->email,
-            'password'                      => Hash::make($password),
-            'gender'                        => $request->gender,
-            'role_type'                     => $request->role_type,
-            'access_level'                  => $request->access_level,
-            'is_staff_memeber'              => $request->is_staff_memeber,
-            'staff_member_location'         => $request->is_staff_memeber!='0'?$request->staff_member_location:null,
-            'image'                         => $img,
-            'available_in_online_booking'   => $request->available_in_online_booking,
-            'calendar_color'                => $request->calendar_color,
-            'all_services'                  => $request->all_services,
+            'first_name'                        => $request->first_name,
+            'last_name'                         => $request->last_name,
+            'phone'                             => $request->phone,
+            // 'email'                          => $request->email,
+            'password'                          => Hash::make($password),
+            'gender'                            => $request->gender,
+            'role_type'                         => $request->role_type,
+            'access_level'                      => $request->access_level,
+            'is_staff_memeber'                  => $request->is_staff_memeber,
+            'staff_member_location'             => $request->is_staff_memeber!='0'?$request->staff_member_location:null,
+            'image'                             => $img,
+            'available_in_online_booking'       => $request->available_in_online_booking,
+            'calendar_color'                    => $request->calendar_color,
+            'all_services'                      => $request->all_services,
+            'first_date_appear_on_calnedar'     => $request->first_date,
+            'last_date_appear_on_calnedar'      => $request->last_date,
         ]);
 
         $services = $request->services;
