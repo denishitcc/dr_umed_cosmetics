@@ -156,7 +156,7 @@
                         </div>
                     </div>
                     <label for="" class="hide_services">Set capabilities below or <a
-                            href="javascript:void(0);">copy another staff member's capabilities.</a></label>
+                            href="javascript:void(0);" class="copy_capabilities">copy another staff member's capabilities.</a></label>
                 </div>
 
                 <div class="row form-group hide_services">
@@ -194,10 +194,14 @@
             </div>
         </form>
     </div>
+    @include('users.partials.copy_capabilities')
     <!-- </main> -->
 @stop
 @section('script')
     <script>
+        var moduleConfig = {
+            copyCapabilities:   "{!! route('user.copyCapabilities') !!}",
+        };
         $.validator.addMethod("validImageExtension", function(value, element) {
             // Check if the file extension is one of the allowed extensions
             return this.optional(element) || /^(png|jpe?g)$/i.test(value.split('.').pop());
@@ -333,6 +337,37 @@
                 // $('#imgInput').attr('src', '#');
                 $("#imgInput").val(null);
                 e.preventDefault();
+            })
+
+            // Open Copy Capabilities Modal
+            $('.copy_capabilities').click(function(e) {
+                $('#copy_capabilities_modal').modal('show');
+            })
+
+            // Copy Capabilities
+            $('#copyCap').click(function(e) {
+                var staffId = $('#staff_cap :selected').val();
+                $.ajax({
+                    url: moduleConfig.copyCapabilities,
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {
+                        'staff_id'  : staffId,
+                    },
+                    success: function (data) {
+                        console.log(data.services);
+                        $.each(data.services, function( index, value) {
+                            $('.services[value="'+ value +'"]').prop('checked', true);
+                            $('#copy_capabilities_modal').modal('hide');
+                        });
+                        return false;
+                    },
+                    error: function (error) {
+                        console.error('Error fetching capabilities:', error);
+                    }
+                });
             })
         });
         $(document).on('submit', '#create_user', function(e) {

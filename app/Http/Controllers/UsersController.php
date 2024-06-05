@@ -15,6 +15,7 @@ use App\Models\FormSummary;
 use App\Models\Locations;
 use App\Models\Services;
 use App\Models\UsersServices;
+use Illuminate\Support\Facades\Auth;
 
 class UsersController extends Controller
 {
@@ -75,13 +76,16 @@ class UsersController extends Controller
      */
     public function create()
     {
-        $permission = \Auth::user()->checkPermission('users');
-        if ($permission === 'View & Make Changes' || $permission === 'Both' || $permission === true) {
-            $userRole = UserRoles::get();
-            $locations = Locations::all();
-            $services = Services::all();
-            return view('users.create',compact('userRole','locations','services'));
-        }else{
+        $permission = Auth::user()->checkPermission('users');
+        if ($permission === 'View & Make Changes' || $permission === 'Both'|| $permission === true) {
+
+            $userRole   = UserRoles::get();
+            $locations  = Locations::all();
+            $services   = Services::all();
+            $alluser    = User::where('id', '!=', Auth::user()->id)->get();
+
+            return view('users.create',compact('userRole','locations','services','alluser'));
+        } else {
             abort(403, 'You are not authorized to access this page.');
         }
     }
@@ -125,7 +129,8 @@ class UsersController extends Controller
             'is_staff_memeber'              => $request->is_staff_memeber,
             'staff_member_location'         => $request->staff_member_location,
             'available_in_online_booking'   => $request->available_in_online_booking,
-            'calendar_color'                => $request->calendar_color
+            'calendar_color'                => $request->calendar_color,
+            'all_services'                  => $request->all_services,
         ]);
 
         if($newUser){
@@ -195,7 +200,8 @@ class UsersController extends Controller
             $userRole   = UserRoles::get();
             $locations  = Locations::all();
             $services   = Services::all();
-            return view('users.edit', compact('users','userRole','locations','services'));
+            $alluser    = User::where('id', '!=', Auth::user()->id)->get();
+            return view('users.edit', compact('users','userRole','locations','services','alluser'));
         }else{
             abort(403, 'You are not authorized to access this page.');
         }
@@ -248,7 +254,8 @@ class UsersController extends Controller
             'staff_member_location'         => $request->is_staff_memeber!='0'?$request->staff_member_location:null,
             'image'                         => $img,
             'available_in_online_booking'   => $request->available_in_online_booking,
-            'calendar_color'                => $request->calendar_color
+            'calendar_color'                => $request->calendar_color,
+            'all_services'                  => $request->all_services,
         ]);
 
         $services = $request->services;
@@ -285,14 +292,13 @@ class UsersController extends Controller
     public function destroy(Request $request)
     {
         User::find($request->id)->delete();
-        
+
         $response = [
             'success' => true,
             'message' => 'User deleted successfully!',
             'type' => 'success',
             'data_id' => $request->id
         ];
-    
 
         return response()->json($response);
     }
@@ -362,11 +368,41 @@ class UsersController extends Controller
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charactersLength = strlen($characters);
         $randomPassword = '';
-        
+
         for ($i = 0; $i < $length; $i++) {
             $randomPassword .= $characters[mt_rand(0, $charactersLength - 1)];
         }
 
         return $randomPassword;
+    }
+
+    /**
+     * Method copyCapabilities
+     *
+     * @param Request $request [explicite description]
+     *
+     * @return void
+     */
+    public function copyCapabilities(Request $request)
+    {
+        try {
+
+            $userservices = UsersServices::where('user_id',$request->staff_id)->pluck('services_id')->toArray();
+
+            $data = [
+                'status'       => true,
+                'message'      => 'Details found.',
+                'services'     => $userservices,
+            ];
+
+        } catch (\Throwable $th) {
+            //throw $th;
+            $data = [
+                'success' => false,
+                'message' => 'Something went wrong!',
+                'type'    => 'fail',
+            ];
+        }
+        return response()->json($data);
     }
 }

@@ -5,7 +5,6 @@
     <!-- Page content-->
     <!-- <main> -->
         <div class="card">
-            
             <div class="card-head">
                 <h4 class="small-title mb-5">Edit Staff</h4>
                 <h5 class="d-grey mb-0">Details | Photos</h5>
@@ -19,7 +18,6 @@
                 <div class="col-lg-4">
                     <div class="form-group">
                         <label class="form-label">First Name</label>
-                        
                         <input type="text" class="form-control" name="first_name" id="first_name" maxlength="50" value="{{$users->first_name}}">
                         </div>
                 </div>
@@ -161,7 +159,7 @@
                     </div>
                 </div>
                 <label for="" class="hide_services">Set capabilities below or <a
-                        href="javascript:void(0);">copy another staff member's capabilities.</a></label>
+                        href="javascript:void(0);" class="copy_capabilities">copy another staff member's capabilities.</a></label>
             </div>
 
             <div class="row form-group hide_services">
@@ -199,10 +197,14 @@
             </div>
             </form>
         </div>
+    @include('users.partials.copy_capabilities')
 <!-- </main> -->
 @endsection
 @section('script')
 <script>
+    var moduleConfig = {
+        copyCapabilities:   "{!! route('user.copyCapabilities') !!}",
+    };
     $.validator.addMethod("validImageExtension", function(value, element) {
         // Check if the file extension is one of the allowed extensions
         return this.optional(element) || /^(png|jpe?g)$/i.test(value.split('.').pop());
@@ -316,11 +318,41 @@
             }
         });
         $('.remove_image').click(function(e){
-            
             $('#imgPreview').attr('src', "{{URL::to('/storage/images/banner_image/no-image.jpg')}}");
             $('#imgremove').val('1');
             $("#imgInput").val(null);
             e.preventDefault();
+        })
+
+        // Open Copy Capabilities Modal
+        $('.copy_capabilities').click(function(e) {
+            $('#copy_capabilities_modal').modal('show');
+        })
+
+        // Copy Capabilities
+        $('#copyCap').click(function(e) {
+            var staffId = $('#staff_cap :selected').val();
+            $.ajax({
+                url: moduleConfig.copyCapabilities,
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    'staff_id'  : staffId,
+                },
+                success: function (data) {
+                    console.log(data.services);
+                    $.each(data.services, function( index, value) {
+                        $('.services[value="'+ value +'"]').prop('checked', true);
+                        $('#copy_capabilities_modal').modal('hide');
+                    });
+                    return false;
+                },
+                error: function (error) {
+                    console.error('Error fetching capabilities:', error);
+                }
+            });
         })
     });
     $(document).on('submit','#edit_users',function(e){
@@ -343,10 +375,8 @@
             contentType: false,
             data: data,
 			success: function(response) {
-				
 				// Show a Sweet Alert message after the form is submitted.
 				if (response.success) {
-					
 					Swal.fire({
 						title: "User!",
 						text: "Your User updated successfully.",
@@ -354,9 +384,7 @@
 					}).then((result) => {
                         window.location = "{{url('users')}}"//'/player_detail?username=' + name;
                     });
-					
 				} else {
-					
 					Swal.fire({
 						title: "Error!",
 						text: response.message,

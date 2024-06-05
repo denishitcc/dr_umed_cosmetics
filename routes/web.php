@@ -94,6 +94,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('users/checkEmail', [UsersController::class, 'checkEmail']);
         Route::post('users/update_info', [UsersController::class, 'update_info'])->name('update_info');
         Route::post('users/updateStatus', [UsersController::class, 'updateStatus']);
+        Route::post('users/copy-capabilities', [UsersController::class, 'copyCapabilities'])->name('user.copyCapabilities');
         // Route::post('/get-all-locations', [UsersController::class, 'get_all_locations'])->name('get-all-locations');
     });
 
