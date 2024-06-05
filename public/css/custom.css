@@ -771,7 +771,18 @@ div.dataTables_filter { text-align: right; float: right;}
 
 .table.no-border-table td, .table.no-border-table th{ border: none;}
 
-
+.normalWorking {
+  color: #0076bc;
+}
+.editedWorking {
+  color: #e46c8a;
+}
+.squareIcon {
+  color: #d0d0d0;
+}
+.onLeave {
+  color: #fdc02f;
+}
 /* report */
 
 .one-inline { display: flex; flex-wrap: wrap;}

@@ -21,6 +21,8 @@ use App\Http\Controllers\ProductCategoriesController;
 use App\Http\Controllers\FinanceController;
 use App\Http\Controllers\DiscountCouponsController;
 use App\Http\Controllers\GiftCardsController;
+use App\Http\Controllers\TimeTableController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -95,6 +97,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('users/update_info', [UsersController::class, 'update_info'])->name('update_info');
         Route::post('users/updateStatus', [UsersController::class, 'updateStatus']);
         Route::post('users/copy-capabilities', [UsersController::class, 'copyCapabilities'])->name('user.copyCapabilities');
+        Route::get('timetable', [TimeTableController::class, 'index'])->name('user.timetable');
         // Route::post('/get-all-locations', [UsersController::class, 'get_all_locations'])->name('get-all-locations');
     });
 

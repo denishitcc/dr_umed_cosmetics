@@ -148,6 +148,9 @@
                     <li class="{{ (request()->is('users')) ? 'active' : '' }} || {{ (request()->is('users/*')) ? 'active' : '' }}">
                         <a href="{{ route('users.index') }}"><i class="ico-staff"></i>Staffs</a>
                     </li>
+                    <li class="{{ (request()->is('timetable')) ? 'active' : '' }} || {{ (request()->is('timetable/*')) ? 'active' : '' }}">
+                        <a href="{{ route('user.timetable') }}"><i class="ico-calendar"></i>Timetable</a>
+                    </li>
                     @endif
                     @if(\Auth::user()->checkPermission('settings') == "true" || \Auth::user()->checkPermission('settings') != "No permission")
                     <li class="dropdown {{ (request()->is('settings')) ? 'active' : '' }} || {{ (request()->is('settings')) ? 'show' : '' }} || {{ (request()->is('users-roles')) ? 'active' : '' }} || {{ (request()->is('users-roles/*')) ? 'active' : '' }} || {{ (request()->is('users-roles')) ? 'show' : '' }} || {{ (request()->is('access-level')) ? 'show' : '' }} || {{ (request()->is('access-level')) ? 'active' : '' }}">

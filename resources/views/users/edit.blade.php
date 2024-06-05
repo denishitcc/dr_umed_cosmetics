@@ -202,6 +202,11 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <a href="{{ route('user.timetable') }}" class="btn btn-primary btn-md new_app">Manage timetable</a>
+                </div>
+            </div>
 
             <div class="col-lg-12 text-lg-end mt-4">
                 <button type="button" class="btn btn-light me-2" onclick="window.location='{{ url("users") }}'">Discard</button>
