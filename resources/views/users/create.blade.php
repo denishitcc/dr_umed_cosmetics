@@ -218,6 +218,12 @@
                     $('.hide_services').show();
                 }
             });
+            $('.select_none').click(function(){
+                $("input[name='services[]']:checkbox").prop('checked',false);
+            })
+            $('.select_all').click(function(){
+                $("input[name='services[]']:checkbox").prop('checked',true);
+            })
             $("#create_user").validate({
                 rules: {
                     first_name: {

@@ -209,7 +209,6 @@
     }, "Only PNG, JPEG, or JPG images are allowed.");
 
     $(document).ready(function() {
-        
         var staffs = $("input[type=radio][name='is_staff_memeber']:checked").val();
         if(staffs== 0) {
             $('.staff_hide').hide();
@@ -224,6 +223,12 @@
                 $('.staff_hide').hide();
             }
         });
+        $('.select_none').click(function(){
+            $("input[name='services[]']:checkbox").prop('checked',false);
+        })
+        $('.select_all').click(function(){
+            $("input[name='services[]']:checkbox").prop('checked',true);
+        })
 		$("#edit_users").validate({
             rules: {
                 first_name: {
