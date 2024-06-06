@@ -9,67 +9,109 @@ var DU = {};
         addHandler: function (){
             var context = this;
             context.initialCalender();
+            context.getlocationId();
+            context.changelocation();
         },
 
         initialCalender: function(){
+            var context  = this;
             var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'resourceTimeGridDay',
-                headerToolbar: {
+            context.calendar = new FullCalendar.Calendar(calendarEl, {
+                plugins: ['interaction', 'resourceTimeline'],
+                timeZone: 'UTC',
+                defaultView: 'resourceTimelineWeek',
+                columnHeaderHtml: function (date) {
+                    return '<span class="day-name">' + date.format('ddd') + '</span><span class="day-number">' + date.format('DD') + '</span>';
+                },
+                header: {
                     left: 'prev,today,next',
                     center: 'title',
-                    // right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
-                    right: 'resourceTimeGridDay,resourceTimeGridWeek,resourceTimelineMonth,resourceTimelineYear'
+                    right: 'resourceTimelineWeek,resourceTimelineMonth'
                 },
-                resources: [{
-                        id: 'A',
-                        title: 'Resource A',
-                    },
-                    {
-                        id: 'B',
-                        title: 'Resource B',
-                    },
-                    {
-                        id: 'C',
-                        title: 'Resource C',
-                        backgroundColor: 'red'
+                slotLabelFormat: [
+                    { weekday: "short", day: "2-digit" , month: "2-digit"}, // lower level of text
+                ],
+                views: {
+                    resourceTimelineWeek: {
+                        slotDuration: {
+                            days: 1
+                        }
                     }
-                ],
-                events: [{
-                        id: '1',
-                        resourceId: 'A',
-                        start: '2024-02-07T09:00:00',
-                        end: '2024-02-28T12:00:00',
-                        title: 'Event 1',
-                        allDay: false,
-                        backgroundColor: "green",
-                        borderColor: "red"
-                    },
-                    {
-                        id: '2',
-                        resourceId: 'B',
-                        start: '2024-02-07T10:00:00',
-                        end: '2024-02-07T14:00:00',
-                        title: 'Event 2'
-                    },
-                    {
-                        id: '3',
-                        resourceId: 'C',
-                        start: '2024-02-07T10:00:00',
-                        end: '2024-02-07T14:00:00',
-                        title: 'Event 3',
-                        allDay: true,
-                        backgroundColor: "green"
-                    },
-                    // Add more events as needed
-                ],
-                selectable: true,
-                select: function (start, end, allDays) {
-                    console.log('test');
                 },
-                dayMaxEvents: true,
+                buttonText: {
+                    today: 'Today',
+                    week: 'Week',
+                    month: 'Month'
+                },
+                viewRender: function (view, element) {
+                    // Find the day headers and update their content
+                    element.find('.fc-cell-text').each(function () {
+                      var day = $(this).text();
+                      console.log(day);
+                      var date = moment(day, 'YYYY-MM-DD');
+                      var formattedDay = date.format('ddd'); // Change to three-letter day name
+                      $(this).text(formattedDay);
+                    });
+                },
+                // columnFormat: {
+                //     month: 'dddd',    // Monday, Wednesday, etc
+                //     week: 'dddd, MMM dS', // Monday 9/7
+                //     day: 'dddd, MMM dS'  // Monday 9/7
+                // },
+                editable: true,
+                resourceLabelText: 'Staff',
+                resources:  [],
+                // events: 'https://fullcalendar.io/demo-events.json?single-day&for-resource-timeline'
             });
-            calendar.render();
+
+            context.calendar.render();
         },
+
+        getlocationId: function(){
+            var context = this;
+            var locationId = $('#location').val();
+            context.changeStaff(locationId)
+        },
+
+        changelocation: function(){
+            var context = this;
+            jQuery('#location').on('change', function(e) {
+                var location_id           = $(this).val();
+                context.getlocationId(location_id);
+            });
+        },
+
+        changeStaff: function(locationId){
+            var context = this;
+            $.ajax({
+                url: moduleConfig.getStaffList,
+                type: 'POST',
+                data: {
+                    'location_id'    : locationId,
+                },
+                headers: {
+                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                },
+                success: function (data) {
+                    var resources = data.map(function (data) {
+                        return {
+                          id: data.id,
+                          title: data.title,
+                          // You can add more properties as needed
+                        };
+                      });
+                      resources.forEach(function (resource) {
+                        context.calendar.addResource(resource); // Add each resource
+                      });
+
+                    // Update the FullCalendar resources with the retrieved data
+                    // context.calendar.addResource(data);
+                    // context.calendar.refetchEvents(); // Refresh events if needed
+                },
+                error: function (error) {
+                    console.error('Error fetching on staff:', error);
+                }
+            });
+        }
     }
 })();

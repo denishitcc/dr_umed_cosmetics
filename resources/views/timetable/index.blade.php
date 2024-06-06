@@ -15,7 +15,7 @@
         <div class="row">
             <div class="col-lg-4">
                 <div class="form-group icon searh_data">
-                    <select class="form-select" id="staff">
+                    <select class="form-select" id="location">
                         @foreach ($locations as $location)
                             <option value="{{ $location->id }}">{{ $location->location_name }}</option>
                         @endforeach
@@ -51,12 +51,17 @@
 </div>
 @endsection
 @section('script')
-<script src="{{ asset('js/fullcalendar-scheduler-6.1.10/dist/index.global.js') }}"></script>
-<script src="{{ asset('js/fullcalendar-scheduler-6.1.10/dist/index.global.min.js') }}"></script>
+{{-- <script src="{{ asset('js/fullcalendar-scheduler-6.1.10/dist/index.global.js') }}"></script>
+<script src="{{ asset('js/fullcalendar-scheduler-6.1.10/dist/index.global.min.js') }}"></script> --}}
+<script src="https://unpkg.com/@fullcalendar/core@4.4.0/main.min.js"></script>
+<script src="https://unpkg.com/@fullcalendar/interaction@4.4.0/main.min.js"></script>
+<script src="https://unpkg.com/@fullcalendar/resource-common@4.4.0/main.min.js"></script>
+<script src="https://unpkg.com/@fullcalendar/timeline@4.4.0/main.min.js"></script>
+<script src="https://unpkg.com/@fullcalendar/resource-timeline@4.4.0/main.min.js"></script>
 <script src="{{ asset('js/timetable.js') }}"></script>
 <script type="text/javascript">
     var moduleConfig = {
-
+        getStaffList:                 "{!! route('get-staff-list') !!}",
     };
     $(document).ready(function()
     {
