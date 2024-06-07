@@ -2,28 +2,27 @@ var DU = {};
 (function () {
     DU.timetable = {
         calendar: null,
+        selectors: {
+            editWorkingModal:           jQuery('#edit_Working_hours'),
+        },
         init: function (){
             this.addHandler();
         },
 
         addHandler: function (){
             var context = this;
-            context.initialCalender();
+            context.initialTimeTable();
             context.getlocationId();
             context.changelocation();
         },
 
-        initialCalender: function(){
+        initialTimeTable: function(){
             var context  = this;
             var calendarEl = document.getElementById('calendar');
             context.calendar = new FullCalendar.Calendar(calendarEl, {
-                plugins: ['interaction', 'resourceTimeline'],
-                timeZone: 'UTC',
-                defaultView: 'resourceTimelineWeek',
-                columnHeaderHtml: function (date) {
-                    return '<span class="day-name">' + date.format('ddd') + '</span><span class="day-number">' + date.format('DD') + '</span>';
-                },
-                header: {
+                // timeZone: 'UTC',
+                initialView: 'resourceTimelineWeek',
+                headerToolbar: {
                     left: 'prev,today,next',
                     center: 'title',
                     right: 'resourceTimelineWeek,resourceTimelineMonth'
@@ -43,23 +42,8 @@ var DU = {};
                     week: 'Week',
                     month: 'Month'
                 },
-                viewRender: function (view, element) {
-                    // Find the day headers and update their content
-                    element.find('.fc-cell-text').each(function () {
-                      var day = $(this).text();
-                      console.log(day);
-                      var date = moment(day, 'YYYY-MM-DD');
-                      var formattedDay = date.format('ddd'); // Change to three-letter day name
-                      $(this).text(formattedDay);
-                    });
-                },
-                // columnFormat: {
-                //     month: 'dddd',    // Monday, Wednesday, etc
-                //     week: 'dddd, MMM dS', // Monday 9/7
-                //     day: 'dddd, MMM dS'  // Monday 9/7
-                // },
                 editable: true,
-                resourceLabelText: 'Staff',
+                resourceAreaHeaderContent: 'Staff',
                 resources:  [],
                 // events: 'https://fullcalendar.io/demo-events.json?single-day&for-resource-timeline'
             });
@@ -93,20 +77,7 @@ var DU = {};
                     'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
                 },
                 success: function (data) {
-                    var resources = data.map(function (data) {
-                        return {
-                          id: data.id,
-                          title: data.title,
-                          // You can add more properties as needed
-                        };
-                      });
-                      resources.forEach(function (resource) {
-                        context.calendar.addResource(resource); // Add each resource
-                      });
-
-                    // Update the FullCalendar resources with the retrieved data
-                    // context.calendar.addResource(data);
-                    // context.calendar.refetchEvents(); // Refresh events if needed
+                    context.calendar.setOption('resources', data);
                 },
                 error: function (error) {
                     console.error('Error fetching on staff:', error);

@@ -53,11 +53,8 @@
 @section('script')
 {{-- <script src="{{ asset('js/fullcalendar-scheduler-6.1.10/dist/index.global.js') }}"></script>
 <script src="{{ asset('js/fullcalendar-scheduler-6.1.10/dist/index.global.min.js') }}"></script> --}}
-<script src="https://unpkg.com/@fullcalendar/core@4.4.0/main.min.js"></script>
-<script src="https://unpkg.com/@fullcalendar/interaction@4.4.0/main.min.js"></script>
-<script src="https://unpkg.com/@fullcalendar/resource-common@4.4.0/main.min.js"></script>
-<script src="https://unpkg.com/@fullcalendar/timeline@4.4.0/main.min.js"></script>
-<script src="https://unpkg.com/@fullcalendar/resource-timeline@4.4.0/main.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar-scheduler@6.1.14/index.global.min.js"></script>
 <script src="{{ asset('js/timetable.js') }}"></script>
 <script type="text/javascript">
     var moduleConfig = {
