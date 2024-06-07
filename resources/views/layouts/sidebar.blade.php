@@ -252,7 +252,7 @@
                                     </ul>
                                 </li> -->
                                 <li>
-                                    <a href="#" class="profile" id="dropdownMenuClickableInside" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">Hi, <span>{{substr(Auth::user()->first_name.' '.Auth::user()->last_name, 0, 15)}}</span> 
+                                    <a href="#" class="profile" id="dropdownMenuClickableInside" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false"><aside>Hi, <span>{{substr(Auth::user()->first_name.' '.Auth::user()->last_name, 0, 15)}}</span></aside>
                                     @if(Auth::user()->image=='')
                                     <figure><img src="{{ asset('/storage/images/banner_image/no-image.jpg') }}" alt=""></figure>
                                     @else

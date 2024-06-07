@@ -31,7 +31,7 @@ class GiftCardsController extends Controller
                                         <strong>'.$row->tracking_number.'</strong><br>
                                         Created: '.$createdAt.' at '.$row->purchase_at.'<br>
                                         Promotional Gift Card<br>
-                                        <div class="gift-card-notes" style="color: #000;background-color: #FCF8E3">'.htmlspecialchars($row->notes).'</div>
+                                        <div class="gift-card-notes p-2" style="color: #000;background-color: #FCF8E3">'.htmlspecialchars($row->notes).'</div>
                                     </div>';
                         return $details;
                     })  
