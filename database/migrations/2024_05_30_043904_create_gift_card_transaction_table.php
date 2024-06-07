@@ -17,7 +17,7 @@ return new class extends Migration
             $table->timestamp('date_time')->nullable();
             $table->string('location_name')->nullable();
             $table->decimal('redeemed_value', 10, 2)->nullable(); // Example decimal type, adjust as needed
-            $table->string('redeemed_value_type',15)->nullable();
+            $table->string('redeemed_value_type',50)->nullable();
             $table->string('redeemed_by', 100)->nullable();
             $table->string('invoice_number')->nullable();
             $table->timestamps();

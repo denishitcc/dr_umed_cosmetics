@@ -232,6 +232,8 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware('permission:finance')->group(function () {
         Route::resource('finance', FinanceController::class);
         Route::post('finance/table',[FinanceController::class, 'index'])->name('finance.table');
+        Route::get('/search-gift-card', [FinanceController::class, 'search_gift_card'])->name('search-gift-card');
+        Route::get('/get-gift-card-history', [FinanceController::class, 'get_gift_card_history'])->name('get-gift-card-history');
     });
 
     //discount coupons

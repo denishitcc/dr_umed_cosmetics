@@ -12,7 +12,11 @@
                 </td>
                 <td>
                     ${{ number_format($transaction->redeemed_value, 2) }} {{ $transaction->redeemed_value_type }}<br>
+                    @if($transaction->redeemed_by == null)
+                    Invoice #INV{{ $transaction->invoice_number }}<br>
+                    @else
                     Edited in {{ $transaction->redeemed_by }}<br>
+                    @endif
                 </td>
             </tr>
         @endforeach

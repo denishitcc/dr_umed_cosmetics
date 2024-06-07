@@ -243,7 +243,7 @@ main{box-shadow: inset 0 0.46875rem 2.1875rem rgba(4,9,20,0.05), inset 0 0.9375r
 .card .card-body{ padding: 1.5rem;}
 
 .card .card-head{border-bottom: 1px solid #EEE;}
-.card .card-head .toolbar{ display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;}
+.card .card-head .toolbar{ display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;}
 
 .grey-card{border-radius: 5px; background: #F3F3F3; }
 
@@ -554,7 +554,7 @@ div.dataTables_filter { text-align: right; float: right;}
 
 /* All forms */
 
-.taskinfo-row{ padding: 0; margin: 0; list-style: none; display: flex;}
+.taskinfo-row{ padding: 0; margin: 0; list-style: none; display: flex; flex-wrap: wrap;}
 .taskinfo-row li{border-right: 1px solid #EEE; flex: auto; padding: 15px 25px;}
 .taskinfo-row li:first-child{ padding-left: 0;}
 .taskinfo-row li:last-child{ padding-right: 0; border: 0;}
@@ -1038,6 +1038,10 @@ html .hasDatepicker .ui-button.ui-state-disabled:active{ border: 0; background: 
 .scroll-y::-webkit-scrollbar-track { background:transparent; border-radius:0px; }
 .scroll-y::-webkit-scrollbar-thumb { background:rgba(0, 0, 0, 0); border-radius:0px; }
 
+.simple-link[aria-expanded]{ text-decoration: none; display: block; position: relative;}
+.simple-link[aria-expanded]:after{content: "\e945";  font-family: 'ico'; color: var(--black); position: absolute; right: 0; font-size: 22px; transition: .25s; transform: rotate(90deg);}
+.simple-link[aria-expanded="true"]:after{transform: rotate(-90deg);}
+
 
 /*  Responsive  */
 
@@ -1058,6 +1062,10 @@ html .hasDatepicker .ui-button.ui-state-disabled:active{ border: 0; background: 
     .auth-bg1 h2{font-size: 25px;}
     h3{ font-size: 24px;}
     .auth-logo img { max-width: 120px; }
+    .card .card-head .toolbar .tool-left a { margin-bottom: 10px;}
+    .dataTables_wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch;}
+    #main_row.row .col{ flex: 100%; margin-bottom: 20px; }
+    .drag-box .head i{     font-size: 2em;}
 }
 @media (max-width: 767px) {
     .auth-outr{ flex-wrap: wrap;}
@@ -1065,4 +1073,6 @@ html .hasDatepicker .ui-button.ui-state-disabled:active{ border: 0; background: 
     .auth-bg1{ order: 1;}
     .auth-1{ order: 2;}
     .p-10 { padding: 1rem;}
+    .modal-dialog{max-width: 100%;}
+    .sidetoggle{    transform: translate(0px, 0px);}
 }

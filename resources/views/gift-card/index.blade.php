@@ -10,9 +10,9 @@
                 </div>
                 <div class="tool-right">
                     @if(Auth::check() && (Auth::user()->role_type == 'admin'))
-                    <a href="#" class="btn btn-primary btn-md" data-bs-toggle="modal" data-bs-target="#gift_card">+ Free vouchers</a>
+                    <a href="#" class="btn btn-primary btn-md" data-bs-toggle="modal" data-bs-target="#gift_card">+ Free gift cards</a>
                     @elseif(Auth::user()->checkPermission('gift-card') != 'View Only')
-                    <a href="#" class="btn btn-primary btn-md" data-bs-toggle="modal" data-bs-target="#gift_card">+ Free vouchers</a>
+                    <a href="#" class="btn btn-primary btn-md" data-bs-toggle="modal" data-bs-target="#gift_card">+ Free gift cards</a>
                     @endif
                 </div>
             </div>
@@ -38,7 +38,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                <h4 class="modal-title" id="exampleModalLabel">Create Free Vouchers</h4>
+                <h4 class="modal-title" id="exampleModalLabel">Create Free Gift card</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="create_gift_cards" name="create_gift_cards" class="form">
@@ -56,7 +56,7 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="form-group">
-                                <label class="form-label">Value of each voucher</label>
+                                <label class="form-label">Value of each gift card</label>
                                 <div class="input-group value_error">
                                     <input type="text" class="form-control" id="value" name="value" maxlength="50">
                                     <span class="input-group-text "><span class="ico-dollar fs-4"></span></span>
@@ -132,7 +132,7 @@
                             <div class="form-group">
                                 <input type="checkbox" name="is_expired" id="is_expired" value="1" onchange="toggleExpiryDate()">
                                 <label class="form-label">Expires</label><br>
-                                <input type="date" name="edit_expiry_date" id="edit_expiry_date">
+                                <input type="date" name="edit_expiry_date" id="edit_expiry_date" class="form-control">
                             </div>
                         </div>
                     </div>

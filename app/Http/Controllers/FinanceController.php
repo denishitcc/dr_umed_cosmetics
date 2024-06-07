@@ -12,6 +12,8 @@ use App\Models\Clients;
 use App\Models\Locations;
 use App\Models\User;
 use Carbon\Carbon;
+use App\Models\GiftCard;
+use App\Models\GiftCardTransaction;
 
 class FinanceController extends Controller
 {
@@ -170,4 +172,52 @@ class FinanceController extends Controller
     {
         //
     }
+    public function search_gift_card(Request $request)
+    {
+        $query = $request->get('query', '');
+        $results = GiftCard::where('tracking_number',$query)
+            ->get();
+        // dd($results);
+        return response()->json($results);
+    }
+    public function get_gift_card_history(Request $request)
+    {
+        // Retrieve gift card details
+        $giftCard = GiftCard::findOrFail($request->id);
+
+        // Create an array for the initial transaction data (Created)
+        $initialTransaction = [
+            'redeemed_value_type' => 'Created',
+            'date_time' => $giftCard->created_at
+        ];        
+
+        // Retrieve gift card transactions
+        $transactions = GiftCardTransaction::where('gift_card_id', $request->id)
+            ->get();
+
+        // Add the initial transaction data to the beginning of the transactions array
+        $transactions->prepend($initialTransaction);
+
+        // Add transaction data for Expiry and Cancellation if available
+        if ($giftCard->cancelled_at) {
+            $expiryTransaction = [
+                'redeemed_value_type' => 'Cancelled',
+                'date_time' => $giftCard->cancelled_at
+            ];
+            $transactions->push($expiryTransaction);
+        }
+
+        if ($giftCard->expiry_date && now()->greaterThan($giftCard->expiry_date)) {
+            $expiryTransaction = [
+                'redeemed_value_type' => 'Expired',
+                'date_time' => $giftCard->expiry_date
+            ];
+            $transactions->push($expiryTransaction);
+        }
+
+        // Return the transactions as JSON response
+        return response()->json($transactions);
+    }
+
+
 }

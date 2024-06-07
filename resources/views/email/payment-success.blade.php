@@ -77,6 +77,9 @@
                 <tr>
                     <td colspan="3" style="padding: 0.9rem; text-align: right;">
                         Total Paid: <strong style="font-size: 20px;">${{ $invoice->total_paid }}</strong><br>
+                        @if(isset($invoice->change))
+                        Change: <strong style="font-size: 20px;">${{ $invoice->change }}</strong><br>
+                        @endif
                     </td>
                 </tr>
             </table>

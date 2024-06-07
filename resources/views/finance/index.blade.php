@@ -138,11 +138,17 @@
                                     <span class="blue-bold">$2,217.00 </span>
                                 </td>
                             </tr>
+                            <tr class="change" style="display:none;">
+                                <td colspan="2"><b>Change</b></td>
+                                <td id="totalPaid">
+                                    <span class="blue-bold change_amount">$0 </span>
+                                </td>
+                            </tr>
                         </tfoot>
                     </table>
                 </div>
                 <!-- Receipt form -->
-                <div class="form-group mb-3">
+                <div class="form-group mb-3 receipt_form">
                     <label class="form-label"><strong>Send receipt by email</strong></label>
                     <div class="row">
                         <div class="col-lg-10">
@@ -516,13 +522,15 @@
                     <div class="col-lg-4 make_sale_payment" style="display:none;">
                         <div class="form-group">
                             <label class="form-label">Payment</label>
-                            <select class="form-select form-control" name="payment_type[]" id="payment_type">
+                            <input type="hidden" name="hdn_tracking_number[]" class="hdn_tracking_number" data-id="1">
+                            <select class="form-select form-control payment_type" name="payment_type[]" id="payment_type" data-id="1">
                                 <option>Card</option>
                                 <option>Afterpay</option>
                                 <option>Bank Transfer</option>
                                 <option>Cash</option>
                                 <option>Humm payment</option>
                                 <option>Zip Pay</option>
+                                <option>Gift Card</option>
                             </select>
                             </div>
                     </div>
@@ -531,7 +539,7 @@
                             <label class="form-label">Amount</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="ico-dollar fs-4"></i></span>
-                                <input type="number" class="form-control payment_amount" name="payment_amount[]" placeholder="0">
+                                <input type="number" class="form-control payment_amount" name="payment_amount[]" placeholder="0" data-id="1">
                                 
                                 </div>
                             </div>
@@ -560,9 +568,13 @@
                             <td><b>Total</b></td>
                             <td class="text-end blue-bold payment_total"><b>$250.00</b></td>
                         </tr>
-                        <tr>
+                        <tr class="remaining_balance_div">
                             <td>Remaining balance</td>
                             <td class="text-end remaining_balance">$0.00</td>
+                        </tr>
+                        <tr class="change_owing_div" style="display:none;">
+                            <td>Change Owing</td>
+                            <td class="text-end change_owing">$0.00</td>
                         </tr>
                     </tbody>
                 </table>
@@ -588,7 +600,7 @@
                 max-width: 12%;">
                 <span id="paymentMessage"></span>
             </div>
-                <div class="form-group mb-3">
+                <div class="form-group mb-3 receipt_form">
                     <label class="form-label"><strong>Send receipt by email</strong></label>
                     <div class="row">
                         <div class="col-lg-10">
@@ -605,6 +617,125 @@
             <button type="button" class="btn btn-light btn-md close_payment">Close</button>
             <button type="button" class="btn btn-primary btn-md print_invoice" ids="">Print</button>
             <button type="button" class="btn btn-primary btn-md view_invoice" walk_in_ids="">View Invoice</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="Redeem_voucher" tabindex="-1" row-id="">
+    <input type="hidden" id="is_edit" value="no">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Redeem gift card</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                
+                <div class="form-group icon">
+                    <input type="text" class="form-control search_gift_card">
+                    <i class="ico-search"></i>
+                </div>
+                <div id="gift-card-results"></div>
+                <!-- <div class="invo-notice mb-3" style="display:none;">
+                    <div class="inv-left"><b>Voucher #9A6FCCED</b><br>
+                        <span class="font-13">
+                            <b>Expires:</b> 29 May 2025<br>
+                            <b>Created:</b> 29 May 2024
+                        </span>
+                    </div>
+
+                    <div class="inv-number"><b>$60.00</b><br>
+                        <small class="font-13">remaining</small>
+                        </div>
+                </div> -->
+
+                <!-- <div class="invo-notice mb-3" style="background: rgba(44, 44, 44, .07);display:none;">
+                    <div class="inv-left"><b>Voucher #9A6FCCED</b><br>
+                        <span class="font-13">
+                            <b>Expires:</b> 29 May 2025<br>
+                            <b>Created:</b> 29 May 2024
+                        </span>
+                    </div>
+
+                    <div class="inv-number"><b>$60.00</b><br>
+                        <small class="font-13">remaining</small>
+                        </div>
+                </div> -->
+                <!-- <div class="invo-notice mb-3" style="background: rgba(211, 237, 191, .35);display:none;">
+                    <div class="inv-left"><b>Voucher #9A6FCCED</b><br>
+                        <span class="font-13">
+                            <b>Expires:</b> 29 May 2025<br>
+                            <b>Created:</b> 29 May 2024
+                        </span>
+                    </div>
+
+                    <div class="inv-number"><b>$60.00</b><br>
+                        <small class="font-13">remaining</small>
+                        </div>
+                </div> -->
+                <!-- <div class="invo-notice mb-3" style="background: rgba(244, 181, 167, .30);display:none;">
+                    <div class="inv-left"><b>Voucher #9A6FCCED</b><br>
+                        <span class="font-13">
+                            <b>Expires:</b> 29 May 2025<br>
+                            <b>Created:</b> 29 May 2024
+                        </span>
+                    </div>
+
+                    <div class="inv-number"><b>$60.00</b><br>
+                        <small class="font-13">remaining</small>
+                        </div>
+                </div> -->
+
+                <div class="yellow-note-box p-2"  style="display:none;">
+                    <strong>Notes:</strong> test from vrushank
+                </div>
+
+                <div id="voucher-alert" class="alert alert-danger d-flex align-items-center mb-4 expired" role="alert" style="display: none !important;">
+                    This gift card has expired but can still be redeemed
+                </div>
+                <div id="voucher-alert" class="alert alert-danger d-flex align-items-center mb-4 voucher_cancelled" role="alert" style="display: none !important;">
+                    This voucher has been cancelled
+                </div>
+                <div id="voucher-alert" class="alert alert-danger d-flex align-items-center mb-4 voucher_already_added" role="alert" style="display: none !important;">
+                    This voucher has already been added to the invoice
+                </div>
+                <div id="voucher-alert" class="alert alert-danger d-flex align-items-center mb-4 voucher_no_remaining" role="alert" style="display: none !important;">
+                    This voucher has no value remaining
+                </div>
+
+                <hr class="my-4" style="display:none;">
+
+                <div class="form-group" id="redemption-amount-section" style="display:none;">
+                    <label class="form-label">Redemption amount</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="ico-dollar fs-4"></i></span>
+                        <input type="text" class="form-control" placeholder="0" id="redemption-amount">
+                    </div>
+                </div>
+                <hr class="my-4" id="voucher-history" style="display: none;">
+                    <a class="simple-link collapsed" data-bs-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample" style="display:none;">
+                        Gift card history
+                    </a>
+                    <div class="collapse" id="collapseExample">
+                        <table class="table all-db-table align-middle table-striped mb-0 voucher-history">
+                            <tr>
+                                <td><strong>Created:</strong> 29 May 2024 as part of batch: vrushank</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Redeemed:</strong> $10.00 on 30 May 2024</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Redeemed:</strong> $10.00 on 30 May 2024</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Redeemed:</strong> $10.00 on 30 May 2024</td>
+                            </tr>
+                        </table>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light btn-md back_to_payment">Back to payment</button>
+                <button type="button" class="btn btn-primary btn-md redeem_gift_card" style="display:none;">Redeem</button>
             </div>
         </div>
     </div>
@@ -768,17 +899,24 @@ $(document).ready(function() {
             }
         },
         {
-            data: 'client_name', 
+            data: 'client_name',
             name: 'client_name',
-            render: function (data, type, row) {
+            render: function(data, type, row) {
                 var link = ''; // Initialize link variable
-                // Check permission here
-                if ("{{ $permission }}" != 'View Only') {
-                    // Permission allows viewing
-                    link = '<a class="blue-bold" href="clients/' + row.client_id + '">' + data + '</a>';
+                var clientName = data ? data : 'Casual customer'; // Set client name to 'Casual customer' if blank
+                
+                // Check if the client name is 'Casual customer'
+                if (clientName === 'Casual customer') {
+                    link = '<b>'+clientName+'</b>'; // Return plain text
                 } else {
-                    // Permission does not allow viewing
-                    link = '<a class="blue-bold" href="javascript:void(0);">' + data + '</a>';
+                    // Check permission here
+                    if ("{{ $permission }}" != 'View Only') {
+                        // Permission allows viewing
+                        link = '<a class="blue-bold" href="clients/' + row.client_id + '">' + clientName + '</a>';
+                    } else {
+                        // Permission does not allow viewing
+                        link = '<a class="blue-bold" href="javascript:void(0);">' + clientName + '</a>';
+                    }
                 }
                 return link;
             }
@@ -1251,6 +1389,39 @@ $(document).on('click','.paid_invoice',function(){
                 // response.invoice.invoice_date;
                 // populateInvoiceModal(response.invoice);
                 populateInvoiceModal(response.invoice, response.invoice.subtotal, response.invoice.discount, response.invoice.total);
+                //change owing code
+                if(parseFloat($('#totalPaid').text().replace('$', '')) > response.invoice.total)
+                {
+                    $('.change').show();
+                    var totalPaid = parseFloat($('#totalPaid').text().replace('$', ''));
+
+                    // Calculate the change amount
+                    var changeAmount = totalPaid - response.invoice.total;
+
+                    // Update the .change_amount element with the change amount, formatted with a dollar sign
+                    $('.change_amount').text('$' + changeAmount.toFixed(2));
+                }else{
+                    $('.change').hide();
+                }
+                // Check if payment type is 'Gift Card' and hide buttons accordingly
+                // Check if any payment type is 'Gift Card'
+                let hasGiftCard = false;
+                $.each(response.invoice.payments, function(index, payment) {
+                    if (payment.payment_type === 'Gift Card') {
+                        hasGiftCard = true;
+                        return false; // break out of the loop
+                    }
+                });
+
+                $('.voucher_not_edit').remove();
+                if (hasGiftCard) {
+                    $('.delete_invoice').hide();
+                    $('.edit_invoice').hide();
+                    $('.receipt_form').after('<div id="voucher-alert" class="alert alert-danger d-flex align-items-center mb-4 voucher_not_edit" role="alert" style="display: none;">This invoice cannot be edited or deleted as it includes Gift card payment types.</div>');
+                } else {
+                    $('.delete_invoice').show();
+                    $('.edit_invoice').show();
+                }
             }
         }
     });
@@ -1267,6 +1438,7 @@ $(document).on('click', '.edit_invoice', function(e) {
                 console.log('data', response.invoice);
                 $('#paid_Invoice').modal('hide');
                 $('#Walkin_Retail').modal('show');
+                $('.walkin_loc_name').text($('#locations option:selected').text());
                 $('.inv_type').val('walk-in');
                 var type_cus = response.invoice.customer_type;
                 if(type_cus =='new')
@@ -2401,16 +2573,29 @@ $(document).on('click', '.cancel_invoice', function(e) {
     $('#payment_type option:first').prop('selected',true);
     $('.send_email').val('');
 })
-$(document).on('click','.remove_product',function() {
-    $(this).parent().remove();
-    var type=$('#customer_type').val();
-    $('.total_selected_product').val($('.total_selected_product').val() - 1);
-    if($('.total_selected_product').val() == 0)
-    {
+$(document).on('click', '.remove_product', function() {
+    var $productElement = $(this).closest('.product-info1'); // Get the closest product-info1 element to the clicked remove button
+    var productId = $productElement.attr('prod_id'); // Get the product ID of the element to be removed
+
+    // Remove the product element from the current tab
+    $productElement.remove();
+
+    // Remove the product element from all other tabs
+    $('.tab-pane').find('.product-info1').each(function() {
+        if ($(this).attr('prod_id') == productId) {
+            $(this).remove();
+        }
+    });
+
+    // Update the total selected products and the button state
+    var type = $('#customer_type').val();
+    var totalSelectedProducts = parseInt($('.total_selected_product').val()) - 1;
+    $('.total_selected_product').val(totalSelectedProducts);
+    if (totalSelectedProducts == 0) {
         $('.take_payment').prop('disabled', true);
     }
     updateSubtotalAndTotal(type); // Update Subtotal and Total
-})
+});
 $(document).on('click','.remove_edit_product',function() {
     $('.edit_product').hide();
     $('.main_walk_in').show();
@@ -2454,6 +2639,10 @@ $(document).on('click', '.take_payment', function(e) {
         $('#Walkin_Retail').modal('hide');
         $('#take_payment').modal('show');
         $('.make_sale_payment').show();
+        // Check the number of payment rows and remove delete icon if only one
+        if ($('.payment_details').length <= 1) {
+            $('.remove_payment_btn').hide();
+        }
         if($('.edit_invoice_number:first').text()=='')
         {
             $('.payment_total').text('$' + $('.take_payment').attr('main_total'));
@@ -2497,6 +2686,7 @@ $(document).on('click', '.take_payment', function(e) {
                                                 <option ${payment.payment_type === 'Humm payment' ? 'selected' : ''}>Humm payment</option>
                                                 <!-- <option ${payment.payment_type === 'Voucher' ? 'selected' : ''}>Voucher</option> -->
                                                 <option ${payment.payment_type === 'Zip Pay' ? 'selected' : ''}>Zip Pay</option>
+                                                <option ${payment.payment_type === 'Gift Card' ? 'selected' : ''}>Gift Card</option>
                                             </select>
                                         </div>
                                     </div>
@@ -2527,6 +2717,8 @@ $(document).on('click', '.take_payment', function(e) {
 
                         $('.payment_total').text('$' + $('.take_payment').attr('main_total'));
                         $('.remaining_balance').text('$' + $('.take_payment').attr('main_remain'));
+                        updateRemoveIconVisibility(); // Update remove icon visibility
+                        updateRemainingBalance();
                     }
                 }
             });
@@ -2543,22 +2735,46 @@ $(document).on('click','.back_to_sale',function(){
     $('#take_payment').modal('hide');
     $('#Walkin_Retail').modal('show');
 })
-$(document).on('click','.add_another_payment',function(){
+$(document).on('click', '.add_another_payment', function() {
+    var lastRowId = 0;
+    var totalPaymentAmount = parseFloat($('.take_payment').attr('main_total')); // Get the total payment amount
+    var currentPaymentsTotal = 0; // Declare currentPaymentsTotal here
+
+    $('.payment_details').each(function() {
+        var currentId = parseInt($(this).find('.payment_amount').attr('data-id'));
+        var currentPayment = parseFloat($(this).find('.payment_amount').val());
+        currentPaymentsTotal += isNaN(currentPayment) ? 0 : currentPayment;
+
+        if (currentId > lastRowId) {
+            lastRowId = currentId;
+        }
+    });
+
+    var remainingBalance = totalPaymentAmount - currentPaymentsTotal;
+    var newRowId = lastRowId + 1;
     var paymentDetailsClone = $('.payment_details').first().clone(); // Clone the first .payment_details div
-    console.log('paymentDetailsClone',paymentDetailsClone);
-    paymentDetailsClone.find('.payment_amount').val('0');
+    console.log('paymentDetailsClone', paymentDetailsClone);
+
+    paymentDetailsClone.find('.payment_type').val('Card').attr('data-id', newRowId);
+    paymentDetailsClone.find('.payment_amount').val(remainingBalance.toFixed(2)).attr('data-id', newRowId); // Set remaining balance as payment amount
+    paymentDetailsClone.find('.hdn_tracking_number').val('').attr('data-id', newRowId);
     paymentDetailsClone.find('.payment_id').val('0');
     $('.payment_details:last').after(paymentDetailsClone); // Append the cloned div after the last .payment_details div
-    
+
     updateRemoveIconVisibility(); // Update remove icon visibility
     updateRemainingBalance(); // Update remaining balance
-})
+});
 $(document).on('input', '.payment_amount', function() {
     updateRemainingBalance(); // Update remaining balance when payment amount changes
 });
 $(document).on('click', '.complete_sale', function() {
     var payment_total = $('.payment_total').text();
     var remaining_balance = $('.remaining_balance').text();
+
+    var hdn_tracking_number = [];
+    $('.hdn_tracking_number').each(function() {
+        hdn_tracking_number.push($(this).val()); // Push each payment amount into the array
+    });
 
     var paymentIds = []; // Array to store selected payment types
     $('.payment_id').each(function() {
@@ -2620,6 +2836,10 @@ $(document).on('click', '.complete_sale', function() {
     formData.append('payment_total', payment_total);
     formData.append('remaining_balance', remaining_balance);
 
+    hdn_tracking_number.forEach(function(hdn_tracking_number) {
+        formData.append('hdn_tracking_number[]', hdn_tracking_number);
+    });
+
     SubmitWalkIn(formData);
 });
 $(document).on('click', '.remove_payment_btn', function() {
@@ -2647,6 +2867,39 @@ $(document).on('click', '.view_invoice', function() {
                 // response.invoice.invoice_date;
                 // populateInvoiceModal(response.invoice);
                 populateInvoiceModal(response.invoice, response.invoice.subtotal, response.invoice.discount, response.invoice.total);
+                //change owing code
+                if(parseFloat($('#totalPaid').text().replace('$', '')) > response.invoice.total)
+                {
+                    $('.change').show();
+                    var totalPaid = parseFloat($('#totalPaid').text().replace('$', ''));
+
+                    // Calculate the change amount
+                    var changeAmount = totalPaid - response.invoice.total;
+
+                    // Update the .change_amount element with the change amount, formatted with a dollar sign
+                    $('.change_amount').text('$' + changeAmount.toFixed(2));
+                }else{
+                    $('.change').hide();
+                }
+                // Check if payment type is 'Gift Card' and hide buttons accordingly
+                // Check if any payment type is 'Gift Card'
+                let hasGiftCard = false;
+                $.each(response.invoice.payments, function(index, payment) {
+                    if (payment.payment_type === 'Gift Card') {
+                        hasGiftCard = true;
+                        return false; // break out of the loop
+                    }
+                });
+                
+                $('.voucher_not_edit').remove();
+                if (hasGiftCard) {
+                    $('.delete_invoice').hide();
+                    $('.edit_invoice').hide();
+                    $('.receipt_form').after('<div id="voucher-alert" class="alert alert-danger d-flex align-items-center mb-4 voucher_not_edit" role="alert" style="display: none;">This invoice cannot be edited or deleted as it includes Gift card payment types.</div>');
+                } else {
+                    $('.delete_invoice').show();
+                    $('.edit_invoice').show();
+                }
             }
         }
     });
@@ -3061,6 +3314,304 @@ $(document).on('click', '.existing_client_change', function() {
     $('.client_search_bar').show();
     $('#existingclientmodal').hide();
 })
+
+var voucherModalOpened = false;
+$(document).on('click', '.payment_type', function() {
+    var rowId = $(this).parent().parent().parent().find('.payment_amount').attr('data-id');
+
+    if ($(this).val() === 'Gift Card' && !voucherModalOpened) {
+        //clear content
+        $('.search_gift_card').val('');
+        $('#gift-card-results').empty();
+        $('#voucher-alert').attr('style','display:none !important');
+        $('#redemption-amount-section').hide();
+        $('.simple-link').hide();
+        $('#voucher-history').hide();
+        $('.voucher-history').hide();
+        $('.voucher_cancelled').attr('style','display:none !important');
+        $('.voucher_already_added').attr('style','display:none !important');
+        $('.voucher_no_remaining').attr('style','display:none !important');
+        
+        $('#take_payment').modal('hide'); // Hide the Take Payment modal
+        // $('#Redeem_voucher').modal('show'); // Show the Redeem Voucher modal
+        $('#Redeem_voucher').attr('row-id', rowId).modal('show');
+        voucherModalOpened = true;
+    }else if($(this).val() != 'Gift Card')
+    {
+        voucherModalOpened = false;
+    }
+});
+
+// Optionally, you can add a handler to go back to payment modal from redeem voucher modal
+$(document).on('click', '.back_to_payment', function() {
+    var rowId = $('#Redeem_voucher').attr('row-id');
+    $('#Redeem_voucher').modal('hide');
+    $('#take_payment').modal('show');
+    // $('#payment_type').val('Card');
+    // Set data-id attribute of payment_amount[] inputs to 'Card'
+    // $('.payment_type').attr('data-id', 'Card');
+    if($('#is_edit').val() == 'yes')
+    {
+        $('.payment_type[data-id="' + rowId + '"]').val('Gift Card');
+    }else{
+        $('.payment_type[data-id="' + rowId + '"]').val('Card');
+    }
+    
+});
+$(document).on('keypress', '.search_gift_card', function(event) {
+    var query = $(this).val();
+    if (query) {  // Start searching after 3 characters
+        $.ajax({
+            url: '{{ route('search-gift-card') }}',
+            type: 'GET',
+            data: { query: query },
+            success: function(data) {
+                $('.collapse').removeClass('show');
+                $('.redeem_gift_card').show();
+                updateVoucherList(data);
+            },
+            error: function() {
+                console.log('Error in AJAX request');
+            }
+        });
+    } else {
+        clearVoucherList();
+    }
+});
+$(document).on('click','.redeem_gift_card',function(e){
+    $('.error').remove();
+    console.log("Redeem gift card clicked"); // Check if this log appears in the console
+    var tracking_number = $('.search_gift_card').val();
+    var rowId = $('#Redeem_voucher').attr('row-id');
+    var redemptionAmount = $('#redemption-amount').val();
+    
+    // Set the tracking number value to the hidden field
+    $('.hdn_tracking_number[data-id="' + rowId + '"]').val(tracking_number);
+
+
+    if(parseInt($('.remain_values').attr('remain_val')) >= parseInt($('#redemption-amount').val()))
+    {
+        $('#Redeem_voucher').modal('hide');
+        $('#take_payment').modal('show');
+        $('.payment_amount[data-id="' + rowId + '"]').val(redemptionAmount);
+        updateRemainingBalance(); // Update remaining balance
+    }else{
+        $('#collapseExample').after('<p class="error" style="color:red;">Redemption amount is greater than remaining value of gift card</p>');
+    }
+})
+$(document).on('click','.payment_amount',function(e){
+    var paymentTypeSelect = $(this).closest('.payment_details').find('#payment_type');
+    if (paymentTypeSelect.val() === 'Gift Card') {
+                // Inject CSS to hide the arrows in the number input
+                // $('<style>')
+                //     .prop('type', 'text/css')
+                //     .html('\n\
+                //         input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {\n\
+                //             -webkit-appearance: none;\n\
+                //             margin: 0;\n\
+                //         }\n\
+                //         input[type=number] {\n\
+                //             -moz-appearance: textfield;\n\
+                //         }\n\
+                //     ')
+                //     .appendTo('head');
+
+                $('#take_payment').modal('hide');
+                $('#Redeem_voucher').modal('show');
+                $('#is_edit').val('yes');
+            }
+});
+function updateVoucherList(vouchers) {
+    var container = $('#gift-card-results');
+    container.empty();  // Clear previous results
+
+    // Check if vouchers array is empty
+    if (vouchers.length === 0) {
+        container.append('<div class="alert alert-danger">No gift card found.</div>');
+        
+        // Hide additional content when no voucher is found
+        $('#voucher-alert').attr('style', 'display:none !important');
+        $('#redemption-amount-section').hide();
+        $('.voucher-history').hide();
+        $('#voucher-history').hide();
+        $('.simple-link').hide();
+        $('.redeem_gift_card').hide();
+        $('.voucher_no_remaining').attr('style','display:none !important');
+        return;
+    }
+
+    var paymentTotal = parseFloat($('.payment_total').text().replace('$', ''));
+
+    vouchers.forEach(function(voucher) {
+        var expiryDate = voucher.expiry_date ? new Date(voucher.expiry_date) : null;
+        var formattedExpiryDate = expiryDate ? expiryDate.toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+        }) : 'Never expires';
+
+        var createdDate = new Date(voucher.created_at);
+        var formattedCreatedDate = createdDate.toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+        });
+
+        var voucherHTML = `<div class="invo-notice mb-3">
+            <div class="inv-left"><b>Gift Card #${voucher.tracking_number}</b><br>
+                <span class="font-13">
+                    <b>Expires:</b> ${formattedExpiryDate}<br>
+                    <b>Created:</b> ${formattedCreatedDate}
+                </span>
+            </div>
+            <div class="inv-number remain_values" remain_val="${voucher.remaining_value}"><b>$${voucher.remaining_value}</b><br>
+                <small class="font-13">remaining</small>
+            </div>
+        </div>`;
+
+        if (voucher.notes) {
+            var notesHTML = `<div class="yellow-note-box p-2">
+                <strong>Notes:</strong> ${voucher.notes}
+            </div>`;
+            voucherHTML += notesHTML;
+        }
+        container.append(voucherHTML);
+        
+
+        if (voucher.cancelled_at != null) {
+            $('.yellow-note-box').hide();
+            $('#redemption-amount-section').hide();
+            $('.voucher_cancelled').show();
+            $('#voucher-alert').attr('style', 'display:none !important');
+            $('.redeem_gift_card').hide();
+            $('#voucher-history').show();
+            $('.redeem_gift_card').hide();
+            $('.voucher_already_added').attr('style', 'display:none !important');
+            $('.voucher_no_remaining').attr('style','display:none !important');
+            // Fetch and display voucher history
+            fetchVoucherHistory(voucher.id);
+        }else if (voucher.remaining_value =='0.00'){
+            $('.voucher_no_remaining').show();
+            $('.voucher_already_added').hide();
+            $('#redemption-amount-section').hide();
+            $('.redeem_gift_card').hide();
+            $('#voucher-alert').attr('style', 'display:none !important');
+            return;
+        } else {
+            // Check if the voucher is expired
+            if (expiryDate && expiryDate < new Date()) {
+                $('#voucher-alert').show();
+                $('.voucher_cancelled').attr('style', 'display:none !important');
+                $('.redeem_gift_card').show();
+                $('.voucher_already_added').attr('style', 'display:none !important');
+                $('.voucher_no_remaining').attr('style','display:none !important');
+            } else {
+                $('#voucher-alert').attr('style', 'display:none !important');
+                $('.voucher_cancelled').attr('style', 'display:none !important');
+                $('.redeem_gift_card').show();
+                $('.voucher_already_added').attr('style', 'display:none !important');
+                $('.voucher_no_remaining').attr('style','display:none !important');
+            }
+            
+            $('#redemption-amount-section').show();
+            // Show the redemption amount section
+            var remainingAmount = parseFloat(voucher.remaining_value);
+
+            // Set the redemption amount as the minimum of remaining amount and payment total
+            var redemptionAmount = Math.min(remainingAmount, paymentTotal);
+
+            $('#redemption-amount').val(parseFloat(redemptionAmount).toFixed(2));
+
+            $('#voucher-history').show();
+            $('.voucher_already_added').attr('style', 'display:none !important');
+            // Fetch and display voucher history
+            fetchVoucherHistory(voucher.id);
+        }
+
+        $('.hdn_tracking_number').each(function() {
+            var val = $(this).val();
+            var searchValue = $('.search_gift_card').val();
+            if (val === searchValue) {
+                $('.voucher_already_added').show();
+                $('#redemption-amount-section').hide();
+                $('.redeem_gift_card').hide();
+                $('#voucher-alert').attr('style', 'display:none !important');
+                $('.voucher_no_remaining').attr('style','display:none !important');
+                return;
+            }
+        });
+    });
+}
+function fetchVoucherHistory(id) {
+    $.ajax({
+        url: '{{ route('get-gift-card-history') }}',
+        type: 'GET',
+        data: { id: id },
+        success: function(data) {
+            showVoucherHistory(data);
+        },
+        error: function() {
+            console.log('Error fetching voucher history');
+        }
+    });
+}
+function showVoucherHistory(history) {
+    var table = $('.voucher-history');
+    table.empty(); // Clear previous data
+
+    // Loop through history and populate table rows
+    history.forEach(function(entry) {
+        var redeemedDate = new Date(entry.date_time);
+        var formattedRedeemedDate = redeemedDate.toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+        });
+
+        // Determine the text and color based on redeemed_value_type
+        var typeText = "";
+        var typeColor = "";
+        if (entry.redeemed_value_type === "increase") {
+            typeText = "Credited";
+            typeColor = "green";
+        } else if (entry.redeemed_value_type == "decrease" || entry.invoice_number != null) {
+            typeText = "Redeemed";
+            typeColor = "black";
+        }else if (entry.redeemed_value_type === "Created") {
+            typeText = "Created";
+            typeColor = "black";
+        }else if (entry.redeemed_value_type === "Cancelled") {
+            typeText = "Cancelled";
+            typeColor = "red";
+        }else if (entry.redeemed_value_type === "Expired") {
+            typeText = "Expired";
+            typeColor = "red";
+        }
+        // Construct the table row with styled text
+        var redeemedValue = entry.redeemed_value ? '$' + entry.redeemed_value : '';
+        var row = '<tbody><tr><td><strong><span style="color: ' + typeColor + ';">' + typeText + '</span>:</strong> ' + redeemedValue + ' on ' + formattedRedeemedDate + '</td></tr></tbody>';
+        table.append(row);
+    });
+
+
+    // Show the voucher history section
+    $('.voucher-history').show();
+    $('.simple-link').show();
+}
+function clearVoucherList() {
+    $('#gift-card-results').empty();
+    $('.search_gift_card').val('');
+    $('#gift-card-results').empty();
+    $('#voucher-alert').attr('style','display:none !important');
+    $('#redemption-amount-section').hide();
+    $('.simple-link').hide();
+    $('#voucher-history').hide();
+    $('.voucher-history').hide();
+    $('.voucher_cancelled').attr('style','display:none !important');
+    $('.redeem_gift_card').hide();
+    $('#gift-card-results').append('<div class="alert alert-danger">No gift card found.</div>');
+}
+
 const changeProductInput = debounce((val) => {
     var results = matchProducts(val);
     if (results && results.length > 0) {
@@ -3199,7 +3750,6 @@ function updateRemoveIconVisibility() {
     }
 }
 function updateRemainingBalance() {
-    
     var total = parseFloat($('.payment_total').text().replace('$', '')); // Get the total amount
     var totalPayments = 0;
 
@@ -3210,9 +3760,31 @@ function updateRemainingBalance() {
             totalPayments += paymentAmount;
         }
     });
-    var remainingBalance = total - totalPayments; // Calculate the remaining balance
-    $('.remaining_balance').text('$' + remainingBalance.toFixed(2)); // Update the remaining balance
+
+    var remainingBalance;
+
+    if (totalPayments > total) {
+        $('.change_owing_div').show();
+        $('.remaining_balance_div').hide();
+        remainingBalance = totalPayments - total; // Calculate the change owing
+        $('.change_owing').text('$' + remainingBalance.toFixed(2)); // Update the change owing
+        $(".complete_sale").prop('disabled', false);
+        $('.remaining_balance').text('$' + 0); // Update the remaining balance
+    } else {
+        $('.change_owing_div').hide();
+        $('.remaining_balance_div').show();
+        remainingBalance = total - totalPayments; // Calculate the remaining balance
+        $('.remaining_balance').text('$' + remainingBalance.toFixed(2)); // Update the remaining balance
+
+        // Enable or disable the complete sale button
+        if (remainingBalance > 0) {
+            $(".complete_sale").prop('disabled', true); // Disable button if balance is positive
+        } else {
+            $(".complete_sale").prop('disabled', false); // Enable button if balance is zero or negative
+        }
+    }
 }
+
 function debounce(func, timeout = 300){
     let timer;
     return (...args) => {
@@ -3435,21 +4007,27 @@ function calculateAndUpdate() {
     }
     // $('.main_detail_price').text('($' + pricePerUnit + ' ea)');
 }
-function updateRemainingBalance() {
-        
-    var total = parseFloat($('.payment_total').text().replace('$', '')); // Get the total amount
-    var totalPayments = 0;
 
-    // Sum up all payment amounts
-    $('.payment_amount').each(function() {
-        var paymentAmount = parseFloat($(this).val());
-        if (!isNaN(paymentAmount)) {
-            totalPayments += paymentAmount;
-        }
-    });
-    var remainingBalance = total - totalPayments; // Calculate the remaining balance
-    $('.remaining_balance').text('$' + remainingBalance.toFixed(2)); // Update the remaining balance
-}
+// function setProductSearchModal(value,id,type) {
+    // Retrieve the selected value from the clicked element
+    // $('.products_box').hide();
+
+    // var activeTabContainer = $('.productDetails');
+
+    // // Get existing product elements associated with the active tab
+    // var activ/     var total = parseFloat($('.payment_total').text().replace('$', '')); // Get the total amount
+//     var totalPayments = 0;
+
+//     // Sum up all payment amounts
+//     $('.payment_amount').each(function() {
+//         var paymentAmount = parseFloat($(this).val());
+//         if (!isNaN(paymentAmount)) {
+//             totalPayments += paymentAmount;
+//         }
+//     });
+//     var remainingBalance = total - totalPayments; // Calculate the remaining balance
+//     $('.remaining_balance').text('$' + remainingBalance.toFixed(2)); // Update the remaining balance
+// }
 function updateQuantity() {
     var newQuantity = parseInt($('.edit_quantity').val());
     // $('.edit_product_quantity').text(newQuantity);
@@ -4057,7 +4635,7 @@ function printInvoice(invoiceData) {
         <tr>
             <td style="padding: 0.9rem; border-bottom: 1px solid #d5dce2; text-align: left;">${product.product_quantity}</td>
             <td style="padding: 0.9rem; border-bottom: 1px solid #d5dce2; text-align: left;">${product.product_name}</td>
-            <td style="padding: 0.9rem; border-bottom: 1px solid #d5dce2; text-align: right;">${product.product_price}</td>
+            <td style="padding: 0.9rem; border-bottom: 1px solid #d5dce2; text-align: right;">$${product.product_price}</td>
         </tr>
     `).join('');
 
@@ -4087,6 +4665,8 @@ function printInvoice(invoiceData) {
         `;
     }).join('');
 
+    var totalPaid = calculateTotalPaid(invoiceData.payments);
+    var changeAmount = parseInt(totalPaid) > invoiceData.total ? parseInt(totalPaid) - invoiceData.total : 0;
 
     var printableContent = `
         <html lang="en">
@@ -4142,9 +4722,9 @@ function printInvoice(invoiceData) {
                 ${productsHTML} <!-- Insert productsHTML here -->
                 <tr>
                     <td colspan="3" style="padding: 0.9rem; border-bottom: 1px solid #d5dce2; text-align: right;">
-                        Subtotal ${invoiceData.subtotal}<br>
-                        Total: <strong style="font-size: 20px;">${invoiceData.total}</strong><br>
-                        GST: ${invoiceData.gst}
+                        Subtotal $${invoiceData.subtotal}<br>
+                        Total: <strong style="font-size: 20px;">$${invoiceData.total}</strong><br>
+                        GST: $${invoiceData.gst}
                     </td>
                 </tr>
                 <tr>
@@ -4154,7 +4734,8 @@ function printInvoice(invoiceData) {
                 ${cardDetailsHTML} <!-- Insert cardDetailsHTML here -->
                 <tr>
                     <td colspan="3" style="padding: 0.9rem; text-align: right;">
-                        Total Paid: <strong style="font-size: 20px;">$${calculateTotalPaid(invoiceData.payments)}</strong><br>
+                        Total Paid: <strong style="font-size: 20px;">$${totalPaid}</strong><br>
+                        ${changeAmount > 0 ? `Change: <strong style="font-size: 20px;">$${changeAmount.toFixed(2)}</strong>` : ''}
                     </td>
                 </tr>
             </table>

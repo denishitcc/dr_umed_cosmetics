@@ -41,6 +41,8 @@ use App\Models\EmailTemplates;
 use App\Models\FormSummary;
 use Mail;
 use Illuminate\Support\Facades\Storage;
+use App\Models\GiftCard;
+use App\Models\GiftCardTransaction;
 
 class CalenderController extends Controller
 {
@@ -2393,6 +2395,32 @@ class CalenderController extends Controller
 
                     Payment::create($walk_in_payment);
                 }
+
+                //gift card transaction
+                $redeem_number = $request->hdn_tracking_number;
+                // dd($request->all());
+                if(isset($redeem_number))
+                {
+                    $locs = Locations::where('id',$request->walk_in_location_id)->first();
+                    // dd($locs->location_name);
+                    foreach($redeem_number as $key => $redeem)
+                    {
+                        $value = $request->payment_amounts[$key];
+                        $gift_card = GiftCard::where('tracking_number',$redeem)->first();
+                        if ($gift_card) {
+                            $addgifttransaction = GiftCardTransaction::create([
+                                'gift_card_id' => $gift_card->id,
+                                'date_time' => Carbon::now()->setTimezone('Asia/Kolkata'),
+                                'location_name' => $locs->location_name,
+                                'redeemed_value' =>  $value,
+                                'redeemed_value_type' => 'redeemed by Casual Customer',
+                                'invoice_number' => $walkInSale->id,
+                            ]);
+                            //minus remain amount
+                            $gift_card->update(['remaining_value'=> $gift_card->remaining_value - $value]);
+                        }        
+                    }
+                }
             } else if ($request->hdn_customer_type == 'existing') {
                 // Storing walk-in sale details
                 $walk_in_table = [
@@ -2480,6 +2508,34 @@ class CalenderController extends Controller
                     ];
 
                     Payment::create($walk_in_payment);
+                }
+
+                //gift card transaction
+                //fetch client name by client id
+                $client_names = Clients::where('id',$request->walk_in_client_id)->first();
+                $redeem_number = $request->hdn_tracking_number;
+                // dd($request->all());
+                if(isset($redeem_number))
+                {
+                    $locs = Locations::where('id',$request->walk_in_location_id)->first();
+                    // dd($locs->location_name);
+                    foreach($redeem_number as $key => $redeem)
+                    {
+                        $value = $request->payment_amounts[$key];
+                        $gift_card = GiftCard::where('tracking_number',$redeem)->first();
+                        if ($gift_card) {
+                            $addgifttransaction = GiftCardTransaction::create([
+                                'gift_card_id' => $gift_card->id,
+                                'date_time' => Carbon::now()->setTimezone('Asia/Kolkata'),
+                                'location_name' => $locs->location_name,
+                                'redeemed_value' =>  $value,
+                                'redeemed_value_type' => 'redeemed by ' . $client_names->firstname . ' ' . $client_names->lastname,
+                                'invoice_number' => $walkInSale->id,
+                            ]);
+                            //minus remain amount
+                            $gift_card->update(['remaining_value'=> $gift_card->remaining_value - $value]);
+                        }        
+                    }
                 }
             } else {
                 // dd($request->all());
@@ -2583,6 +2639,32 @@ class CalenderController extends Controller
                     ];
 
                     Payment::create($walk_in_payment);
+                }
+
+                //gift card transaction
+                $redeem_number = $request->hdn_tracking_number;
+                if(isset($redeem_number))
+                {
+                    // dd($request->all());
+                    $locs = Locations::where('id',$request->walk_in_location_id)->first();
+                    // dd($locs->location_name);
+                    foreach($redeem_number as $key => $redeem)
+                    {
+                        $value = $request->payment_amounts[$key];
+                        $gift_card = GiftCard::where('tracking_number',$redeem)->first();
+                        if ($gift_card) {
+                            $addgifttransaction = GiftCardTransaction::create([
+                                'gift_card_id' => $gift_card->id,
+                                'date_time' => Carbon::now()->setTimezone('Asia/Kolkata'),
+                                'location_name' => $locs->location_name,
+                                'redeemed_value' =>  $value,
+                                'redeemed_value_type' => 'redeemed by ' . $request->walkin_first_name . ' ' . $request->walkin_last_name,
+                                'invoice_number' => $walkInSale->id,
+                            ]);
+                            //minus remain amount
+                            $gift_card->update(['remaining_value'=> $gift_card->remaining_value - $value]);
+                        }        
+                    }
                 }
             }
         }
@@ -2883,7 +2965,10 @@ class CalenderController extends Controller
 
         $totalPaid = $invoice->payments->sum('amount');
         $invoice->total_paid = $totalPaid;
-
+        if($totalPaid > $invoice->total)
+        {
+            $invoice->change = $totalPaid - $invoice->total;
+        }
         // Explode email addresses if comma-separated
         $emails = explode(',', $request->email);
 

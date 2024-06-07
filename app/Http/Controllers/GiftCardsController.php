@@ -37,7 +37,28 @@ class GiftCardsController extends Controller
                     })  
                     ->addColumn('remaining_value', function($row) {
                         $remainingValue = '$' . number_format($row->remaining_value, 2) . ' remaining';
-                        $usageStatus = 'Not used yet';
+                        // dd($row->value);
+                        //gift card transaction
+                        $trans = GiftCardTransaction::where('gift_card_id',$row->id)->where('invoice_number','!=',null)->get();
+                        $trans_all = GiftCardTransaction::where('gift_card_id',$row->id)->get();
+                        // dd($trans_all);
+                        if(count($trans) > 0)
+                        {
+                            $credited = 0;
+                            $redeemed = 0;
+                            foreach($trans_all as $trans)
+                            {
+                                if($trans->redeemed_value_type == 'increase')
+                                {
+                                    $credited += $trans->redeemed_value;
+                                }else{
+                                    $redeemed += $trans->redeemed_value;
+                                }
+                            }
+                            $usageStatus = 'Redeemed: $' . $redeemed . ', ' . 'Face value: $' . $row->value . ', ' . 'Credited: $' . $credited;
+                        }else{
+                            $usageStatus = 'Not used yet';
+                        }
                     
                         // Check if the expiry date is null or not
                         if ($row->expiry_date == null) {
@@ -107,7 +128,7 @@ class GiftCardsController extends Controller
                             $expiryDate = Carbon::parse($row->expiry_date)->endOfDay();
                             $currentDate = Carbon::now()->endOfDay();
                     
-                            if ($row->expiry_date === null || !$expiryDate->isBefore($currentDate)) {
+                            if (($row->expiry_date === null || !$expiryDate->isBefore($currentDate)) && $row->remaining_value > 0) {
                                 $btn .= '<button type="button" class="btn btn-secondary p-2 dt-edit" ids="'.$row->id.'" initial_value="'.$row->value.'" remaining_value="'.$row->remaining_value.'" notes="'.$row->notes.'" expiry_date="'.$row->expiry_date.'" tracking_number="'.$row->tracking_number.'" data-bs-toggle="modal" data-bs-target="#email_voucher">
                                             Email Gift Card
                                         </button>
@@ -119,7 +140,7 @@ class GiftCardsController extends Controller
                     
                         $btn .= '</div>';
                         return $btn;
-                    })                    
+                    })
                     ->rawColumns(['action', 'details', 'remaining_value'])
                     ->make(true);
             }
@@ -248,7 +269,8 @@ class GiftCardsController extends Controller
         $update = GiftCard::updateOrCreate(['id' => $request->hdn_id],[
             'remaining_value' => $request->remaining_value,
             'expiry_date' => isset($request->is_expired)?$request->edit_expiry_date:null,
-            'notes' => $request->edit_notes
+            'notes' => $request->edit_notes,
+            'expired' => 'yes'
         ]);
 
         
