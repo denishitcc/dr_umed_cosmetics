@@ -45,10 +45,31 @@ var DU = {};
                 editable: true,
                 resourceAreaHeaderContent: 'Staff',
                 resources:  [],
+                resourceLabelContent: function(arg) {
+                    var resourceEl = document.createElement('div');
+                    resourceEl.innerHTML = arg.resource.title;
+                    resourceEl.classList.add('resource-label-dharit');
+                    resourceEl.dataset.resourceId = arg.resource.id;
+                    return { domNodes: [resourceEl] };
+                },
+                dateClick: function(info){
+                    var currnetDate = info.dateStr;
+                    $('#edit_Working_hours').modal('toggle');
+                },
                 // events: 'https://fullcalendar.io/demo-events.json?single-day&for-resource-timeline'
             });
-
             context.calendar.render();
+
+            // Event delegation for resource clicks
+            document.addEventListener('click', function(event) {
+                var resourceEl = event.target.closest('.resource-label-dharit');
+                if (resourceEl) {
+                    var resourceId = resourceEl.dataset.resourceId;
+
+                    // Display the modal with resource details
+                    $('#edit_timetable').modal('show');
+                }
+            });
         },
 
         getlocationId: function(){

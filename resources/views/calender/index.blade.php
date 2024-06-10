@@ -2,6 +2,7 @@
 @section('title', 'Calender')
 @section('content')
 <link rel="stylesheet" href="{{ asset('js/formiojs/dist/formio.full.min.css') }}">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.9.0/fullcalendar.min.css" rel="stylesheet" type="text/css" />
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <div class="card">
     <div class="card-head">
