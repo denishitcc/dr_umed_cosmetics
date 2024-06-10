@@ -1083,4 +1083,20 @@ html .hasDatepicker .ui-button.ui-state-disabled:active{ border: 0; background: 
     .card .card-head .toolbar .tool-left { flex-wrap: wrap;}
     .app-navbar ul.items li .profile aside{ display: none;}
     .detaild-theos-scroll{ height: auto;}
+    .ctg-greybox-list-box{ flex: auto;}
+    .card .card-head .toolbar .tool-left .small-title,
+    .card .card-head .toolbar .tool-left .input-group.search { width: 100%; margin: 0 0 20px 0 !important;}
+    .card .card-head .toolbar .tool-left #import_service{ flex-wrap: wrap;}
+    .card .card-head .toolbar .tool-left #import_service .btn{ margin-bottom: 20px;}
+    .ctg-greybox-details-box .mb-4.d-flex{ flex-wrap: wrap;}
+    .scaffold-layout-outr{ height: auto;}
+    .ctg-tree{ height: auto;}
+    .scaffold-layout-list-details{flex-wrap: wrap; gap: 0;}
+    .ctg-greybox-details-box .pe-4.py-4{ padding: 20px !important;}
+    .ctg-greybox-details-box .mb-4.d-flex{ gap: 20px;}
+    #create_service .bor-box.pd-20{ margin-bottom: 20px;}
+    .card .card-head .toolbar .tool-right{    gap: 10px; display: flex; flex-wrap: wrap; }
+    .fc .fc-toolbar.fc-header-toolbar{ flex-wrap: wrap; gap: 10px;}
+    .brand-tabs{ gap: 0px;}
+    .brand-tabs li{ flex: 100%;}
 }
