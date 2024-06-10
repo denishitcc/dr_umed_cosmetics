@@ -185,8 +185,72 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="email_gift_card" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="exampleModalLabel">Email Gift card <span class="tracking_number"></span></h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="voucher_notes" id="voucher_notes" value="">
+                    <input type="hidden" name="voucher_value" id="voucher_value" value="">
+                    <input type="hidden" name="voucher_number" id="voucher_number" value="">
+                    <input type="hidden" name="voucher_expiry_date" id="voucher_expiry_date" value="">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <p>Enter the email address you want to send the voucher to</p>
+                            <div class="form-group">
+                                <label class="form-label">Send to</label>
+                                <input type="email" class="form-control" id="email_card" name="email_card">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12 email-history">
+                            <!-- Email history will be injected here -->
+                        </div>
+                </div>    
 
 
+                </div>    
+
+                
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light btn-md" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+                    <button type="button" class="btn btn-primary btn-md email_gift_card_send">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="gift_card_sent" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="exampleModalLabel">Gift Card Sent</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="success-pop p-5 mb-4" style="
+                        text-align: center;">
+                            <img src="{{ asset('img/success-icon.png') }}" alt="" class="mb-3" style="
+                        max-width: 12%;">
+                        <span id="paymentMessage"></span>
+                    </div>
+                    <div style="text-align: center;">
+                        <p><strong>Voucher sent</strong></p>
+                        <p>Voucher <span id="trak_id"></span> has been sent to <span id="sent_email"></span></p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-red btn-md" ids="" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 
@@ -432,6 +496,56 @@ $(document).on('click', '.dt-transaction', function(e) {
         }
     });
 }); 
+$(document).on('click', '.dt-email', function(e) {
+    e.preventDefault();
+    var id = $(this).attr('ids');
+    var value = $(this).attr('remaining_value');
+    var notes =  $(this).attr('notes');
+    var voucher_num = $(this).attr('tracking_number');
+    var expiry_date = $(this).attr('expiry_date');
+
+    $('#voucher_notes').val(notes);
+    $('#voucher_value').val(value);
+    $('#voucher_number').val(voucher_num);
+    $('#voucher_expiry_date').val(expiry_date);
+    $('.tracking_number').text($(this).attr('tracking_number'));
+
+    // Fetch email history
+    // Define month names array
+    var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    $.ajax({
+        url: '/gift-card/email-history/' + voucher_num,
+        type: 'GET',
+        success: function(data) {
+            if(data.length > 0)
+            {
+                var lastEmail = data[data.length - 1].email;
+                $('#email_card').val(lastEmail);
+
+                var historyHtml = '<h3>History</h3><table class="table all-db-table align-middle w-100"><thead><tr><th>Recipient Email</th><th>Send Date</th></tr></thead><tbody>';
+                data.forEach(function(history) {
+                    var sendDate = new Date(history.send_date); // Convert send_date string to a Date object
+                    var day = sendDate.getDate();
+                    var month = monthNames[sendDate.getMonth()];
+                    var year = sendDate.getFullYear();
+                    var hours = sendDate.getHours().toString().padStart(2, '0'); // Convert hours to 2-digit format
+                    var minutes = sendDate.getMinutes().toString().padStart(2, '0'); // Convert minutes to 2-digit format
+                    var seconds = sendDate.getSeconds().toString().padStart(2, '0'); // Convert seconds to 2-digit format
+                    
+                    var formattedSendDate = day + ' ' + month + ' ' + year + ' ' + hours + ':' + minutes + ':' + seconds; // Format the Date object as desired
+                    
+                    historyHtml += '<tr><td>' + history.email + '<br>Sent by ' + history.sent_by + '</td><td>' + formattedSendDate + '</td></tr>';
+                });
+                historyHtml += '</tbody></table>';
+                $('.email-history').html(historyHtml);
+            }
+        }
+    });
+
+
+});
 $(document).on('click','.cancel-gift',function(e){
     e.preventDefault();
     var id = $(this).attr('ids');
@@ -467,6 +581,48 @@ $(document).on('click', '.dt-cancel', function(e) {
             }
         },
         });
+});
+$(document).on('click','.email_gift_card_send',function(e){
+    var email_card = $('#email_card').val();
+    var value = $('#voucher_value').val();
+    var notes =  $('#voucher_notes').val();
+    var voucher_num = $('#voucher_number').val();
+    var expiry_date = $('#voucher_expiry_date').val();
+
+    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    $('.error').remove();
+    // Check if email is blank or doesn't match the email format
+    if (!email_card) {
+        // Show validation message for required field
+        $('#email_card').after('<label for="email" class="error">Email is required.</label>');
+        return; // Exit function
+    } else if (!emailRegex.test(email_card)) {
+        // Show validation message for invalid email format
+        $('#email_card').after('<label for="email" class="error">Please enter a valid email.</label>');
+        return; // Exit function
+    }
+
+    $.ajax({
+        headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        url: "{{ route('gift-card.email-gift-card') }}",
+        type: "POST",
+        data: {'email_card': email_card,'value':value,'notes':notes,'voucher_num':voucher_num,'expiry_date':expiry_date},
+        success: function(response) {
+            // Show a Sweet Alert message after the form is submitted.
+            if (response.success) {
+                $('#email_gift_card').modal('hide');
+                $('#gift_card_sent').modal('show');
+                $('#trak_id').text(voucher_num);
+                $('#sent_email').text(email_card);
+            } else {
+            Swal.fire({
+                title: "Error!",
+                text: response.message,
+                type: "error",
+            });
+            }
+        },
+    });
 });
 function submitCreateGiftCardForm(data){
     

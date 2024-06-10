@@ -9,6 +9,8 @@ use DataTables;
 use Str;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Mail;
+use App\Models\EmailGiftCardHistory;
 
 class GiftCardsController extends Controller
 {
@@ -112,7 +114,7 @@ class GiftCardsController extends Controller
                             $currentDate = Carbon::now()->endOfDay();
                             
                             if ($row->expiry_date === null || !$expiryDate->isBefore($currentDate)) {
-                                $btn .= '<button type="button" class="btn btn-secondary p-2 dt-edit" ids="'.$row->id.'" initial_value="'.$row->value.'" remaining_value="'.$row->remaining_value.'" notes="'.$row->notes.'" expiry_date="'.$row->expiry_date.'" tracking_number="'.$row->tracking_number.'" data-bs-toggle="modal" data-bs-target="#email_voucher" disabled>
+                                $btn .= '<button type="button" class="btn btn-secondary p-2 dt-email" ids="'.$row->id.'" initial_value="'.$row->value.'" remaining_value="'.$row->remaining_value.'" notes="'.$row->notes.'" expiry_date="'.$row->expiry_date.'" tracking_number="'.$row->tracking_number.'" data-bs-toggle="modal" data-bs-target="#email_gift_card" disabled>
                                             Email Gift Card
                                         </button>
                                         <button type="button" class="btn p-2 btn-danger cancel-gift" ids="'.$row->id.'" tracking_number="'.$row->tracking_number.'" data-bs-toggle="modal" data-bs-target="#cancel_gift_card" disabled>
@@ -129,7 +131,7 @@ class GiftCardsController extends Controller
                             $currentDate = Carbon::now()->endOfDay();
                     
                             if (($row->expiry_date === null || !$expiryDate->isBefore($currentDate)) && $row->remaining_value > 0) {
-                                $btn .= '<button type="button" class="btn btn-secondary p-2 dt-edit" ids="'.$row->id.'" initial_value="'.$row->value.'" remaining_value="'.$row->remaining_value.'" notes="'.$row->notes.'" expiry_date="'.$row->expiry_date.'" tracking_number="'.$row->tracking_number.'" data-bs-toggle="modal" data-bs-target="#email_voucher">
+                                $btn .= '<button type="button" class="btn btn-secondary p-2 dt-email" ids="'.$row->id.'" initial_value="'.$row->value.'" remaining_value="'.$row->remaining_value.'" notes="'.$row->notes.'" expiry_date="'.$row->expiry_date.'" tracking_number="'.$row->tracking_number.'" data-bs-toggle="modal" data-bs-target="#email_gift_card">
                                             Email Gift Card
                                         </button>
                                         <button type="button" class="btn p-2 btn-danger cancel-gift" ids="'.$row->id.'" tracking_number="'.$row->tracking_number.'" data-bs-toggle="modal" data-bs-target="#cancel_gift_card">
@@ -326,5 +328,42 @@ class GiftCardsController extends Controller
             ];
         }
         return response()->json($response);
+    }
+    public function email_gift_card(Request $request)
+    {
+        $email = $request->email_card;
+        $data = [
+            'from_email'       => 'support@itcc.net.au',
+            'subject'          => "You've received a gift card",
+            'email'            => $email,
+            'value'            => $request->value,
+            'notes'            => $request->notes,
+            'voucher_num'      => $request->voucher_num,
+            'expiry_date'      => $request->expiry_date
+        ];
+
+        $sub = $data['subject'];
+        Mail::send('email.received-gift-card', $data, function ($message) use ($email, $data) {
+            $message->to(trim($email)) // Trim whitespace from email address
+                ->subject($data['subject']);
+            $message->from('support@itcc.net.au', $data['subject']);
+        });
+
+        // Get the current user
+        $user = Auth::user();
+
+        // Create a new email gift card history entry
+        EmailGiftCardHistory::create([
+            'tracking_number' => $request->voucher_num,
+            'email'           => $email,
+            'sent_by'         => $user->first_name . ' ' . $user->last_name,
+            'send_date'       => Carbon::now()->setTimezone('Asia/Kolkata'),
+        ]);
+        return response()->json(['success' => true]);
+    }
+    public function get_email_history($voucher_num)
+    {
+        $history = EmailGiftCardHistory::where('tracking_number', $voucher_num)->get();
+        return response()->json($history);
     }
 }

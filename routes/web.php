@@ -248,6 +248,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('gift-card/table',[GiftCardsController::class, 'index'])->name('gift-card.table');
         Route::post('gift-card/transactions',[GiftCardsController::class, 'transactions'])->name('gift-card.transactions');
         Route::post('gift-card/cancel',[GiftCardsController::class, 'cancel_gift_card'])->name('gift-card.cancel');
+        Route::post('gift-card/email_gift_card',[GiftCardsController::class, 'email_gift_card'])->name('gift-card.email-gift-card');
+        Route::get('/gift-card/email-history/{voucher_num}', [GiftCardsController::class, 'get_email_history'])->name('gift-card.email-history');
     });
 });
 Route::post('/get-staff-list', [CalenderController::class,'getStaffList'])->name('get-staff-list');

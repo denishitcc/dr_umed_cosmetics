@@ -2679,7 +2679,7 @@
 
                                 // Create the row outside of the loop
                                 var paymentRow = $('<div class="row payment_details closed-stip"></div>');
-
+                                var count = 1;
                                 // Append payment details from response
                                 $.each(response.invoice.payments.reverse(), function(index, payment) {
                                     // Create a clone of the payment row for each payment
@@ -2691,7 +2691,7 @@
                                         <div class="col-lg-4">
                                             <div class="form-group">
                                                 <label class="form-label">Payment</label>
-                                                <select class="form-select form-control payment_type" name="payment_type[]" id="payment_type_${index}">
+                                                <select class="form-select form-control payment_type" name="payment_type[]" id="payment_type_${index}"  data-id="${count}">
                                                     <option ${payment.payment_type === 'Card' ? 'selected' : ''}>Card</option>
                                                     <option ${payment.payment_type === 'Afterpay' ? 'selected' : ''}>Afterpay</option>
                                                     <option ${payment.payment_type === 'Bank Transfer' ? 'selected' : ''}>Bank Transfer</option>
@@ -2707,7 +2707,7 @@
                                                 <label class="form-label">Amount</label>
                                                 <div class="input-group">
                                                     <span class="input-group-text"><i class="ico-dollar fs-4"></i></span>
-                                                    <input type="number" class="form-control payment_amount" name="payment_amount[]" placeholder="0" value="${payment.amount}">
+                                                    <input type="number" class="form-control payment_amount" name="payment_amount[]" placeholder="0" value="${payment.amount}" data-id="${count}">
                                                 </div>
                                             </div>
                                         </div>
@@ -2727,6 +2727,7 @@
 
                                     // Add the payment amount to the total payment amount
                                     totalPaymentAmount += parseFloat(payment.amount);
+                                    count++;
                                 });
 
                                 // Update the total payment amount display
@@ -4322,7 +4323,7 @@
         }
     })
     $(document).on('click','.payment_amount',function(e){
-        var paymentTypeSelect = $(this).closest('.payment_details').find('#payment_type');
+        var paymentTypeSelect = $(this).closest('.payment_details').find('.payment_type');
         if (paymentTypeSelect.val() === 'Gift Card') {
                     // Inject CSS to hide the arrows in the number input
                     // $('<style>')

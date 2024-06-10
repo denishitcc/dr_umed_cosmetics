@@ -2670,6 +2670,7 @@ $(document).on('click', '.take_payment', function(e) {
                         var totalPaymentAmount = 0; 
                         var paymentRow = $('<div class="row payment_details closed-stip"></div>');
                         // Append payment details from response
+                        var count = 1;
                         $.each(response.invoice.payments.reverse(), function(index, payment) {
                             var clonedRow = paymentRow.clone();
 
@@ -2678,7 +2679,7 @@ $(document).on('click', '.take_payment', function(e) {
                                     <div class="col-lg-4">
                                         <div class="form-group">
                                             <label class="form-label">Payment</label>
-                                            <select class="form-select form-control payment_type" name="payment_type[]" id="payment_type_${index}">
+                                            <select class="form-select form-control payment_type" name="payment_type[]" id="payment_type_${index}" data-id="${count}">
                                                 <option ${payment.payment_type === 'Card' ? 'selected' : ''}>Card</option>
                                                 <option ${payment.payment_type === 'Afterpay' ? 'selected' : ''}>Afterpay</option>
                                                 <option ${payment.payment_type === 'Bank Transfer' ? 'selected' : ''}>Bank Transfer</option>
@@ -2695,7 +2696,7 @@ $(document).on('click', '.take_payment', function(e) {
                                             <label class="form-label">Amount</label>
                                             <div class="input-group">
                                                 <span class="input-group-text"><i class="ico-dollar fs-4"></i></span>
-                                                <input type="number" class="form-control payment_amount" name="payment_amount[]" placeholder="0" value="${payment.amount}">
+                                                <input type="number" class="form-control payment_amount" name="payment_amount[]" placeholder="0" value="${payment.amount}" data-id="${count}">
                                             </div>
                                         </div>
                                     </div>
@@ -2713,6 +2714,7 @@ $(document).on('click', '.take_payment', function(e) {
                             // Add the payment amount to the total payment amount
                             $('.payment_data').prepend(clonedRow);
                             totalPaymentAmount += parseFloat(payment.amount);
+                            count++;
                         });
 
                         $('.payment_total').text('$' + $('.take_payment').attr('main_total'));
@@ -3400,7 +3402,7 @@ $(document).on('click','.redeem_gift_card',function(e){
     }
 })
 $(document).on('click','.payment_amount',function(e){
-    var paymentTypeSelect = $(this).closest('.payment_details').find('#payment_type');
+    var paymentTypeSelect = $(this).closest('.payment_details').find('.payment_type');
     if (paymentTypeSelect.val() === 'Gift Card') {
                 // Inject CSS to hide the arrows in the number input
                 // $('<style>')

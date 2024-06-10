@@ -344,11 +344,10 @@
                                 <input type="text" class="form-control w_90" name="surcharge_percentage[]" id="percentage" value="{{$loc_sur->surcharge_percentage}}" placeholder="Percentage" />
                                 </div>
                                 <div class="form-group col-md-2 add_del_btn_outer">
-                                <span class="btn_round add_node_btn_frm_field" title="Copy or clone this row">
-                                    <i class="fas fa-copy"></i>
-                                </span>
-
-                                <button class="btn_round remove_node_btn_frm_field">
+                                <button type="button" class="btn btn-sm black-btn round-6 add_node_btn_frm_field" title="Copy or clone this row">
+                                    <i class="ico-copy"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm black-btn round-6 remove_node_btn_frm_field">
                                     <i class="fas fa-trash-alt"></i>
                                 </button>
                                 </div>
