@@ -57,7 +57,7 @@ class GiftCardsController extends Controller
                                     $redeemed += $trans->redeemed_value;
                                 }
                             }
-                            $usageStatus = 'Redeemed: $' . $redeemed . ', ' . 'Face value: $' . $row->value . ', ' . 'Credited: $' . $credited;
+                            $usageStatus = 'Redeemed: $' . number_format($redeemed, 2)  . ', ' . 'Face value: $' . $row->value . ', ' . 'Credited: $' . number_format($credited, 2);
                         }else{
                             $usageStatus = 'Not used yet';
                         }

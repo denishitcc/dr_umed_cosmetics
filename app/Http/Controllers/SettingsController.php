@@ -221,36 +221,51 @@ class SettingsController extends Controller
     public function UpdateBrandImage(Request $request)
     {
         $file = $request->file('banner_image');
-        // dd($file);
-        if($file != null)
-        {
+        if ($file != null) {
+            // Destination path
             $destinationPath = storage_path('app/public/images/banner_image');
-            $file->move($destinationPath,$file->getClientOriginalName());
+            
+            // Original file name
+            $originalName = $file->getClientOriginalName();
+            
+            // Sanitize the file name by removing spaces
+            $sanitizedFileName = str_replace(' ', '_', $originalName);
+            
+            // Ensure the destination path exists
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0777, true);
+            }
+            
+            // Move the file to the destination path with the sanitized file name
+            $file->move($destinationPath, $sanitizedFileName);
+            
+            // Log for debugging
+            \Log::info("File moved to: " . $destinationPath . '/' . $sanitizedFileName);
 
+            // Update the user record in the database
             $auth = auth();
             $user = User::find($auth->user()->id);
-            $newUser = User::updateOrCreate(['id' => $auth->user()->id],[
-                'banner_image' => $file->getClientOriginalName(),
+            $newUser = User::updateOrCreate(['id' => $auth->user()->id], [
+                'banner_image' => $sanitizedFileName,
             ]);
-            return redirect('settings');
-        }
-        else
-        {
+            
+            return redirect('settings')->with('success', 'Banner image updated successfully.');
+        } else {
+            // Handle case when file is not uploaded
             $auth = auth();
             $user = User::find($auth->user()->id);
-            if($request->bannerremove == '1')
-            {
-                $newUser = User::updateOrCreate(['id' => $auth->user()->id],[
+            
+            if ($request->bannerremove == '1') {
+                $newUser = User::updateOrCreate(['id' => $auth->user()->id], [
                     'banner_image' => 'no-image.jpg',
                 ]);
-            }
-            else
-            {
-                $newUser = User::updateOrCreate(['id' => $auth->user()->id],[
+            } else {
+                $newUser = User::updateOrCreate(['id' => $auth->user()->id], [
                     'banner_image' => $user->banner_image,
                 ]);
             }
-            return redirect('settings');   
+            
+            return redirect('settings')->with('success', 'Banner image updated successfully.');
         }
     }
 }

@@ -21,6 +21,6 @@
             </tr>
         @endforeach
     @else
-        <div>No transaction fFound</div>
+        <div>No transaction found</div>
     @endif
 </table>

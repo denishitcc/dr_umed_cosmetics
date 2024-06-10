@@ -540,6 +540,9 @@ $(document).on('click', '.dt-email', function(e) {
                 });
                 historyHtml += '</tbody></table>';
                 $('.email-history').html(historyHtml);
+            }else{
+                $('#email_card').val('');
+                $('.email-history').html('');
             }
         }
     });
