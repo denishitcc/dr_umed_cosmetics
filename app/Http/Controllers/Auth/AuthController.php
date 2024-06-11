@@ -90,16 +90,16 @@ class AuthController extends Controller
      *
      * @return response()
      */
-    public function dashboard()
-    {
-        if (Auth::check()) {
-            // User is authenticated, redirect to the dashboard
-            return view('dashboard');
-        } else {
-            // User is not authenticated, handle accordingly (e.g., redirect to login)
-            return redirect()->route('login');
-        }
-    }
+    // public function dashboard()
+    // {
+    //     if (Auth::check()) {
+    //         // User is authenticated, redirect to the dashboard
+    //         return view('dashboard');
+    //     } else {
+    //         // User is not authenticated, handle accordingly (e.g., redirect to login)
+    //         return redirect()->route('login');
+    //     }
+    // }
     
     /**
      * Write code on Method

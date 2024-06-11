@@ -522,7 +522,7 @@ div.dataTables_filter { text-align: right; float: right;}
 .cst-toggle .accordion-body{ padding: 1rem 0;}
 
 .cst-toggle .accordion-item{ margin-bottom: 15px;}
-.cst-toggle .accordion-item:last-child{ margin-bottom: 0;}
+.cst-toggle .accordion-item:last-child{ margin-bottom: 0;} 
 
 .btn-dashed{ border:  1px dashed ;}
 .btn-red, .btn-red:hover{ border-color:#F00; color: #F00;}
@@ -1045,6 +1045,12 @@ html .hasDatepicker .ui-button.ui-state-disabled:active{ border: 0; background: 
 .simple-link[aria-expanded]:after{content: "\e945";  font-family: 'ico'; color: var(--black); position: absolute; right: 0; font-size: 22px; transition: .25s; transform: rotate(90deg);}
 .simple-link[aria-expanded="true"]:after{transform: rotate(-90deg);}
 
+.app-header{ display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: center;}
+.feed-item{ display: flex;}
+.feed-item .text{position: relative; padding-bottom: 10px; padding-left: 20px; border-left: 3px solid #E5EAEE; color: #282828;}
+.feed-item .time{color: #464E5F;font-size: 14px; font-weight: 700; line-height: normal; padding-right: 10px; flex: 0 0 15%;}
+
+.feed-item .text:after{ content: ""; display: block; position: absolute; top: 0; left: -8px; width: 14px; height: 14px; border-radius: 50px; background: #fff; border: 3px solid #3699FF;}
 
 /*  Responsive  */
 
@@ -1069,7 +1075,7 @@ html .hasDatepicker .ui-button.ui-state-disabled:active{ border: 0; background: 
     .dataTables_wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch;}
     #main_row.row .col{ flex: 100%; margin-bottom: 20px; }
     .drag-box .head i{     font-size: 2em;}
-}
+} 
 @media (max-width: 767px) {
     .auth-outr{ flex-wrap: wrap;}
     .w-40, .w-60 { width: 100%;}

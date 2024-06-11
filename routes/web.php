@@ -22,6 +22,7 @@ use App\Http\Controllers\FinanceController;
 use App\Http\Controllers\DiscountCouponsController;
 use App\Http\Controllers\GiftCardsController;
 use App\Http\Controllers\TimeTableController;
+use App\Http\Controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,7 +58,7 @@ Route::get('auth/facebook', [AuthController::class, 'redirectToFacebook'])->name
 Route::get('auth/facebook/callback', [AuthController::class, 'handleFacebookCallback']);
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
+    // Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
     
     //get all locations
     Route::post('/get-all-locations', [UsersController::class, 'get_all_locations'])->name('get-all-locations');
@@ -251,6 +252,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('gift-card/email_gift_card',[GiftCardsController::class, 'email_gift_card'])->name('gift-card.email-gift-card');
         Route::get('/gift-card/email-history/{voucher_num}', [GiftCardsController::class, 'get_email_history'])->name('gift-card.email-history');
     });
+
+    //dashboard
+    Route::resource('dashboard', DashboardController::class);
 });
 Route::post('/get-staff-list', [CalenderController::class,'getStaffList'])->name('get-staff-list');
 Route::post('forms/deleteform',[FormsController::class, 'formDelete'])->name('serviceforms.formDelete');
