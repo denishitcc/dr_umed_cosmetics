@@ -29,14 +29,24 @@ class GiftCardsController extends Controller
                     ->addColumn('details', function($row) {
                         $createdAt = Carbon::parse($row->created_at)->format('d M Y');
                         $expiryDate = Carbon::parse($row->expiry_date)->format('d M Y');
+                        
+                        // Initialize the details string
                         $details = '<div class="gift-card-details">
-                                        <strong>'.$row->tracking_number.'</strong><br>
-                                        Created: '.$createdAt.' at '.$row->purchase_at.'<br>
-                                        Promotional Gift Card<br>
-                                        <div class="gift-card-notes p-2" style="color: #000;background-color: #FCF8E3">'.htmlspecialchars($row->notes).'</div>
-                                    </div>';
+                                        <strong>' . $row->tracking_number . '</strong><br>
+                                        Created: ' . $createdAt . ' at ' . $row->purchase_at . '<br>
+                                        Promotional Gift Card<br>';
+                    
+                        // Check if notes are not null and append the notes div if true
+                        if ($row->notes !== null) {
+                            $details .= '<div class="gift-card-notes p-2" style="color: #000;background-color: #FCF8E3">'
+                                        . htmlspecialchars($row->notes) . '</div>';
+                        }
+                    
+                        // Close the outer div
+                        $details .= '</div>';
+                        
                         return $details;
-                    })  
+                    })                    
                     ->addColumn('remaining_value', function($row) {
                         $remainingValue = '$' . number_format($row->remaining_value, 2) . ' remaining';
                         // dd($row->value);
