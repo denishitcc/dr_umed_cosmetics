@@ -4,6 +4,8 @@ var DU = {};
         calendar: null,
         selectors: {
             editWorkingModal:           jQuery('#edit_Working_hours'),
+            copyTimetableModal:         jQuery('#copy_timetable_modal'),
+            editTimetable:              jQuery('#edit_timetable'),
         },
         init: function (){
             this.addHandler();
@@ -14,6 +16,57 @@ var DU = {};
             context.initialTimeTable();
             context.getlocationId();
             context.changelocation();
+            context.newTimetableSection();
+            context.createLeaveSection();
+            context.btnEnabled();
+            context.openCopyTimeTableModal();
+
+            $('.new_timetable_section').attr('style','display:none !important');
+            $('.create_leave_section').attr('style','display:none !important');
+            $('#lunch_start').hide();
+            $('#lunch_duration').hide();
+
+
+            $(document).on('click','input[name="sun"][type="checkbox"]',function(e){
+                var sun = $('input[name="sun"][type="checkbox"]:checked').length;
+                if (sun > 0 ) {
+                    $(".sun_start_time").prop({disabled: false});
+                    $(".sun_end_time").prop({disabled: false});
+
+                    $(".sun_lunch").prop({disabled: false});
+                    $(".sun_break").prop({disabled: false});
+                    $(".sun_custom").prop({disabled: false});
+                } else {
+                    $(".sun_start_time").prop({disabled: true});
+                    $(".sun_end_time").prop({disabled: true});
+                    $(".sun_lunch").prop({disabled: true});
+                }
+            });
+
+            $(document).on('click','.sun_lunch',function(e){
+                $('.sun_lunch').removeClass('btn-primary');
+                $('.sun_lunch').addClass('btn-red');
+                $('.sun_lunch').addClass('remove_lunch');
+
+                $('.sun_leave_icon').removeClass('ico-add');
+                $('.sun_leave_icon').addClass('ico-trash');
+
+                $('#lunch_start').show();
+                $('#lunch_duration').show();
+            });
+
+            $(document).on('click','.remove_lunch',function(e) {
+                $('.remove_lunch').removeClass('btn-red');
+                $('.remove_lunch').addClass('btn-primary');
+                $('.remove_lunch').removeClass('remove_lunch');
+
+                $('.sun_leave_icon').removeClass('ico-trash');
+                $('.sun_leave_icon').addClass('ico-add');
+
+                $('#lunch_start').hide();
+                $('#lunch_duration').hide();
+            });
+
         },
 
         initialTimeTable: function(){
@@ -104,6 +157,55 @@ var DU = {};
                     console.error('Error fetching on staff:', error);
                 }
             });
-        }
+        },
+
+        newTimetableSection: function(){
+            $(".new_timetable").click(function () {
+                $('.new_timetable_section').attr('style','display:block !important');
+            });
+
+            $(".cancel_timetable").click(function () {
+                $('.new_timetable_section').attr('style','display:none !important');
+            });
+        },
+
+        createLeaveSection: function(){
+            $(".create_leave").click(function () {
+                $('.create_leave_section').attr('style','display:block !important');
+            });
+
+            $(".cancel_leave").click(function () {
+                $('.create_leave_section').attr('style','display:none !important');
+            });
+        },
+
+        btnEnabled: function(){
+            $(document).on('click','input[name="time_check[]"][type="checkbox"]',function(e){
+                var checkedCount = $('input[name="time_check[]"][type="checkbox"]:checked').length;
+                if (checkedCount > 0 ) {
+                    $(".repeat").prop({disabled: false});
+                    $(".delete").prop({disabled: false});
+                } else {
+                    $(".repeat").prop({disabled: true});
+                    $(".delete").prop({disabled: true});
+                }
+            });
+        },
+
+        openCopyTimeTableModal: function(){
+            var context = this;
+
+            $(document).on('click','#open_copy_timetable',function(e){
+                context.selectors.copyTimetableModal.modal('show');
+            });
+
+            $('#copy_timetable_modal').on('show.bs.modal', function () {
+                context.selectors.editTimetable.css('z-index', 1039);
+            });
+
+            $('#copy_timetable_modal').on('hidden.bs.modal', function () {
+                document.getElementById('edit_timetable').style.removeProperty('z-index');
+            });
+        },
     }
 })();

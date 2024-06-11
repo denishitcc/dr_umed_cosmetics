@@ -51,6 +51,7 @@
 </div>
 @include('timetable.partials.edit-working-hours')
 @include('timetable.partials.edit-timetable')
+@include('timetable.partials.copy_timetable_modal')
 @endsection
 @section('script')
 {{-- <script src="{{ asset('js/fullcalendar-scheduler-6.1.10/dist/index.global.js') }}"></script>

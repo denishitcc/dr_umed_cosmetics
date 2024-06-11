@@ -20,6 +20,7 @@ return new class extends Migration
             $table->time('lunch');
             $table->time('break');
             $table->time('custom_time');
+            $table->text('color_code');
             $table->integer('status')->comment('1-working,0-non working,2-leave,3-partial leave');
             $table->timestamps();
         });
