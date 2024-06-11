@@ -45,7 +45,7 @@
             </div>
             <div class="list-group">
                 <ul>
-                    <li class="{{ (request()->is('dashboard.index')) ? 'active' : '' }}">
+                    <li class="{{ request()->routeIs('dashboard.index') ? 'active' : '' }}">
                         <a href="{{ route('dashboard.index') }}"><i class="ico-dashboard"></i>Dashboard</a>
                     </li>
                     @if(\Auth::user()->checkPermission('calender') == "true" || \Auth::user()->checkPermission('calender') != "No permission")

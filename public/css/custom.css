@@ -522,7 +522,7 @@ div.dataTables_filter { text-align: right; float: right;}
 .cst-toggle .accordion-body{ padding: 1rem 0;}
 
 .cst-toggle .accordion-item{ margin-bottom: 15px;}
-.cst-toggle .accordion-item:last-child{ margin-bottom: 0;} 
+.cst-toggle .accordion-item:last-child{ margin-bottom: 0;}
 
 .btn-dashed{ border:  1px dashed ;}
 .btn-red, .btn-red:hover{ border-color:#F00; color: #F00;}
@@ -1052,6 +1052,13 @@ html .hasDatepicker .ui-button.ui-state-disabled:active{ border: 0; background: 
 
 .feed-item .text:after{ content: ""; display: block; position: absolute; top: 0; left: -8px; width: 14px; height: 14px; border-radius: 50px; background: #fff; border: 3px solid #3699FF;}
 
+.tot-sales .fonts{color: #666; font-size: 14px;}
+.tot-sales .fonts + .fonts{ text-align: right;}
+.tot-sales h3{color: #6C1884; margin: 0;}
+progress{ width: 100%;}
+progress.pink-progress{accent-color: #D04ED6;}
+
+
 /*  Responsive  */
 
 @media (min-width: 768px) {
@@ -1074,8 +1081,8 @@ html .hasDatepicker .ui-button.ui-state-disabled:active{ border: 0; background: 
     .card .card-head .toolbar .tool-left a { margin-bottom: 10px;}
     .dataTables_wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch;}
     #main_row.row .col{ flex: 100%; margin-bottom: 20px; }
-    .drag-box .head i{     font-size: 2em;}
-} 
+    .drag-box .head i{font-size: 2em;}
+}
 @media (max-width: 767px) {
     .auth-outr{ flex-wrap: wrap;}
     .w-40, .w-60 { width: 100%;}

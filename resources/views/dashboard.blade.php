@@ -3,39 +3,41 @@
 <div class="app-header mb-4">
     <h4 class="small-title mb-0">Dashboard</h4>
 
-    <div class="right w-25">
-        <div class="row form-group mb-0">
-            <div class="col-lg-7">
-                <!-- <input type="date" class="form-control"> -->
-                <div id="reportrange" class="form-control" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
-                    <i class="fa fa-calendar"></i>&nbsp;
-                    <span></span> <i class="fa fa-caret-down"></i>
-                </div>
-            </div>
-            <div class="col-lg-5">
-                <select class="form-select" id="locations">
-                    <option>All</option>
-                    @if(count($locations)>0)
-                        @foreach($locations as $loc)
-                            <option value="{{$loc->location_name}}">{{$loc->location_name}}</option>
-                        @endforeach
-                    @endif
-                </select>
-            </div>
+    <div class="right d-flex">
+        <!-- <input type="date" class="form-control"> -->
+        <div id="reportrange" class="form-control d-flex align-items-center me-3">
+            <i class="fa fa-calendar me-2"></i>
+            <span></span> <i class="fa fa-caret-down ms-2"></i>
         </div>
-        
+
+        <select class="form-select" id="locations">
+            <option>All</option>
+            @if(count($locations)>0)
+                @foreach($locations as $loc)
+                    <option value="{{$loc->location_name}}">{{$loc->location_name}}</option>
+                @endforeach
+            @endif
+        </select>
     </div>
 </div>
 
 <div class="row mb-4">
     <div class="col-lg-3">
         <div class="card p-3">
-            <h5 class="bright-gray">Total Sales</h5>
-            <b class="d-grey">${{ $made_so_far }}</b><br>
-            Made so far<br>
-            <b class="d-grey">${{ $expected }}</b><br>
-            Expected
-            <progress id="file" max="{{ $made_so_far + $expected }}" value="{{ $made_so_far }}">{{ $made_so_far }}</progress>
+            <h5 class="bright-gray mb-4">Total Sales</h5>
+
+            <div class="d-flex justify-content-between mb-20 tot-sales mb-3">
+                <div class="fonts">
+                    <h3>${{ $made_so_far }}</h3>
+                    Made so far
+                </div>
+                <div class="fonts">
+                    <h3>${{ $expected }}</h3>
+                    Expected
+                </div>
+            </div>
+
+            <progress id="file" max="{{ $made_so_far + $expected }}" value="{{ $made_so_far }}" class="pink-progress">{{ $made_so_far }}</progress>
         </div>
     </div>
     <div class="col-lg-3">
