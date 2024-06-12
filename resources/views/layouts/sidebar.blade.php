@@ -192,7 +192,7 @@
                         <a href="#" class="apnt-box">
                             <h6 class="blue-bold">{{$app_data->firstname.' '.$app_data->lastname}}</h6>
                             <span class="font-14 d-grey">{{$app_data->service_name}}</span><br>
-                            <time><i class="ico-clock me-1"></i> {{ date('Y-m-d h:i A', strtotime($app_data->start_date)) }}</time>
+                            <time><i class="ico-clock me-1"></i> {{ date('d-m-Y h:i A', strtotime($app_data->start_date)) }}</time>
                         </a>
                     @endforeach
                 @else
@@ -344,6 +344,10 @@
     <script src="https://res.cloudinary.com/dxfq3iotg/raw/upload/v1569006273/BBBootstrap/choices.min.js?version=7.0.0"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
     @yield('script')
     <script>
         $(document).ready(function(){

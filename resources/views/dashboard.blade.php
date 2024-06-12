@@ -1,5 +1,12 @@
 @extends('layouts/sidebar')
 @section('content')
+<style>
+#chartdiv {
+    width: 100%;
+    height: 100px;
+    max-width: 100%
+}
+</style>
 <div class="app-header mb-4">
     <h4 class="small-title mb-0">Dashboard</h4>
 
@@ -28,34 +35,89 @@
 
             <div class="d-flex justify-content-between mb-20 tot-sales mb-3">
                 <div class="fonts">
-                    <h3>${{ $made_so_far }}</h3>
+                    <h3>${{ (Int)$made_so_far }}</h3>
                     Made so far
                 </div>
                 <div class="fonts">
-                    <h3>${{ $expected }}</h3>
+                    <h3>${{ $made_so_far + $expected }}</h3>
                     Expected
                 </div>
             </div>
-
-            <progress id="file" max="{{ $made_so_far + $expected }}" value="{{ $made_so_far }}" class="pink-progress">{{ $made_so_far }}</progress>
+            <div class="progress mb-0">
+                @php
+                $percentage_remaining = ((int)$made_so_far / ((int)$made_so_far + $expected)) * 100;
+                @endphp
+                <div class="progress-bar pink" role="progressbar"
+                    aria-valuenow="{{ $percentage_remaining }}"
+                    aria-valuemin="0"
+                    aria-valuemax="100">
+                </div>
+            </div>
         </div>
     </div>
     <div class="col-lg-3">
         <div class="card p-3">
             <h5 class="bright-gray">Total Appointments</h5>
-            <img src="img/Group 15176.png" alt="">
+            <div class="barWrapper">
+            @php
+            $scheduled = ((int)$scheduled_app / (int)$total_app) * 100;
+            @endphp
+            <div class="progressText">Scheduled <span class="counter">{{$scheduled_app}}</span></div>
+                <div class="progress">
+                    <div class="progress-bar scheduled" role="progressbar" aria-valuenow="{{$scheduled}}" aria-valuemin="0" aria-valuemax="100">
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="barWrapper">
+                @php
+                $completed = ((int)$completed_app / (int)$total_app) * 100;
+                @endphp
+                <div class="progressText">Completed <span class="counter">{{$completed_app}}</span></div>
+                <div class="progress">
+                    <div class="progress-bar completed" role="progressbar" aria-valuenow="{{$completed}}" aria-valuemin="0" aria-valuemax="100">
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="barWrapper">
+                @php
+                $cancelled = ((int)$cancelled_app / (int)$total_app) * 100;
+                @endphp
+                <div class="progressText">Cancelled <span class="counter">{{$cancelled_app}}</span></div>
+                <div class="progress cancelled mb-0">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="{{$cancelled}}" aria-valuemin="0" aria-valuemax="100">
+                        
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div class="col-lg-3">
         <div class="card p-3">
             <h5 class="bright-gray">Total Clients</h5>
-            <img src="img/Group 15177.png" alt="">
+            <div class="d-flex justify-content-between mb-20 tot-clients mb-3">
+                <div class="fonts">
+                    <h3 class="mb-0">{{$total_month_clients}}</h3>
+                </div>
+                <div class="fonts" style="flex:0 0 80%">
+                    <div id="chartdiv"></div>
+                </div>
+            </div>
         </div>
     </div>
+    
     <div class="col-lg-3">
         <div class="card p-3">
             <h5 class="bright-gray">Total Enquiries</h5>
-            <img src="img/Group 15178.png" alt="">
+            <div class="d-flex justify-content-between mb-20 tot-enquiry mb-3">
+                <div class="fonts">
+                    <h3 class="mb-0">{{$total_month_enquiries}}</h3>
+                </div>
+                <div class="fonts">
+                    Graph
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -194,37 +256,8 @@
 </div>
 @stop
 @section('script')
+<script src="{{ asset('js/dashboard.js') }}"></script>
 <script>
-$.ajaxSetup({
-headers: {
-    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-}
-});
-$(document).ready(function() {
-    $(function() {
-
-        var start = moment().startOf('month');
-        var end = moment().endOf('month');
-
-        function cb(start, end) {
-            $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-        }
-
-        $('#reportrange').daterangepicker({
-            startDate: start,
-            endDate: end,
-            ranges: {
-            'Today': [moment(), moment()],
-            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-            'This Month': [moment().startOf('month'), moment().endOf('month')],
-            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-            }
-        }, cb);
-
-        cb(start, end);
-    });
-});
+    var dailyClients = {!! json_encode($daily_clients) !!};
 </script>
 @endsection

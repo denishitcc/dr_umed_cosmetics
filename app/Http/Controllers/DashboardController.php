@@ -9,6 +9,10 @@ use App\Models\Locations;
 use App\Models\WalkInRetailSale;
 use App\Models\Appointment;
 use App\Models\Services;
+use App\Models\Clients;
+use App\Models\Enquiries;
+use Carbon\Carbon;
+use DB;
 
 class DashboardController extends Controller
 {
@@ -16,40 +20,77 @@ class DashboardController extends Controller
     {
         if (Auth::check()) {
             $locations = Locations::all();
+            $currentMonth = Carbon::now()->month;
+            $currentYear = Carbon::now()->year;
 
-            // Get the start date of the current month and today's date
+            // Total sales start
             $startOfMonth = now()->startOfMonth();
             $today = now()->startOfDay();
-
-            // Get the start date for the second range (tomorrow) and the end of the current month
             $tomorrow = now()->addDay()->startOfDay();
             $endOfMonth = now()->endOfMonth();
 
-            // Total Sales from the start of the month to today
-            $made_so_far = WalkInRetailSale::whereBetween('invoice_date', [$startOfMonth, $today])->get();
-
-            // Total Sales from tomorrow to the end of the current month
+            $made_so_far = WalkInRetailSale::whereBetween('invoice_date', [$startOfMonth, $today])->sum('total');
+            
             $total_sales_second_half = Appointment::whereBetween('start_date', [$tomorrow, $endOfMonth])->get();
-            // Initialize the total for the second half
             $expected = 0;
-
-            if ($total_sales_second_half->count() > 0) {
-                foreach ($total_sales_second_half as $second) {
-                    $service = Services::where('id', $second->service_id)->first();
-                    if ($service) {
-                        $expected += $service->standard_price;
-                    }
+            foreach ($total_sales_second_half as $second) {
+                $service = Services::where('id', $second->service_id)->first();
+                if ($service) {
+                    $expected += $service->standard_price;
                 }
             }
 
-            // Sum the 'total' field for both arrays
-            $made_so_far = $made_so_far->sum('total');
-            
+            // Total appointments
+            $scheduled_app = Appointment::where('status', '1')
+                ->whereMonth('start_date', $endOfMonth)
+                ->whereYear('start_date', $currentYear)
+                ->count();
+            // dd($scheduled_app);
+            $completed_app = Appointment::where('status', '4')
+                ->whereMonth('start_date', $endOfMonth)
+                ->whereYear('start_date', $currentYear)
+                ->count();
 
-            // dd($expected);
-            return view('dashboard', compact('locations', 'made_so_far', 'expected'));
+            $cancelled_app = Appointment::where('status', '10')
+                ->whereMonth('start_date', $endOfMonth)
+                ->whereYear('start_date', $currentYear)
+                ->count();
+
+            $total_app = Appointment::whereMonth('start_date', $endOfMonth)
+                ->whereYear('start_date', $currentYear)
+                ->count();
+
+            // Total clients
+            $total_clients = Clients::count();
+            $total_month_clients = Clients::whereMonth('created_at', $currentMonth)
+                ->whereYear('created_at', $currentYear)
+                ->count();
+
+            // Get clients count grouped by day for the current month
+            $daily_clients = Clients::select(
+                DB::raw('DATE(created_at) as date'),
+                DB::raw('count(*) as count')
+            )
+            ->whereMonth('created_at', $currentMonth)
+            ->whereYear('created_at', $currentYear)
+            ->groupBy(DB::raw('DATE(created_at)'))
+            ->get();
+
+            // Total enquiries
+            $total_enquiries = Enquiries::count();
+            $total_month_enquiries = Enquiries::whereMonth('created_at', $currentMonth)
+                ->whereYear('created_at', $currentYear)
+                ->count();
+
+            // Fetching daily enquiries data
+            $dailyEnquiries = [];
+            for ($day = 1; $day <= $endOfMonth->day; $day++) {
+                $date = Carbon::createFromDate($currentYear, $currentMonth, $day)->toDateString();
+                $dailyEnquiries[$date] = Enquiries::whereDate('created_at', $date)->count();
+            }
+
+            return view('dashboard', compact('locations', 'made_so_far', 'expected', 'scheduled_app', 'completed_app', 'cancelled_app', 'total_app', 'total_clients', 'total_month_clients', 'total_enquiries', 'total_month_enquiries','daily_clients','dailyEnquiries'));
         } else {
-            // User is not authenticated, handle accordingly (e.g., redirect to login)
             return redirect()->route('login');
         }
     }

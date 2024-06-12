@@ -143,7 +143,9 @@ class ClientsController extends Controller
     {
         $permission = \Auth::user()->checkPermission('clients');
         if ($permission === 'View & Make Changes' || $permission === 'Both' || $permission === true) {
-            return view('clients.create');
+            //locations
+            $location = Locations::get();
+            return view('clients.create',compact('location'));
         } else {
             abort(403, 'You are not authorized to access this page.');
         }
@@ -155,6 +157,7 @@ class ClientsController extends Controller
     public function store(Request $request)
     {
         $newUser = Clients::create([
+            'location_id'=>isset($request['location_name'])?$request['location_name']:$request['appointmentlocationId'],
             'firstname' => $request['firstname'],
             'lastname' => $request['lastname'],
             'email' => $request['email'],
@@ -243,7 +246,9 @@ class ClientsController extends Controller
 
             $futureappointments = $client->allappointments()->where('created_at','>=', $todayDate)->orderby('created_at','desc')->get();
             $pastappointments   = $client->allappointments()->where('created_at','<=', $todayDate)->orderby('created_at','desc')->get();
-            return view('clients.edit',compact('client','client_photos','client_documents','futureappointments','pastappointments'));
+            
+            $location = Locations::get();
+            return view('clients.edit',compact('client','client_photos','client_documents','futureappointments','pastappointments','location'));
         } else {
             abort(403, 'You are not authorized to access this page.');
         }
@@ -263,6 +268,7 @@ class ClientsController extends Controller
     public function update(Request $request, string $id)
     {
         $newUser = Clients::updateOrCreate(['id' => $request->id],[
+            'location_id'=>$request['location_name'],
             'firstname' => $request['firstname'],
             'lastname' => $request['lastname'],
             // 'email' => $request['email'],

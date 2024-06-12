@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('location_id');
             $table->string('firstname',50)->nullable();
             $table->string('lastname',50)->nullable();
             $table->string('gender',10)->nullable();
@@ -30,6 +31,12 @@ return new class extends Migration
             $table->string('status',50)->nullable()->default('active');
             $table->softDeletes();
             $table->timestamps();
+
+            $table->foreign('location_id')
+                ->references('id')
+                ->on('locations')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
         });
     }
 

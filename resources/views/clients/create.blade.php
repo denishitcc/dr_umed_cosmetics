@@ -64,6 +64,19 @@
                         <input type="text" class="form-control" name="mobile_number" id="mobile_number" maxlength="15">
                         </div>
                 </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label class="form-label">Location</label>
+                        <select class="form-select form-control" name="location_name">
+                            <option selected value=""> -- select an option -- </option>
+                            @if(count($location)>0)
+                            @foreach($location as $loc)
+                                <option value="{{$loc->id}}"> {{$loc->location_name}} </option>
+                            @endforeach
+                            @endif
+                        </select>
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="col-lg-4">
@@ -265,6 +278,9 @@
     $(document).ready(function() {
 		$("#create_client").validate({
             rules: {
+                location_name:{
+                    required:true,
+                },
                 firstname: {
                     required: true,
                 },

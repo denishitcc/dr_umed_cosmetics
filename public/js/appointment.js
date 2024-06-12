@@ -1903,6 +1903,9 @@ var DU = {};
             // Validate the client form
             $("#create_client").validate({
                 rules: {
+                    location_name:{
+                        required:true,
+                    },
                     firstname: {
                         required: true,
                     },
@@ -2906,6 +2909,7 @@ var DU = {};
     })
     //submit create client form
     function SubmitCreateClient(data){
+        debugger;
         var url = $("#clientCreate").data("url");
 		$.ajax({
 			headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
@@ -2913,6 +2917,7 @@ var DU = {};
 			type: "post",
 			data: data,
 			success: function(response) {
+                debugger;
 				// Show a Sweet Alert message after the form is submitted.
 				if (response.success) {
                     // $('#client_name').val(response.data.firstname + ' ' + response.data.lastname);

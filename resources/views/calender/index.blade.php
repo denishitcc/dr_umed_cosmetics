@@ -1804,6 +1804,9 @@
         // update client detail validation
         $("#update_client_detail").validate({
             rules: {
+                location_name:{
+                    required:true,
+                },
                 firstname: {
                     required: true,
                 },
@@ -3056,8 +3059,10 @@
     // Assuming you have a function to trigger opening the modal with a specific client id
     // For example, if you have a button or link to open the modal, you can attach a click event handler to it
     $(document).on('click','.open-client-card-btn',function(e){
+        debugger;
         var clientId = $(this).data('client-id'); // Use data('client-id') to access the attribute
-        openClientCard(clientId);
+        var clientName = $(this).parent().parent().find('.client-info').find('[name="client_first_name"]').val();
+        openClientCard(clientId,clientName);
     });
     $(document).on('click', '.remove_image', function (e) {
         
@@ -6850,12 +6855,125 @@
 
 
     // Assuming you have a function to open the modal
-    function openClientCard(clientId) {
-        // Find the client details by id
-        var client = client_details.find(function(client) {
-            return client.id == clientId;
-        });
+    function openClientCard(clientId,ClientName) {
+        debugger;
+        var client_details=[];
+        $.ajax({
+            type: "POST",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: "{{route('calendar.get-all-clients')}}",
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content'),
+                name: ClientName,
+                id:clientId
+            },
+            dataType: "json",
+            async: true, // Set async to true
+            success: function(res) {
+                if (res.length > 0) {
+                    $('.client_list_box').show();
+                    for (var i = 0; i < res.length; ++i) {
+                        // Check if the record with the same id already exists in the array
+                        var existingRecordIndex = client_details.findIndex(record => record.id === res[i].id);
 
+                        // If the record doesn't exist in the array, add it
+                        if (existingRecordIndex === -1) {
+                            // Push client details to the client_details array
+                            client_details.push({
+                                id: res[i].id,
+                                location_id:res[i].location_id,
+                                name: res[i].first_name,
+                                lastname: res[i].last_name,
+                                email: res[i].email,
+                                mobile_number: res[i].mobile_no,
+                                date_of_birth: res[i].date_of_birth,
+                                gender: res[i].gender,
+                                home_phone: res[i].home_phone,
+                                work_phone: res[i].work_phone,
+                                contact_method: res[i].contact_method,
+                                send_promotions: res[i].send_promotions,
+                                street_address: res[i].street_address,
+                                suburb: res[i].suburb,
+                                city: res[i].city,
+                                postcode: res[i].postcode,
+                                client_photos:res[i].client_photos,
+                                client_documents: [], // Initialize an empty array for client documents
+                                service_name: res[i].last_appointment.service_name,
+                                staff_name: res[i].last_appointment.staff_name,
+                                start_date: res[i].last_appointment.appointment_date,
+                                status: res[i].last_appointment.status,
+                                location_name: res[i].last_appointment.location_name
+                            });
+                        }
+                        // Iterate over client documents and push only doc_name and created_at
+                        if (res[i].documents && res[i].documents.length > 0) {
+                            for (var j = 0; j < res[i].documents.length; j++) {
+                                // If the record with the same doc_id already exists in the array, skip
+                                if (existingRecordIndex !== -1 && client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].documents[j].id)) {
+                                    continue;
+                                }
+                                // If the record doesn't exist in the array or the doc_id doesn't exist in the documents array, add it
+                                if (existingRecordIndex === -1 || !client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].documents[j].id)) {
+                                    client_details[existingRecordIndex !== -1 ? existingRecordIndex : i].client_documents.push({
+                                        doc_id: res[i].documents[j].id,
+                                        doc_name: res[i].documents[j].doc_name,
+                                        created_at: res[i].documents[j].created_at
+                                    });
+                                }
+                            }
+                        }
+                        if (res[i].photos && res[i].photos.length > 0) {
+                            $('.photos_count').text(res[i].photos.length);
+
+                            var photoContainer = $('.gallery.client-phbox'); // Assuming you have a container for client photos in your modal
+                            photoContainer.empty(); // Clear previous photos
+                            res[i].photos.forEach(function(photoUrl) {
+                                var img = $('<img>').attr('src', '{{ asset('storage/images/clients_photos/') }}' + '/' + photoUrl.photo_name).addClass('img-fluid');
+                                var anchor = $('<a>').attr({
+                                    'href': '{{ asset('storage/images/clients_photos/') }}' + '/' + photoUrl.photo_name,
+                                    'data-fancybox': 'mygallery' // Add data-fancybox attribute
+                                }).append(img);
+                                var figure = $('<figure>').append(anchor);
+
+                                // Create the delete button with a dynamic ID based on the photo index
+                                var deleteButton = $('<button>')
+                                .addClass('btn black-btn round-6 dt-delete remove_image')
+                                .attr('type', 'button')
+                                .attr('ids', photoUrl.id)
+                                .click(function() {
+                                    // Functionality to delete the photo based on its ID
+                                    var photoId = $(this).attr('photos-id');
+                                    deletePhoto(photoId);
+                                })
+                                .append($('<i>').addClass('ico-trash'));
+
+                                // Append the delete button to the figure element
+                                figure.append(deleteButton);
+                                
+                                photoContainer.append(figure);
+                            });
+                        }
+                    }
+                    // Find the client details
+                    var client = client_details.find(function (client) {
+                        return client.id == clientId;
+                    });
+
+                    // Call a function to process client details
+                    processClientDetails(client);
+                } else {
+                    $('.table-responsive').empty();
+                }
+            },
+            error: function(jqXHR, exception) {
+                // Handle error
+            }
+        });
+    }
+    // Function to process client details
+    function processClientDetails(client) {
         // Update the modal with the client details
         if (client) {
             $('.modal-title-client').text('Client card - ' + client.name + ' ' + client.lastname);
@@ -6866,7 +6984,9 @@
             // You can add more fields as needed
 
             // clien details bind
+            debugger;
             $('#id').val(client.id);
+            $('#location_name').val(client.location_id);
             $('#firstname').val(client.name);
             $('#lastname').val(client.lastname);
             $('input[name="gender"][value="' + client.gender + '"]').prop('checked', true);
@@ -6935,7 +7055,6 @@
             $('#Client_card').modal('show');
         }
     }
-
     //format date
     function formatDate(date) {
         const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];

@@ -98,6 +98,7 @@ class CalenderController extends Controller
             $loc_dis = DiscountCoupon::all();
             $loc_sur = LocationSurcharge::all();
 
+            $location = Locations::all();
 
             return view('calender.index')->with(
                 [
@@ -108,7 +109,8 @@ class CalenderController extends Controller
                     'productServiceJson'   => '',
                     'loc_dis'    => $loc_dis,
                     'loc_sur'    => $loc_sur,
-                    'permissions' => $permissionValue
+                    'permissions' => $permissionValue,
+                    'location'   => $location
                 ]
             );
         } else {
@@ -213,7 +215,12 @@ class CalenderController extends Controller
      */
     public function getAllClients(Request $request)
     {
-        $clients = Clients::where('firstname', 'like', '%' . $request->name . '%')->where('status', 'active')->get();
+        if(isset($request->name))
+        {
+            $clients = Clients::where('firstname', 'like', '%' . $request->name . '%')->where('status', 'active')->get();
+        }else{
+            $clients = Clients::where('id', $request->id)->where('status', 'active')->get();
+        }
         return response()->json(ClientResource::collection($clients));
     }
 
@@ -813,6 +820,7 @@ class CalenderController extends Controller
 
         $futureappointments = $client->allappointments()->with(['note'])->where('created_at', '>=', $todayDate)->orderby('created_at', 'desc')->get();
         $pastappointments   = $client->allappointments()->with(['note'])->where('created_at', '<=', $todayDate)->orderby('created_at', 'desc')->get();
+        // dd($pastappointments->staff);
         $clientPhotos       = $client->photos;
 
         $allappointments    = $client->allAppointments()->pluck('id');
@@ -2541,6 +2549,7 @@ class CalenderController extends Controller
                 // dd($request->all());
                 //store client details
                 $newUser = Clients::create([
+                    'location_id'=>$request->walk_in_location_id,
                     'firstname' => $request->walkin_first_name,
                     'lastname' => $request->walkin_last_name,
                     'email' => $request->walkin_email,
