@@ -98,7 +98,10 @@
                                 @foreach ($pastappointments as $appointment)
                                     <li class="scaffold-layout-list-item">
                                         <div class="appt-timeplace">
-                                            {{  date('D Y-m-d', strtotime($appointment->start_date)) }} <br> {{ date('h:i A', strtotime($appointment->start_date)) }} @<br> {{ $appointment->staff->staff_location->location_name }} <br> ({{ $appointment->appointment_status }})
+                                            {{  date('D Y-m-d', strtotime($appointment->start_date)) }} <br> 
+                                            {{ date('h:i A', strtotime($appointment->start_date)) }} @<br> 
+                                            {{ isset($appointment->staff->staff_location->location_name)? $appointment->staff->staff_location->location_name : '' }} <br>
+                                            ({{ $appointment->appointment_status }})
                                         </div>
                                         <div class="appt-details">
                                             <div class="his-detaiils">
