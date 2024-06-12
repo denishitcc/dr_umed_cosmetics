@@ -258,6 +258,6 @@
 @section('script')
 <script src="{{ asset('js/dashboard.js') }}"></script>
 <script>
-    var dailyClients = {!! json_encode($daily_clients) !!};
+    var ClientsGraph = {!! json_encode($client_graph) !!};
 </script>
 @endsection

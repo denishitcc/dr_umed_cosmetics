@@ -67,7 +67,7 @@ class DashboardController extends Controller
                 ->count();
 
             // Get clients count grouped by day for the current month
-            $daily_clients = Clients::select(
+            $client_graph = Clients::select(
                 DB::raw('DATE(created_at) as date'),
                 DB::raw('count(*) as count')
             )
@@ -89,7 +89,7 @@ class DashboardController extends Controller
                 $dailyEnquiries[$date] = Enquiries::whereDate('created_at', $date)->count();
             }
 
-            return view('dashboard', compact('locations', 'made_so_far', 'expected', 'scheduled_app', 'completed_app', 'cancelled_app', 'total_app', 'total_clients', 'total_month_clients', 'total_enquiries', 'total_month_enquiries','daily_clients','dailyEnquiries'));
+            return view('dashboard', compact('locations', 'made_so_far', 'expected', 'scheduled_app', 'completed_app', 'cancelled_app', 'total_app', 'total_clients', 'total_month_clients', 'total_enquiries', 'total_month_enquiries','client_graph','dailyEnquiries'));
         } else {
             return redirect()->route('login');
         }

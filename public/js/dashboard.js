@@ -146,7 +146,7 @@ am5.ready(function() {
     });
 
     // Prepare data
-    var data = dailyClients.map(item => {
+    var data = ClientsGraph.map(item => {
         return {
             date: new Date(item.date).getTime(),
             value: item.count
