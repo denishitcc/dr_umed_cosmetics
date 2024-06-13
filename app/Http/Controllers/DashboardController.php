@@ -60,8 +60,7 @@ class DashboardController extends Controller
                 ->whereYear('start_date', $currentYear)
                 ->count();
 
-            // Total clients
-            $total_clients = Clients::count();
+            // Total month clients
             $total_month_clients = Clients::whereMonth('created_at', $currentMonth)
                 ->whereYear('created_at', $currentYear)
                 ->count();
@@ -76,20 +75,24 @@ class DashboardController extends Controller
             ->groupBy(DB::raw('DATE(created_at)'))
             ->get();
 
-            // Total enquiries
-            $total_enquiries = Enquiries::count();
+            // Total month enquiries
             $total_month_enquiries = Enquiries::whereMonth('created_at', $currentMonth)
                 ->whereYear('created_at', $currentYear)
                 ->count();
 
             // Fetching daily enquiries data
-            $dailyEnquiries = [];
+            $enquiry_graph = [];
             for ($day = 1; $day <= $endOfMonth->day; $day++) {
                 $date = Carbon::createFromDate($currentYear, $currentMonth, $day)->toDateString();
-                $dailyEnquiries[$date] = Enquiries::whereDate('created_at', $date)->count();
+                $count = Enquiries::whereDate('created_at', $date)->count();
+                if ($count > 0) { // Only add to array if count is greater than 0
+                    $enquiry_graph[] = [
+                        'date' => $date,
+                        'count' => $count
+                    ];
+                }
             }
-
-            return view('dashboard', compact('locations', 'made_so_far', 'expected', 'scheduled_app', 'completed_app', 'cancelled_app', 'total_app', 'total_clients', 'total_month_clients', 'total_enquiries', 'total_month_enquiries','client_graph','dailyEnquiries'));
+            return view('dashboard', compact('locations', 'made_so_far', 'expected', 'scheduled_app', 'completed_app', 'cancelled_app', 'total_app', 'total_month_clients', 'total_month_enquiries','client_graph','enquiry_graph'));
         } else {
             return redirect()->route('login');
         }

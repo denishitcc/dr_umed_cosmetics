@@ -1,7 +1,7 @@
 @extends('layouts/sidebar')
 @section('content')
 <style>
-#chartdiv {
+#clientchartdiv, #enquirychartdiv {
     width: 100%;
     height: 100px;
     max-width: 100%
@@ -129,7 +129,7 @@
                     <h3 class="mb-0">{{$total_month_clients}}</h3>
                 </div>
                 <div class="fonts" style="flex:0 0 80%">
-                    <div id="chartdiv"></div>
+                    <div id="clientchartdiv"></div>
                 </div>
             </div>
         </div>
@@ -142,8 +142,8 @@
                 <div class="fonts">
                     <h3 class="mb-0">{{$total_month_enquiries}}</h3>
                 </div>
-                <div class="fonts">
-                    Graph
+                <div class="fonts" style="flex:0 0 80%">
+                    <div id="enquirychartdiv"></div>
                 </div>
             </div>
         </div>
@@ -287,5 +287,6 @@
 <script src="{{ asset('js/dashboard.js') }}"></script>
 <script>
     var ClientsGraph = {!! json_encode($client_graph) !!};
+    var EnquiryGraph = {!! json_encode($enquiry_graph) !!};
 </script>
 @endsection
