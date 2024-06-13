@@ -7116,7 +7116,7 @@
                     Swal.fire({
                         title: "Error!",
                         text: response.message,
-                        info: "error",
+                        icon: "error",
                     });
                 }
             },

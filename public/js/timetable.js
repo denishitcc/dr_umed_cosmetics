@@ -275,7 +275,7 @@ var DU = {};
                             Swal.fire({
                                 title: "Working Status!",
                                 text: data.message,
-                                info: "success",
+                                icon: "success",
                             }).then(function() {
                                 // Reload the current page
                                 location.reload();
@@ -284,7 +284,7 @@ var DU = {};
                             Swal.fire({
                                 title: "Error!",
                                 text: data.message,
-                                info: "error",
+                                icon: "error",
                             });
                         }
                     },

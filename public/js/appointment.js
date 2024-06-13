@@ -1078,7 +1078,7 @@ var DU = {};
                             Swal.fire({
                                 title: "Appointment!",
                                 text: data.message,
-                                info: "success",
+                                icon: "success",
                             }).then(function() {
                                 // Reload the current page
                                 location.reload();
@@ -1087,7 +1087,7 @@ var DU = {};
                             Swal.fire({
                                 title: "Error!",
                                 text: data.message,
-                                info: "error",
+                                icon: "error",
                             });
                         }
                     },
@@ -1123,7 +1123,7 @@ var DU = {};
                                 Swal.fire({
                                     title: "Appointment!",
                                     text: data.message,
-                                    info: "success",
+                                    icon: "success",
                                 }).then(function() {
                                     // Reload the current page
                                     location.reload();
@@ -1132,7 +1132,7 @@ var DU = {};
                                 Swal.fire({
                                     title: "Error!",
                                     text: data.message,
-                                    info: "error",
+                                    icon: "error",
                                 });
                             }
                         },
@@ -1162,7 +1162,7 @@ var DU = {};
                         Swal.fire({
                             title: "Appointment Confirmation!",
                             text: "Appointment Confirmation Mail Send Successfully",
-                            info: "success",
+                            icon: "success",
                         }).then(function() {
                             // Reload the current page
                             location.reload();
@@ -1323,7 +1323,7 @@ var DU = {};
                         Swal.fire({
                             title: "Appointment Forms!",
                             text: data.message,
-                            info: "success",
+                            icon: "success",
                         }).then(function() {
                             context.selectors.copyexistingFormModal.modal('hide');
                             context.getAppointmentForms(appointmentId);
@@ -1332,7 +1332,7 @@ var DU = {};
                         Swal.fire({
                             title: "Error!",
                             text: data.message,
-                            info: "error",
+                            icon: "error",
                         });
                     }
                 },
@@ -1370,7 +1370,7 @@ var DU = {};
                             Swal.fire({
                                 title: "Appointment Forms!",
                                 text: data.message,
-                                info: "success",
+                                icon: "success",
                             }).then(function() {
                                 context.selectors.copyexistingFormModal.modal('hide');
                                 context.getAppointmentForms(appointmentId);
@@ -1379,7 +1379,7 @@ var DU = {};
                             Swal.fire({
                                 title: "Error!",
                                 text: data.message,
-                                info: "error",
+                                icon: "error",
                             });
                         }
                     },
@@ -1447,7 +1447,7 @@ var DU = {};
                             Swal.fire({
                                 title: "Appointment Forms!",
                                 text: data.message,
-                                info: "success",
+                                icon: "success",
                             }).then(function() {
                                 context.selectors.sendFormsModal.modal('hide');
                                 // context.getAppointmentForms(appointmentId);
@@ -1456,7 +1456,7 @@ var DU = {};
                             Swal.fire({
                                 title: "Error!",
                                 text: data.message,
-                                info: "error",
+                                icon: "error",
                             });
                         }
                     },
@@ -1560,7 +1560,7 @@ var DU = {};
                         Swal.fire({
                             title: "Appointment!",
                             text: data.message,
-                            info: "success",
+                            icon: "success",
                         }).then(function() {
                             // Reload the current page
                             location.reload();
@@ -1569,7 +1569,7 @@ var DU = {};
                         Swal.fire({
                             title: "Error!",
                             text: data.message,
-                            info: "error",
+                            icon: "error",
                         });
                     }
                 },
@@ -1593,7 +1593,7 @@ var DU = {};
                         Swal.fire({
                             title: "Appointment!",
                             text: data.message,
-                            info: "success",
+                            icon: "success",
                         }).then(function() {
                             // Reload the current page
                             location.reload();
@@ -1602,7 +1602,7 @@ var DU = {};
                         Swal.fire({
                             title: "Error!",
                             text: data.message,
-                            info: "error",
+                            icon: "error",
                         });
                     }
                 },
@@ -2757,7 +2757,7 @@ var DU = {};
                             Swal.fire({
                                 title: "Appointment!",
                                 text: data.message,
-                                info: "success",
+                                icon: "success",
                             }).then(function() {
                                 // Reload the current page
                                 location.reload();
@@ -2766,7 +2766,7 @@ var DU = {};
                             Swal.fire({
                                 title: "Error!",
                                 text: data.message,
-                                info: "error",
+                                icon: "error",
                             });
                         }
                     },
@@ -2852,7 +2852,7 @@ var DU = {};
                             Swal.fire({
                                 title: "Appointment!",
                                 text: data.message,
-                                info: "success",
+                                icon: "success",
                             }).then(function() {
                                 // Reload the current page
                                 location.reload();
@@ -2861,7 +2861,7 @@ var DU = {};
                             Swal.fire({
                                 title: "Error!",
                                 text: data.message,
-                                info: "error",
+                                icon: "error",
                             });
                         }
                     },
@@ -2973,7 +2973,7 @@ var DU = {};
 					Swal.fire({
 						title: "Client!",
 						text: "Client & Appointment created successfully.",
-						info: "success",
+						icon: "success",
 					}).then((result) => {
                         $("#create_client").trigger("reset");
                         $('#check_client').val('selected_client');
@@ -2989,7 +2989,7 @@ var DU = {};
 					Swal.fire({
 						title: "Error!",
 						text: response.message,
-						info: "error",
+						icon: "error",
 					});
 				}
 			},
@@ -3052,7 +3052,7 @@ var DU = {};
 					Swal.fire({
 						title: "Client!",
 						text: "Client & Appointment created successfully.",
-						info: "success",
+						icon: "success",
 					}).then((result) => {
                         $("#create_client").trigger("reset");
                         $('#check_client').val('selected_client');
@@ -3068,7 +3068,7 @@ var DU = {};
 					Swal.fire({
 						title: "Error!",
 						text: response.message,
-						info: "error",
+						icon: "error",
 					});
 				}
 			},

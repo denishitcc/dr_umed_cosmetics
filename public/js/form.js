@@ -65,14 +65,14 @@ var DU = {};
                             Swal.fire({
                                 title: "Forms!",
                                 text: data.message,
-                                info: "success",
+                                icon: "success",
                             });
                             location.reload();
                         } else {
                             Swal.fire({
                                 title: "Error!",
                                 text: data.message,
-                                info: "error",
+                                icon: "error",
                             });
                         }
                     },
@@ -103,14 +103,14 @@ var DU = {};
                                 Swal.fire({
                                     title: "Forms!",
                                     text: data.message,
-                                    info: "success",
+                                    icon: "success",
                                 });
                                 window.location.href = '/forms';
                             } else {
                                 Swal.fire({
                                     title: "Error!",
                                     text: data.message,
-                                    info: "error",
+                                    icon: "error",
                                 });
                             }
                         },
@@ -142,14 +142,14 @@ var DU = {};
                         Swal.fire({
                             title: "Forms!",
                             text: data.message,
-                            info: "success",
+                            icon: "success",
                         });
                         // location.reload();
                     } else {
                         Swal.fire({
                             title: "Error!",
                             text: data.message,
-                            info: "error",
+                            icon: "error",
                         });
                     }
                 },
