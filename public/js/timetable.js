@@ -273,7 +273,7 @@ var DU = {};
                         console.log(data);
                         if (data.success) {
                             Swal.fire({
-                                title: "Appointment!",
+                                title: "Working Status!",
                                 text: data.message,
                                 info: "success",
                             }).then(function() {
