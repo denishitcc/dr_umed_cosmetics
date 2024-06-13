@@ -45,7 +45,14 @@
             </div>
             <div class="progress mb-0">
                 @php
-                $percentage_remaining = ((int)$made_so_far / ((int)$made_so_far + $expected)) * 100;
+                $made_so_far = (int)$made_so_far;
+                $expected = (int)$expected;
+
+                if (($made_so_far + $expected) === 0) {
+                    $percentage_remaining = 0; // or whatever value you want to assign in case of division by zero
+                } else {
+                    $percentage_remaining = ($made_so_far / ($made_so_far + $expected)) * 100;
+                }
                 @endphp
                 <div class="progress-bar pink" role="progressbar"
                     aria-valuenow="{{ $percentage_remaining }}"
@@ -60,7 +67,14 @@
             <h5 class="bright-gray">Total Appointments</h5>
             <div class="barWrapper">
             @php
-            $scheduled = ((int)$scheduled_app / (int)$total_app) * 100;
+            $scheduled_app = (int)$scheduled_app;
+            $total_app = (int)$total_app;
+
+            if ($total_app === 0) {
+                $scheduled = 0; // or another default value if division by zero
+            } else {
+                $scheduled = ($scheduled_app / $total_app) * 100;
+            }
             @endphp
             <div class="progressText">Scheduled <span class="counter">{{$scheduled_app}}</span></div>
                 <div class="progress">
@@ -71,7 +85,14 @@
             </div>
             <div class="barWrapper">
                 @php
-                $completed = ((int)$completed_app / (int)$total_app) * 100;
+                $completed_app = (int)$completed_app;
+                $total_app = (int)$total_app;
+
+                if ($total_app === 0) {
+                    $completed = 0; // or another default value if total_app is zero
+                } else {
+                    $completed = ($completed_app / $total_app) * 100;
+                }
                 @endphp
                 <div class="progressText">Completed <span class="counter">{{$completed_app}}</span></div>
                 <div class="progress">
@@ -82,7 +103,14 @@
             </div>
             <div class="barWrapper">
                 @php
-                $cancelled = ((int)$cancelled_app / (int)$total_app) * 100;
+                $cancelled_app = (int)$cancelled_app;
+                $total_app = (int)$total_app;
+
+                if ($total_app === 0) {
+                    $cancelled = 0; // or another default value if total_app is zero
+                } else {
+                    $cancelled = ($cancelled_app / $total_app) * 100;
+                }
                 @endphp
                 <div class="progressText">Cancelled <span class="counter">{{$cancelled_app}}</span></div>
                 <div class="progress cancelled mb-0">
