@@ -20,6 +20,7 @@ var DU = {};
             context.createLeaveSection();
             context.btnEnabled();
             context.openCopyTimeTableModal();
+            context.saveWorkingHours();
 
             $('.new_timetable_section').attr('style','display:none !important');
             $('.create_leave_section').attr('style','display:none !important');
@@ -33,20 +34,41 @@ var DU = {};
                     $(".sun_start_time").prop({disabled: false});
                     $(".sun_end_time").prop({disabled: false});
 
-                    $(".sun_lunch").prop({disabled: false});
+                    $(".lunch").prop({disabled: false});
                     $(".sun_break").prop({disabled: false});
                     $(".sun_custom").prop({disabled: false});
                 } else {
                     $(".sun_start_time").prop({disabled: true});
                     $(".sun_end_time").prop({disabled: true});
-                    $(".sun_lunch").prop({disabled: true});
+                    $(".lunch").prop({disabled: true});
                 }
             });
 
-            $(document).on('click','.sun_lunch',function(e){
-                $('.sun_lunch').removeClass('btn-primary');
-                $('.sun_lunch').addClass('btn-red');
-                $('.sun_lunch').addClass('remove_lunch');
+            $(document).on('click','.lunch',function(e){
+                console.log($(this).data('weekdays'));
+                var weekdays = $(this).data('weekdays');
+
+                switch (weekdays) {
+                    case 1:
+                        $(this).removeClass('btn-primary');
+                        $(this).addClass('btn-red');
+                        $(this).addClass('remove_lunch');
+
+                        $('.sun_leave_icon').removeClass('ico-add');
+                        $('.sun_leave_icon').addClass('ico-trash');
+                        break;
+
+                    case 2:
+                        $(this).removeClass('btn-primary');
+                        $(this).addClass('btn-red');
+                        $(this).addClass('remove_lunch');
+
+                        break;
+                    default:
+                        break;
+                }
+                return false;
+                console.log($('#lunch_start').data('appt_id'));
 
                 $('.sun_leave_icon').removeClass('ico-add');
                 $('.sun_leave_icon').addClass('ico-trash');
@@ -106,7 +128,13 @@ var DU = {};
                     return { domNodes: [resourceEl] };
                 },
                 dateClick: function(info){
-                    var currnetDate = info.dateStr;
+                    var currnetDate = moment(info.dateStr).format('ddd Do MMM YYYY');
+                    $('.staff_name').html(info.resource._resource.title);
+                    $('#staff_id').val(info.resource._resource.id);
+
+                    $('.current_date').html(currnetDate);
+                    $('#current_date').val(moment(info.dateStr).format('YYYY-MM-DD'));
+
                     $('#edit_Working_hours').modal('toggle');
                 },
                 // events: 'https://fullcalendar.io/demo-events.json?single-day&for-resource-timeline'
@@ -205,6 +233,79 @@ var DU = {};
 
             $('#copy_timetable_modal').on('hidden.bs.modal', function () {
                 document.getElementById('edit_timetable').style.removeProperty('z-index');
+            });
+        },
+
+        saveWorkingHours: function(){
+            $(document).on('click','#WorkingHoursBtn',function(e){
+                var working_status          = $("li a.active").data('status'),
+                    leave_reason            = $('#leave_reason :selected').val(),
+                    current_date            = $('#current_date').val(),
+                    staff_id                = $('#staff_id').val(),
+                    working_start_time      = $('#working_start_time').val(),
+                    working_end_time        = $('#working_end_time').val(),
+                    lunch_start_time        = $('#lunch_start_time').val(),
+                    lunch_duration_minutes  = $('#lunch_duration_minutes').val(),
+                    break_start_time        = $('#break_start_time').val(),
+                    break_duration          = $('#break_duration').val()
+
+                    data  =  {
+                        'working_status'         : working_status,
+                        'leave_reason'           : leave_reason,
+                        'staff_id'               : staff_id,
+                        'current_date'           : current_date,
+                        'working_start_time'     : working_start_time,
+                        'working_end_time'       : working_end_time,
+                        'lunch_start_time'       : lunch_start_time,
+                        'lunch_duration_minutes' : lunch_duration_minutes,
+                        'break_start_time'       : break_start_time,
+                        'break_duration'         : break_duration
+                    };
+
+                $.ajax({
+                    url: moduleConfig.updateWorkingHours,
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: data,
+                    success: function (data) {
+                        console.log(data);
+                        if (data.success) {
+                            Swal.fire({
+                                title: "Appointment!",
+                                text: data.message,
+                                info: "success",
+                            }).then(function() {
+                                // Reload the current page
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Error!",
+                                text: data.message,
+                                info: "error",
+                            });
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Error fetching resources:', error);
+                    }
+                });
+
+                // switch (index) {
+                //     case 0:
+                //         break;
+                //     case 1:
+                //         break;
+                //     case 2:
+                //         break;
+                //     case 3:
+                //         break;
+                //     default:
+                //         break;
+                // }
+                // console.log(index);
             });
         },
     }

@@ -187,80 +187,80 @@
                                     <tr>
                                         <td>Lunch</td>
                                         <td>
-                                            <button class="btn btn-primary btn-md icon-btn-center w-100 sun_lunch" disabled>
-                                                <i class="ico-add fs-4 sun_leave_icon" ></i></button>
+                                            <button class="btn btn-primary btn-md icon-btn-center w-100 lunch" disabled data-weekdays="1">
+                                                <i class="ico-add fs-4 lunch" ></i></button>
                                         </td>
                                         <td>
-                                            <button class="btn btn-primary btn-md icon-btn-center w-100" disabled>
+                                            <button class="btn btn-primary btn-md icon-btn-center w-100 lunch" disabled data-weekdays="2">
+                                                <i class="ico-add fs-4 lunch"></i></button>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-primary btn-md icon-btn-center w-100 lunch" disabled data-weekdays="3">
                                                 <i class="ico-add fs-4"></i></button>
                                         </td>
                                         <td>
-                                            <button class="btn btn-primary btn-md icon-btn-center w-100" disabled>
+                                            <button class="btn btn-primary btn-md icon-btn-center w-100 lunch" disabled data-weekdays="4">
                                                 <i class="ico-add fs-4"></i></button>
                                         </td>
                                         <td>
-                                            <button class="btn btn-primary btn-md icon-btn-center w-100" disabled>
+                                            <button class="btn btn-primary btn-md icon-btn-center w-100 lunch" disabled data-weekdays="5">
                                                 <i class="ico-add fs-4"></i></button>
                                         </td>
                                         <td>
-                                            <button class="btn btn-primary btn-md icon-btn-center w-100" disabled>
+                                            <button class="btn btn-primary btn-md icon-btn-center w-100 lunch" disabled data-weekdays="6">
                                                 <i class="ico-add fs-4"></i></button>
                                         </td>
                                         <td>
-                                            <button class="btn btn-primary btn-md icon-btn-center w-100" disabled>
-                                                <i class="ico-add fs-4"></i></button>
-                                        </td>
-                                        <td>
-                                            <button class="btn btn-primary btn-md icon-btn-center w-100" disabled>
+                                            <button class="btn btn-primary btn-md icon-btn-center w-100 lunch" disabled data-weekdays="7">
                                                 <i class="ico-add fs-4"></i></button>
                                         </td>
                                     </tr>
                                     <tr id="lunch_start">
                                         <td>Lunch Start</td>
-                                        <td>
-                                            <select class="form-select form-control">
+                                        <td data-lunch="1">
+                                            <select class="form-select form-control"  >
                                                 <option>9:00 am</option>
                                                 <option>9:15 am</option>
                                                 <option>9:30 am</option>
                                             </select>
                                         </td>
                                         <td>
-                                            <select class="form-select form-control">
+                                            <select class="form-select form-control" data-lunch="2">
                                                 <option>9:00 am</option>
                                                 <option>9:15 am</option>
                                                 <option>9:30 am</option>
                                             </select>
                                         </td>
                                         <td>
-                                            <select class="form-select form-control">
+                                            <select class="form-select form-control" data-lunch="3">
                                                 <option>9:00 am</option>
                                                 <option>9:15 am</option>
                                                 <option>9:30 am</option>
                                             </select>
                                         </td>
                                         <td>
-                                            <select class="form-select form-control">
+                                            <select class="form-select form-control" data-lunch="4">
                                                 <option>9:00 am</option>
                                                 <option>9:15 am</option>
                                                 <option>9:30 am</option>
                                             </select>
                                         </td>
                                         <td>
-                                            <select class="form-select form-control">
+                                            <select class="form-select form-control" data-lunch="5">
                                                 <option>9:00 am</option>
                                                 <option>9:15 am</option>
                                                 <option>9:30 am</option>
                                             </select>
                                         </td>
                                         <td>
-                                            <select class="form-select form-control">
+                                            <select class="form-select form-control" data-lunch="6">
                                                 <option>9:00 am</option>
                                                 <option>9:15 am</option>
                                                 <option>9:30 am</option>
                                             </select>
                                         </td>
                                         <td>
-                                            <select class="form-select form-control">
+                                            <select class="form-select form-control" data-lunch="7">
                                                 <option>9:00 am</option>
                                                 <option>9:15 am</option>
                                                 <option>9:30 am</option>

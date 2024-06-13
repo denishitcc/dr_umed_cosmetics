@@ -84,7 +84,7 @@ Route::middleware(['auth'])->group(function () {
         //User Role
         Route::resource('users-roles', UserRoleController::class);
         Route::post('users-roles/table',[UserRoleController::class, 'index'])->name('users-roles.table');
-        
+
         //Access Level
         Route::get('/access-level', [AccessLevelController::class, 'access_level'])->name('access-level');
         Route::post('/update-appointment-clients', [AccessLevelController::class, 'update_appointment_client'])->name('update-appointment-clients');
@@ -99,6 +99,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('users/updateStatus', [UsersController::class, 'updateStatus']);
         Route::post('users/copy-capabilities', [UsersController::class, 'copyCapabilities'])->name('user.copyCapabilities');
         Route::get('timetable', [TimeTableController::class, 'index'])->name('user.timetable');
+        Route::post('timetable/update-working-hours', [TimeTableController::class, 'updateWorkingHours'])->name('timetable.updateWorkingHours');
         // Route::post('/get-all-locations', [UsersController::class, 'get_all_locations'])->name('get-all-locations');
     });
 

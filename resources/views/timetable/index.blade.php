@@ -54,14 +54,12 @@
 @include('timetable.partials.copy_timetable_modal')
 @endsection
 @section('script')
-{{-- <script src="{{ asset('js/fullcalendar-scheduler-6.1.10/dist/index.global.js') }}"></script>
-<script src="{{ asset('js/fullcalendar-scheduler-6.1.10/dist/index.global.min.js') }}"></script> --}}
-
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar-scheduler@6.1.14/index.global.min.js"></script>
 <script src="{{ asset('js/timetable.js') }}"></script>
 <script type="text/javascript">
     var moduleConfig = {
-        getStaffList:                 "{!! route('get-staff-list') !!}",
+        getStaffList:       "{!! route('get-staff-list') !!}",
+        updateWorkingHours: "{!! route('timetable.updateWorkingHours') !!}",
     };
     $(document).ready(function()
     {
