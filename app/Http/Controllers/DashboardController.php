@@ -76,15 +76,15 @@ class DashboardController extends Controller
             ->get();
 
             // Total month enquiries
-            $total_month_enquiries = Enquiries::whereMonth('created_at', $currentMonth)
-                ->whereYear('created_at', $currentYear)
+            $total_month_enquiries = Enquiries::whereMonth('enquiry_date', $currentMonth)
+                ->whereYear('enquiry_date', $currentYear)
                 ->count();
 
             // Fetching daily enquiries data
             $enquiry_graph = [];
             for ($day = 1; $day <= $endOfMonth->day; $day++) {
                 $date = Carbon::createFromDate($currentYear, $currentMonth, $day)->toDateString();
-                $count = Enquiries::whereDate('created_at', $date)->count();
+                $count = Enquiries::whereDate('enquiry_date', $date)->count();
                 if ($count > 0) { // Only add to array if count is greater than 0
                     $enquiry_graph[] = [
                         'date' => $date,
