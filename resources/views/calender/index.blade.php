@@ -1,5 +1,5 @@
 @extends('layouts.sidebar')
-@section('title', 'Calender')
+@section('title', 'Calendar')
 @section('content')
 <link rel="stylesheet" href="{{ asset('js/formiojs/dist/formio.full.min.css') }}">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.9.0/fullcalendar.min.css" rel="stylesheet" type="text/css" />
