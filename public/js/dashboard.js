@@ -244,12 +244,32 @@ function amchart(ClientFilterData = [],EnquiryFilterData = []) {
             };
         });
         
-        
+
         // Set data for Clients Graph
         if (isfilter_client == 1) {
+            
+            // Handle single data point case
+            if (ClientFilterData.length === 1) {
+                const singleDataPoint = ClientFilterData[0];
+                ClientFilterData = [
+                    { date: singleDataPoint.date - 86400000, value: 0 }, // Add a point one day before with value 0
+                    singleDataPoint,
+                    { date: singleDataPoint.date + 86400000, value: 0 } // Add a point one day after with value 0
+                ];
+            }
             console.log('ClientFilterData',ClientFilterData);
             clientsSeries.data.setAll(ClientFilterData);
         } else {
+            
+            // Handle single data point case
+            if (clientsData.length === 1) {
+                const singleDataPoint = clientsData[0];
+                clientsData = [
+                    { date: singleDataPoint.date - 86400000, value: 0 }, // Add a point one day before with value 0
+                    singleDataPoint,
+                    { date: singleDataPoint.date + 86400000, value: 0 } // Add a point one day after with value 0
+                ];
+            }
             console.log('clientsData',clientsData);
             clientsSeries.data.setAll(clientsData);
         }
@@ -332,9 +352,29 @@ function amchart(ClientFilterData = [],EnquiryFilterData = []) {
 
         // Set data for Enquiry Chart
         if (isfilter_enquiry == 1) {
+            // Handle single data point case start
+            if (EnquiryFilterData.length === 1) {
+                const singleDataPoint = EnquiryFilterData[0];
+                EnquiryFilterData = [
+                    { date: singleDataPoint.date - 86400000, value: 0 }, // Add a point one day before with value 0
+                    singleDataPoint,
+                    { date: singleDataPoint.date + 86400000, value: 0 } // Add a point one day after with value 0
+                ];
+            }
+            // Handle single data point case end
             console.log('EnquiryFilterData',EnquiryFilterData);
             enquirySeries.data.setAll(EnquiryFilterData);
         } else {
+            // Handle single data point case start
+            if (enquiryData.length === 1) {
+                const singleDataPoint = enquiryData[0];
+                enquiryData = [
+                    { date: singleDataPoint.date - 86400000, value: 0 }, // Add a point one day before with value 0
+                    singleDataPoint,
+                    { date: singleDataPoint.date + 86400000, value: 0 } // Add a point one day after with value 0
+                ];
+            }
+            // Handle single data point case end
             console.log('EnquiryData',enquiryData);
             enquirySeries.data.setAll(enquiryData);
         }
