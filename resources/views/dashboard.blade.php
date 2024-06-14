@@ -7,6 +7,7 @@
     max-width: 100%
 }
 </style>
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <div class="app-header mb-4">
     <h4 class="small-title mb-0">Dashboard</h4>
 
@@ -21,7 +22,7 @@
             <option>All</option>
             @if(count($locations)>0)
                 @foreach($locations as $loc)
-                    <option value="{{$loc->location_name}}">{{$loc->location_name}}</option>
+                    <option value="{{$loc->id}}">{{$loc->location_name}}</option>
                 @endforeach
             @endif
         </select>
@@ -35,11 +36,12 @@
 
             <div class="d-flex justify-content-between mb-20 tot-sales mb-3">
                 <div class="fonts">
-                    <h3>${{ (Int)$made_so_far }}</h3>
+                    <h3 class="made_so_far">${{ (Int)$made_so_far }}</h3>
                     Made so far
                 </div>
                 <div class="fonts">
-                    <h3>${{ $made_so_far + $expected }}</h3>
+                    <!-- <h3 class="expected">${{ $made_so_far + $expected }}</h3> -->
+                    <h3 class="expected">${{ $expected }}</h3>
                     Expected
                 </div>
             </div>
@@ -48,13 +50,13 @@
                 $made_so_far = (int)$made_so_far;
                 $expected = (int)$expected;
 
-                if (($made_so_far + $expected) === 0) {
+                if (($made_so_far) === 0) {
                     $percentage_remaining = 0; // or whatever value you want to assign in case of division by zero
                 } else {
-                    $percentage_remaining = ($made_so_far / ($made_so_far + $expected)) * 100;
+                    $percentage_remaining = ($made_so_far / $expected) * 100;
                 }
                 @endphp
-                <div class="progress-bar pink" role="progressbar"
+                <div class="progress-bar pink sales_progress" role="progressbar"
                     aria-valuenow="{{ $percentage_remaining }}"
                     aria-valuemin="0"
                     aria-valuemax="100">
@@ -76,7 +78,7 @@
                 $scheduled = ($scheduled_app / $total_app) * 100;
             }
             @endphp
-            <div class="progressText">Scheduled <span class="counter">{{$scheduled_app}}</span></div>
+            <div class="progressText">Scheduled <span class="counter scheduled_app">{{$scheduled_app}}</span></div>
                 <div class="progress">
                     <div class="progress-bar scheduled" role="progressbar" aria-valuenow="{{$scheduled}}" aria-valuemin="0" aria-valuemax="100">
                         
@@ -94,7 +96,7 @@
                     $completed = ($completed_app / $total_app) * 100;
                 }
                 @endphp
-                <div class="progressText">Completed <span class="counter">{{$completed_app}}</span></div>
+                <div class="progressText">Completed <span class="counter completed_app">{{$completed_app}}</span></div>
                 <div class="progress">
                     <div class="progress-bar completed" role="progressbar" aria-valuenow="{{$completed}}" aria-valuemin="0" aria-valuemax="100">
                         
@@ -112,9 +114,9 @@
                     $cancelled = ($cancelled_app / $total_app) * 100;
                 }
                 @endphp
-                <div class="progressText">Cancelled <span class="counter">{{$cancelled_app}}</span></div>
-                <div class="progress cancelled mb-0">
-                    <div class="progress-bar" role="progressbar" aria-valuenow="{{$cancelled}}" aria-valuemin="0" aria-valuemax="100">
+                <div class="progressText">Cancelled <span class="counter cancelled_app">{{$cancelled_app}}</span></div>
+                <div class="progress mb-0">
+                    <div class="progress-bar cancelled" role="progressbar" aria-valuenow="{{$cancelled}}" aria-valuemin="0" aria-valuemax="100">
                         
                     </div>
                 </div>
@@ -288,5 +290,6 @@
 <script>
     var ClientsGraph = {!! json_encode($client_graph) !!};
     var EnquiryGraph = {!! json_encode($enquiry_graph) !!};
+    var FilterRoute = "{{ route('dashboard.filter') }}"; 
 </script>
 @endsection

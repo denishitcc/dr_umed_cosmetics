@@ -256,6 +256,7 @@ Route::middleware(['auth'])->group(function () {
 
     //dashboard
     Route::resource('dashboard', DashboardController::class);
+    Route::post('dashboard/filter',[DashboardController::class, 'filter'])->name('dashboard.filter');
 });
 Route::post('/get-staff-list', [CalenderController::class,'getStaffList'])->name('get-staff-list');
 Route::post('forms/deleteform',[FormsController::class, 'formDelete'])->name('serviceforms.formDelete');

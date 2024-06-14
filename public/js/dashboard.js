@@ -38,6 +38,12 @@ $(function() {
             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         }
     }, cb);
+    // The event listener here.
+    $('#reportrange').on('apply.daterangepicker', function(e, picker) {
+        var reportRange = picker.startDate.format('MMMM D, YYYY') + ' - ' + picker.endDate.format('MMMM D, YYYY');
+        var location = $('#locations').val();
+        filterData(reportRange, location);
+    });
 
     cb(start, end);
 });
@@ -196,3 +202,100 @@ am5.ready(function() {
     enquiryChart.appear(1000, 100);
     // Enquiry Chart end
 });
+
+//filter 
+// Event listener for location dropdown change
+$('#locations').change(function() {
+    var reportRange = $('#reportrange').text().trim(); // This should be adjusted if it doesn't give you the actual date range
+    var location = $(this).val();
+    filterData(reportRange, location);
+});
+
+// Function to handle data filtering based on report range and location
+function filterData(reportRange, location) {
+    console.log("Filtering data for Report Range:", reportRange, "and Location:", location);
+    $.ajax({
+        url: FilterRoute,
+        type: 'POST',
+        data: {
+            reportRange: reportRange,
+            location: location
+        },
+        success: function(response) {
+            // Handle success response from server
+            console.log("Filtering successful:", response);
+            //total sales filter
+            var totalSales = parseInt(response.totalSales);
+            var expectedSales = parseInt(response.expected);
+            $('.made_so_far').text('$' + totalSales);
+            $('.expected').text('$' + (expectedSales));
+
+            // Calculate the percentage remaining for the progress bar
+            var percentageRemaining;
+            if ((totalSales) === 0) {
+                percentageRemaining = 0;
+            } else {
+                percentageRemaining = (totalSales / expectedSales) * 100;
+            }
+
+            // Update the progress bar's width and aria-valuenow attribute
+            var totalSalesProgressBar = $('.sales_progress');
+            totalSalesProgressBar.css('width', percentageRemaining + '%');
+            totalSalesProgressBar.attr('aria-valuenow', percentageRemaining);
+
+            //total appointments filter
+            var scheduledApp = parseInt(response.scheduledApp);
+            var completedApp = parseInt(response.completedApp);
+            var cancelledApp = parseInt(response.cancelledApp);
+            var totalApp = parseInt(response.totalApp);
+
+            $('.scheduled_app').text(scheduledApp);
+            $('.completed_app').text(completedApp);
+            $('.cancelled_app').text(cancelledApp);
+
+            // Calculate the scheduled appt for the progress bar
+            var scheduledpercentageRemaining;
+            if (scheduledApp === 0 || totalApp === 0) {
+                scheduledpercentageRemaining = 0;
+            } else {
+                scheduledpercentageRemaining = (scheduledApp / totalApp) * 100;
+            }
+
+            // Update the progress bar's width and aria-valuenow attribute
+            var ScheduledProgressBar = $('.scheduled');
+            ScheduledProgressBar.css('width', scheduledpercentageRemaining + '%');
+            ScheduledProgressBar.attr('aria-valuenow', scheduledpercentageRemaining);
+
+            // Calculate the completed appt for the progress bar
+            var completedpercentageRemaining;
+            if (completedApp === 0 || totalApp === 0) {
+                completedpercentageRemaining = 0;
+            } else {
+                completedpercentageRemaining = (completedApp / totalApp) * 100;
+            }
+
+            // Update the progress bar's width and aria-valuenow attribute
+            var CompletedprogressBar = $('.completed');
+            CompletedprogressBar.css('width', completedpercentageRemaining + '%');
+            CompletedprogressBar.attr('aria-valuenow', completedpercentageRemaining);
+
+            // Calculate the cancelled appt for the progress bar
+            var cancelledpercentageRemaining;
+            if (cancelledApp === 0 || totalApp === 0) {
+                cancelledpercentageRemaining = 0;
+            } else {
+                cancelledpercentageRemaining = (cancelledApp / totalApp) * 100;
+            }
+
+            // Update the progress bar's width and aria-valuenow attribute
+            var cancelledprogressBar = $('.cancelled');
+            cancelledprogressBar.css('width', cancelledpercentageRemaining + '%');
+            cancelledprogressBar.attr('aria-valuenow', cancelledpercentageRemaining);
+        },
+        error: function(xhr, status, error) {
+            // Handle error response
+            console.error("Error filtering data:", error);
+            // Display error message or perform fallback actions
+        }
+    });
+}
