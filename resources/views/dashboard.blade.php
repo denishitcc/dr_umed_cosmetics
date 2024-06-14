@@ -128,7 +128,7 @@
             <h5 class="bright-gray">Total Clients</h5>
             <div class="d-flex justify-content-between mb-20 tot-clients mb-3">
                 <div class="fonts">
-                    <h3 class="mb-0">{{$total_month_clients}}</h3>
+                    <h3 class="mb-0 total_client">{{$total_month_clients}}</h3>
                 </div>
                 <div class="fonts" style="flex:0 0 80%">
                     <div id="clientchartdiv"></div>
@@ -142,7 +142,7 @@
             <h5 class="bright-gray">Total Enquiries</h5>
             <div class="d-flex justify-content-between mb-20 tot-enquiry mb-3">
                 <div class="fonts">
-                    <h3 class="mb-0">{{$total_month_enquiries}}</h3>
+                    <h3 class="mb-0 total_enquiry">{{$total_month_enquiries}}</h3>
                 </div>
                 <div class="fonts" style="flex:0 0 80%">
                     <div id="enquirychartdiv"></div>

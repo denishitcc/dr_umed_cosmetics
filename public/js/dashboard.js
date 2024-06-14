@@ -47,161 +47,6 @@ $(function() {
 
     cb(start, end);
 });
-am5.ready(function() {
-    // Clients Graph start
-    var clientsRoot = am5.Root.new("clientchartdiv");
-
-    // Set themes
-    clientsRoot.setThemes([
-        am5themes_Animated.new(clientsRoot)
-    ]);
-
-    // Create chart
-    var clientsChart = clientsRoot.container.children.push(am5xy.XYChart.new(clientsRoot, {
-        panX: false,
-        panY: false,
-        wheelX: "none",
-        wheelY: "none",
-        pinchZoomX: false,
-        paddingLeft: 0
-    }));
-
-    // Remove logo
-    clientsRoot._logo.dispose();
-
-    // Create axes (hidden)
-    var clientsXAxis = clientsChart.xAxes.push(am5xy.DateAxis.new(clientsRoot, {
-        baseInterval: {
-            timeUnit: "day",
-            count: 1
-        },
-        renderer: am5xy.AxisRendererX.new(clientsRoot, {
-            minorGridEnabled: true,
-            minGridDistance: 90
-        })
-    }));
-    clientsXAxis.get("renderer").labels.template.set("forceHidden", true);  // Hide x-axis labels
-    clientsXAxis.get("renderer").grid.template.setAll({ visible: false }); // Hide x-axis grid
-
-    var clientsYAxis = clientsChart.yAxes.push(am5xy.ValueAxis.new(clientsRoot, {
-        renderer: am5xy.AxisRendererY.new(clientsRoot, {})
-    }));
-    clientsYAxis.get("renderer").labels.template.set("forceHidden", true);  // Hide y-axis labels
-    clientsYAxis.get("renderer").grid.template.setAll({ visible: false }); // Hide y-axis grid
-
-    // Add series for Clients Graph
-    var clientsSeries = clientsChart.series.push(am5xy.LineSeries.new(clientsRoot, {
-        name: "Clients Series",
-        xAxis: clientsXAxis,
-        yAxis: clientsYAxis,
-        valueYField: "value",
-        valueXField: "date",
-        tooltip: am5.Tooltip.new(clientsRoot, {
-            labelText: "{valueY}"
-        })
-    }));
-
-    clientsSeries.fills.template.setAll({
-        fillOpacity: 0.2,
-        visible: true
-    });
-
-    // Prepare data for Clients Graph
-    var clientsData = ClientsGraph.map(item => {
-        return {
-            date: new Date(item.date).getTime(),
-            value: parseInt(item.count) // Ensure value is an integer
-        };
-    });
-
-    // Set data for Clients Graph
-    clientsSeries.data.setAll(clientsData);
-
-    // Make Clients Graph animate on load
-    clientsChart.appear(1000, 100);
-    // Clients Graph end
-    
-    // Enquiry Chart start
-    var enquiryRoot = am5.Root.new("enquirychartdiv");
-
-    // Set themes
-    enquiryRoot.setThemes([
-        am5themes_Animated.new(enquiryRoot)
-    ]);
-
-    // Create chart
-    var enquiryChart = enquiryRoot.container.children.push(am5xy.XYChart.new(enquiryRoot, {
-        panX: false,
-        panY: false,
-        wheelX: "panX",
-        wheelY: "zoomX",
-        pinchZoomX: false,
-        paddingLeft: 0
-    }));
-
-    // Remove logo
-    enquiryRoot._logo.dispose();
-    
-    // Create axes (hidden)
-    var enquiryXAxis = enquiryChart.xAxes.push(am5xy.DateAxis.new(enquiryRoot, {
-        maxDeviation: 0.2,
-        baseInterval: {
-            timeUnit: "day",
-            count: 1
-        },
-        renderer: am5xy.AxisRendererX.new(enquiryRoot, {
-            labels: {
-                text: "" // Empty string to remove labels
-            },
-            grid: {
-                disabled: true // Disable grid lines
-            }
-        }),
-        tooltip: am5.Tooltip.new(enquiryRoot, {})
-    }));
-    enquiryXAxis.get("renderer").labels.template.set("forceHidden", true);  // Hide x-axis labels
-    enquiryXAxis.get("renderer").grid.template.setAll({ visible: false }); // Hide x-axis grid
-
-    var enquiryYAxis = enquiryChart.yAxes.push(am5xy.ValueAxis.new(enquiryRoot, {
-        renderer: am5xy.AxisRendererY.new(enquiryRoot, {
-            labels: {
-                text: "" // Empty string to remove labels
-            },
-            grid: {
-                disabled: true // Disable grid lines
-            }
-        })
-    }));
-    enquiryYAxis.get("renderer").labels.template.set("forceHidden", true);  // Hide y-axis labels
-    enquiryYAxis.get("renderer").grid.template.setAll({ visible: false }); // Hide y-axis grid
-
-    // Add series for Enquiry Chart
-    var enquirySeries = enquiryChart.series.push(am5xy.LineSeries.new(enquiryRoot, {
-        name: "Enquiry Series",
-        xAxis: enquiryXAxis,
-        yAxis: enquiryYAxis,
-        valueYField: "value",
-        valueXField: "date",
-        tooltip: am5.Tooltip.new(enquiryRoot, {
-            labelText: "{valueY}"
-        })
-    }));
-    console.log('EnquiryGraph',EnquiryGraph);
-    // Prepare data for Enquiry Chart
-    var enquiryData = EnquiryGraph.map(enquiry => {
-        return {
-            date: new Date(enquiry.date).getTime(),
-            value: parseInt(enquiry.count) // Ensure value is an integer
-        };
-    });
-
-    // Set data for Enquiry Chart
-    enquirySeries.data.setAll(enquiryData);
-
-    // Make Enquiry Chart animate on load
-    enquiryChart.appear(1000, 100);
-    // Enquiry Chart end
-});
 
 //filter 
 // Event listener for location dropdown change
@@ -212,8 +57,13 @@ $('#locations').change(function() {
 });
 
 // Function to handle data filtering based on report range and location
+// Declare variables for the series globally
+var ClientFilterData = [];
+var EnquiryFilterData = [];
+var isfilter_client = 0;
+var isfilter_enquiry = 0;
+var clientsRoot, enquiryRoot;
 function filterData(reportRange, location) {
-    console.log("Filtering data for Report Range:", reportRange, "and Location:", location);
     $.ajax({
         url: FilterRoute,
         type: 'POST',
@@ -223,7 +73,6 @@ function filterData(reportRange, location) {
         },
         success: function(response) {
             // Handle success response from server
-            console.log("Filtering successful:", response);
             //total sales filter
             var totalSales = parseInt(response.totalSales);
             var expectedSales = parseInt(response.expected);
@@ -291,6 +140,27 @@ function filterData(reportRange, location) {
             var cancelledprogressBar = $('.cancelled');
             cancelledprogressBar.css('width', cancelledpercentageRemaining + '%');
             cancelledprogressBar.attr('aria-valuenow', cancelledpercentageRemaining);
+            
+            // total clients filter
+            $('.total_client').text(response.totalFilterClients);
+            var ClientFilterData = response.clientGraph.map(item => {
+                return {
+                    date: new Date(item.date).getTime(),
+                    value: parseInt(item.count)
+                };
+            });
+
+            //total enquiry filter
+            $('.total_enquiry').text(response.totalFilterEnquiries);
+            var EnquiryFilterData = response.enquiryGraph.map(item => {
+                return {
+                    date: new Date(item.date).getTime(),
+                    value: parseInt(item.count)
+                };
+            });
+            isfilter_client=1;
+            isfilter_enquiry=1;
+            amchart(ClientFilterData,EnquiryFilterData);
         },
         error: function(xhr, status, error) {
             // Handle error response
@@ -299,3 +169,181 @@ function filterData(reportRange, location) {
         }
     });
 }
+function amchart(ClientFilterData = [],EnquiryFilterData = []) {
+    if (clientsRoot) {
+        clientsRoot.dispose();
+    }
+    if (enquiryRoot) {
+        enquiryRoot.dispose();
+    }
+
+    am5.ready(function() {
+        // Clients Graph start
+        clientsRoot = am5.Root.new("clientchartdiv");
+
+        // Set themes
+        clientsRoot.setThemes([
+            am5themes_Animated.new(clientsRoot)
+        ]);
+
+        // Create chart
+        var clientsChart = clientsRoot.container.children.push(am5xy.XYChart.new(clientsRoot, {
+            panX: false,
+            panY: false,
+            wheelX: "none",
+            wheelY: "none",
+            pinchZoomX: false,
+            paddingLeft: 0
+        }));
+
+        // Remove logo
+        clientsRoot._logo.dispose();
+
+        // Create axes (hidden)
+        var clientsXAxis = clientsChart.xAxes.push(am5xy.DateAxis.new(clientsRoot, {
+            baseInterval: {
+                timeUnit: "day",
+                count: 1
+            },
+            renderer: am5xy.AxisRendererX.new(clientsRoot, {
+                minorGridEnabled: true,
+                minGridDistance: 90
+            })
+        }));
+        clientsXAxis.get("renderer").labels.template.set("forceHidden", true);  // Hide x-axis labels
+        clientsXAxis.get("renderer").grid.template.setAll({ visible: false }); // Hide x-axis grid
+
+        var clientsYAxis = clientsChart.yAxes.push(am5xy.ValueAxis.new(clientsRoot, {
+            renderer: am5xy.AxisRendererY.new(clientsRoot, {})
+        }));
+        clientsYAxis.get("renderer").labels.template.set("forceHidden", true);  // Hide y-axis labels
+        clientsYAxis.get("renderer").grid.template.setAll({ visible: false }); // Hide y-axis grid
+
+        // Add series for Clients Graph
+        var clientsSeries = clientsChart.series.push(am5xy.LineSeries.new(clientsRoot, {
+            name: "Clients Series",
+            xAxis: clientsXAxis,
+            yAxis: clientsYAxis,
+            valueYField: "value",
+            valueXField: "date",
+            tooltip: am5.Tooltip.new(clientsRoot, {
+                labelText: "{valueY}"
+            })
+        }));
+
+        clientsSeries.fills.template.setAll({
+            fillOpacity: 0.2,
+            visible: true
+        });
+
+        // Prepare data for Clients Graph
+        var clientsData = ClientsGraph.map(item => {
+            return {
+                date: new Date(item.date).getTime(),
+                value: parseInt(item.count) // Ensure value is an integer
+            };
+        });
+        
+        
+        // Set data for Clients Graph
+        if (isfilter_client == 1) {
+            console.log('ClientFilterData',ClientFilterData);
+            clientsSeries.data.setAll(ClientFilterData);
+        } else {
+            console.log('clientsData',clientsData);
+            clientsSeries.data.setAll(clientsData);
+        }
+        // Make Clients Graph animate on load
+        clientsChart.appear(1000, 100);
+        // Clients Graph end
+
+        // Enquiry Chart start
+        enquiryRoot = am5.Root.new("enquirychartdiv");
+
+        // Set themes
+        enquiryRoot.setThemes([
+            am5themes_Animated.new(enquiryRoot)
+        ]);
+
+        // Create chart
+        var enquiryChart = enquiryRoot.container.children.push(am5xy.XYChart.new(enquiryRoot, {
+            panX: false,
+            panY: false,
+            wheelX: "panX",
+            wheelY: "zoomX",
+            pinchZoomX: false,
+            paddingLeft: 0
+        }));
+
+        // Remove logo
+        enquiryRoot._logo.dispose();
+
+        // Create axes (hidden)
+        var enquiryXAxis = enquiryChart.xAxes.push(am5xy.DateAxis.new(enquiryRoot, {
+            maxDeviation: 0.2,
+            baseInterval: {
+                timeUnit: "day",
+                count: 1
+            },
+            renderer: am5xy.AxisRendererX.new(enquiryRoot, {
+                labels: {
+                    text: "" // Empty string to remove labels
+                },
+                grid: {
+                    disabled: true // Disable grid lines
+                }
+            }),
+            tooltip: am5.Tooltip.new(enquiryRoot, {})
+        }));
+        enquiryXAxis.get("renderer").labels.template.set("forceHidden", true);  // Hide x-axis labels
+        enquiryXAxis.get("renderer").grid.template.setAll({ visible: false }); // Hide x-axis grid
+
+        var enquiryYAxis = enquiryChart.yAxes.push(am5xy.ValueAxis.new(enquiryRoot, {
+            renderer: am5xy.AxisRendererY.new(enquiryRoot, {
+                labels: {
+                    text: "" // Empty string to remove labels
+                },
+                grid: {
+                    disabled: true // Disable grid lines
+                }
+            })
+        }));
+        enquiryYAxis.get("renderer").labels.template.set("forceHidden", true);  // Hide y-axis labels
+        enquiryYAxis.get("renderer").grid.template.setAll({ visible: false }); // Hide y-axis grid
+
+        // Add series for Enquiry Chart
+        var enquirySeries = enquiryChart.series.push(am5xy.LineSeries.new(enquiryRoot, {
+            name: "Enquiry Series",
+            xAxis: enquiryXAxis,
+            yAxis: enquiryYAxis,
+            valueYField: "value",
+            valueXField: "date",
+            tooltip: am5.Tooltip.new(enquiryRoot, {
+                labelText: "{valueY}"
+            })
+        }));
+        // Prepare data for Enquiry Chart
+        var enquiryData = EnquiryGraph.map(enquiry => {
+            return {
+                date: new Date(enquiry.date).getTime(),
+                value: parseInt(enquiry.count) // Ensure value is an integer
+            };
+        });
+
+        // Set data for Enquiry Chart
+        if (isfilter_enquiry == 1) {
+            console.log('EnquiryFilterData',EnquiryFilterData);
+            enquirySeries.data.setAll(EnquiryFilterData);
+        } else {
+            console.log('EnquiryData',enquiryData);
+            enquirySeries.data.setAll(enquiryData);
+        }
+
+        // Make Enquiry Chart animate on load
+        enquiryChart.appear(1000, 100);
+        // Enquiry Chart end
+    });
+}
+
+// Initial call to setup the graphs
+amchart();

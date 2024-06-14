@@ -28,19 +28,14 @@ class DashboardController extends Controller
             $today = now()->startOfDay();
             $tomorrow = now()->addDay()->startOfDay();
             $endOfMonth = now()->endOfMonth();
-            // $made_so_far = WalkInRetailSale::whereBetween('invoice_date', [$startOfMonth, $today])->sum('total');//for 1 to today date filter
             $made_so_far = WalkInRetailSale::whereBetween('invoice_date', [$startOfMonth, $endOfMonth])->sum('total');//for 1 to end of month filter
             
-            // $total_sales_second_half = Appointment::whereBetween('start_date', [$tomorrow, $endOfMonth])->get();
             $total_sales_second_half = Appointment::whereBetween('start_date', [$startOfMonth, $endOfMonth])->get();
             $walk_in_count = WalkInRetailSale::whereBetween('invoice_date', [$startOfMonth, $endOfMonth])->where('appt_id',null)->sum('total');//for 1 to end of month filter
-            // dd($walk_in_count);
-            // $expected = 0;//(int)$walk_in_count;
+            
             $expected = (int)$walk_in_count;
             foreach ($total_sales_second_half as $second) {
-                // dd($second);
                 $ck_found_in_walk_in = WalkInRetailSale::where('appt_id',$second->id)->first();//for 1 to end of month filter
-                // dd($ck_found_in_walk_in);
                 if($ck_found_in_walk_in)
                 {
                     $expected += $ck_found_in_walk_in->total;
@@ -50,14 +45,11 @@ class DashboardController extends Controller
                         $expected += $service->standard_price;
                     }
                 }
-                
             }
-            // dd($expected);
             // Total appointments
             $scheduled_app = Appointment::where('status', '1')
                 ->whereBetween('start_date', [$startOfMonth, $endOfMonth])
                 ->count();
-            // dd($scheduled_app);
             $completed_app = Appointment::where('status', '4')
                 ->whereBetween('start_date', [$startOfMonth, $endOfMonth])
                 ->count();
@@ -101,7 +93,6 @@ class DashboardController extends Controller
     }
     public function filter(Request $request)
     {
-        // dd($request->all());
         // Retrieve parameters from the AJAX request
         $reportRange = $request->input('reportRange');
         $location = $request->input('location');
@@ -143,7 +134,6 @@ class DashboardController extends Controller
             $scheduled_app = Appointment::where('status', '1')
                 ->whereBetween('start_date', [$startDate, $endDate])
                 ->count();
-            // dd($scheduled_app);
             $completed_app = Appointment::where('status', '4')
                 ->whereBetween('start_date', [$startDate, $endDate])
                 ->count();
@@ -154,6 +144,32 @@ class DashboardController extends Controller
 
             $total_app = Appointment::whereBetween('start_date', [$startDate, $endDate])
                 ->count();
+
+            //total clients filter
+            $total_filter_clients = Clients::whereBetween('created_at', [$startDate, $endDate])
+                ->count();
+
+            // Get clients count grouped by day for the current month
+            $client_graph = Clients::select(
+                DB::raw('DATE(created_at) as date'),
+                DB::raw('count(*) as count')
+            )
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->groupBy(DB::raw('DATE(created_at)'))
+            ->get();
+
+            //total enquiries filter
+            $total_filter_enquiries = Enquiries::whereBetween('enquiry_date', [$startDate, $endDate])
+                ->count();
+
+            // Get enquiries count grouped by day for the current month
+            $enquiry_graph = Enquiries::select(
+                DB::raw('DATE(enquiry_date) as date'),
+                DB::raw('count(*) as count')
+            )
+            ->whereBetween('enquiry_date', [$startDate, $endDate])
+            ->groupBy(DB::raw('DATE(enquiry_date)'))
+            ->get();
         }else{
             //total sales filter
             $totalSales = WalkInRetailSale::whereBetween('invoice_date', [$startDate, $endDate])
@@ -175,26 +191,53 @@ class DashboardController extends Controller
                     }
                 }
             }
-            //total appointments filter
+
             //total appointments filter
             $scheduled_app = Appointment::where('status', '1')
                 ->whereBetween('start_date', [$startDate, $endDate])
                 ->where('location_id',$location)
                 ->count();
-            // dd($scheduled_app);
             $completed_app = Appointment::where('status', '4')
                 ->whereBetween('start_date', [$startDate, $endDate])
                 ->where('location_id',$location)
                 ->count();
-
             $cancelled_app = Appointment::where('status', '10')
                 ->whereBetween('start_date', [$startDate, $endDate])
                 ->where('location_id',$location)
                 ->count();
-
             $total_app = Appointment::whereBetween('start_date', [$startDate, $endDate])
                 ->where('location_id',$location)
                 ->count();
+            
+            //total clients filter
+            $total_filter_clients = Clients::whereBetween('created_at', [$startDate, $endDate])
+                ->where('location_id',$location)
+                ->count();
+
+            // Get clients count grouped by day for the current month
+            $client_graph = Clients::select(
+                DB::raw('DATE(created_at) as date'),
+                DB::raw('count(*) as count')
+            )
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->where('location_id',$location)
+            ->groupBy(DB::raw('DATE(created_at)'))
+            ->get();
+
+            //total enquiries filter
+            $total_filter_enquiries = Enquiries::whereBetween('enquiry_date', [$startDate, $endDate])
+                ->where('location_name',$location)
+                ->count();
+
+            // Get enquiries count grouped by day for the current month
+            $enquiry_graph = Enquiries::select(
+                DB::raw('DATE(enquiry_date) as date'),
+                DB::raw('count(*) as count')
+            )
+            ->whereBetween('enquiry_date', [$startDate, $endDate])
+            ->where('location_name',$location)
+            ->groupBy(DB::raw('DATE(enquiry_date)'))
+            ->get();
         }
         
         // You can add more queries here to retrieve other data based on the filters
@@ -207,7 +250,10 @@ class DashboardController extends Controller
             'completedApp'   => $completed_app,
             'cancelledApp' => $cancelled_app,
             'totalApp'   => $total_app,
-            // Add more data as needed
+            'totalFilterClients' => $total_filter_clients,
+            'clientGraph'   => $client_graph,
+            'totalFilterEnquiries' => $total_filter_enquiries,
+            'enquiryGraph'   => $enquiry_graph,
         ]);
     }
 }
