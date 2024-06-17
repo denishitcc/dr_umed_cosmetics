@@ -62,7 +62,11 @@ var ClientFilterData = [];
 var EnquiryFilterData = [];
 var isfilter_client = 0;
 var isfilter_enquiry = 0;
-var clientsRoot, enquiryRoot;
+var clientsRoot, enquiryRoot, xAxis, chart, currentData
+var isfilter_sales_performance = 0;
+var SalesPerformanceFilterData=[];
+var dayData, weekData, monthData;
+
 function filterData(reportRange, location) {
     $.ajax({
         url: FilterRoute,
@@ -169,9 +173,12 @@ function filterData(reportRange, location) {
         }
     });
 }
-function amchart(ClientFilterData = [],EnquiryFilterData = []) {
+function amchart(ClientFilterData = [],EnquiryFilterData = [], filterType = 'month') {
     if (clientsRoot) {
         clientsRoot.dispose();
+    }
+    if (enquiryRoot) {
+        enquiryRoot.dispose();
     }
     if (enquiryRoot) {
         enquiryRoot.dispose();
@@ -382,8 +389,164 @@ function amchart(ClientFilterData = [],EnquiryFilterData = []) {
         // Make Enquiry Chart animate on load
         enquiryChart.appear(1000, 100);
         // Enquiry Chart end
+
+        debugger;
+        // Sales Performance Chart start
+        var salesPerformanceRoot = am5.Root.new("Salesperformancechartdiv");
+
+        monthData = [
+            { "period": "Jan", "expected": 80, "achieved": 75 },
+            { "period": "Feb", "expected": 85, "achieved": 80 },
+            { "period": "Mar", "expected": 90, "achieved": 85 },
+            { "period": "Apr", "expected": 95, "achieved": 90 },
+            { "period": "May", "expected": 100, "achieved": 95 },
+            { "period": "Jun", "expected": 105, "achieved": 100 },
+            { "period": "Jul", "expected": 110, "achieved": 105 },
+            { "period": "Aug", "expected": 115, "achieved": 110 },
+            { "period": "Sep", "expected": 120, "achieved": 115 },
+            { "period": "Oct", "expected": 125, "achieved": 120 },
+            { "period": "Nov", "expected": 130, "achieved": 125 },
+            { "period": "Dec", "expected": 135, "achieved": 130 }
+        ];
+
+        weekData = [
+            { "period": "Week 1", "expected": 20, "achieved": 18 },
+            { "period": "Week 2", "expected": 22, "achieved": 20 },
+            { "period": "Week 3", "expected": 25, "achieved": 23 },
+            { "period": "Week 4", "expected": 28, "achieved": 26 }
+        ];
+
+        dayData = [
+            { "period": "Mon", "expected": 5, "achieved": 4 },
+            { "period": "Tue", "expected": 6, "achieved": 5 },
+            { "period": "Wed", "expected": 7, "achieved": 6 },
+            { "period": "Thu", "expected": 8, "achieved": 7 },
+            { "period": "Fri", "expected": 9, "achieved": 8 },
+            { "period": "Sat", "expected": 10, "achieved": 9 },
+            { "period": "Sun", "expected": 11, "achieved": 10 }
+        ];
+
+        currentData = monthData;
+
+        // Set themes
+        salesPerformanceRoot.setThemes([
+            am5themes_Animated.new(salesPerformanceRoot)
+        ]);
+
+        // Create chart
+        chart = salesPerformanceRoot.container.children.push(am5xy.XYChart.new(salesPerformanceRoot, {
+            panX: false,
+            panY: false,
+            paddingLeft: 0,
+            wheelX: "panX",
+            wheelY: "zoomX",
+            layout: salesPerformanceRoot.verticalLayout
+        }));
+
+        // Add legend
+        var legend = chart.children.push(
+            am5.Legend.new(salesPerformanceRoot, {
+                centerX: am5.p50,
+                x: am5.p50
+            })
+        );
+
+        // Create axes
+        var xRenderer = am5xy.AxisRendererX.new(salesPerformanceRoot, {
+            cellStartLocation: 0.1,
+            cellEndLocation: 0.9,
+            minorGridEnabled: true
+        });
+
+        xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(salesPerformanceRoot, {
+            categoryField: "period",
+            renderer: xRenderer,
+            tooltip: am5.Tooltip.new(salesPerformanceRoot, {})
+        }));
+
+        xRenderer.grid.template.setAll({
+            location: 1
+        });
+
+        var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(salesPerformanceRoot, {
+            renderer: am5xy.AxisRendererY.new(salesPerformanceRoot, {
+                strokeOpacity: 0.1
+            })
+        }));
+        
+        // Add "IN AUD" label to y-axis
+        yAxis.children.push(am5.Label.new(salesPerformanceRoot, {
+            rotation: -90,
+            text: "IN AUD",
+            y: am5.p50,
+            centerX: am5.p50
+        }));
+
+        // Add series
+        function makeSeries(name, fieldName, color) {
+            var series = chart.series.push(am5xy.ColumnSeries.new(salesPerformanceRoot, {
+                name: name,
+                xAxis: xAxis,
+                yAxis: yAxis,
+                valueYField: fieldName,
+                categoryXField: "period",
+                fill: color
+            }));
+
+            series.columns.template.setAll({
+                tooltipText: "{name}, {categoryX}: {valueY}",
+                width: am5.percent(90),
+                tooltipY: 0,
+                strokeOpacity: 0
+            });
+
+            series.data.setAll(currentData);
+
+            series.bullets.push(function() {
+                return am5.Bullet.new(salesPerformanceRoot, {
+                    locationY: 0,
+                    sprite: am5.Label.new(salesPerformanceRoot, {
+                        text: "{valueY}",
+                        fill: salesPerformanceRoot.interfaceColors.get("alternativeText"),
+                        centerY: 0,
+                        centerX: am5.p50,
+                        populateText: true
+                    })
+                });
+            });
+
+            legend.data.push(series);
+        }
+
+        // Initial chart setup
+        makeSeries("Expected", "expected", am5.color(0x2E93FA)); // Blue color
+        makeSeries("Achieved", "achieved", am5.color(0xFFAD33)); // Orange color
+
+        // Call updateSalesPerformanceChart to set initial data
+        updateSalesPerformanceChart();
     });
 }
+function filterSalesPerfornaceData(period) {
+    switch (period) {
+        case 'day':
+            currentData = dayData;
+            break;
+        case 'week':
+            currentData = weekData;
+            break;
+        case 'month':
+        default:
+            currentData = monthData;
+            break;
+    }
+    updateSalesPerformanceChart();
+}
 
+function updateSalesPerformanceChart() {
+    xAxis.data.setAll(currentData);
+    chart.series.each(function (series) {
+        series.data.setAll(currentData);
+    });
+}
 // Initial call to setup the graphs
 amchart();
