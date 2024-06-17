@@ -265,13 +265,18 @@ class UsersController extends Controller
         $services = $request->services;
         UsersServices::where('user_id',$request->id)->delete();
 
-        foreach ($services as $value) {
-            $userservices[] = [
-                'services_id' => $value,
-                'user_id'     => $newUser->id,
-            ];
+        if($services)
+        {
+            foreach ($services as $value) {
+                $userservices[] = [
+                    'services_id' => $value,
+                    'user_id'     => $newUser->id,
+                ];
+            }
+
+            $user_services   = UsersServices::insert($userservices);
         }
-        $user_services   = UsersServices::insert($userservices);
+
 
         if($newUser){
             $response = [

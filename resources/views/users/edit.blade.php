@@ -399,7 +399,7 @@
 					Swal.fire({
 						title: "User!",
 						text: "Your User updated successfully.",
-						type: "success",
+						icon: "success",
 					}).then((result) => {
                         window.location = "{{url('users')}}"//'/player_detail?username=' + name;
                     });
@@ -407,7 +407,7 @@
 					Swal.fire({
 						title: "Error!",
 						text: response.message,
-						type: "error",
+						icon: "error",
 					});
 				}
 			},
