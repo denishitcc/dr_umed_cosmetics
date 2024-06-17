@@ -235,8 +235,7 @@ class CalenderController extends Controller
     {
         // dd($request->all());
         $location = Locations::find($request->location_id);
-
-        if (!isset($request->app_id) || $request->appt_type) {
+        if (!isset($request->app_id) || $request->appt_type != 'move_appt') {
             $service_ex = explode(',', $request->service_id);
             $duration_ex = explode(',', $request->duration);
             $category_ex = explode(',', $request->category_id);

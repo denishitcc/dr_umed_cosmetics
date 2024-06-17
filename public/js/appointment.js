@@ -2637,7 +2637,7 @@ var DU = {};
 
                 $("#stop_repeating_date").datepicker({
                     minDate: startdate,
-                    dateFormat: 'yy-mm-d'
+                    dateFormat: 'd-mm-yy'
                 });
                 // var item = $(".repeat_every :selected").val();
 

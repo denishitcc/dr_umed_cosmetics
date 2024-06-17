@@ -182,7 +182,7 @@
                             <div class="col-4">
                                 <input type="hidden" class="form-control" name="appointment_date" id="appointment_date">
                                 <input type="hidden" class="form-control" name="appointment_duration" id="appointment_duration">
-                                <input type="text" class="form-control" name="stop_repeating_date" id="stop_repeating_date">
+                                <input type="text" class="form-control" name="stop_repeating_date" id="stop_repeating_date" autocomplete="off">
                             </div>
                         </div>
                     </div>
