@@ -8,7 +8,7 @@
 }
 #Salesperformancechartdiv{
     width: 100%;
-    height: 500px;
+    height: 300px;
     max-width: 100%
 }
 </style>
@@ -160,19 +160,25 @@
     <div class="col-md-9">
         <div class="row">
             <div class="col-lg-8">
-                <div class="card p-3">
-                    <h5 class="bright-gray mb-3">Sales Performance</h5>
-                    <div class="text-right mt-3">
-                        <button class="btn btn-primary btn-sm mr-2" onclick="filterSalesPerfornaceData('month')">Month</button>
-                        <button class="btn btn-primary btn-sm mr-2" onclick="filterSalesPerfornaceData('week')">Week</button>
-                        <button class="btn btn-primary btn-sm" onclick="filterSalesPerfornaceData('day')">Day</button>
-                    </div>
-                    <div class="fonts" style="flex:0 0 80%">
-                    <div class="fonts" style="flex:0 0 80%">
-                        <div id="Salesperformancechartdiv"></div>
+                <div class="card">
+                    <div class="card-head">
+                        <div class="toolbar">
+                            <div class="tool-left">
+                                <h5 class="bright-gray mb-0">Sales Performance</h5>
+                            </div>
+                            <div class="tool-right">
+                                <div class="text-right">
+                                    <button class="btn btn-primary btn-sm mr-2" onclick="filterSalesPerfornaceData('month')">Month</button>
+                                    <button class="btn btn-primary btn-sm mr-2" onclick="filterSalesPerfornaceData('week')">Week</button>
+                                    <button class="btn btn-primary btn-sm" onclick="filterSalesPerfornaceData('day')">Day</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     
-                </div>
+                    <div class="card-body">
+                        <div id="Salesperformancechartdiv"></div>
+                    </div>
                 </div>
             </div>
             <div class="col-lg-4">
