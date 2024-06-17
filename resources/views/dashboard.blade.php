@@ -50,7 +50,7 @@
                 $made_so_far = (int)$made_so_far;
                 $expected = (int)$expected;
 
-                if (($made_so_far) === 0) {
+                if (($expected) === 0) {
                     $percentage_remaining = 0; // or whatever value you want to assign in case of division by zero
                 } else {
                     $percentage_remaining = ($made_so_far / $expected) * 100;

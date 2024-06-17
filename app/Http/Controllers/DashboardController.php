@@ -30,10 +30,15 @@ class DashboardController extends Controller
             $endOfMonth = now()->endOfMonth();
             $made_so_far = WalkInRetailSale::whereBetween('invoice_date', [$startOfMonth, $endOfMonth])->sum('total');//for 1 to end of month filter
             
-            $total_sales_second_half = Appointment::whereBetween('start_date', [$startOfMonth, $endOfMonth])->get();
+            $total_sales_second_half = Appointment::whereBetween('start_date', [$startOfMonth, $endOfMonth])->where('status','!=','4')->get();
             $walk_in_count = WalkInRetailSale::whereBetween('invoice_date', [$startOfMonth, $endOfMonth])->where('appt_id',null)->sum('total');//for 1 to end of month filter
             
-            $expected = (int)$walk_in_count;
+            $walk_in_payment_count = WalkInRetailSale::join('appointment', 'walk_in_retail_sale.appt_id', '=', 'appointment.id')
+            ->whereBetween('walk_in_retail_sale.invoice_date', [$startOfMonth, $endOfMonth])
+            // ->where('appointment.status','!=','4')
+            ->sum('walk_in_retail_sale.total');
+            
+            $expected = (int)$walk_in_count + (int)$walk_in_payment_count;
             foreach ($total_sales_second_half as $second) {
                 $ck_found_in_walk_in = WalkInRetailSale::where('appt_id',$second->id)->first();//for 1 to end of month filter
                 if($ck_found_in_walk_in)
@@ -115,9 +120,16 @@ class DashboardController extends Controller
             //total sales filter
             $totalSales = WalkInRetailSale::whereBetween('invoice_date', [$startDate, $endDate])
             ->sum('total');
-            $total_sales_second_half = Appointment::whereBetween('start_date', [$startDate, $endDate])->get();
+            $total_sales_second_half = Appointment::whereBetween('start_date', [$startDate, $endDate])->where('status','!=','4')->get();
             $walk_in_count = WalkInRetailSale::whereBetween('invoice_date', [$startDate, $endDate])->where('appt_id',null)->sum('total');//for 1 to end of month filter
-            $expected = (int)$walk_in_count;
+            
+            $walk_in_payment_count = WalkInRetailSale::join('appointment', 'walk_in_retail_sale.appt_id', '=', 'appointment.id')
+            ->whereBetween('walk_in_retail_sale.invoice_date', [$startDate, $endDate])
+            // ->where('appointment.status','!=','4')
+            ->sum('walk_in_retail_sale.total');
+            
+            $expected = (int)$walk_in_count + (int)$walk_in_payment_count;
+            // $expected = (int)$walk_in_count;
             foreach ($total_sales_second_half as $second) {
                 $ck_found_in_walk_in = WalkInRetailSale::where('appt_id',$second->id)->first();//for 1 to end of month filter
                 if($ck_found_in_walk_in)
@@ -176,9 +188,16 @@ class DashboardController extends Controller
             ->where('location_id', $location)
             ->sum('total');
 
-            $total_sales_second_half = Appointment::whereBetween('start_date', [$startDate, $endDate])->where('location_id',$location)->get();
+            $total_sales_second_half = Appointment::whereBetween('start_date', [$startDate, $endDate])->where('location_id',$location)->where('status','!=','4')->get();
             $walk_in_count = WalkInRetailSale::whereBetween('invoice_date', [$startDate, $endDate])->where('appt_id',null)->where('location_id',$location)->sum('total');//for 1 to end of month filter
-            $expected = (int)$walk_in_count;
+            
+            $walk_in_payment_count = WalkInRetailSale::join('appointment', 'walk_in_retail_sale.appt_id', '=', 'appointment.id')
+            ->whereBetween('walk_in_retail_sale.invoice_date', [$startDate, $endDate])
+            // ->where('appointment.status','!=','4')
+            ->sum('walk_in_retail_sale.total');
+            
+            $expected = (int)$walk_in_count + (int)$walk_in_payment_count;
+
             foreach ($total_sales_second_half as $second) {
                 $ck_found_in_walk_in = WalkInRetailSale::where('appt_id',$second->id)->first();//for 1 to end of month filter
                 if($ck_found_in_walk_in)

@@ -81,7 +81,7 @@ function filterData(reportRange, location) {
 
             // Calculate the percentage remaining for the progress bar
             var percentageRemaining;
-            if ((totalSales) === 0) {
+            if ((expectedSales) === 0) {
                 percentageRemaining = 0;
             } else {
                 percentageRemaining = (totalSales / expectedSales) * 100;
