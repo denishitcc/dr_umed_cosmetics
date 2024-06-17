@@ -373,7 +373,7 @@
                     success: function (data) {
                     if (data.services.length > 0) {
                         Swal.fire({
-                            text: 'Staff Capabilities copied successfully',
+                            text: data.message,
                             icon: "success",
                         }).then(function() {
                             $.each(data.services, function( index, value) {

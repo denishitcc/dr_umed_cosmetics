@@ -402,11 +402,20 @@ class UsersController extends Controller
 
             $userservices = UsersServices::where('user_id',$request->staff_id)->pluck('services_id')->toArray();
 
-            $data = [
-                'status'       => true,
-                'message'      => 'Details found.',
-                'services'     => $userservices,
-            ];
+            if(count($userservices) > 0)
+            {
+                $data = [
+                    'status'       => true,
+                    'message'      => 'Staff Capabilities copied successfully',
+                    'services'     => $userservices,
+                ];
+            } else {
+                $data = [
+                    'status'       => true,
+                    'message'      => 'Staff Capabilities not found',
+                    'services'     => $userservices,
+                ];
+            }
 
         } catch (\Throwable $th) {
             //throw $th;
