@@ -361,11 +361,23 @@
                     'staff_id'  : staffId,
                 },
                 success: function (data) {
-                    console.log(data.services);
-                    $.each(data.services, function( index, value) {
-                        $('.services[value="'+ value +'"]').prop('checked', true);
-                        $('#copy_capabilities_modal').modal('hide');
-                    });
+                    if (data.services.length > 0) {
+                        Swal.fire({
+                            text: data.message,
+                            icon: "success",
+                        }).then(function() {
+                            $.each(data.services, function( index, value) {
+                                $('.services[value="'+ value +'"]').prop('checked', true);
+                                $('#copy_capabilities_modal').modal('hide');
+                            });
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Error!",
+                            text: data.message,
+                            icon: "error",
+                        });
+                    }
                     return false;
                 },
                 error: function (error) {
@@ -399,7 +411,7 @@
 					Swal.fire({
 						title: "User!",
 						text: "Your User updated successfully.",
-						type: "success",
+						icon: "success",
 					}).then((result) => {
                         window.location = "{{url('users')}}"//'/player_detail?username=' + name;
                     });
@@ -407,7 +419,7 @@
 					Swal.fire({
 						title: "Error!",
 						text: response.message,
-						type: "error",
+						icon: "error",
 					});
 				}
 			},

@@ -138,13 +138,17 @@ class UsersController extends Controller
         if($newUser){
             $services = $request->services;
 
-            foreach ($services as $value) {
-                $userservices[] = [
-                    'services_id' => $value,
-                    'user_id'     => $newUser->id,
-                ];
+            if($services)
+            {
+                foreach ($services as $value) {
+                    $userservices[] = [
+                        'services_id' => $value,
+                        'user_id'     => $newUser->id,
+                    ];
+                }
+
+                $user_services   = UsersServices::insert($userservices);
             }
-            $user_services   = UsersServices::insert($userservices);
 
             $emailtemplate = EmailTemplates::where('email_template_type', 'User Register')->first();
 
@@ -265,13 +269,18 @@ class UsersController extends Controller
         $services = $request->services;
         UsersServices::where('user_id',$request->id)->delete();
 
-        foreach ($services as $value) {
-            $userservices[] = [
-                'services_id' => $value,
-                'user_id'     => $newUser->id,
-            ];
+        if($services)
+        {
+            foreach ($services as $value) {
+                $userservices[] = [
+                    'services_id' => $value,
+                    'user_id'     => $newUser->id,
+                ];
+            }
+
+            $user_services   = UsersServices::insert($userservices);
         }
-        $user_services   = UsersServices::insert($userservices);
+
 
         if($newUser){
             $response = [
@@ -393,11 +402,20 @@ class UsersController extends Controller
 
             $userservices = UsersServices::where('user_id',$request->staff_id)->pluck('services_id')->toArray();
 
-            $data = [
-                'status'       => true,
-                'message'      => 'Details found.',
-                'services'     => $userservices,
-            ];
+            if(count($userservices) > 0)
+            {
+                $data = [
+                    'status'       => true,
+                    'message'      => 'Staff Capabilities copied successfully',
+                    'services'     => $userservices,
+                ];
+            } else {
+                $data = [
+                    'status'       => true,
+                    'message'      => 'Staff Capabilities not found',
+                    'services'     => $userservices,
+                ];
+            }
 
         } catch (\Throwable $th) {
             //throw $th;

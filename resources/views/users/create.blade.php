@@ -371,13 +371,25 @@
                         'staff_id'  : staffId,
                     },
                     success: function (data) {
-                        console.log(data.services);
-                        $.each(data.services, function( index, value) {
-                            $('.services[value="'+ value +'"]').prop('checked', true);
-                            $('#copy_capabilities_modal').modal('hide');
+                    if (data.services.length > 0) {
+                        Swal.fire({
+                            text: data.message,
+                            icon: "success",
+                        }).then(function() {
+                            $.each(data.services, function( index, value) {
+                                $('.services[value="'+ value +'"]').prop('checked', true);
+                                $('#copy_capabilities_modal').modal('hide');
+                            });
                         });
-                        return false;
-                    },
+                    } else {
+                        Swal.fire({
+                            title: "Error!",
+                            text: data.message,
+                            icon: "error",
+                        });
+                    }
+                    return false;
+                },
                     error: function (error) {
                         console.error('Error fetching capabilities:', error);
                     }
@@ -439,7 +451,7 @@
                         Swal.fire({
                             title: "User!",
                             text: "Your User created successfully.",
-                            type: "success",
+                            icon: "success",
                         }).then((result) => {
                             window.location =
                                 "{{ url('users') }}" //'/player_detail?username=' + name;
@@ -448,7 +460,7 @@
                         Swal.fire({
                             title: "Error!",
                             text: response.message,
-                            type: "error",
+                            icon: "error",
                         });
                     }
                 },
