@@ -363,7 +363,7 @@ $(document).on('change', '#pagelist', function()
       Swal.fire({
         title: "User Status!",
         text: "Your User Status updated successfully.",
-        type: "success",
+        icon: "success",
       }).then((result) => {
               window.location = "{{url('users')}}"//'/player_detail?username=' + name;
           });
@@ -371,7 +371,7 @@ $(document).on('change', '#pagelist', function()
       Swal.fire({
         title: "Error!",
         text: response.message,
-        type: "error",
+        icon: "error",
       });
     }
         },
@@ -405,7 +405,7 @@ $(document).on('click', '.dt-delete', function(e) {
             Swal.fire({
               title: "Users!",
               text: "Your Users deleted successfully.",
-              type: "success",
+              icon: "success",
             }).then((result) => {
                           window.location = "{{url('users')}}"//'/player_detail?username=' + name;
                       });
@@ -413,7 +413,7 @@ $(document).on('click', '.dt-delete', function(e) {
             Swal.fire({
               title: "Error!",
               text: response.message,
-              type: "error",
+              icon: "error",
             });
           }
         },
