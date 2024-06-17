@@ -588,7 +588,7 @@ headers: {
 					Swal.fire({
 						title: "Change Password!",
 						text: "Your Password updated successfully.",
-						type: "success",
+						icon: "success",
 					}).then((result) => {
                         window.location = "{{url('settings')}}"//'/player_detail?username=' + name;
                     });
@@ -598,7 +598,7 @@ headers: {
 					Swal.fire({
 						title: "Error!",
 						text: response.message,
-						type: "error",
+						icon: "error",
 					});
 				}
 			},
@@ -620,7 +620,7 @@ headers: {
 					Swal.fire({
 						title: "My Account!",
 						text: "Your Account updated successfully.",
-						type: "success",
+						icon: "success",
 					}).then((result) => {
                         window.location = "{{url('settings')}}"//'/player_detail?username=' + name;
                     });
@@ -628,7 +628,7 @@ headers: {
 					Swal.fire({
 						title: "Error!",
 						text: response.message,
-						type: "error",
+						icon: "error",
 					});
 				}
 			},
@@ -641,13 +641,12 @@ headers: {
 			type: "post",
 			data: data,
 			success: function(response) {
-				
 				// Show a Sweet Alert message after the form is submitted.
 				if (response.success) {
 					Swal.fire({
 						title: "Business Settings!",
 						text: "Your Business Settings updated successfully.",
-						type: "success",
+						icon: "success",
 					}).then((result) => {
                         window.location = "{{url('settings')}}"//'/player_detail?username=' + name;
                     });
@@ -655,7 +654,7 @@ headers: {
 					Swal.fire({
 						title: "Error!",
 						text: response.message,
-						type: "error",
+						icon: "error",
 					});
 				}
 			},
