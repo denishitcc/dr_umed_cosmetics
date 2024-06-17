@@ -361,11 +361,23 @@
                     'staff_id'  : staffId,
                 },
                 success: function (data) {
-                    console.log(data.services);
-                    $.each(data.services, function( index, value) {
-                        $('.services[value="'+ value +'"]').prop('checked', true);
-                        $('#copy_capabilities_modal').modal('hide');
-                    });
+                    if (data.services.length > 0) {
+                        Swal.fire({
+                            text: 'Staff Capabilities copied successfully',
+                            icon: "success",
+                        }).then(function() {
+                            $.each(data.services, function( index, value) {
+                                $('.services[value="'+ value +'"]').prop('checked', true);
+                                $('#copy_capabilities_modal').modal('hide');
+                            });
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Error!",
+                            text: data.message,
+                            icon: "error",
+                        });
+                    }
                     return false;
                 },
                 error: function (error) {
