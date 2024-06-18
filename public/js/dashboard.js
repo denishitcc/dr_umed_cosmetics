@@ -390,7 +390,6 @@ function amchart(ClientFilterData = [],EnquiryFilterData = [], filterType = 'mon
         enquiryChart.appear(1000, 100);
         // Enquiry Chart end
 
-        debugger;
         // Sales Performance Chart start
         var salesPerformanceRoot = am5.Root.new("Salesperformancechartdiv");
 

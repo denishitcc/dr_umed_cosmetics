@@ -36,10 +36,10 @@
 
 <div class="row mb-4">
     <div class="col-lg-3">
-        <div class="card p-3">
+        <div class="card p-3 h-100">
             <h5 class="bright-gray mb-4">Total Sales</h5>
 
-            <div class="d-flex justify-content-between mb-20 tot-sales mb-3">
+            <div class="d-flex justify-content-between mb-20 tot-sales mb-4">
                 <div class="fonts">
                     <h3 class="made_so_far">${{ (Int)$made_so_far }}</h3>
                     Made so far
@@ -70,7 +70,7 @@
         </div>
     </div>
     <div class="col-lg-3">
-        <div class="card p-3">
+        <div class="card p-3 h-100">
             <h5 class="bright-gray">Total Appointments</h5>
             <div class="barWrapper">
             @php
@@ -129,7 +129,7 @@
         </div>
     </div>
     <div class="col-lg-3">
-        <div class="card p-3">
+        <div class="card p-3 h-100">
             <h5 class="bright-gray">Total Clients</h5>
             <div class="d-flex justify-content-between mb-20 tot-clients mb-3">
                 <div class="fonts">
@@ -143,7 +143,7 @@
     </div>
     
     <div class="col-lg-3">
-        <div class="card p-3">
+        <div class="card p-3 h-100">
             <h5 class="bright-gray">Total Enquiries</h5>
             <div class="d-flex justify-content-between mb-20 tot-enquiry mb-3">
                 <div class="fonts">

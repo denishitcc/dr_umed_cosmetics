@@ -662,7 +662,7 @@ div.dataTables_filter { text-align: right; float: right;}
 
 /* Client card  */
 
-.client-invo-notice{background: #EEF1F5; border-radius: 12px; padding: 1.85rem 1.5rem; display: flex; justify-content: space-between; align-items: center;}
+.client-invo-notice{background: #EEF1F5; border-radius: 12px; padding: 1.85rem 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;}
 .client-name{ display: flex; align-items: center; gap: 25px;}
 .client-name .drop-cap{ display: flex; width: 60px; height: 60px; border-radius: 50px; font-size: 24px; font-weight: 500; justify-content: center; align-items: center;}
 .client-name .client-info a{ text-decoration: none;}
@@ -684,7 +684,7 @@ div.dataTables_filter { text-align: right; float: right;}
 .scaffold-layout-detail::-webkit-scrollbar-thumb { background:rgba(0, 0, 0, 0); border-radius:0px; }
 
 .scaffold-layout-list-item{ display: flex;}
-.scaffold-layout-list-item .appt-timeplace{ color: #282828; font-weight: 500; line-height: 20px; width: 135px; padding-right: 2rem; padding-left: 0.5em;}
+.scaffold-layout-list-item .appt-timeplace{ color: #282828; font-weight: 500; line-height: 20px; width: 200px; padding-right: 2rem; padding-left: 0.5em;}
 .scaffold-layout-list-item .appt-details{ flex: auto; border-left: 2px solid #E4E7EC; padding-left: 2rem; color: #667085; font-weight: 500; position: relative;}
 .scaffold-layout-list-item .appt-details:before{ content: ''; position: absolute; border-left:1px solid transparent; left: 0; top: 0; bottom: 0;}
 .scaffold-layout-list-item .appt-details .his-detaiils{ margin-bottom: 22px;}

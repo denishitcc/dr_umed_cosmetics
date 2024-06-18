@@ -65,7 +65,7 @@
         </div>
         <div class="card-body">
         <div class="row">
-                <table class="table data-table all-db-table align-middle display" style="width:100%;">
+                <table class="table data-table all-db-table display" style="width:100%;">
                 <thead>
                     <tr>
                     <th>ID</th>
