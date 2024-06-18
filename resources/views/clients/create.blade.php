@@ -496,7 +496,7 @@
 					Swal.fire({
 						title: "Client!",
 						text: "Your Client created successfully.",
-						type: "success",
+						icon: "success",
 					}).then((result) => {
                         window.location = "{{url('clients')}}"//'/player_detail?username=' + name;
                     });
@@ -506,7 +506,7 @@
 					Swal.fire({
 						title: "Error!",
 						text: response.message,
-						type: "error",
+						icon: "error",
 					});
 				}
 			},

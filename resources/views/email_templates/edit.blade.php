@@ -91,7 +91,7 @@
 					Swal.fire({
 						title: "Email Template!",
 						text: "Your Email Template updated successfully.",
-						type: "success",
+						icon: "success",
 					}).then((result) => {
                         window.location = "{{url('email-templates')}}"//'/player_detail?username=' + name;
                     });
@@ -101,7 +101,7 @@
 					Swal.fire({
 						title: "Error!",
 						text: response.message,
-						type: "error",
+						icon: "error",
 					});
 				}
 			},

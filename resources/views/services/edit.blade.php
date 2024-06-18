@@ -412,7 +412,7 @@
                             Swal.fire({
                                 title: "Service!",
                                 text: "Your Service deleted successfully.",
-                                type: "success",
+                                icon: "success",
                             }).then((result) => {
                                 window.location =
                                     "{{ url('services') }}" //'/player_detail?username=' + name;
@@ -421,7 +421,7 @@
                             Swal.fire({
                                 title: "Error!",
                                 text: response.message,
-                                type: "error",
+                                icon: "error",
                             });
                         }
                     },
@@ -451,7 +451,7 @@
                         Swal.fire({
                             title: "Service!",
                             text: "Service updated successfully.",
-                            type: "success",
+                            icon: "success",
                         }).then((result) => {
                             window.location =
                                 "{{ url('services') }}" //'/player_detail?username=' + name;
@@ -462,7 +462,7 @@
                         Swal.fire({
                             title: "Error!",
                             text: response.message,
-                            type: "error",
+                            icon: "error",
                         });
                     }
                 },

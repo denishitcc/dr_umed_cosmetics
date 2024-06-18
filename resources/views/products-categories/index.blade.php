@@ -325,7 +325,7 @@ $(document).ready(function() {
                 Swal.fire({
                   title: "Product Category!",
                   text: "Product Category deleted successfully.",
-                  type: "success",
+                  icon: "success",
                 }).then((result) => {
                               window.location = "{{url('products-categories')}}"//'/player_detail?username=' + name;
                           });
@@ -333,7 +333,7 @@ $(document).ready(function() {
                 Swal.fire({
                   title: "Error!",
                   text: response.message,
-                  type: "error",
+                  icon: "error",
                 });
               }
             },
@@ -357,7 +357,7 @@ $(document).ready(function() {
 					Swal.fire({
 						title: "Product Category!",
 						text: "Product Category created successfully.",
-						type: "success",
+						icon: "success",
 					}).then((result) => {
                         window.location = "{{url('products-categories')}}"//'/player_detail?username=' + name;
                     });
@@ -367,7 +367,7 @@ $(document).ready(function() {
 					Swal.fire({
 						title: "Error!",
 						text: response.message,
-						type: "error",
+						icon: "error",
 					});
 				}
 			},
@@ -388,7 +388,7 @@ $(document).ready(function() {
 					Swal.fire({
 						title: "Category!",
 						text: "Category updated successfully.",
-						type: "success",
+						icon: "success",
 					}).then((result) => {
                         window.location = "{{url('products-categories')}}"//'/player_detail?username=' + name;
                     });
@@ -398,7 +398,7 @@ $(document).ready(function() {
 					Swal.fire({
 						title: "Error!",
 						text: response.message,
-						type: "error",
+						icon: "error",
 					});
 				}
 			},

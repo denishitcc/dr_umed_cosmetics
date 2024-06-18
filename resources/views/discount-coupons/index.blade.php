@@ -371,7 +371,7 @@ $(document).ready(function() {
                 Swal.fire({
                   title: "Discount Coupons!",
                   text: "Discount Coupons deleted successfully.",
-                  type: "success",
+                  icon: "success",
                 }).then((result) => {
                               window.location = "{{url('discount-coupons')}}"//'/player_detail?username=' + name;
                           });
@@ -379,7 +379,7 @@ $(document).ready(function() {
                 Swal.fire({
                   title: "Error!",
                   text: response.message,
-                  type: "error",
+                  icon: "error",
                 });
               }
             },
@@ -403,7 +403,7 @@ $(document).ready(function() {
 					Swal.fire({
 						title: "Discount Coupon!",
 						text: "Discount Coupon created successfully.",
-						type: "success",
+						icon: "success",
 					}).then((result) => {
                         window.location = "{{url('discount-coupons')}}"//'/player_detail?username=' + name;
                     });
@@ -413,7 +413,7 @@ $(document).ready(function() {
 					Swal.fire({
 						title: "Error!",
 						text: response.message,
-						type: "error",
+						icon: "error",
 					});
 				}
 			},
@@ -434,7 +434,7 @@ $(document).ready(function() {
 					Swal.fire({
 						title: "Discount Coupon!",
 						text: "Discount Coupon updated successfully.",
-						type: "success",
+						icon: "success",
 					}).then((result) => {
                         window.location = "{{url('discount-coupons')}}"//'/player_detail?username=' + name;
                     });
@@ -444,7 +444,7 @@ $(document).ready(function() {
 					Swal.fire({
 						title: "Error!",
 						text: response.message,
-						type: "error",
+						icon: "error",
 					});
 				}
 			},

@@ -269,7 +269,7 @@ $(document).ready(function() {
 					Swal.fire({
 						title: "Enquiry!",
 						text: "Enquiry Updated successfully.",
-						type: "success",
+						icon: "success",
 					}).then((result) => {
                         window.location = "{{url('enquiries')}}"//'/player_detail?username=' + name;
                     });
@@ -279,7 +279,7 @@ $(document).ready(function() {
 					Swal.fire({
 						title: "Error!",
 						text: response.message,
-						type: "error",
+						icon: "error",
 					});
 				}
 			},

@@ -590,7 +590,7 @@ $(document).ready(function() {
                             Swal.fire({
                                 title: "Product!",
                                 text: "Your Product deleted successfully.",
-                                type: "success",
+                                icon: "success",
                             }).then((result) => {
                                             window.location = "{{url('products')}}"//'/player_detail?username=' + name;
                                         });
@@ -598,7 +598,7 @@ $(document).ready(function() {
                             Swal.fire({
                                 title: "Error!",
                                 text: response.message,
-                                type: "error",
+                                icon: "error",
                             });
                             }
                         },
@@ -845,7 +845,7 @@ $(document).on('click','.product_statistics',function(e){
                 Swal.fire({
                     title: "Error!",
                     text: response.message,
-                    type: "error",
+                    icon: "error",
                 });
             }
         },
@@ -864,7 +864,7 @@ function submitUpdateProductCategoryForm(data){
                 Swal.fire({
                     title: "Product Category!",
                     text: "Product Category updated successfully.",
-                    type: "success",
+                    icon: "success",
                 }).then((result) => {
                     // $('.data-table').DataTable().ajax.reload();
                     // $('#new_category').modal('hide');
@@ -875,7 +875,7 @@ function submitUpdateProductCategoryForm(data){
                 Swal.fire({
                     title: "Error!",
                     text: response.message,
-                    type: "error",
+                    icon: "error",
                 });
             }
         },
@@ -894,7 +894,7 @@ function submitChangeProductAvailabilityForm(data){
                 Swal.fire({
                     title: "Product Availability!",
                     text: "Product Availability updated successfully.",
-                    type: "success",
+                    icon: "success",
                 }).then((result) => {
                     // $('.data-table').DataTable().ajax.reload();
                     // $('#new_category').modal('hide');
@@ -905,7 +905,7 @@ function submitChangeProductAvailabilityForm(data){
                 Swal.fire({
                     title: "Error!",
                     text: response.message,
-                    type: "error",
+                    icon: "error",
                 });
             }
         },
@@ -924,7 +924,7 @@ function submitMinMaxForm(data){
                 Swal.fire({
                     title: "Stock Level!",
                     text: "Stock Level updated successfully.",
-                    type: "success",
+                    icon: "success",
                 }).then((result) => {
                     // $('.data-table').DataTable().ajax.reload();
                     // $('#new_category').modal('hide');
@@ -935,7 +935,7 @@ function submitMinMaxForm(data){
                 Swal.fire({
                     title: "Error!",
                     text: response.message,
-                    type: "error",
+                    icon: "error",
                 });
             }
         },
@@ -957,7 +957,7 @@ function submitImportProductForm(data){
                 Swal.fire({
                     title: "Product!",
                     text: "Product import successfully.",
-                    type: "success",
+                    icon: "success",
                 }).then((result) => {
                     window.location = "{{url('products')}}";
                 });
@@ -966,7 +966,7 @@ function submitImportProductForm(data){
                 Swal.fire({
                     title: "Error!",
                     text: response.message,
-                    type: "error",
+                    icon: "error",
                 }).then((result) => {
                     window.location = "{{url('products')}}";
                 });

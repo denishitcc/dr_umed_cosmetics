@@ -327,7 +327,7 @@ function submitCreateServiceForm(data){
                 Swal.fire({
                     title: "Service!",
                     text: "Service created successfully.",
-                    type: "success",
+                    icon: "success",
                 }).then((result) => {
                     window.location = "{{url('services')}}"//'/player_detail?username=' + name;
                 });
@@ -337,7 +337,7 @@ function submitCreateServiceForm(data){
                 Swal.fire({
                     title: "Error!",
                     text: response.message,
-                    type: "error",
+                    icon: "error",
                 });
             }
         },

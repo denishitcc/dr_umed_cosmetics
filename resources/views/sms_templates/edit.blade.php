@@ -69,7 +69,7 @@
 					Swal.fire({
 						title: "SMS Template!",
 						text: "SMS Template updated successfully.",
-						type: "success",
+						icon: "success",
 					}).then((result) => {
                         window.location = "{{url('sms-templates')}}"//'/player_detail?username=' + name;
                     });
@@ -79,7 +79,7 @@
 					Swal.fire({
 						title: "Error!",
 						text: response.message,
-						type: "error",
+						icon: "error",
 					});
 				}
 			},

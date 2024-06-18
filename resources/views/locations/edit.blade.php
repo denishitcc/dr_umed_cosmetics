@@ -526,7 +526,7 @@
 					Swal.fire({
 						title: "Location!",
 						text: "Your Location updated successfully.",
-						type: "success",
+						icon: "success",
 					}).then((result) => {
                         window.location = "{{url('locations')}}"//'/player_detail?username=' + name;
                     });
@@ -536,7 +536,7 @@
 					Swal.fire({
 						title: "Error!",
 						text: response.message,
-						type: "error",
+						icon: "error",
 					});
 				}
 			},

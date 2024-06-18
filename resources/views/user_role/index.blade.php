@@ -200,7 +200,7 @@ $(document).on('click', '.dt-delete', function(e) {
             Swal.fire({
                 title: "User Role!",
                 text: "Your User Role deleted successfully.",
-                type: "success",
+                icon: "success",
             }).then((result) => {
                             window.location = "{{url('users-roles')}}"//'/player_detail?username=' + name;
                         });
@@ -208,7 +208,7 @@ $(document).on('click', '.dt-delete', function(e) {
             Swal.fire({
                 title: "Error!",
                 text: response.message,
-                type: "error",
+                icon: "error",
             });
             }
         },

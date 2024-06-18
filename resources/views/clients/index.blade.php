@@ -1186,7 +1186,7 @@ $(document).on('click', '.dt-delete', function(e) {
             Swal.fire({
                 title: "Email Template!",
                 text: "Your Email Template deleted successfully.",
-                type: "success",
+                icon: "success",
             }).then((result) => {
                             window.location = "{{url('email-templates')}}"//'/player_detail?username=' + name;
                         });
@@ -1194,7 +1194,7 @@ $(document).on('click', '.dt-delete', function(e) {
             Swal.fire({
                 title: "Error!",
                 text: response.message,
-                type: "error",
+                icon: "error",
             });
             }
         },
@@ -1226,7 +1226,7 @@ $(document).on('click','.flexSwitchCheckDefault',function(){
       Swal.fire({
         title: "Client Status!",
         text: "Client Status updated successfully.",
-        type: "success",
+        icon: "success",
       }).then((result) => {
               window.location = "{{url('clients')}}"//'/player_detail?username=' + name;
           });
@@ -1234,7 +1234,7 @@ $(document).on('click','.flexSwitchCheckDefault',function(){
       Swal.fire({
         title: "Error!",
         text: response.message,
-        type: "error",
+        icon: "error",
       });
     }
         },

@@ -233,7 +233,7 @@ $(document).on('click', '.dt-edit', function(e) {
                 Swal.fire({
                   title: "Locations!",
                   text: "Your Locations deleted successfully.",
-                  type: "success",
+                  icon: "success",
                 }).then((result) => {
                               window.location = "{{url('locations')}}"//'/player_detail?username=' + name;
                           });
@@ -241,7 +241,7 @@ $(document).on('click', '.dt-edit', function(e) {
                 Swal.fire({
                   title: "Error!",
                   text: response.message,
-                  type: "error",
+                  icon: "error",
                 });
               }
             },

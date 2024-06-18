@@ -651,7 +651,7 @@ $(document).ready(function() {
                     Swal.fire({
                         title: "Category!",
                         text: "Your Category deleted successfully.",
-                        type: "success",
+                        icon: "success",
                     }).then((result) => {
                                     window.location = "{{url('services')}}"//'/player_detail?username=' + name;
                                 });
@@ -659,7 +659,7 @@ $(document).ready(function() {
                     Swal.fire({
                         title: "Error!",
                         text: response.message,
-                        type: "error",
+                        icon: "error",
                     });
                     }
                 },
@@ -681,7 +681,7 @@ $(document).ready(function() {
 					Swal.fire({
 						title: "Category!",
 						text: "Category created successfully.",
-						type: "success",
+						icon: "success",
 					}).then((result) => {
                         window.location = "{{url('services')}}"//'/player_detail?username=' + name;
                     });
@@ -691,7 +691,7 @@ $(document).ready(function() {
 					Swal.fire({
 						title: "Error!",
 						text: response.message,
-						type: "error",
+						icon: "error",
 					});
 				}
 			},
@@ -712,7 +712,7 @@ $(document).ready(function() {
 					Swal.fire({
 						title: "Category!",
 						text: "Category updated successfully.",
-						type: "success",
+						icon: "success",
 					}).then((result) => {
                         window.location = "{{url('services')}}"//'/player_detail?username=' + name;
                     });
@@ -722,7 +722,7 @@ $(document).ready(function() {
 					Swal.fire({
 						title: "Error!",
 						text: response.message,
-						type: "error",
+						icon: "error",
 					});
 				}
 			},
@@ -743,7 +743,7 @@ $(document).ready(function() {
 					Swal.fire({
 						title: "Change Availibility!",
 						text: "Change availibility successfully.",
-						type: "success",
+						icon: "success",
 					}).then((result) => {
                         window.location = "{{url('services')}}"//'/player_detail?username=' + name;
                     });
@@ -753,7 +753,7 @@ $(document).ready(function() {
 					Swal.fire({
 						title: "Error!",
 						text: response.message,
-						type: "error",
+						icon: "error",
 					});
 				}
 			},
@@ -777,7 +777,7 @@ $(document).ready(function() {
                     Swal.fire({
                         title: "Service!",
                         text: "Service import successfully.",
-                        type: "success",
+                        icon: "success",
                     }).then((result) => {
                         window.location = "{{url('services')}}";
                     });
@@ -787,7 +787,7 @@ $(document).ready(function() {
                     Swal.fire({
                         title: "Error!",
                         text: response.message,
-                        type: "error",
+                        icon: "error",
                     }).then((result) => {
                         window.location = "{{url('services')}}";
                     });

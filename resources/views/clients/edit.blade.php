@@ -1243,7 +1243,7 @@
                             Swal.fire({
                                 title: "Client!",
                                 text: "Client Photos Updated successfully.",
-                                type: "success",
+                                icon: "success",
                             }).then((result) => {
                                 var photosCount = parseInt($('.photos_count').text());
                                 var resultdoc = photosCount + fileCount;
@@ -1259,7 +1259,7 @@
                             Swal.fire({
                                 title: "Error!",
                                 text: response.message,
-                                type: "error",
+                                icon: "error",
                             });
                         }
                     }
@@ -1318,7 +1318,7 @@
                             Swal.fire({
                                 title: "Client!",
                                 text: "Client Documents Updated successfully.",
-                                type: "success",
+                                icon: "success",
                             }).then((result) => {
                                 // Update document count
                                 var docCount = parseInt($('.doc_count').text());
@@ -1334,7 +1334,7 @@
                             Swal.fire({
                                 title: "Error!",
                                 text: response.message,
-                                type: "error",
+                                icon: "error",
                             });
                         }
                     }
@@ -1386,7 +1386,7 @@
                     Swal.fire({
                         title: "Client!",
                         text: "Client Photo Deleted successfully.",
-                        type: "success",
+                        icon: "success",
                     }).then((result) => {
                         var photosCount = parseInt($('.photos_count').text());
                         var resultdoc = photosCount - 1;
@@ -1398,7 +1398,7 @@
                     Swal.fire({
                         title: "Error!",
                         text: response.message,
-                        type: "error",
+                        icon: "error",
                     });
                 }
             }
@@ -1426,7 +1426,7 @@
                     Swal.fire({
                         title: "Client!",
                         text: "Client Documents Deleted successfully.",
-                        type: "success",
+                        icon: "success",
                     }).then((result) => {
                         // window.location = "{{url('clients')}}/" + id
                         // window.location = "{{url('clients')}}/" + id
@@ -1439,7 +1439,7 @@
                     Swal.fire({
                         title: "Error!",
                         text: response.message,
-                        type: "error",
+                        icon: "error",
                     });
                 }
             }
@@ -1459,7 +1459,7 @@
 					Swal.fire({
 						title: "Client!",
 						text: "Client Updated successfully.",
-						type: "success",
+						icon: "success",
 					}).then((result) => {
                         window.location = "{{url('clients')}}/" + id
                         // window.location = "{{url('clients')}}"//'/player_detail?username=' + name;
@@ -1470,7 +1470,7 @@
 					Swal.fire({
 						title: "Error!",
 						text: response.message,
-						type: "error",
+						icon: "error",
 					});
 				}
 			},

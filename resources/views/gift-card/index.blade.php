@@ -571,7 +571,7 @@ $(document).on('click', '.dt-cancel', function(e) {
             Swal.fire({
                 title: "Gift Card!",
                 text: "Gift Card Cancelled successfully.",
-                type: "success",
+                icon: "success",
             }).then((result) => {
                             window.location = "{{url('gift-card')}}"//'/player_detail?username=' + name;
                         });
@@ -579,7 +579,7 @@ $(document).on('click', '.dt-cancel', function(e) {
             Swal.fire({
                 title: "Error!",
                 text: response.message,
-                type: "error",
+                icon: "error",
             });
             }
         },
@@ -621,7 +621,7 @@ $(document).on('click','.email_gift_card_send',function(e){
             Swal.fire({
                 title: "Error!",
                 text: response.message,
-                type: "error",
+                icon: "error",
             });
             }
         },
@@ -642,7 +642,7 @@ function submitCreateGiftCardForm(data){
                 Swal.fire({
                     title: "Gift Card!",
                     text: "Gift Card created successfully.",
-                    type: "success",
+                    icon: "success",
                 }).then((result) => {
                     window.location = "{{url('gift-card')}}"//'/player_detail?username=' + name;
                 });
@@ -652,7 +652,7 @@ function submitCreateGiftCardForm(data){
                 Swal.fire({
                     title: "Error!",
                     text: response.message,
-                    type: "error",
+                    icon: "error",
                 });
             }
         },
@@ -673,7 +673,7 @@ function submitEditGiftCardForm(data,id){
                 Swal.fire({
                     title: "Gift Card!",
                     text: "Gift Card updated successfully.",
-                    type: "success",
+                    icon: "success",
                 }).then((result) => {
                     window.location = "{{url('gift-card')}}"//'/player_detail?username=' + name;
                 });
@@ -683,7 +683,7 @@ function submitEditGiftCardForm(data,id){
                 Swal.fire({
                     title: "Error!",
                     text: response.message,
-                    type: "error",
+                    icon: "error",
                 });
             }
         },

@@ -214,7 +214,7 @@ $(document).ready(function() {
 					Swal.fire({
 						title: "Supplier!",
 						text: "Supplier created successfully.",
-						type: "success",
+						icon: "success",
 					}).then((result) => {
                         window.location = "{{url('suppliers')}}"//'/player_detail?username=' + name;
                     });
@@ -224,7 +224,7 @@ $(document).ready(function() {
 					Swal.fire({
 						title: "Error!",
 						text: response.message,
-						type: "error",
+						icon: "error",
 					});
 				}
 			},
