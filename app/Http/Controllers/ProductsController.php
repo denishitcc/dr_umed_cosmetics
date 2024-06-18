@@ -151,8 +151,8 @@ class ProductsController extends Controller
                 } else {
                     $final_array[] = [
                         'product_id' => $newProduct->id,
-                        'min' => '',
-                        'max' => '',
+                        'quantity' => '',
+                        // 'max' => '',
                         'price' => $price,
                         'location_name' => $in->id,
                         'availability' => 'Not available'
