@@ -275,4 +275,169 @@ class DashboardController extends Controller
             'enquiryGraph'   => $enquiry_graph,
         ]);
     }
+    public function sales_performance_filter(Request $request)
+    {
+        $period = $request->period;
+        // dd($period);
+        if ($period == 'month') {
+            $formattedData = [];
+            $months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            
+            for ($month = 1; $month <= 12; $month++) {
+                $startOfMonth = Carbon::create(null, $month, 1)->startOfMonth();
+                $endOfMonth = Carbon::create(null, $month, 1)->endOfMonth();
+
+                // Query for all sales within the month
+                $total_sales_second_half = Appointment::whereBetween('start_date', [$startOfMonth, $endOfMonth])
+                    ->where('status', '!=', '4')
+                    ->get();
+
+                // Calculate expected sales
+                $walk_in_count = WalkInRetailSale::whereBetween('invoice_date', [$startOfMonth, $endOfMonth])
+                    ->where('appt_id', null)
+                    ->sum('total');
+
+                $walk_in_payment_count = WalkInRetailSale::join('appointment', 'walk_in_retail_sale.appt_id', '=', 'appointment.id')
+                    ->whereBetween('walk_in_retail_sale.invoice_date', [$startOfMonth, $endOfMonth])
+                    ->sum('walk_in_retail_sale.total');
+
+                $expected = (int)$walk_in_count + (int)$walk_in_payment_count;
+
+                foreach ($total_sales_second_half as $second) {
+                    $ck_found_in_walk_in = WalkInRetailSale::where('appt_id', $second->id)->first();
+                    if ($ck_found_in_walk_in) {
+                        $expected += $ck_found_in_walk_in->total;
+                    } else {
+                        $service = Services::where('id', $second->service_id)->first();
+                        if ($service) {
+                            $expected += $service->standard_price;
+                        }
+                    }
+                }
+
+                // Calculate achieved sales
+                $achieved = WalkInRetailSale::whereBetween('invoice_date', [$startOfMonth, $endOfMonth])
+                    ->sum('total');
+
+                $formattedData[] = [
+                    'period' => $months[$month - 1],
+                    'expected' => $expected,
+                    'achieved' => $achieved
+                ];
+            }
+            // Return the formatted data as JSON
+            return response()->json($formattedData);
+        }else if ($period == 'week') {
+            $formattedData = [];
+            $carbonNow = Carbon::now();
+            $weeksAgo = 4; // Fetch data for the last 4 weeks
+        
+            for ($i = 0; $i < $weeksAgo; $i++) {
+                // Calculate start and end dates for each week
+                $startOfWeek = $carbonNow->copy()->subWeeks($i)->startOfWeek();
+                $endOfWeek = $carbonNow->copy()->subWeeks($i)->endOfWeek();
+        
+                // Query for sales data within the current week
+                $total_sales_second_half = Appointment::whereBetween('start_date', [$startOfWeek, $endOfWeek])
+                    ->where('status', '!=', '4')
+                    ->get();
+        
+                // Calculate expected sales
+                $walk_in_count = WalkInRetailSale::whereBetween('invoice_date', [$startOfWeek, $endOfWeek])
+                    ->where('appt_id', null)
+                    ->sum('total');
+        
+                $walk_in_payment_count = WalkInRetailSale::join('appointment', 'walk_in_retail_sale.appt_id', '=', 'appointment.id')
+                    ->whereBetween('walk_in_retail_sale.invoice_date', [$startOfWeek, $endOfWeek])
+                    ->sum('walk_in_retail_sale.total');
+        
+                $expected = (int) $walk_in_count + (int) $walk_in_payment_count;
+        
+                foreach ($total_sales_second_half as $second) {
+                    $ck_found_in_walk_in = WalkInRetailSale::where('appt_id', $second->id)->first();
+                    if ($ck_found_in_walk_in) {
+                        $expected += $ck_found_in_walk_in->total;
+                    } else {
+                        $service = Services::where('id', $second->service_id)->first();
+                        if ($service) {
+                            $expected += $service->standard_price;
+                        }
+                    }
+                }
+        
+                // Calculate achieved sales
+                $achieved = WalkInRetailSale::whereBetween('invoice_date', [$startOfWeek, $endOfWeek])
+                    ->sum('total');
+        
+                // Format the data for the current week
+                $formattedData[] = [
+                    'period' => $startOfWeek->format('d M') . ' - ' . $endOfWeek->format('d M'), // Week start and end dates
+                    'from' => $startOfWeek->toDateString(), // Start date of the week
+                    'to' => $endOfWeek->toDateString(), // End date of the week
+                    'expected' => $expected,
+                    'achieved' => $achieved
+                ];
+            }
+        
+            // Return the formatted data as JSON
+            return response()->json($formattedData);
+        }else if ($period == 'day') {
+            $formattedData = [];
+            $carbonNow = Carbon::now();
+        
+            for ($i = 0; $i < 7; $i++) {
+                // Calculate start and end dates for each day
+                $startOfDay = $carbonNow->copy()->subDays($i)->startOfDay();
+                $endOfDay = $carbonNow->copy()->subDays($i)->endOfDay();
+        
+                // Query for sales data within the current day
+                $total_sales_second_half = Appointment::whereBetween('start_date', [$startOfDay, $endOfDay])
+                    ->where('status', '!=', '4')
+                    ->get();
+        
+                // Calculate expected sales
+                $walk_in_count = WalkInRetailSale::whereBetween('invoice_date', [$startOfDay, $endOfDay])
+                    ->where('appt_id', null)
+                    ->sum('total');
+        
+                $walk_in_payment_count = WalkInRetailSale::join('appointment', 'walk_in_retail_sale.appt_id', '=', 'appointment.id')
+                    ->whereBetween('walk_in_retail_sale.invoice_date', [$startOfDay, $endOfDay])
+                    ->sum('walk_in_retail_sale.total');
+        
+                $expected = (int) $walk_in_count + (int) $walk_in_payment_count;
+        
+                foreach ($total_sales_second_half as $second) {
+                    $ck_found_in_walk_in = WalkInRetailSale::where('appt_id', $second->id)->first();
+                    if ($ck_found_in_walk_in) {
+                        $expected += $ck_found_in_walk_in->total;
+                    } else {
+                        $service = Services::where('id', $second->service_id)->first();
+                        if ($service) {
+                            $expected += $service->standard_price;
+                        }
+                    }
+                }
+        
+                // Calculate achieved sales
+                $achieved = WalkInRetailSale::whereBetween('invoice_date', [$startOfDay, $endOfDay])
+                    ->sum('total');
+        
+                // Format the data for the current day
+                $formattedData[] = [
+                    'period' => $startOfDay->format('d-m-y'), // Format as desired, e.g., '2024-06-18'
+                    'expected' => $expected,
+                    'achieved' => $achieved
+                ];
+            }
+        
+            // Return the formatted data as JSON
+            return response()->json($formattedData);
+        }
+
+        // Handle other periods if needed
+        // ...
+
+        // Default response if no valid period is provided
+        return response()->json(['error' => 'Invalid period'], 400);
+    }
 }

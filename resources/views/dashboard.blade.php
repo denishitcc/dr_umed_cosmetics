@@ -168,9 +168,9 @@
                             </div>
                             <div class="tool-right">
                                 <div class="text-right">
-                                    <button class="btn btn-primary btn-sm mr-2" onclick="filterSalesPerfornaceData('month')">Month</button>
-                                    <button class="btn btn-primary btn-sm mr-2" onclick="filterSalesPerfornaceData('week')">Week</button>
-                                    <button class="btn btn-primary btn-sm" onclick="filterSalesPerfornaceData('day')">Day</button>
+                                    <button class="btn btn-primary btn-sm mr-2" onclick="filterSalesPerformaceData('month')">Month</button>
+                                    <button class="btn btn-primary btn-sm mr-2" onclick="filterSalesPerformaceData('week')">Week</button>
+                                    <button class="btn btn-primary btn-sm" onclick="filterSalesPerformaceData('day')">Day</button>
                                 </div>
                             </div>
                         </div>
@@ -312,5 +312,6 @@
     var ClientsGraph = {!! json_encode($client_graph) !!};
     var EnquiryGraph = {!! json_encode($enquiry_graph) !!};
     var FilterRoute = "{{ route('dashboard.filter') }}"; 
+    var SalesPerformanceFilter = "{{ route('dashboard.sales_performance_filter') }}"; 
 </script>
 @endsection

@@ -393,45 +393,15 @@ function amchart(ClientFilterData = [],EnquiryFilterData = [], filterType = 'mon
         // Sales Performance Chart start
         var salesPerformanceRoot = am5.Root.new("Salesperformancechartdiv");
 
-        monthData = [
-            { "period": "Jan", "expected": 80, "achieved": 75 },
-            { "period": "Feb", "expected": 85, "achieved": 80 },
-            { "period": "Mar", "expected": 90, "achieved": 85 },
-            { "period": "Apr", "expected": 95, "achieved": 90 },
-            { "period": "May", "expected": 100, "achieved": 95 },
-            { "period": "Jun", "expected": 105, "achieved": 100 },
-            { "period": "Jul", "expected": 110, "achieved": 105 },
-            { "period": "Aug", "expected": 115, "achieved": 110 },
-            { "period": "Sep", "expected": 120, "achieved": 115 },
-            { "period": "Oct", "expected": 125, "achieved": 120 },
-            { "period": "Nov", "expected": 130, "achieved": 125 },
-            { "period": "Dec", "expected": 135, "achieved": 130 }
-        ];
-
-        weekData = [
-            { "period": "Week 1", "expected": 20, "achieved": 18 },
-            { "period": "Week 2", "expected": 22, "achieved": 20 },
-            { "period": "Week 3", "expected": 25, "achieved": 23 },
-            { "period": "Week 4", "expected": 28, "achieved": 26 }
-        ];
-
-        dayData = [
-            { "period": "Mon", "expected": 5, "achieved": 4 },
-            { "period": "Tue", "expected": 6, "achieved": 5 },
-            { "period": "Wed", "expected": 7, "achieved": 6 },
-            { "period": "Thu", "expected": 8, "achieved": 7 },
-            { "period": "Fri", "expected": 9, "achieved": 8 },
-            { "period": "Sat", "expected": 10, "achieved": 9 },
-            { "period": "Sun", "expected": 11, "achieved": 10 }
-        ];
-
-        currentData = monthData;
+        var currentData = [];
 
         // Set themes
         salesPerformanceRoot.setThemes([
             am5themes_Animated.new(salesPerformanceRoot)
         ]);
 
+        salesPerformanceRoot._logo.dispose();
+        
         // Create chart
         chart = salesPerformanceRoot.container.children.push(am5xy.XYChart.new(salesPerformanceRoot, {
             panX: false,
@@ -452,9 +422,8 @@ function amchart(ClientFilterData = [],EnquiryFilterData = [], filterType = 'mon
 
         // Create axes
         var xRenderer = am5xy.AxisRendererX.new(salesPerformanceRoot, {
-            cellStartLocation: 0.1,
-            cellEndLocation: 0.9,
-            minorGridEnabled: true
+            minorGridEnabled: true,
+            minGridDistance: 30,
         });
 
         xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(salesPerformanceRoot, {
@@ -522,28 +491,33 @@ function amchart(ClientFilterData = [],EnquiryFilterData = [], filterType = 'mon
         makeSeries("Achieved", "achieved", am5.color(0xFFAD33)); // Orange color
 
         // Call updateSalesPerformanceChart to set initial data
-        updateSalesPerformanceChart();
+        filterSalesPerformaceData('month');
     });
 }
-function filterSalesPerfornaceData(period) {
-    switch (period) {
-        case 'day':
-            currentData = dayData;
-            break;
-        case 'week':
-            currentData = weekData;
-            break;
-        case 'month':
-        default:
-            currentData = monthData;
-            break;
-    }
-    updateSalesPerformanceChart();
+function fetchSalesData(period, callback) {
+    $.ajax({
+        url: SalesPerformanceFilter, // Replace with your actual API endpoint
+        type: 'POST',
+        dataType: 'json',
+        data: { period: period }, // Send the period as a parameter to the server
+        success: function(data) {
+            callback(data);
+        },
+        error: function(error) {
+            console.error('Error fetching data:', error);
+        }
+    });
+}
+function filterSalesPerformaceData(period) {
+    fetchSalesData(period, function(data) {
+        currentData = data;
+        updateSalesPerformanceChart();
+    });
 }
 
 function updateSalesPerformanceChart() {
     xAxis.data.setAll(currentData);
-    chart.series.each(function (series) {
+    chart.series.each(function(series) {
         series.data.setAll(currentData);
     });
 }
