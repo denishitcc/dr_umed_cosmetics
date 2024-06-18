@@ -129,7 +129,11 @@ class CalenderController extends Controller
     {
         $location   = isset($request->location_id) ? $request->location_id : Auth::user()->staff_member_location;
         $user       = User::select();
-
+        if($location == null)
+        {
+            $loc = Locations::first();
+            $location = $loc->id;
+        }
         if ($location) {
             $user = $user->where('role_type', '!=', 'admin')->where('staff_member_location', '=', $location);
         } else {
