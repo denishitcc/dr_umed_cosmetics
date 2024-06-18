@@ -330,12 +330,20 @@ class DashboardController extends Controller
         }else if ($period == 'week') {
             $formattedData = [];
             $carbonNow = Carbon::now();
-            $weeksAgo = 4; // Fetch data for the last 4 weeks
+            $currentDate = $carbonNow->copy(); // Current date
         
-            for ($i = 0; $i < $weeksAgo; $i++) {
-                // Calculate start and end dates for each week
-                $startOfWeek = $carbonNow->copy()->subWeeks($i)->startOfWeek();
-                $endOfWeek = $carbonNow->copy()->subWeeks($i)->endOfWeek();
+            // Define the specific week ranges based on today's date (18-06-2024)
+            $weeks = [
+                ['start' => $currentDate->copy()->subWeeks(1)->startOfWeek(), 'end' => $currentDate->copy()->subWeeks(1)->endOfWeek()],
+                ['start' => $currentDate->copy()->subWeeks(2)->startOfWeek(), 'end' => $currentDate->copy()->subWeeks(2)->endOfWeek()],
+                ['start' => $currentDate->copy()->subWeeks(3)->startOfWeek(), 'end' => $currentDate->copy()->subWeeks(3)->endOfWeek()],
+                ['start' => $currentDate->copy()->subWeeks(4)->startOfWeek(), 'end' => $currentDate->copy()->subWeeks(4)->endOfWeek()]
+            ];
+        
+            // Fetch data for each specific week range
+            foreach ($weeks as $index => $week) {
+                $startOfWeek = $week['start'];
+                $endOfWeek = $week['end'];
         
                 // Query for sales data within the current week
                 $total_sales_second_half = Appointment::whereBetween('start_date', [$startOfWeek, $endOfWeek])
