@@ -29,7 +29,7 @@ class FormsController extends Controller
                                     <button type="button" class="btn btn-sm black-btn round-6 dt-edit" ids='.$row->id.'>
                                         <i class="ico-edit"></i>
                                     </button>
-                                    <button type="button" class="btn btn-sm black-btn round-6 dt-delete deleteFormBtn" data-formid='.$row->id.' >
+                                    <button type="button" class="btn btn-sm black-btn round-6 dt-delete deleteFormBtn" id="deleteFormBtn" data-formid='.$row->id.' >
                                         <i class="ico-trash"></i>
                                     </button>
                                 </div>';

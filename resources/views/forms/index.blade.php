@@ -124,6 +124,11 @@
 @stop
 @section('script')
 <script>
+     var moduleConfig = {
+        updateForm:             "{!! route('serviceforms.formUpdate') !!}",
+        updateHTMLFormContent:  "{!! route('serviceforms.formHTMLUpdate') !!}",
+        deleteForm:             "{!! route('serviceforms.formDelete') !!}",
+    }
 $(document).ready(function() {
 
     $("#create_forms").validate({
@@ -321,6 +326,50 @@ $(document).on('submit','#create_forms',function(e){
         submitCreateForms(data);
     }
 });
+$(document).on('click', '.dt-edit', function(e) {
+    e.preventDefault();
+    var ids = $(this).attr('ids');
+    window.location = 'forms/' + ids;
+});
+$(document).on('click','.deleteFormBtn',function(e){
+
+    if(confirm("Are you sure you want to delete this form?")){
+        var id = $(".deleteFormBtn").data('formid');
+
+        $.ajax({
+            url: moduleConfig.deleteForm,
+            type: 'POST',
+            data: {
+                'form_id' : id
+            },
+            headers: {
+                'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+            },
+            success: function (data) {
+                if (data.success) {
+                    Swal.fire({
+                        title: "Forms!",
+                        text: data.message,
+                        icon: "success",
+                    });
+                    window.location.href = '/forms';
+                } else {
+                    Swal.fire({
+                        title: "Error!",
+                        text: data.message,
+                        icon: "error",
+                    });
+                }
+            },
+            error: function (error) {
+                console.error('Error fetching events:', error);
+            }
+        });
+    }
+    else{
+        return false;
+    }
+});
 function submitCreateForms(data){
 
     $.ajax({
@@ -333,24 +382,20 @@ function submitCreateForms(data){
         processData: false,
         data: data,
         success: function(response) {
-
             // Show a Sweet Alert message after the form is submitted.
             if (response.success) {
-
                 Swal.fire({
                     title: "Form!",
                     text: "Form created successfully.",
-                    type: "success",
+                    icon: "success",
                 }).then((result) => {
                     window.location = "{{url('forms')}}"//'/player_detail?username=' + name;
                 });
-
             } else {
-
                 Swal.fire({
                     title: "Error!",
                     text: response.message,
-                    type: "error",
+                    icon: "error",
                 });
             }
         },
