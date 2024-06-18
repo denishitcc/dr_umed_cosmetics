@@ -2639,12 +2639,13 @@ var DU = {};
                     minDate: startdate,
                     dateFormat: 'd-mm-yy'
                 });
-                // var item = $(".repeat_every :selected").val();
-
-                // if(item === 'day')
-                // {
-                //     $('#days').hide();
-                // }
+                var item = $(".repeat_every :selected").val();
+                if(item === 'week')
+                {
+                    $('#days').show();
+                    $('#month').hide();
+                    $('#years').hide();
+                }
                 // if(item === 'week')
                 // {
                 //     $('#days').show();
