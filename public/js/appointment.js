@@ -2609,10 +2609,10 @@ var DU = {};
                     appointmentdate         = $('#clientDetails').find('#start_date').val(),
                     appointmentduration     = $('#clientDetails').find('input:hidden[name=appointment_duration]').val();
 
-                var weekdate        = moment(appointmentdate),
-                    days            = moment(appointmentdate).format("dddd"),
-                    monthname       = moment(appointmentdate).format("MMMM"),
-                    monthdigit      = moment(appointmentdate).format("Do"),
+                var weekdate        = moment(appointmentdate,"YYYY-MM-DD"),
+                    days            = moment(appointmentdate,"YYYY-MM-DD").format("dddd"),
+                    monthname       = moment(appointmentdate,"YYYY-MM-DD").format("MMMM"),
+                    monthdigit      = moment(appointmentdate,"YYYY-MM-DD").format("Do"),
                     weekofmonth     = weekdate.isoWeek() - moment(weekdate).startOf('month').isoWeek() + 1;
 
                 $('#repeat_name').text(clientName);
@@ -2629,9 +2629,9 @@ var DU = {};
                 $('.repeat_every_month_weekday').val(`On the ${context.getOrdinalSuffix(weekofmonth)} ${days} of the month`);
 
                 $('#repeat_day').val(days);
-                $('#repeat_year_month').val(moment(appointmentdate).format("M"));
+                $('#repeat_year_month').val(moment(appointmentdate,"YYYY-MM-DD").format("M"));
 
-                $(`input[type=checkbox][value=${moment(appointmentdate).day()}]`).prop("checked",true);
+                $(`input[type=checkbox][value=${moment(appointmentdate,"YYYY-MM-DD").day()}]`).prop("checked",true);
 
                 var startdate = $("#appointment_date").val();
 
