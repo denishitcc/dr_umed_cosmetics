@@ -334,7 +334,7 @@ $(document).on('click', '.dt-edit', function(e) {
 $(document).on('click','.deleteFormBtn',function(e){
 
     if(confirm("Are you sure you want to delete this form?")){
-        var id = $(".deleteFormBtn").data('formid');
+        var id = $(this).data('formid');
 
         $.ajax({
             url: moduleConfig.deleteForm,
