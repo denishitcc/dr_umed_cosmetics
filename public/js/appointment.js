@@ -2715,68 +2715,99 @@ var DU = {};
         //     });
         // },
 
-        repeatAppointmentSaveBtn: function(){
+        repeatAppointmentSaveBtn: function() {
             var context = this;
-            $('#repeatappt').on('submit' ,function(e){
+            $('#repeatappt').on('submit', function(e) {
                 e.preventDefault();
-                var option = document.getElementsByName('stop_repeating');
-
-                if (!(option[0].checked || option[1].checked)) {
-                    $("#repeat_error").show();
-                    return false;
-                }
-
-                var Form        = new FormData($('#repeatappt')[0]);
-                client_id       = $('#clientDetails').find('input:hidden[name=client_id]').val(),
-                category_id     = $('#clientDetails').find('input:hidden[name=category_id]').val(),
-                service_id      = $('#clientDetails').find('input:hidden[name=service_id]').val(),
-                staff_id        = $('#clientDetails').find('input:hidden[name=staff_id]').val();
-                duration        = $('#clientDetails').find('input:hidden[name=appointment_duration]').val();
-                location_id     = $('#walk_in_location_id').val();
-
-                Form.append('client_id',client_id);
-                Form.append('category_id',category_id);
-                Form.append('service_id',service_id);
-                Form.append('staff_id',staff_id);
-                Form.append('duration',duration);
-                Form.append('location_id',location_id);
-
-                $.ajax({
-                    headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    url: moduleConfig.repeatAppointment,
-                    type: 'POST',
-                    data: Form,
-                    dataType: 'json',
-                    processData: false,
-                    contentType: false,
-                    // headers: {
-                    //     'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
-                    // },
-                    success: function (data) {
-                        if (data.success) {
-                            Swal.fire({
-                                title: "Appointment!",
-                                text: data.message,
-                                icon: "success",
-                            }).then(function() {
-                                // Reload the current page
-                                location.reload();
-                            });
-                        } else {
-                            Swal.fire({
-                                title: "Error!",
-                                text: data.message,
-                                icon: "error",
-                            });
+                
+                // Initialize the validation rules
+                $("#repeatappt").validate({
+                    rules: {
+                        stop_repeating_date: {
+                            required: {
+                                depends: function(element) {
+                                    return $("input[name='stop_repeating']:checked").val() === "on";
+                                }
+                            }
+                        },
+                        no_of_appointment: {
+                            required: {
+                                depends: function(element) {
+                                    return $("input[name='stop_repeating']:checked").val() === "after";
+                                }
+                            }
                         }
                     },
-                    error: function (error) {
-                        console.error('Error fetching events:', error);
+                    messages: {
+                        stop_repeating_date: {
+                            required: "Please enter the stop repeating date"
+                        },
+                        no_of_appointment: {
+                            required: "Please enter the number of appointments"
+                        }
+                    },
+                    errorPlacement: function(error, element) {
+                        error.addClass('text-danger'); // Add a class to style the error message
+                        if (element.attr("name") === "stop_repeating_date" || element.attr("name") === "no_of_appointment") {
+                            error.insertAfter(element.closest('.form-group'));
+                        } else {
+                            error.insertAfter(element);
+                        }
                     }
                 });
-
+        
+                // Check if the form is valid
+                if ($("#repeatappt").valid()) {
+                    var form = $(this);
+                    var Form = new FormData(form[0]);
+                    var client_id = $('#clientDetails').find('input:hidden[name=client_id]').val();
+                    var category_id = $('#clientDetails').find('input:hidden[name=category_id]').val();
+                    var service_id = $('#clientDetails').find('input:hidden[name=service_id]').val();
+                    var staff_id = $('#clientDetails').find('input:hidden[name=staff_id]').val();
+                    var duration = $('#clientDetails').find('input:hidden[name=appointment_duration]').val();
+                    var location_id = $('#walk_in_location_id').val();
+        
+                    Form.append('client_id', client_id);
+                    Form.append('category_id', category_id);
+                    Form.append('service_id', service_id);
+                    Form.append('staff_id', staff_id);
+                    Form.append('duration', duration);
+                    Form.append('location_id', location_id);
+        
+                    $.ajax({
+                        headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                        url: moduleConfig.repeatAppointment,
+                        type: 'POST',
+                        data: Form,
+                        dataType: 'json',
+                        processData: false,
+                        contentType: false,
+                        success: function(data) {
+                            if (data.success) {
+                                Swal.fire({
+                                    title: "Appointment!",
+                                    text: data.message,
+                                    icon: "success",
+                                }).then(function() {
+                                    // Reload the current page
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: "Error!",
+                                    text: data.message,
+                                    icon: "error",
+                                });
+                            }
+                        },
+                        error: function(error) {
+                            console.error('Error fetching events:', error);
+                        }
+                    });
+                }
             });
         },
+        
 
         openeditServiceFormModal: function(){
             var context = this;

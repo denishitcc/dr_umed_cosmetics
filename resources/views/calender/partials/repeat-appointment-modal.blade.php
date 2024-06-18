@@ -25,7 +25,7 @@
                             <div class="form-group">
                                 <label class="form-label">&nbsp;</label>
                                 <select class="form-select form-control repeat_every" name="repeat_every">
-                                    <option selected>Choose option</option>
+                                    <!-- <option selected>Choose option</option> -->
                                     <option value="day">Day(s)</option>
                                     <option value="week">Week(s)</option>
                                     <option value="month">Month(s)</option>
@@ -175,7 +175,7 @@
                         <div class="row align-items-center ">
                             <div class="col-auto">
                                 <label class="cst-radio">
-                                    <input type="radio" name="stop_repeating" value="on">
+                                    <input type="radio" name="stop_repeating" value="on" checked>
                                     <span class="checkmark me-2"></span>On
                                 </label>
                             </div>
