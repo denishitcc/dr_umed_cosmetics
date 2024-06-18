@@ -8,7 +8,7 @@
         </select>
     @elseif (auth()->user()->is_staff_memeber == 1 && auth()->user()->role_type == 'admin')
         <select class="form-select" id="locations">
-        <option>All Location</option>
+        <!-- <option>All Location</option> -->
         </select>
         <select class="form-select" id="staff">
             <option value="all">All staff</option>
