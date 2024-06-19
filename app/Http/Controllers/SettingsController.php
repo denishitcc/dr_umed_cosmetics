@@ -15,7 +15,7 @@ class SettingsController extends Controller
 {
     public function settings(){
         $permission = \Auth::user()->checkPermission('settings');
-        if ($permission === 'View & Make Changes' || $permission === true) {
+        // if ($permission === 'View & Make Changes' || $permission === true) {
             $auth = auth();
             $user = User::find($auth->user()->id);
             $locations = Locations::get();
@@ -24,10 +24,10 @@ class SettingsController extends Controller
                         ->where('users.id',$auth->user()->id)
                         ->where('business_settings.business_details_for','Dr Umed Enterprise')
                         ->first();
-            return view('settings',compact('user','locations','users_data','locs'));
-        }else{
-            abort(403, 'You are not authorized to access this page.');
-        }
+            return view('settings',compact('user','locations','users_data','locs','permission'));
+        // }else{
+        //     abort(403, 'You are not authorized to access this page.');
+        // }
     }
     public function changePasswordSave(Request $request)
     {

@@ -9,6 +9,7 @@
                         <li class="nav-item">
                             <a class="nav-link active" data-bs-toggle="tab" href="#tab_1"><i class="ico-my-account"></i> My Account</a>
                         </li>
+                        @if ($permission === 'View & Make Changes' || $permission === true)
                         <li class="nav-item">
                             <a class="nav-link" data-bs-toggle="tab" href="#tab_2"><i class="ico-business-settings"></i> Business Settings</a>
                         </li>
@@ -21,6 +22,7 @@
                         <li class="nav-item">
                             <a class="nav-link" data-bs-toggle="tab" href="#tab_5"><i class="ico-appt-reminder"></i> Appt Reminders</a>
                         </li>
+                        @endif
                         <!-- <li class="nav-item">
                             <a class="nav-link" data-bs-toggle="tab" href="#tab_6"><i class="ico-payment-gateway"></i> Payment Gateways</a>
                         </li> -->
