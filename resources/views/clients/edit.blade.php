@@ -22,9 +22,13 @@
             <div class="inv-center">
                 @if (isset($client->last_appointment))
                 <div class="d-grey">
-                    Last appt at {{ $client->last_appointment->staff->staff_location->location_name }} on {{  $client->last_appointment->start_date }}
-                    <br>{{ $client->last_appointment->services->service_name }} with {{ $client->last_appointment->staff->name }} ({{ $client->last_appointment->appointment_status }})
+                    Last appt at {{ isset($client->last_appointment->staff->staff_location->location_name) ? $client->last_appointment->staff->staff_location->location_name : 'N/A' }} 
+                    on {{ isset($client->last_appointment->start_date) ? $client->last_appointment->start_date : 'N/A' }}
+                    <br>{{ isset($client->last_appointment->services->service_name) ? $client->last_appointment->services->service_name : 'N/A' }} 
+                    with {{ isset($client->last_appointment->staff->name) ? $client->last_appointment->staff->name : 'N/A' }} 
+                    ({{ isset($client->last_appointment->appointment_status) ? $client->last_appointment->appointment_status : 'N/A' }})
                 </div>
+
                 @endif
             </div>
             <div class="inv-right">
@@ -65,9 +69,13 @@
                                 Next Appointment
                                 @foreach ($futureappointments as $appointment)
                                     <li class="scaffold-layout-list-item">
-                                        <div class="appt-timeplace">
-                                            {{  date('D Y-m-d', strtotime($appointment->start_date)) }} <br> {{ date('h:i A', strtotime($appointment->start_date)) }} @<br> {{ $appointment->staff->staff_location->location_name }} <br> ({{ $appointment->appointment_status }})
-                                        </div>
+                                    <div class="appt-timeplace">
+                                        {{ isset($appointment->start_date) ? date('D Y-m-d', strtotime($appointment->start_date)) : 'N/A' }} <br> 
+                                        {{ isset($appointment->start_date) ? date('h:i A', strtotime($appointment->start_date)) : 'N/A' }} @<br> 
+                                        {{ isset($appointment->staff->staff_location->location_name) ? $appointment->staff->staff_location->location_name : 'N/A' }} <br> 
+                                        ({{ isset($appointment->appointment_status) ? $appointment->appointment_status : 'N/A' }})
+                                    </div>
+
                                         <div class="appt-details">
                                             <div class="his-detaiils">
                                                 <h5 class="black">{{ $appointment->services->service_name }} </h5>
