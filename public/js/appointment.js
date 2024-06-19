@@ -115,6 +115,7 @@ var DU = {};
                     // }
                 },
                 resources: [],
+                allDaySlot: false,
                 resourceAreaHeaderContent: 'Staff Name',
                 events: [
                     // {
@@ -281,6 +282,11 @@ var DU = {};
 
                     // Make an AJAX call to fetch events for the new date range
                     context.eventsList(start_date, end_date,resourceId);
+                },
+                dateClick: function(){
+                    var locationId = jQuery('#locations').val();
+                    $('#appointmentlocationId').val(locationId);
+                    context.getCategoriesAndServices(locationId);
                 },
             });
             context.appointmentDraggable();
@@ -1536,6 +1542,7 @@ var DU = {};
 
         // For create appointment
         createAppointmentDetails: function(resourceId,start_date,start_time,end_time,durationInMinutes,client_id,service_id,category_id,app_id,location_id,appt_type){
+            var context = this;
             $.ajax({
                 url: moduleConfig.createAppointment,
                 type: 'POST',
@@ -1562,8 +1569,8 @@ var DU = {};
                             text: data.message,
                             icon: "success",
                         }).then(function() {
-                            // Reload the current page
-                            location.reload();
+                            $('.summry-header').remove();
+                            $('#external-events').empty();
                         });
                     } else {
                         Swal.fire({
@@ -1982,8 +1989,8 @@ var DU = {};
                                 eventId             = $(this).data('services_id'),
                                 categoryId          = $(this).data('category_id'),
                                 duration            = $(this).data('duration'),
-                                clientName          = $('#clientDetails').find('input:hidden[name=client_name]').val(),
-                                clientId            = $('#clientDetails').find('input:hidden[name=client_id]').val();
+                                clientName          = $('#clientDetails').find('input:hidden[name=client_name]').val() ?  $('#clientDetails').find('input:hidden[name=client_name]').val() : '',
+                                clientId            = $('#clientDetails').find('input:hidden[name=client_id]').val() ? $('#clientDetails').find('input:hidden[name=client_id]').val() : '';
                                 // Increment the counter
                                 count++;
                                 // $('#mycalendar').remove();
