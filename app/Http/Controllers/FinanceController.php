@@ -116,7 +116,7 @@ class FinanceController extends Controller
                 ->make(true);
             }
             $user = Auth::user();
-            if($user->role_type =='admin' || $user->is_staff_memeber == null)
+            if($user->role_type =='admin' || $user->is_staff_memeber == 0)
             {
                 $locations = Locations::all();
             }else{
