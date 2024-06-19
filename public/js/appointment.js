@@ -267,7 +267,11 @@ var DU = {};
                     // }
                 },
                 dayMaxEvents: true,
-                select: function(start, end, allDays){
+                select: function(start, end, allDays,info){
+                    var locationId = jQuery('#locations').val();
+                    $('#appointmentlocationId').val(locationId);
+                    context.getCategoriesAndServices(locationId);
+
                     if(localStorage.getItem('permissionValue') == '1'){
                         $('#New_appointment').modal('toggle');
                     }
@@ -802,25 +806,50 @@ var DU = {};
             jQuery('#staff').on('change', function(e) {
                 var resourceId    = $(this).val();
                 const resources = context.calendar.getOption('resources');
+                console.log(resourceId);
                 if(resourceId != 'all')
                 {
                     const filteredResources = resources.filter(resource => resource.id === resourceId);
-
                     context.calendar.setOption('resources', filteredResources.map(function(resource) {
                         return { id: resource.id, title: resource.title };
-                      }));
-
+                    }));
                     context.calendar.setOption('resources', filteredResources);
-
                     context.calendar.changeView('timeGridWeek');
                     var start_date = moment(context.calendar.currentData.dateProfile.currentRange.start).format('YYYY-MM-DD');
                     var end_date   = moment(context.calendar.currentData.dateProfile.currentRange.end).format('YYYY-MM-DD');
                     context.eventsList(start_date, end_date,resourceId);
-
                 }
                 else{
-                    // context.calendar.setOption('resources', resources);
-                    context.staffList();
+                    var location_id           = $('#locations').find(':selected').val();
+                    sessionStorage.setItem("loc_ids", location_id);
+                    $.ajax({
+                        url: moduleConfig.getStaffList,
+                        type: 'POST',
+                        data: {
+                            'location_id'    : location_id,
+                        },
+                        headers: {
+                            'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function (data) {
+                            // Update the FullCalendar resources with the retrieved data
+                            context.calendar.setOption('resources', data);
+                            context.calendar.refetchEvents(); // Refresh events if needed
+                        },
+                        error: function (error) {
+                            console.error('Error fetching resources:', error);
+                        }
+                    });
+
+                    // context.staffList();
+                    // var start_date = moment(context.calendar.currentData.dateProfile.currentRange.start).format('YYYY-MM-DD');
+                    // var end_date   = moment(context.calendar.currentData.dateProfile.currentRange.end).format('YYYY-MM-DD');
+                    // context.eventsList(start_date, end_date,resourceId);
+
+                    // console.log(resources);
+                    // const filteredResources = resources.filter(resource => resource.id === resourceId);
+                    // context.calendar.setOption('resources', filteredResources);
+
                     context.calendar.changeView('resourceTimeGridDay');
                 }
                 context.calendar.render();
@@ -1482,6 +1511,7 @@ var DU = {};
 
         // For events list
         eventsList: function(start_date, end_date,resourceId){
+            console.log('test');
             var context = this,
                 todayDt = moment(context.calendar.currentData.dateProfile.currentDate).format('YYYY-MM-DD');
 
@@ -1496,9 +1526,9 @@ var DU = {};
                     'end_date'    : end_date,
                     'resourceId'  : resourceId
                 },
-                success: function (data) {
+                success: function (events) {
                     // Update the FullCalendar resources with the retrieved data
-                    context.calendar.setOption('events', data);
+                    context.calendar.setOption('events', events);
                     context.calendar.refetchEvents(); // Refresh events if needed
                 },
                 error: function (error) {
@@ -1602,8 +1632,8 @@ var DU = {};
                             text: data.message,
                             icon: "success",
                         }).then(function() {
-                            // Reload the current page
-                            location.reload();
+                            $('.summry-header').remove();
+                            $('#external-events').empty();
                         });
                     } else {
                         Swal.fire({
