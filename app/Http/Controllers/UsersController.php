@@ -357,7 +357,7 @@ class UsersController extends Controller
     public function get_all_locations(Request $request)
     {
         $user = Auth::user();
-        if($user->role_type =='admin' || $user->is_staff_memeber == null)
+        if($user->role_type =='admin' || $user->is_staff_memeber == 0)
         {
             $loc = Locations::all();
         }else if($request->type == 'client' || $request->type == 'users')

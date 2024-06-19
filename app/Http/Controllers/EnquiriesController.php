@@ -21,7 +21,7 @@ class EnquiriesController extends Controller
             // dd($enquiries);
 
             $user = Auth::user();
-            if($user->role_type =='admin' || $user->is_staff_memeber == null)
+            if($user->role_type =='admin' || $user->is_staff_memeber == 0)
             {
                 $enquiries = Enquiries::all();
             }else{
@@ -31,7 +31,7 @@ class EnquiriesController extends Controller
             
             if ($request->ajax()) {
                 $user = Auth::user();
-                if($user->role_type =='admin' || $user->is_staff_memeber == null)
+                if($user->role_type =='admin' || $user->is_staff_memeber == 0)
                 {
                     $data = Enquiries::all();
                 }else{

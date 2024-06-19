@@ -35,7 +35,7 @@
                 <li>
                     @php
                     $user = Auth::user();
-                    if ($user->role_type == 'admin' || $user->is_staff_memeber == null) {
+                    if ($user->role_type == 'admin' || $user->is_staff_memeber == 0) {
                         $follow_up_done = \App\Models\Enquiries::where('enquiry_status', 'Follow Up Done')->get();
                     } else {
                         $follow_up_done = \App\Models\Enquiries::where([
@@ -50,7 +50,7 @@
                 <li>
                     @php
                     $user = Auth::user();
-                    if ($user->role_type == 'admin' || $user->is_staff_memeber == null) {
+                    if ($user->role_type == 'admin' || $user->is_staff_memeber == 0) {
                         $first_call_done = \App\Models\Enquiries::where('enquiry_status', 'First Call Done')->get();
                     } else {
                         $first_call_done = \App\Models\Enquiries::where([
@@ -65,7 +65,7 @@
                 <li>
                     @php
                     $user = Auth::user();
-                    if ($user->role_type == 'admin' || $user->is_staff_memeber == null) {
+                    if ($user->role_type == 'admin' || $user->is_staff_memeber == 0) {
                         $client_contacted = \App\Models\Enquiries::where('enquiry_status', 'Client Contacted')->get();
                     } else {
                         $client_contacted = \App\Models\Enquiries::where([
@@ -80,7 +80,7 @@
                 <li>
                     @php
                     $user = Auth::user();
-                    if ($user->role_type == 'admin' || $user->is_staff_memeber == null) {
+                    if ($user->role_type == 'admin' || $user->is_staff_memeber == 0) {
                         $no_response = \App\Models\Enquiries::where('enquiry_status', 'No Response')->get();
                     } else {
                         $no_response = \App\Models\Enquiries::where([
@@ -95,7 +95,7 @@
                 <li>
                     @php
                     $user = Auth::user();
-                    if ($user->role_type == 'admin' || $user->is_staff_memeber == null) {
+                    if ($user->role_type == 'admin' || $user->is_staff_memeber == 0) {
                         $not_intrested = \App\Models\Enquiries::where('enquiry_status', 'Not Intrested')->get();
                     } else {
                         $not_intrested = \App\Models\Enquiries::where([
