@@ -6,7 +6,7 @@
     height: 100px;
     max-width: 100%
 }
-#Salesperformancechartdiv{
+#Salesperformancechartdiv ,#GenderRatiochartdiv{
     width: 100%;
     height: 300px;
     max-width: 100%
@@ -185,6 +185,9 @@
                 <div class="card p-3">
                     <h5 class="bright-gray mb-5">Gender Ratio</h5>
                     <img src="img/Group 15180.png" alt="">
+                    <!-- <div class="card-body">
+                        <div id="GenderRatiochartdiv"></div>
+                    </div> -->
                 </div>
             </div>
             <div class="col-lg-12 mt-4">
