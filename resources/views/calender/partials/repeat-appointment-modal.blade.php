@@ -27,7 +27,7 @@
                                 <select class="form-select form-control repeat_every" name="repeat_every">
                                     <!-- <option selected>Choose option</option> -->
                                     <option value="day">Day(s)</option>
-                                    <option value="week">Week(s)</option>
+                                    <option value="week" selected>Week(s)</option>
                                     <option value="month">Month(s)</option>
                                     <option value="year">Year(s)</option>
                                 </select>

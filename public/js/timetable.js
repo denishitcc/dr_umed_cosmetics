@@ -120,6 +120,51 @@ var DU = {};
                 editable: true,
                 resourceAreaHeaderContent: 'Staff',
                 resources:  [],
+                events: [
+                    {
+                        resourceId: 66,
+                        title: "Long Event",
+                        start: "2024-06-17",
+                        end: "2024-06-18"
+                    },
+                    // {
+                    //     "groupId": 23,
+                    //     "resourceId": "a",
+                    //     "title": "Repeating Event",
+                    //     "start": "2024-02-09T16:00:00+00:00"
+                    // },
+                    // {
+                    //     "resourceId": "a",
+                    //     "title": "Conference",
+                    //     "start": "2024-02-06",
+                    //     "end": "2024-02-08"
+                    // },
+                    // {
+                    //     "resourceId": "b",
+                    //     "title": "Meeting",
+                    //     "start": "2024-02-07T10:30:00+00:00",
+                    //     "end": "2024-02-07T12:30:00+00:00"
+                    // },
+                    // {
+                    //     "resourceId": "a",
+                    //     "title": "Lunch",
+                    //     "start": "2024-02-07T12:00:00+00:00"
+                    // },
+                    // {
+                    //     "resourceId": "b",
+                    //     "title": "Birthday Party",
+                    //     "start": "2024-02-08T07:00:00+00:00"
+                    // }
+                    // {
+                    //     title: 'BCH237',
+                    //     start: '2024-08-12T10:30:00',
+                    //     end: '2024-08-12T11:30:00',
+                    //     extendedProps: {
+                    //       department: 'BioChemistry'
+                    //     },
+                    //     description: 'Lecture'
+                    // }
+                ],
                 resourceLabelContent: function(arg) {
                     var resourceEl = document.createElement('div');
                     resourceEl.innerHTML = arg.resource.title;
@@ -136,6 +181,14 @@ var DU = {};
                     $('#current_date').val(moment(info.dateStr).format('YYYY-MM-DD'));
 
                     $('#edit_Working_hours').modal('toggle');
+                },
+                datesSet: function (info) {
+                    // info.start and info.end represent the new date range resourceTimeGridWeek
+                    var start_date  = moment(info.startStr).format('YYYY-MM-DD'),
+                        end_date    = moment(info.endStr).format('YYYY-MM-DD');
+
+                    // Make an AJAX call to fetch events for the new date range
+                    context.eventsList(start_date, end_date);
                 },
                 // events: 'https://fullcalendar.io/demo-events.json?single-day&for-resource-timeline'
             });
@@ -292,21 +345,31 @@ var DU = {};
                         console.error('Error fetching resources:', error);
                     }
                 });
-
-                // switch (index) {
-                //     case 0:
-                //         break;
-                //     case 1:
-                //         break;
-                //     case 2:
-                //         break;
-                //     case 3:
-                //         break;
-                //     default:
-                //         break;
-                // }
-                // console.log(index);
             });
+        },
+
+        eventsList: function(start_date, end_date){
+            var context = this;
+            $.ajax({
+                url: moduleConfig.getWorkingHours,
+                type: 'POST',
+                data: {
+                    'start_date'    : start_date,
+                    'end_date'      : end_date,
+                },
+                headers: {
+                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                },
+                success: function (data) {
+                    console.log(data);
+                    context.calendar.setOption('events', data);
+                },
+                error: function (error) {
+                    console.error('Error fetching on staff:', error);
+                }
+            });
+            context.calendar.render();
+
         },
     }
 })();

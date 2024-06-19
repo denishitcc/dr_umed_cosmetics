@@ -55,11 +55,14 @@
 @endsection
 @section('script')
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar-scheduler@6.1.14/index.global.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.4.0/core/main.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.4.0/interaction/main.min.js"></script>
 <script src="{{ asset('js/timetable.js') }}"></script>
 <script type="text/javascript">
     var moduleConfig = {
         getStaffList:       "{!! route('get-staff-list') !!}",
         updateWorkingHours: "{!! route('timetable.updateWorkingHours') !!}",
+        getWorkingHours:    "{!! route('timetable.getWorkingHours') !!}"
     };
     $(document).ready(function()
     {

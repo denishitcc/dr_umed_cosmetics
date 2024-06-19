@@ -100,6 +100,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('users/copy-capabilities', [UsersController::class, 'copyCapabilities'])->name('user.copyCapabilities');
         Route::get('timetable', [TimeTableController::class, 'index'])->name('user.timetable');
         Route::post('timetable/update-working-hours', [TimeTableController::class, 'updateWorkingHours'])->name('timetable.updateWorkingHours');
+        Route::post('timetable/get-working-hours', [TimeTableController::class, 'getWorkingHours'])->name('timetable.getWorkingHours');
         // Route::post('/get-all-locations', [UsersController::class, 'get_all_locations'])->name('get-all-locations');
     });
 

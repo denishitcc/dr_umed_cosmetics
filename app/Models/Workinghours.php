@@ -57,4 +57,35 @@ class Workinghours extends Model
         self::SICK           => 'Sick Leave',
         self::UNPAID         => 'Unpaid Leave',
     ];
+
+      /**
+     * Method getColorAttribute
+     *
+     * @return string
+     */
+    public function getColorAttribute(): string
+    {
+        $color = '';
+        $status = $this->working_status;
+
+        switch ($status) {
+            case 0:
+                $color = '#0076bc';
+                break;
+            case 1:
+                $color = '#0076bc';
+                break;
+            case 2:
+                $color = '#fdc02f';
+                break;
+            case 3:
+                $color = '#e46c8a';
+                break;
+            default:
+                $color = '#0076bc';
+                break;
+        }
+
+        return $color;
+    }
 }

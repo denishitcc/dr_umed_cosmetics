@@ -265,7 +265,7 @@ class CalenderController extends Controller
                     $formattedEndDateTime   = $endDateTime->format('Y-m-d\TH:i:s');
 
                     $appointmentsData = [
-                        'client_id'     => $request->client_id,
+                        'client_id'     => $request->client_id ? $request->client_id : '',
                         'service_id'    => $ser,
                         'category_id'   => $single_ser['category_id'], //$category_ex[$key],
                         'staff_id'      => $request->staff_id,
@@ -384,7 +384,7 @@ class CalenderController extends Controller
             }
         } else {
             $appointmentsData = [
-                'client_id'     => $request->client_id,
+                'client_id'     => $request->client_id ? $request->client_id : '',
                 'service_id'    => $request->service_id,
                 'category_id'   => $request->category_id,
                 'staff_id'      => $request->staff_id,
