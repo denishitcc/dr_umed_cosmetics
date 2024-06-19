@@ -556,6 +556,9 @@
             url: "get-all-locations",
             cache: false,
             type: "POST",
+            data: {
+                type: "client"
+            },
             success: function(res) {
                 for (var i = 0; i < res.length; ++i) {
                     $("#results").append(res[i].location_name);

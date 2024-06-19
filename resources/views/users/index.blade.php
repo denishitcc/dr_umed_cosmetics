@@ -65,6 +65,9 @@
           url: "get-all-locations",
           cache: false,
           type: "POST",
+          data: {
+            type: "users"
+        },
           success: function(res) {
               
               for (var i = 0; i < res.length; ++i) {

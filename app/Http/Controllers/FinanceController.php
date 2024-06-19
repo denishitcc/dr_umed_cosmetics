@@ -14,6 +14,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use App\Models\GiftCard;
 use App\Models\GiftCardTransaction;
+use Illuminate\Support\Facades\Auth;
 
 class FinanceController extends Controller
 {
@@ -114,7 +115,13 @@ class FinanceController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
             }
-            $locations = Locations::all();
+            $user = Auth::user();
+            if($user->role_type =='admin' || $user->is_staff_memeber == null)
+            {
+                $locations = Locations::all();
+            }else{
+                $locations = Locations::where('id',$user->staff_member_location)->get();
+            }
             $staffs     = User::all();
 
             return view('finance.index', compact('walkin','locations','staffs','permission'));

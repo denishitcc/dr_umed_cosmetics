@@ -354,9 +354,18 @@ class UsersController extends Controller
         }
         return response()->json($response);
     }
-    public function get_all_locations()
+    public function get_all_locations(Request $request)
     {
-        $loc = Locations::all();
+        $user = Auth::user();
+        if($user->role_type =='admin' || $user->is_staff_memeber == null)
+        {
+            $loc = Locations::all();
+        }else if($request->type == 'client' || $request->type == 'users')
+        {
+            $loc = Locations::all();
+        }else{
+            $loc = Locations::where('id',$user->staff_member_location)->get();
+        }
         return response()->json(LocationsResource::collection($loc));
         // return response()->json($loc);
     }

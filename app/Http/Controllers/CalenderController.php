@@ -3014,6 +3014,11 @@ class CalenderController extends Controller
                 return response()->json(['success' => true, 'staff_loc' => $staff_loc, 'type' => 'admin']);
             } else {
                 $staff_loc = $user->staff_member_location;
+                if($staff_loc == null)
+                {
+                    $locations = Locations::first();
+                    $staff_loc = $locations->id;
+                }
                 return response()->json(['success' => true, 'staff_loc' => $staff_loc, 'type' => 'user']);
             }
         }

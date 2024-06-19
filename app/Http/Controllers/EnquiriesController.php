@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Enquiries;
 use App\Models\Locations;
 use DataTables;
+use Illuminate\Support\Facades\Auth;
 
 class EnquiriesController extends Controller
 {
@@ -16,9 +17,26 @@ class EnquiriesController extends Controller
     {
         $permission = \Auth::user()->checkPermission('enquiries');
         if ($permission === 'View & Make Changes' || $permission === 'Both' || $permission === 'View Only' || $permission === true) {
-            $enquiries = Enquiries::all();
+            
+            // dd($enquiries);
+
+            $user = Auth::user();
+            if($user->role_type =='admin' || $user->is_staff_memeber == null)
+            {
+                $enquiries = Enquiries::all();
+            }else{
+                $enquiries = Enquiries::where('location_name',$user->staff_member_location)->get();
+            }
+
+            
             if ($request->ajax()) {
-                $data = Enquiries::select('*');
+                $user = Auth::user();
+                if($user->role_type =='admin' || $user->is_staff_memeber == null)
+                {
+                    $data = Enquiries::all();
+                }else{
+                    $data = Enquiries::where('location_name',$user->staff_member_location)->get();
+                }
                 return Datatables::of($data)
                     
                 ->addIndexColumn()
