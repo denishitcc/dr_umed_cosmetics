@@ -45,7 +45,7 @@ class ClientsController extends Controller
                             'clients.email', 
                             'clients.mobile_number', 
                             'clients.status', 
-                            DB::raw('GROUP_CONCAT(DISTINCT CONCAT(DATE_FORMAT(appointment.start_date, "%Y-%m-%d %h:%i %p"), "", services.service_name, " with ", CONCAT(users.first_name, " ", users.last_name))) as appointment_dates'),
+                            DB::raw('GROUP_CONCAT(DISTINCT CONCAT(DATE_FORMAT(appointment.start_date, "%d-%m-%Y %h:%i %p"), "", services.service_name, " with ", CONCAT(users.first_name, " ", users.last_name))) as appointment_dates'),
                             DB::raw('GROUP_CONCAT(CASE appointment.status 
                                 WHEN 1 THEN "Booked" 
                                 WHEN 2 THEN "Confirmed"

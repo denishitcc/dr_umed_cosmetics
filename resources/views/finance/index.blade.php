@@ -55,7 +55,7 @@
                             <th>Payment</th>
                             <th>Status</th>
                             <!-- <th>Invoice Date</th> -->
-                            <th>Time</th>
+                            <th>Date & time</th>
                             <th>Total</th>
                             <th>Action</th>
                           </tr>
@@ -152,20 +152,20 @@
                     <label class="form-label"><strong>Send receipt by email</strong></label>
                     <div class="row">
                         <div class="col-lg-10">
-                            <input type="text" class="form-control send_email_receipt" placeholder="admin@tenderresponse.com.au (use comma for multiple email)">
+                            <input type="text" class="form-control send_email_receipt" placeholder="admin@tenderresponse.com.au (use comma for multiple email)"  {{ $permission == 'View Only' ? 'disabled' : '' }}>
                         </div>
                         <div class="col-auto">
-                            <button type="button" class="btn btn-primary btn-md send_receipt_payment_mail">Send</button>
+                            <button type="button" class="btn btn-primary btn-md send_receipt_payment_mail" {{ $permission == 'View Only' ? 'disabled' : '' }}>Send</button>
                         </div>
                     </div>
                 </div>
             </div>
             <!-- Modal footer -->
             <div class="modal-footer">
-                <button type="button" class="btn btn-light btn-md delete_invoice" delete_id="">Delete</button>   
-                <button type="button" class="btn btn-light btn-md edit_invoice" edit_id="">Edit</button>   
-                <button type="button" class="btn btn-light btn-md cancel_invoice">Cancel</button>
-                <button type="button" class="btn btn-primary btn-md print_invoice" ids="">Print</button>
+            <button type="button" class="btn btn-light btn-md delete_invoice" delete_id="" {{ $permission == 'View Only' ? 'disabled' : '' }}>Delete</button>
+            <button type="button" class="btn btn-light btn-md edit_invoice" edit_id="" {{ $permission == 'View Only' ? 'disabled' : '' }}>Edit</button>
+            <button type="button" class="btn btn-light btn-md cancel_invoice">Cancel</button>
+            <button type="button" class="btn btn-primary btn-md print_invoice" ids="">Print</button>
             </div>
         </div>
     </div>
@@ -888,13 +888,13 @@ $(document).ready(function() {
             render: function (data, type, row) {
                 var link = ''; // Initialize link variable
                 // Check permission here
-                if ("{{ $permission }}" != 'View Only') {
+                // if ("{{ $permission }}" != 'View Only') {
                     // Permission allows viewing
                     link = '<a class="blue-bold paid_invoice" inv_id="' + row.id + '" href="javascript:void(0)">INV' + data + '</a>';
-                } else {
-                    // Permission does not allow viewing
-                    link = '<a class="blue-bold" href="javascript:void(0);">INV' + data + '</a>';
-                }
+                // } else {
+                //     // Permission does not allow viewing
+                //     link = '<a class="blue-bold" href="javascript:void(0);">INV' + data + '</a>';
+                // }
                 return link;
             }
         },
@@ -999,7 +999,7 @@ $(document).ready(function() {
             name: "updated_at",
             render: function(data, type, row, meta) {
                 // Format the date using moment.js to display only the time part
-                return moment(data).format("hh:mm A");
+                return moment(data).format("DD-MM-YYYY hh:mm A");
             }
         },
         { 

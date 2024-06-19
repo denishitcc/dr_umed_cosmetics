@@ -185,6 +185,7 @@
                 ->take(5)
                 ->get();
             @endphp
+            @if(Auth::check() && (Auth::user()->role_type == 'admin'))
             <div class="next-appointment mt-3">
                 <h5 class="mb-3">Next 5 Appointments</h5>
                 @if(count($data)>0)
@@ -199,6 +200,22 @@
                     <div>No appointment found</div>
                 @endif
             </div>
+            @elseif(Auth::user()->checkPermission('calender') == 'View Only' || Auth::user()->checkPermission('calender') == 'View & Make Changes'|| Auth::user()->checkPermission('calender') == 'Both')
+            <div class="next-appointment mt-3">
+                <h5 class="mb-3">Next 5 Appointments</h5>
+                @if(count($data)>0)
+                    @foreach($data as $app_data)
+                        <a href="#" class="apnt-box">
+                            <h6 class="blue-bold">{{$app_data->firstname.' '.$app_data->lastname}}</h6>
+                            <span class="font-14 d-grey">{{$app_data->service_name}}</span><br>
+                            <time><i class="ico-clock me-1"></i> {{ date('d-m-Y h:i A', strtotime($app_data->start_date)) }}</time>
+                        </a>
+                    @endforeach
+                @else
+                    <div>No appointment found</div>
+                @endif
+            </div>
+            @endif
         </div>
         <!-- Page content wrapper-->
         <div id="page-content-wrapper">

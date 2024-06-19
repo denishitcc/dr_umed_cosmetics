@@ -50,30 +50,6 @@
                             </div>
                         @endif
                     </form>
-
-                    <div class="separator separator-content">
-                        <span>Or</span>
-                    </div>
-                    <div class="q-log">
-                        <!-- <a href="{{ url('authorized/google') }}" class="btn">
-                            <img alt="" src="img/google-icon.svg" class="h-15px">   
-                            Sign in with Google
-                        </a>
-
-                        <a href="{{ url('auth/facebook') }}" class="btn">
-                            <img alt="" src="img/facebook.svg" class="h-15px">   
-                            Sign in with Facebook
-                        </a> -->
-                        <a href="#" class="btn">
-                            <img alt="" src="img/google-icon.svg" class="h-15px">   
-                            Sign in with Google
-                        </a>
-
-                        <a href="#" class="btn">
-                            <img alt="" src="img/facebook.svg" class="h-15px">   
-                            Sign in with Facebook
-                        </a>
-                    </div>
                 </div>
             </div>
             <div class="w-60 auth-bg1 bg1 auth-info">

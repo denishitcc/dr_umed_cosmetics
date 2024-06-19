@@ -102,14 +102,14 @@ class FinanceController extends Controller
                 ->addIndexColumn()
                 ->addColumn('action', function($row) {
                     $permission = \Auth::user()->checkPermission('finance');
-                    if ($permission === 'View Only')
-                    {
-                        $btn = '<div class="action-box"><button type="button" class="btn btn-sm black-btn round-6 print_invoice" ids='.$row->id.' disabled><i class="ico-print"></i></button></div>';
-                        return $btn;
-                    }else{
+                    // if ($permission === 'View Only')
+                    // {
+                    //     $btn = '<div class="action-box"><button type="button" class="btn btn-sm black-btn round-6 print_invoice" ids='.$row->id.' disabled><i class="ico-print"></i></button></div>';
+                    //     return $btn;
+                    // }else{
                         $btn = '<div class="action-box"><button type="button" class="btn btn-sm black-btn round-6 print_invoice" ids='.$row->id.'><i class="ico-print"></i></button></div>';
                         return $btn;
-                    }
+                    // }
                 })
                 ->rawColumns(['action'])
                 ->make(true);
