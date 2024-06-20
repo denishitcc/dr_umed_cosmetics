@@ -872,7 +872,34 @@ class CalenderController extends Controller
             if (isset($request->commonNotes)) {
                 $appointmentNotes = AppointmentNotes::updateOrCreate(['appointment_id' => $request->appointmentId], ['common_notes' => $request->commonNotes]);
             } else {
+                $appointmentNotes = AppointmentNotes::updateOrCreate(['appointment_id' => $request->appointmentId], ['common_notes' => null]);
+            }
+            DB::commit();
+            $client             = Clients::findOrFail($request->client_id);
+            $clientPhotos       = $client->photos;
+            $clientnoteshtml    = view('calender.partials.client-notes', [
+                'appointmentNotes'  => $appointmentNotes,
+                'clientPhotos'      => $clientPhotos
+            ])->render();
+
+            return response()->json([
+                'status'        => true,
+                'message'       => 'Notes found.',
+                'client_notes'  => $clientnoteshtml,
+            ], 200);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+    }
+    public function addAppointmentTreatmentNotes(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            if (isset($request->treatmentNotes)) {
                 $appointmentNotes = AppointmentNotes::updateOrCreate(['appointment_id' => $request->appointmentId], ['treatment_notes' => $request->treatmentNotes]);
+            } else {
+                $appointmentNotes = AppointmentNotes::updateOrCreate(['appointment_id' => $request->appointmentId], ['treatment_notes' => null]);
             }
             DB::commit();
             $client             = Clients::findOrFail($request->client_id);

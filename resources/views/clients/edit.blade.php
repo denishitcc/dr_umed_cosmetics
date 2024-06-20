@@ -68,7 +68,7 @@
                             <ul class="scaffold-layout-list-container h-50">
                                 Next Appointment
                                 @foreach ($futureappointments as $appointment)
-                                    <li class="scaffold-layout-list-item active">
+                                    <li class="scaffold-layout-list-item">
                                     <div class="appt-timeplace">
                                         {{ isset($appointment->start_date) ? date('D Y-m-d', strtotime($appointment->start_date)) : 'N/A' }} <br> 
                                         {{ isset($appointment->start_date) ? date('h:i A', strtotime($appointment->start_date)) : 'N/A' }} @<br> 
@@ -77,7 +77,7 @@
                                     </div>
 
                                         <div class="appt-details">
-                                            <span class="btn btn-primary btn-sm pointer"><i class="ico-right-arrow fs-4"></i></span>
+                                            <!-- <span class="btn btn-primary btn-sm pointer"><i class="ico-right-arrow fs-4"></i></span> -->
                                             <div class="his-detaiils">
                                                 <h5 class="black">{{ $appointment->services->service_name }} </h5>
                                                 <p>{{ $appointment->duration }}m with {{ $appointment->staff->name }}<br>
@@ -943,6 +943,12 @@
     var doc_cnt=0;
     $(document).ready(function(){
         $(document).on('click', '.show_notes', function(e) {
+            debugger;
+            $('.scaffold-layout-list-item').removeClass('active');
+            $('.scaffold-layout-list-item').find('.appt-details .btn.pointer').remove();    
+            
+            $(this).closest('.scaffold-layout-list-item').addClass('active');
+            $(this).closest('.scaffold-layout-list-item').find('.appt-details').append('<span class="btn btn-primary btn-sm pointer"><i class="ico-right-arrow fs-4"></i></span>');
             var appointment_id = $(this).data('appointment_id'),
                 clientId       = $('#clientcardid').data('client_id');
             $.ajax({
@@ -999,6 +1005,12 @@
         // add common note ajax
         $(document).on('click','#add_common_notes', function(e){
             e.preventDefault();
+            $('.scaffold-layout-list-item').removeClass('active');
+            $('.scaffold-layout-list-item').find('.appt-details .btn.pointer').remove();    
+            
+            $(this).closest('.scaffold-layout-list-item').addClass('active');
+            $(this).closest('.scaffold-layout-list-item').find('.appt-details').append('<span class="btn btn-primary btn-sm pointer"><i class="ico-right-arrow fs-4"></i></span>');
+            
             var appointmentId = $('.common_notes').find('input:hidden[name=appointment_id]').val(),
                 commonNotes   = $('#common_notes').val(),
                 clientId      = $('#clientcardid').data('client_id');
@@ -1026,6 +1038,11 @@
         });
         // Open form on add treatment notes button
         $(document).on('click','#add_treatment_notes', function(e){
+            $('.scaffold-layout-list-item').removeClass('active');
+            $('.scaffold-layout-list-item').find('.appt-details .btn.pointer').remove();    
+            
+            $(this).closest('.scaffold-layout-list-item').addClass('active');
+            $(this).closest('.scaffold-layout-list-item').find('.appt-details').append('<span class="btn btn-primary btn-sm pointer"><i class="ico-right-arrow fs-4"></i></span>');
             var $this           = $(this),
                 appointment_id  = $this.data('appointment_id');
 

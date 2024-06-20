@@ -1321,6 +1321,7 @@
         updateAppointment:            "{!! route('calendar.update-appointments') !!}",
         getClientCardData:            "{!! route('calendar.get-client-card-data', ':ID') !!}",
         addNotes:                     "{!! route('calendar.add-appointment-notes') !!}",
+        addTreatmentNotes:            "{!! route('calendar.add-appointment-treatment-notes') !!}",
         viewNotes:                    "{!! route('calendar.view-appointment-notes') !!}",
         EventById:                    "{!! route('calendar.get-event-by-id', ':ID') !!}",
         updateAppointmentStatus:      "{!! route('calendar.update-appointment-status') !!}",

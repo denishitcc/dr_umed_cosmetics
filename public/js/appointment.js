@@ -2593,7 +2593,7 @@ var DU = {};
 
         treatmentNoteAddUpdateAjax: function(appointmentId,treatmentNotes,clientId){
             $.ajax({
-                url: moduleConfig.addNotes,
+                url: moduleConfig.addTreatmentNotes,
                 type: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
