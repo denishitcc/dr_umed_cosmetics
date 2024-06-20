@@ -54,6 +54,7 @@ var DU = {};
             context.addNewFormCheckbox();
             context.openeditServiceFormModal();
             context.CompleteClientForms();
+            context.updateAppointmentStatus();
 
             $('#clientmodal').hide();
             $('#service_error').hide();
@@ -585,12 +586,13 @@ var DU = {};
                     eventId             = $('.orange-box').find('#service_id').val();
                     categoryId          = $('.orange-box').find('#category_id').val();
                     duration            = $('.orange-box').find('#duration').val();
-                    clientName          = $('.orange-box').find('#client_name').val();
-                    clientId            = $('.orange-box').find('#client_id').val();
+                    clientName          = $('.orange-box').find('#client_name').val() ? $('.orange-box').find('#client_name').val() : '';
+                    clientId            = $('.orange-box').find('#client_id').val() ? $('.orange-box').find('#client_id').val() : 0;
                     appId               = $('.orange-box').next().find('#edit_appointment').attr('event_id');
                     locationId          = $('.orange-box').find('#location_id').val();
                     appt_type           = 'move_appt';
                     // $('#mycalendar').remove();
+
                     $('#external-events').removeAttr('style');
                     // $('#external-events').remove();
                     $('#external-events').html(`
@@ -979,8 +981,11 @@ var DU = {};
                 },
                 success: function (response) {
                     const disabledAttr = localStorage.getItem('permissionValue') !== '1' ? 'disabled' : '';
-                    $('#clientDetails').html(
-                        `<div class="client-name">
+                    var userArray      = response.data.client_id;
+                    var userHtml       = '';
+
+                    if (userArray != 0) {
+                        userHtml = `<div class="client-name">
                                 <div class="drop-cap" style="background: #D0D0D0; color:#fff;">${response.data.client_data.first_name.charAt(0).toUpperCase()}
                                 </div>
                                 <div class="client-info">
@@ -1004,7 +1009,14 @@ var DU = {};
                                 <button class="btn btn-secondary btn-sm history" data-client-id="${response.data.client_data.id}" ${disabledAttr}>History</button>
                                 <button class="btn btn-secondary btn-sm upcoming" data-client-id="${response.data.client_data.id}" ${disabledAttr}>Upcoming</button>
                             </div>
-                            <hr>
+                            <hr>`;
+                        userFullname = response.data.client_data.first_name +' '+ response.data.client_data.last_name;
+                    }else{
+                        userHtml = '';
+                        userFullname = '';
+                    }
+                    $('#clientDetails').html(
+                        ` ${userHtml}
                             <div id="editEventData">
                             <div class="summry-header"><span class="ico-clock me-2 fs-4"></span> Appointment Summary</div>
                             <div class="river-bed mb-3">
@@ -1041,8 +1053,8 @@ var DU = {};
                                 <input type="hidden" id="service_name" value="${response.data.services_name}">
                                 <input type="hidden" id="service_id" value="${response.data.service_id}">
                                 <input type="hidden" id="category_id" value="${response.data.category_id}">
-                                <input type="hidden" id="client_id" value="${response.data.client_data.id}">
-                                <input type="hidden" id="client_name" value="${response.data.client_data.first_name+' '+response.data.client_data.last_name}">
+                                <input type="hidden" id="client_id" value="${response.data.client_data.id ? response.data.client_data.id : 0}">
+                                <input type="hidden" id="client_name" value="${userFullname ? userFullname : ''}">
                                 <input type="hidden" id="duration" value="${response.data.duration}">
                                 <input type="hidden" id="appointment_time" value="${response.data.appointment_time}">
                                 <input type="hidden" id="staff_name" value="${response.data.staff_name}">
@@ -1091,8 +1103,10 @@ var DU = {};
 
                 context.treatmentNoteAddUpdateAjax(appointmentId,treatmentNotes,clientId);
             });
+        },
 
-            // Update appointment status
+        // Update appointment status
+        updateAppointmentStatus: function(){
             $(document).on('change', '.change_status', function(e) {
                 var appointmentId = $('#clientDetails').find('input:hidden[name=appointment_id]').val(),
                     status        = $('#appointment_status').val(),
@@ -1114,9 +1128,6 @@ var DU = {};
                                 title: "Appointment!",
                                 text: data.message,
                                 icon: "success",
-                            }).then(function() {
-                                // Reload the current page
-                                location.reload();
                             });
                         } else {
                             Swal.fire({
@@ -1130,7 +1141,6 @@ var DU = {};
                         console.error('Error fetching resources:', error);
                     }
                 });
-
             });
         },
 
@@ -1314,7 +1324,6 @@ var DU = {};
                     context.sendFormAndGiveFormbtn(checkedCount-1);
                 } else {
                     $('input[name="forms_check[]"][type="checkbox"]').attr('checked', false);
-                    $('input[name="forms_check"][type="checkbox"]').attr('checked', false);
                     var checkedCount = $('input[name="forms_check[]"][type="checkbox"]:checked').length;
                     context.sendFormAndGiveFormbtn(checkedCount);
                 }
@@ -2015,14 +2024,16 @@ var DU = {};
                                 details =  `<div class="summry-header"><span class="ico-clock me-2 fs-4"></span> Appointment Summary</div>`;
                             resultElement.innerHTML += details;
                             var count = 0;
+
                             $("#selected_services > li").each(function(){
                                 var $this           = $(this),
                                 eventName           = $(this).text(),
                                 eventId             = $(this).data('services_id'),
                                 categoryId          = $(this).data('category_id'),
                                 duration            = $(this).data('duration'),
-                                clientName          = $('#clientDetails').find('input:hidden[name=client_name]').val() ?  $('#clientDetails').find('input:hidden[name=client_name]').val() : '',
+                                clientName          = $('#clientDetails').find('input:hidden[name=client_name]').val() ? $('#clientDetails').find('input:hidden[name=client_name]').val() : 0,
                                 clientId            = $('#clientDetails').find('input:hidden[name=client_id]').val() ? $('#clientDetails').find('input:hidden[name=client_id]').val() : '';
+
                                 // Increment the counter
                                 count++;
                                 // $('#mycalendar').remove();
@@ -2050,7 +2061,7 @@ var DU = {};
                                                 ${eventName}
                                             </div>
                                         `);
-                                }                            
+                                }
                             });
 
                             context.selectors.appointmentModal.modal('hide');
@@ -2091,11 +2102,10 @@ var DU = {};
                             eventId             = $(this).data('services_id'),
                             categoryId          = $(this).data('category_id'),
                             duration            = $(this).data('duration'),
-                            clientName          = $('#clientDetails').find('input:hidden[name=client_name]').val(),
-                            clientId            = $('#clientDetails').find('input:hidden[name=client_id]').val();
+                            clientName          = $('#clientDetails').find('input:hidden[name=client_name]').val() ? $('#clientDetails').find('input:hidden[name=client_name]').val() : 0,
+                            clientId            = $('#clientDetails').find('input:hidden[name=client_id]').val() ? $('#clientDetails').find('input:hidden[name=client_id]').val() : '';
                             // Increment the counter
                             count++;
-                            console.log(categoryId);
                             // $('#mycalendar').remove();
                             $('#external-events').removeAttr('style');
                             if (count === 1) {
@@ -2121,7 +2131,7 @@ var DU = {};
                                                 ${eventName}
                                             </div>
                                         `);
-                            }                            
+                            }
                         });
 
                         context.selectors.appointmentModal.modal('hide');
@@ -2130,8 +2140,6 @@ var DU = {};
                         $("#selected_services").empty();
                     }
                 }
-
-                
             });
         },
 
@@ -2217,18 +2225,18 @@ var DU = {};
                             var appointmentsData = []; // Array to store appointment data
                             $('.treatment').remove();
                             $("#edit_selected_services > li").each(function() {
-                                var $this = $(this),
-                                    eventName = $(this).text(),
-                                    eventId = $(this).data('services_id'),
-                                    categoryId = $(this).data('category_id'),
-                                    duration = $(this).data('duration'),
-                                    clientName = $('#clientDetails').find('input:hidden[name=client_name]').val(),
-                                    clientId = $('#clientDetails').find('input:hidden[name=client_id]').val(),
+                                var $this           = $(this),
+                                    eventName       = $(this).text(),
+                                    eventId         = $(this).data('services_id'),
+                                    categoryId      = $(this).data('category_id'),
+                                    duration        = $(this).data('duration'),
+                                    clientName      = $('#clientDetails').find('input:hidden[name=client_name]').val() ? $('#clientDetails').find('input:hidden[name=client_name]').val() : '',
+                                    clientId        = $('#clientDetails').find('input:hidden[name=client_id]').val() ? $('#clientDetails').find('input:hidden[name=client_id]').val() : 0,
                                     appointmentDate = $(this).data('appointment_date'),
                                     appointmentTime = $(this).data('appointment_time'),
-                                    staffId = $(this).data('staff_name'),
-                                    staffName = $(this).data('staff_name');
-                                    locationId = $(this).data('location_id');
+                                    staffId         = $(this).data('staff_name'),
+                                    staffName       = $(this).data('staff_name');
+                                    locationId      = $(this).data('location_id');
                         
                                 const parsedDate = moment(appointmentDate, 'ddd DD MMM YYYY').format('YYYY-MM-DD');
                                 const parsedTime = moment(appointmentTime, 'hh:mm a').format('HH:mm:ss');
@@ -2346,8 +2354,8 @@ var DU = {};
                                 eventId = $(this).data('services_id'),
                                 categoryId = $(this).data('category_id'),
                                 duration = $(this).data('duration'),
-                                clientName = $('#clientDetails').find('input:hidden[name=client_name]').val(),
-                                clientId = $('#clientDetails').find('input:hidden[name=client_id]').val(),
+                                clientName = $('#clientDetails').find('input:hidden[name=client_name]').val() ? $('#clientDetails').find('input:hidden[name=client_name]').val() : '',
+                                clientId = $('#clientDetails').find('input:hidden[name=client_id]').val() ? $('#clientDetails').find('input:hidden[name=client_id]').val() : 0,
                                 appointmentDate = $(this).data('appointment_date'),
                                 appointmentTime = $(this).data('appointment_time'),
                                 staffId = $(this).data('staff_name'),
@@ -2433,8 +2441,6 @@ var DU = {};
                         $("#edit_selected_services").empty();
                     }
                 }
-
-                
             });
         },
 
@@ -2642,7 +2648,7 @@ var DU = {};
 
                 context.selectors.repeatAppointmentModal.modal('show');
 
-                var clientName              = $('#clientDetails').find('input:hidden[name=client_name]').val(),
+                var clientName              = $('#clientDetails').find('input:hidden[name=client_name]').val() ? $('#clientDetails').find('input:hidden[name=client_name]').val() : '',
                     servicename             = $('#clientDetails').find('#servicename').text(),
                     servicewithdoctor       = $('#clientDetails').find('#servicewithdoctor').text(),
                     appointmentdate         = $('#clientDetails').find('#start_date').val(),

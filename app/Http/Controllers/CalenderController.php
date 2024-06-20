@@ -280,7 +280,7 @@ class CalenderController extends Controller
                     $appointment = Appointment::create($appointmentsData);
                     if ($appointment) {
                         $formattedDate = Carbon::parse($startDateTime->format('Y-m-d\TH:i:s'))->format('D, d-M h:ia');
-                        if ($request->client_id != null) {
+                        if ($request->client_id != null && $request->client_id != 0) {
                             $client = Clients::where('id', $request->client_id)->first();
                             $client_email = $client->email;
                             $username = $client->firstname . ' ' . $client->lastname;
@@ -399,12 +399,11 @@ class CalenderController extends Controller
             try {
                 $single_ser                 = Services::where('id', $request->service_id)->first();
                 $findAppointment            = Appointment::where('id', $request->app_id)->first();
-                // dd($findAppointment);
                 if (isset($findAppointment->id)) {
                     $findAppointment->update($appointmentsData);
                     if ($findAppointment) {
                         $formattedDate = Carbon::parse($request->start_time)->format('D, d-M h:ia');
-                        if ($request->client_id != null) {
+                        if ($request->client_id != null && $request->client_id != 0) {
                             $client = Clients::where('id', $request->client_id)->first();
 
                             $client_email = $client->email;
@@ -570,6 +569,7 @@ class CalenderController extends Controller
                 ];
             } catch (\Throwable $th) {
                 //throw $th;
+                dd($th);
                 DB::rollback();
                 $data = [
                     'success' => false,

@@ -17,6 +17,7 @@ class AppointmentResource extends JsonResource
         return [
             'id'                => $this->id,
             'service_id'        => $this->service_id,
+            'client_id'         => $this->client_id,
             // 'date'              => $this->start_date,
             'date'              => date('d-m-Y', strtotime($this->start_date)),
             'appointment_date'  => date('D d M Y', strtotime($this->start_date)),
