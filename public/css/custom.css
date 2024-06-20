@@ -879,7 +879,9 @@ div.dataTables_filter { text-align: right; float: right;}
 .hasDatepicker .ui-widget{font-family: 'Roboto', sans-serif; font-size: inherit; }
 .hasDatepicker .ui-datepicker{ width: auto; padding: 0;}
 .hasDatepicker .ui-widget-header{ border: 0; background:transparent; color: inherit; font-weight: normal;}
-.hasDatepicker .ui-widget-header .ui-icon{background-image: url(https://code.jquery.com/ui/1.12.1/themes/ui-lightness/images/ui-icons_222222_256x240.png);}
+.hasDatepicker .ui-widget-header .ui-icon{background-image: url(../img/calender-ui-icon.png);}
+.hasDatepicker .ui-widget-header .ui-icon.ui-icon-circle-triangle-w{ background-position: 0 0;}
+.hasDatepicker .ui-widget-header .ui-icon.ui-icon-circle-triangle-e{ background-position: right 0;}
 .ui-icon-circle-triangle-e {background-position: -33px -1px;}
 .ui-icon-circle-triangle-w {background-position: -97px -1px;}
 .hasDatepicker .ui-widget.ui-widget-content{border: none;}
@@ -912,7 +914,9 @@ html .hasDatepicker .ui-button.ui-state-disabled:active{ border: 0; background: 
 .hasDatepicker .ui-widget-content .ui-state-focus,
 .hasDatepicker .ui-widget-header .ui-state-focus,
 .hasDatepicker .ui-button:hover,
-.hasDatepicker .ui-button:focus{ border: 0; background: #1E76E8; color: #fff;}
+.hasDatepicker .ui-button:focus{ border: transparent; background: transparent; color: #fff;}
+
+.ui-datepicker .ui-datepicker-prev-hover, .ui-datepicker .ui-datepicker-next-hover{ top: auto !important;}
 
 #calendar.fc .fc-timegrid-slot{height: 3em; background: #fff;}
 #calendar.fc .fc-daygrid-day.fc-day-today{ background: transparent;}
@@ -959,7 +963,7 @@ html .hasDatepicker .ui-button.ui-state-disabled:active{ border: 0; background: 
 
 .fc .fc-toolbar.fc-header-toolbar{border-radius: 5px; background: #F3F3F3; padding: 12px;}
 .fc .fc-button-primary{background: #D0D0D0; color: #000; border: 0; border-radius: 6px;}
-.fc .fc-button-primary:disabled{background: #d0d0d0; color: #000;}
+.fc .fc-button-primary:disabled{background: var(--blue); color: #fff;}
 .fc .fc-button:disabled { opacity: 1; }
 
 .fc .fc-button .fc-icon { font-size: 1.1em;}
@@ -1027,6 +1031,12 @@ html .hasDatepicker .ui-button.ui-state-disabled:active{ border: 0; background: 
 .fc .fc-daygrid-more-link:hover{ background: #1E76E8; color: #fff;}
 
 .fc-day-other  .fc-daygrid-more-link{ opacity: .3;}
+
+.ui-widget{ font-family: 'Roboto', sans-serif;}
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default, .ui-button, html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:active{ font-weight: 500;}
+.ui-widget.ui-widget-content{width: auto !important;}
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default, .ui-button, html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:active{ color: #333;}
+.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus, .ui-button:hover, .ui-button:focus{}
 
 .user-appnt{ margin-top: 15px;}
 .user-appnt:first-child{ margin-top: 0;}

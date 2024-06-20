@@ -943,7 +943,6 @@
     var doc_cnt=0;
     $(document).ready(function(){
         $(document).on('click', '.show_notes', function(e) {
-            debugger;
             $('.scaffold-layout-list-item').removeClass('active');
             $('.scaffold-layout-list-item').find('.appt-details .btn.pointer').remove();    
             
