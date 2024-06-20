@@ -293,6 +293,7 @@ $(document).ready(function() {
     $('.select_all').click(function(){
         $("input[name='locations[]']:checkbox").prop('checked',true);
         $('.loc_details').show();
+        $('.show-timing').show()
     })
 
     $("#create_product").validate({
