@@ -19,13 +19,13 @@
                         </div>
 
                     </div>
-                    <div class="col-lg-2 sms" >
+                    <div class="col-lg-12 sms" >
                         <label class="form-label d-block">&nbsp;</label>
-                        <input type="text" name="mobile_no" id="mobile_no" placeholder="Mobile no">
+                        <input type="text" name="mobile_no" class="form-control" id="mobile_no" placeholder="Mobile no">
                     </div>
-                    <div class="col-lg-2 email" style="display:none;">
+                    <div class="col-lg-12 email" style="display:none;">
                         <label class="form-label d-block">&nbsp;</label>
-                        <input type="text" name="email" id="clientemail" placeholder="Email">
+                        <input type="text" name="email" class="form-control" id="clientemail" placeholder="Email">
                     </div>
                 </div>
             </div>

@@ -23,7 +23,9 @@
                     <thead>
                         <tr>
                             <th width="10%" aria-sort="ascending">
-                                <input type="checkbox" name="all_forms_check">
+                                <label class="cst-check blue">
+                                    <input type="checkbox" name="all_forms_check"><span></span>
+                                </label>
                             </th>
                             <th width="60%" aria-sort="ascending">Form</th>
                             <th width="20%">Status</th>

@@ -65,10 +65,10 @@
                 <div class="scaffold-layout-list-details" id="appointmentTab">
                     <div class="scaffold-layout-list">
                         @if ($futureappointments->count())
-                            <ul class="scaffold-layout-list-container">
+                            <ul class="scaffold-layout-list-container h-50">
                                 Next Appointment
                                 @foreach ($futureappointments as $appointment)
-                                    <li class="scaffold-layout-list-item">
+                                    <li class="scaffold-layout-list-item active">
                                     <div class="appt-timeplace">
                                         {{ isset($appointment->start_date) ? date('D Y-m-d', strtotime($appointment->start_date)) : 'N/A' }} <br> 
                                         {{ isset($appointment->start_date) ? date('h:i A', strtotime($appointment->start_date)) : 'N/A' }} @<br> 
@@ -77,6 +77,7 @@
                                     </div>
 
                                         <div class="appt-details">
+                                            <span class="btn btn-primary btn-sm pointer"><i class="ico-right-arrow fs-4"></i></span>
                                             <div class="his-detaiils">
                                                 <h5 class="black">{{ $appointment->services->service_name }} </h5>
                                                 <p>{{ $appointment->duration }}m with {{ $appointment->staff->name }}<br>
@@ -113,7 +114,7 @@
                         @endif
                         <hr>
                         @if ($pastappointments->count())
-                            <ul class="scaffold-layout-list-container">
+                            <ul class="scaffold-layout-list-container h-50">
                                 History
                                 @foreach ($pastappointments as $appointment)
                                     <li class="scaffold-layout-list-item">

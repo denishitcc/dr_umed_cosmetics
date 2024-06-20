@@ -157,7 +157,7 @@
     </div>
 </div>
 <div class="row mb-4">
-    <div class="col-md-9">
+    <div class="col-lg-9">
         <div class="row">
             <div class="col-lg-8">
                 <div class="card h-100">
@@ -196,71 +196,69 @@
                     <img src="img/Group 15181.png" alt="">
                 </div>
             </div>
-            <div class="col-lg-5 mt-4">
-                <div class="card p-3 h-100">
-                    <h5 class="bright-gray mb-4">Recent Activities</h5>
-                    
-                    <div class="feed-item">
-                        <div class="time">08:42</div>
-                        <div class="text">
-                            Non-Surgical Rhinoplasty Performed by esteemed cosmetic physician in Hope Island
-                        </div>
-                    </div>
-                    <div class="feed-item">
-                        <div class="time">10:00</div>
-                        <div class="text">
-                            Dr. Eardley has meeeting with 
-                        </div>
-                    </div>
-                    <div class="feed-item">
-                        <div class="time">10:00</div>
-                        <div class="text">
-                            <strong>Karinne Thomson deposited</strong> <strong class="blue">USD 700</strong> to Dr. Umed Cosmetics for treatment
-                        </div>
-                    </div>
-                    <div class="feed-item">
-                        <div class="time">16:50</div>
-                        <div class="text">
-                            Live Seminar by Dr. Jennifer Smith for Cosmetic Treatments and Skin Rejuvenation at Five Dock, Sydney, NSW
-                        </div>
-                    </div>
-                    <div class="feed-item">
-                        <div class="time">21:03</div>
-                        <div class="text">
-                            New order placed for product <strong>Acne Wash 180ml(6oz)</strong> <strong class="blue"> #XF-2356</strong>
-                        </div>
-                    </div>
-                    <div class="feed-item">
-                        <div class="time">23:03</div>
-                        <div class="text">
-                            New order placed for product <strong>Acne Wash 30ml(6oz)</strong> <strong class="blue"> #XF-2356</strong>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <div class="col-lg-7 mt-4">
-                <div class="card p-3  h-100">
-                    <h5 class="bright-gray mb-5">Top Selling Treatments</h5>
-                    <img src="img/Group 15183.png" alt="">
-                </div>
-            </div>
         </div>
     </div>
+    <div class="col-lg-3">
+        <div class="calendar h-100" style="background-color:#242424; border-radius:12px;">
+            <img src="img/Frame 2.png" alt="" class="mb-3 w-100">
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-lg-4">
+        <div class="card p-3 h-100">
+        <h5 class="bright-gray mb-4">Recent Activities</h5>
+        
+        <div class="feed-item">
+            <div class="time">08:42</div>
+            <div class="text">
+                Non-Surgical Rhinoplasty Performed by esteemed cosmetic physician in Hope Island
+            </div>
+        </div>
+        <div class="feed-item">
+            <div class="time">10:00</div>
+            <div class="text">
+                Dr. Eardley has meeeting with 
+            </div>
+        </div>
+        <div class="feed-item">
+            <div class="time">10:00</div>
+            <div class="text">
+                <strong>Karinne Thomson deposited</strong> <strong class="blue">USD 700</strong> to Dr. Umed Cosmetics for treatment
+            </div>
+        </div>
+        <div class="feed-item">
+            <div class="time">16:50</div>
+            <div class="text">
+                Live Seminar by Dr. Jennifer Smith for Cosmetic Treatments and Skin Rejuvenation at Five Dock, Sydney, NSW
+            </div>
+        </div>
+        <div class="feed-item">
+            <div class="time">21:03</div>
+            <div class="text">
+                New order placed for product <strong>Acne Wash 180ml(6oz)</strong> <strong class="blue"> #XF-2356</strong>
+            </div>
+        </div>
+        <div class="feed-item">
+            <div class="time">23:03</div>
+            <div class="text">
+                New order placed for product <strong>Acne Wash 30ml(6oz)</strong> <strong class="blue"> #XF-2356</strong>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="col-lg-5">
+    <div class="card p-3  h-100">
+        <h5 class="bright-gray mb-5">Top Selling Treatments</h5>
+        <img src="img/Group 15183.png" alt="">
+    </div>
+</div>
     <div class="col-md-3">
-        <div class="row h-100">
-            <div class="col-md-12 mb-4">
-                <div class="calendar h-100" style="background-color:#242424;border-radius:15px;">
-                    <img src="img/Frame 2.png" alt="" class="mb-3">
-                </div>
-                
-            </div>
-            <div class="col-md-12">
-                <div class="card p-3 h-100">
-                    <h5 class="bright-gray mb-5">Top Selling Products</h5>
-                    <img src="img/Group 15184.png" alt="">
-                </div>
-            </div>
+        <div class="card p-3 h-100">
+            <h5 class="bright-gray mb-5">Top Selling Products</h5>
+            <img src="img/Group 15184.png" alt="">
         </div>
     </div>
 </div>
@@ -293,24 +291,24 @@
 
             
             <div class="card-body">
-                2       
+                Appointments       
             </div>
             
             
         </div>
         <div class="tab-pane fade" id="tab_3" role="tabpanel">
             <div class="card-body">
-                3       
+            Enquiries
                 </div>
         </div>
         <div class="tab-pane fade" id="tab_4" role="tabpanel">
             <div class="card-body">
-                4       
+            Services
                 </div>
         </div>
         <div class="tab-pane fade" id="tab_5" role="tabpanel">
             <div class="card-body">
-                5       
+            Products
                 </div>
         </div>
         

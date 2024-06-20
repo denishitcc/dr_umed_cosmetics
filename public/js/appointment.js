@@ -1309,10 +1309,12 @@ var DU = {};
             $(document).on('click','input[name="all_forms_check"][type="checkbox"]',function(e){
                 if ($(this).is(':checked')) {
                     $('input[name="forms_check[]"][type="checkbox"]').attr('checked', true);
+                    $('input[name="forms_check"][type="checkbox"]').attr('checked', true);
                     var checkedCount = $('input[name="forms_check[]"][type="checkbox"]:checked').length;
                     context.sendFormAndGiveFormbtn(checkedCount-1);
                 } else {
                     $('input[name="forms_check[]"][type="checkbox"]').attr('checked', false);
+                    $('input[name="forms_check"][type="checkbox"]').attr('checked', false);
                     var checkedCount = $('input[name="forms_check[]"][type="checkbox"]:checked').length;
                     context.sendFormAndGiveFormbtn(checkedCount);
                 }
