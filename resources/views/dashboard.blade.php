@@ -160,7 +160,7 @@
     <div class="col-md-9">
         <div class="row">
             <div class="col-lg-8">
-                <div class="card">
+                <div class="card h-100">
                     <div class="card-head">
                         <div class="toolbar">
                             <div class="tool-left">
@@ -182,7 +182,7 @@
                 </div>
             </div>
             <div class="col-lg-4">
-                <div class="card p-3">
+                <div class="card p-3 h-100">
                     <h5 class="bright-gray mb-5">Gender Ratio</h5>
                     <img src="img/Group 15180.png" alt="">
                     <!-- <div class="card-body">
@@ -197,7 +197,7 @@
                 </div>
             </div>
             <div class="col-lg-5 mt-4">
-                <div class="card p-3">
+                <div class="card p-3 h-100">
                     <h5 class="bright-gray mb-4">Recent Activities</h5>
                     
                     <div class="feed-item">
@@ -240,7 +240,7 @@
                 </div>
             </div>
             <div class="col-lg-7 mt-4">
-                <div class="card p-3">
+                <div class="card p-3  h-100">
                     <h5 class="bright-gray mb-5">Top Selling Treatments</h5>
                     <img src="img/Group 15183.png" alt="">
                 </div>
@@ -248,10 +248,19 @@
         </div>
     </div>
     <div class="col-md-3">
-        <img src="img/Frame 2.png" alt="" class="mb-3">
-        <div class="card p-3">
-            <h5 class="bright-gray mb-5">Top Selling Products</h5>
-            <img src="img/Group 15184.png" alt="">
+        <div class="row h-100">
+            <div class="col-md-12 mb-4">
+                <div class="calendar h-100" style="background-color:#242424;border-radius:15px;">
+                    <img src="img/Frame 2.png" alt="" class="mb-3">
+                </div>
+                
+            </div>
+            <div class="col-md-12">
+                <div class="card p-3 h-100">
+                    <h5 class="bright-gray mb-5">Top Selling Products</h5>
+                    <img src="img/Group 15184.png" alt="">
+                </div>
+            </div>
         </div>
     </div>
 </div>

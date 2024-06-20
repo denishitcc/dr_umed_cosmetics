@@ -1071,7 +1071,7 @@ progress.pink-progress{accent-color: #D04ED6;}
 .tooltip.top .tooltip-arrow { bottom: 0; left: 50%; margin-left: -5px; border-width: 6px 6px 0; border-top-color: #000; display: none;}
 .tooltip-arrow { position: absolute; width: 0; height: 0; border-color: transparent;border-style: solid;}
 
-.progressText{color: #282828; font-size: 12px; font-style: normal; font-weight: 500; display: flex; align-items: center; gap: 10px; margin-bottom: 5px;}
+.progressText{color: #282828; font-size: 12px; font-style: normal; font-weight: 500; display: flex; align-items: center; gap: 10px; margin-bottom: 5px; justify-content: space-between;}
 .progress{border-radius:0;overflow:visible;}
 
 .progressText .counter{background-color: #000; padding:4px; font-weight:500; font-size:11px; color: #fff; border: 0; border-radius: 50px; min-width: 26px; line-height: normal; text-align: center;}
