@@ -1244,7 +1244,7 @@
                     </div>
 
                     <div id="voucher-alert" class="alert alert-danger d-flex align-items-center mb-4 expired" role="alert" style="display: none !important;">
-                        This gift card has expired but can still be redeemed
+                        This gift card has expired
                     </div>
                     <div id="voucher-alert" class="alert alert-danger d-flex align-items-center mb-4 voucher_cancelled" role="alert" style="display: none !important;">
                         This voucher has been cancelled
@@ -4982,13 +4982,25 @@
             }
             container.append(voucherHTML);
             
-
+            const expiry = voucher.expiry_date ? new Date(voucher.expiry_date) : null;
+            const today = new Date();
             if (voucher.cancelled_at != null) {
                 $('.yellow-note-box').hide();
                 $('#redemption-amount-section').hide();
                 $('.voucher_cancelled').show();
+                $('.expired').attr('style', 'display:none !important');
                 $('#voucher-alert').attr('style', 'display:none !important');
+                $('#voucher-history').show();
                 $('.redeem_gift_card').hide();
+                $('.voucher_already_added').attr('style', 'display:none !important');
+                $('.voucher_no_remaining').attr('style','display:none !important');
+                // Fetch and display voucher history
+                fetchVoucherHistory(voucher.id);
+            }else if (expiry && expiry < today) {
+                $('.yellow-note-box').hide();
+                $('#redemption-amount-section').hide();
+                $('.expired').show();
+                $('.voucher_cancelled').attr('style', 'display:none !important');
                 $('#voucher-history').show();
                 $('.redeem_gift_card').hide();
                 $('.voucher_already_added').attr('style', 'display:none !important');
@@ -5000,6 +5012,7 @@
                 $('.voucher_already_added').hide();
                 $('#redemption-amount-section').hide();
                 $('.redeem_gift_card').hide();
+                $('.expired').attr('style', 'display:none !important');
                 $('#voucher-alert').attr('style', 'display:none !important');
                 return;
             } else {
@@ -5028,6 +5041,7 @@
                 $('#redemption-amount').val(parseFloat(redemptionAmount).toFixed(2));
 
                 $('#voucher-history').show();
+                $('.expired').attr('style', 'display:none !important');
                 $('.voucher_already_added').attr('style', 'display:none !important');
                 // Fetch and display voucher history
                 fetchVoucherHistory(voucher.id);
