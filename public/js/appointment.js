@@ -1238,6 +1238,7 @@ var DU = {};
                     $('#forms').empty();
                     $('#forms').prepend(data.formshtml);
                     $('#update_forms_client').html(`Give to ${data.clientname} to fill out form`);
+                    $('.client_card_ask').html(`Ask ${data.clientname} to review and update their contact details`);
                     $('#form_sent_time').text(`Forms sent by email at ${data.email_time}`);
                     $('#mobile_no').val(data.clientphone);
                     $('#clientemail').val(data.clientemail);
@@ -1312,20 +1313,38 @@ var DU = {};
                     forms_check  = $('input[name="forms_check[]"][type="checkbox"]:checked').val();
                 context.sendFormAndGiveFormbtn(checkedCount);
             });
+
+            $(document).on('change','input[name="forms_check"][type="checkbox"]',function(e){
+                var checkedCount        = $('input[name="forms_check"][type="checkbox"]:checked').length,
+                    forms_check         = $('input[name="forms_check"][type="checkbox"]:checked').val();
+                var listcheckedCount    = $('input[name="forms_check[]"][type="checkbox"]:checked').length;
+                var totalcheck = listcheckedCount + checkedCount;
+                context.sendFormAndGiveFormbtn(totalcheck);
+            });
         },
 
         allCheckboxChecked: function(){
             var context = this;
             $(document).on('click','input[name="all_forms_check"][type="checkbox"]',function(e){
                 if ($(this).is(':checked')) {
-                    $('input[name="forms_check[]"][type="checkbox"]').attr('checked', true);
-                    $('input[name="forms_check"][type="checkbox"]').attr('checked', true);
+                    $('input[name="forms_check[]"][type="checkbox"]').prop('checked', true);
+                    $('input[name="forms_check"][type="checkbox"]').prop('checked', true);
+
+                    var updateclientcheck = $('input[name="forms_check"][type="checkbox"]:checked').length;
                     var checkedCount = $('input[name="forms_check[]"][type="checkbox"]:checked').length;
-                    context.sendFormAndGiveFormbtn(checkedCount-1);
+                    var totalcheck = updateclientcheck + checkedCount;
+
+                    context.sendFormAndGiveFormbtn(totalcheck);
                 } else {
-                    $('input[name="forms_check[]"][type="checkbox"]').attr('checked', false);
+                    console.log('dharit');
+                    $('input[name="forms_check[]"][type="checkbox"]').prop('checked', false);
+                    $('input[name="forms_check"][type="checkbox"]').prop('checked', false);
+
+                    var updateclientcheck = $('input[name="forms_check"][type="checkbox"]:checked').length;
                     var checkedCount = $('input[name="forms_check[]"][type="checkbox"]:checked').length;
-                    context.sendFormAndGiveFormbtn(checkedCount);
+                    var totalcheck = updateclientcheck + checkedCount;
+
+                    context.sendFormAndGiveFormbtn(totalcheck);
                 }
             });
         },
@@ -1516,7 +1535,7 @@ var DU = {};
         givetoUser: function(){
             var context = this;
             $(document).on('click','#update_forms_client',function(e){
-                location.href = "https://stackoverflow.com/questions/16562577/how-can-i-make-a-button-redirect-my-page-to-another-page";
+                location.href = "#";
             });
         },
 

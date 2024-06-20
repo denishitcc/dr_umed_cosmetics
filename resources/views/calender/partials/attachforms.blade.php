@@ -5,7 +5,7 @@
         </label>
     </td>
     <td>Update client card<br>
-        <span class="font-13 d-grey">Ask Dane to review and update their contact details</span>
+        <span class="font-13 d-grey client_card_ask"></span>
     </td>
     <td></td>
     <td class="text-center"></td>
