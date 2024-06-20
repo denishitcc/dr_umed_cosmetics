@@ -59,8 +59,8 @@ class ClientsController extends Controller
                                 WHEN 10 THEN "Cancelled"
                             END) as app_status'),
                             DB::raw('GROUP_CONCAT(users.staff_member_location) as staff_member_location'),
-                            DB::raw('GROUP_CONCAT(DISTINCT appointments_notes.common_notes SEPARATOR "<br>") as common_notes'),
-                            DB::raw('GROUP_CONCAT(DISTINCT appointments_notes.treatment_notes SEPARATOR "<br>") as treatment_notes')
+                            DB::raw('GROUP_CONCAT(DISTINCT appointments_notes.common_notes SEPARATOR ",") as common_notes'),
+                            DB::raw('GROUP_CONCAT(DISTINCT appointments_notes.treatment_notes SEPARATOR ",") as treatment_notes')
                     )
                     ->groupBy('clients.id', 
                             'clients.firstname', 
@@ -70,7 +70,6 @@ class ClientsController extends Controller
                             'clients.status'
                     )
                     ->get();
-                    
                 foreach($data as $datas){
                     $loc= explode(',',$datas->staff_member_location);
                     $locationsArray = [];

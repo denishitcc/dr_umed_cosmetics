@@ -33,6 +33,8 @@ class AppointmentResource extends JsonResource
             'standard_price'    => $this->services->standard_price,
             'walk_in_id'        => $this->walk_in_id,
             'location_id'       => $this->location_id,
+            'common_notes'      => $this->common_notes,
+            'treatment_notes'   => $this->treatment_notes
         ];
     }
 }

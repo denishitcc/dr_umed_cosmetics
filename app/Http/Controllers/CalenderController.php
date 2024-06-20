@@ -929,13 +929,18 @@ class CalenderController extends Controller
     {
         $appointment   = Appointment::find($appointmentId);
         if ($appointment->status == '1') {
-            $appointment   = Appointment::find($appointmentId);
+            $appointment = Appointment::leftJoin('appointments_notes', 'appointment.id', '=', 'appointments_notes.appointment_id')
+                ->where('appointment.id', $appointmentId)
+                ->select('appointment.*', 'appointments_notes.common_notes','appointments_notes.treatment_notes')
+                ->first();
         } else {
-            $appointment = Appointment::leftJoin('walk_in_retail_sale', 'walk_in_retail_sale.appt_id', '=', 'appointment.id')
-                ->select('walk_in_retail_sale.id AS walk_in_id', 'appointment.*')
+            $appointment = Appointment::leftjoin('appointments_notes', 'appointment.id', '=', 'appointments_notes.appointment_id')
+                ->leftJoin('walk_in_retail_sale', 'walk_in_retail_sale.appt_id', '=', 'appointment.id')
+                ->select('walk_in_retail_sale.id AS walk_in_id', 'appointment.*', 'appointments_notes.common_notes','appointments_notes.treatment_notes')
+                ->where('appointment.id', $appointmentId)
                 ->whereNull('walk_in_retail_sale.deleted_at')
                 ->whereNull('appointment.deleted_at')
-                ->find($appointmentId);
+                ->first();
         }
 
         return response()->json([
@@ -1255,7 +1260,6 @@ class CalenderController extends Controller
                 // $latest_date        = $apptDate->addWeeks(5);
                 // $latest_date        = $apptDate->nthInMonth(Carbon::FRIDAY, 5);
                 $newDate = $this->addNthWeekdayInMonth($apptDate, 5, Carbon::TUESDAY);
-                dd($newDate);
                 // $firstDayOfMonth    = $latest_date->firstOfMonth();
                 // $weekday            = $latest_date->next('Wednesday')->addWeeks(5);
                 // dd($latest_date);

@@ -1064,9 +1064,9 @@ var DU = {};
                             <hr>
                             <div class="form-group">
                                 <label class="form-label">Notes</label>
-                                <textarea rows="4" class="form-control" placeholder="Click to edit" id="commonNotes" ${disabledAttr}></textarea>
+                                <textarea rows="4" class="form-control" placeholder="Click to edit" id="commonNotes" ${disabledAttr}>${response.data.common_notes ?? ''}</textarea>
                                 <label class="form-label">Treatment Notes</label>
-                                <textarea rows="4" class="form-control" placeholder="Click to edit" id="treatmentNotes" ${disabledAttr}></textarea>
+                                <textarea rows="4" class="form-control" placeholder="Click to edit" id="treatmentNotes" ${disabledAttr}>${response.data.treatment_notes ?? ''}</textarea>
                             </div>
                             </div>`
                     );
@@ -1200,7 +1200,7 @@ var DU = {};
                             icon: "success",
                         }).then(function() {
                             // Reload the current page
-                            location.reload();
+                            // location.reload();
                         });
                     },
                 });
@@ -2978,7 +2978,6 @@ var DU = {};
     })
     //submit create client form
     function SubmitCreateClient(data){
-        debugger;
         var url = $("#clientCreate").data("url");
 		$.ajax({
 			headers: { 'Accept': "application/json", 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
@@ -2986,7 +2985,6 @@ var DU = {};
 			type: "post",
 			data: data,
 			success: function(response) {
-                debugger;
 				// Show a Sweet Alert message after the form is submitted.
 				if (response.success) {
                     // $('#client_name').val(response.data.firstname + ' ' + response.data.lastname);

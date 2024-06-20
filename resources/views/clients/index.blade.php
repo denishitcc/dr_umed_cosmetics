@@ -788,12 +788,9 @@ $(document).ready(function() {
                         var datesArray = data.split(',');
                         var statusArray = row.app_status.split(',');
                         var locationArray = row.staff_location.split(',');
-                        if (row.common_notes != null) {
-                            var commonNotesArray = row.common_notes.split('<br>');
-                        }
-                        if (row.treatment_notes != null) {
-                            var treatmentNotesArray = row.treatment_notes.split('<br>');
-                        }
+                        var commonNotesArray = row.common_notes ? row.common_notes.split(',') : [];
+                        var treatmentNotesArray = row.treatment_notes ? row.treatment_notes.split(',') : [];
+
                         var html_app = '';
 
                         datesArray.forEach(function (app, index) {
@@ -805,54 +802,63 @@ $(document).ready(function() {
 
                             // Add location
                             if (locationArray[index]) {
-                                formattedLocation =  locationArray[index] ;
+                                formattedLocation = locationArray[index];
                             }
 
                             // Add a line break after AM or PM
-                            formattedDate = formattedDate.replace(/(\d{2}-\d{2}-\d{4}\s\d{2}:\d{2}\s)(AM|PM)/g, '<b>$1$2</b> <em>('+ formattedLocation + ')</em><br>');
-                            
+                            formattedDate = formattedDate.replace(/(\d{2}-\d{2}-\d{4}\s\d{2}:\d{2}\s)(AM|PM)/g, '<b>$1$2</b> <em>(' + formattedLocation + ')</em><br>');
+
                             // Add status badge
                             if (statusArray[index]) {
-                                if (statusArray[index] == 'Booked') {
-                                    formattedStatus = '<span class="badge text-bg-yellow badge-md ms-1">' + statusArray[index] + '</span>';
-                                } else if (statusArray[index] == 'Confirmed') {
-                                    formattedStatus = '<span class="badge text-bg-cyan badge-md ms-1">' + statusArray[index] + '</span>';
-                                } else if (statusArray[index] == 'Started') {
-                                    formattedStatus = '<span class="badge text-bg-orange badge-md ms-1">' + statusArray[index] + '</span>';
-                                } else if (statusArray[index] == 'Completed') {
-                                    formattedStatus = '<span class="badge text-bg-blue badge-md ms-1">' + statusArray[index] + '</span>';
-                                } else if (statusArray[index] == 'No answer') {
-                                    formattedStatus = '<span class="badge text-bg-light-red badge-md ms-1">' + statusArray[index] + '</span>';
-                                } else if (statusArray[index] == 'Left message') {
-                                    formattedStatus = '<span class="badge text-bg-green badge-md ms-1">' + statusArray[index] + '</span>';
-                                } else if (statusArray[index] == 'Pencilied in') {
-                                    formattedStatus = '<span class="badge text-bg-black badge-md ms-1">' + statusArray[index] + '</span>';
-                                } else if (statusArray[index] == 'Turned up') {
-                                    formattedStatus = '<span class="badge text-bg-purple badge-md ms-1">' + statusArray[index] + '</span>';
-                                } else if (statusArray[index] == 'No show') {
-                                    formattedStatus = '<span class="badge text-bg-red-purple badge-md ms-1">' + statusArray[index] + '</span>';
-                                } else if (statusArray[index] == 'Cancelled') {
-                                    formattedStatus = '<span class="badge text-bg-red badge-md ms-1">' + statusArray[index] + '</span>';
+                                var statusClass = '';
+                                switch (statusArray[index]) {
+                                    case 'Booked':
+                                        statusClass = 'text-bg-yellow';
+                                        break;
+                                    case 'Confirmed':
+                                        statusClass = 'text-bg-cyan';
+                                        break;
+                                    case 'Started':
+                                        statusClass = 'text-bg-orange';
+                                        break;
+                                    case 'Completed':
+                                        statusClass = 'text-bg-blue';
+                                        break;
+                                    case 'No answer':
+                                        statusClass = 'text-bg-light-red';
+                                        break;
+                                    case 'Left message':
+                                        statusClass = 'text-bg-green';
+                                        break;
+                                    case 'Pencilied in':
+                                        statusClass = 'text-bg-black';
+                                        break;
+                                    case 'Turned up':
+                                        statusClass = 'text-bg-purple';
+                                        break;
+                                    case 'No show':
+                                        statusClass = 'text-bg-red-purple';
+                                        break;
+                                    case 'Cancelled':
+                                        statusClass = 'text-bg-red';
+                                        break;
                                 }
+                                formattedStatus = '<span class="badge ' + statusClass + ' badge-md ms-1">' + statusArray[index] + '</span>';
                             }
 
                             // Add common notes
-                            if (commonNotesArray && commonNotesArray.length > 0) {
-                                if (commonNotesArray[index]) {
-                                    formattedCommonNotes = '<br><div class="yellow-note-box"><p> <strong>Common Notes:</strong><br> '+ commonNotesArray[index] +' </p></div>';
-                                }
+                            if (commonNotesArray.length > index && commonNotesArray[index]) {
+                                formattedCommonNotes = '<br><div class="yellow-note-box"><p> <strong>Common Notes:</strong><br> ' + commonNotesArray[index] + ' </p></div>';
                             }
+
                             // Add treatment notes
-                            if (treatmentNotesArray && treatmentNotesArray.length > 0) {
-                                if (treatmentNotesArray[index]) {
-                                    formattedTreatmentNotes = '<div class="yellow-note-box"><p> <strong>Treatment Notes:</strong><br> '+ treatmentNotesArray[index] +' </p></div>';
-                                }
+                            if (treatmentNotesArray.length > index && treatmentNotesArray[index]) {
+                                formattedTreatmentNotes = '<div class="yellow-note-box"><p> <strong>Treatment Notes:</strong><br> ' + treatmentNotesArray[index] + ' </p></div>';
                             }
 
                             html_app += '<div class="user-appnt">' + formattedDate + formattedStatus + formattedCommonNotes + formattedTreatmentNotes + '</div>';
                         });
 
-                        html_app += '';
                         return html_app;
                     }
                 }

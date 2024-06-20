@@ -82,12 +82,24 @@
                                                 <p>{{ $appointment->duration }}m with {{ $appointment->staff->name }}<br>
                                                     {{-- <span class="font-13">(Uninvoiced) : $0.00</span> --}}
                                                 </p>
+                                                @if (isset($appointment->note->notescount))
+                                                    <a href="javascript:void(0);" class="badge badge-alter badge-icon badge-note my-2 show_notes" data-appointment_id="{{ $appointment->id }}"><i class="ico-file-text me-2 fs-4 align-middle"></i> {{ $appointment->note->notescount }} Notes </a>
+                                                    <div class="add-note-btn-box">
+                                                        @if($appointment->note->treatment_notes == null)
+                                                        <a href="javascript:void(0);" class="btn btn-primary font-13 alter" id="add_treatment_notes" data-appointment_id="{{ $appointment->id }}"> Add treatment notes </a>
+                                                        @endif
+                                                        @if($appointment->note->common_notes == null)
+                                                        <a href="javascript:void(0);" class="btn btn-primary font-13 me-2" id="add_notes" data-appointment_id="{{ $appointment->id }}"> Add Notes </a>
+                                                        @endif
+                                                    </div>
+                                                @else
                                                 <div class="add-note-btn-box">
-                                                    <a href="#" class="btn btn-primary font-13 me-2"> Add
+                                                    <a href="#" class="btn btn-primary font-13 me-2" id="add_notes" data-appointment_id="{{ $appointment->id }}"> Add
                                                         Notes</a>
-                                                    <a href="#" class="btn btn-primary font-13 alter">
+                                                    <a href="#" class="btn btn-primary font-13 alter"id="add_treatment_notes" data-appointment_id="{{ $appointment->id }}">
                                                         Add treatment notes </a>
                                                 </div>
+                                                @endif
                                                 {{-- <a href="#" class="badge badge-alter badge-icon badge-note my-2"><i
                                                         class="ico-file-text me-2 fs-4 align-middle"></i> 0
                                                     Notes</a> --}}
