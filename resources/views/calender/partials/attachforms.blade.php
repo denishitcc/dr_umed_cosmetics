@@ -1,15 +1,17 @@
 <tr>
-    <td>
-        <label class="cst-check blue">
-            <input type="checkbox" name="forms_check"><span></span>
-        </label>
-    </td>
-    <td>Update client card<br>
-        <span class="font-13 d-grey client_card_ask"></span>
-    </td>
-    <td></td>
-    <td class="text-center"></td>
-</tr>
+        @if ($clientname != 'client')
+        <td>
+            <label class="cst-check blue">
+                <input type="checkbox" name="forms_check"><span></span>
+            </label>
+        </td>
+        <td>Update client card<br>
+            <span class="font-13 d-grey client_card_ask"></span>
+        </td>
+        <td></td>
+        <td class="text-center"></td>
+        @endif
+    </tr>
 <input type="hidden" name="client_name" id="client_name">
 <input type="hidden" name="location_name" id="location_name">
 <input type="hidden" name="apptid" id="apptid">
@@ -25,7 +27,6 @@
                     <label class="cst-check blue">
                         <input type="checkbox" name="forms_check[]" value="{{ $form->form_id }}"><span></span>
                     </label>
-            
                 @endif
             </td>
             <td class="blue" style="cursor: pointer" >{{ $form->forms->title }}</td>

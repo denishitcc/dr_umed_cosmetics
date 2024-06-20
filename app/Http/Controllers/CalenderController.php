@@ -3064,13 +3064,21 @@ class CalenderController extends Controller
         $appointmentForms   = [];
         $forms              = AppointmentForms::where('appointment_id', $appointmentId)->get();
         $appointment        = Appointment::find($appointmentId);
-        $clientName         = $appointment->clients->firstname;
-        $clientEmail        = $appointment->clients->email;
-        $clientPhone        = $appointment->clients->mobile_number;
+        $clientName         = 'client';
+        $clientEmail        = '';
+        $clientPhone        = '';
+
+        if($appointment->clients)
+        {
+            $clientName         = $appointment->clients->firstname ? $appointment->clients->firstname : '';
+            $clientEmail        = $appointment->clients->email ? $appointment->clients->email : '';
+            $clientPhone        = $appointment->clients->mobile_number ? $appointment->clients->mobile_number : '';
+        }
+
         $apptlocation       = $appointment->location->location_name;
         $apptid             = $appointment->id;
         $email_time         = Carbon::parse($appointment->forms_sent_email)->format('H:i a, D dS M Y');
-        $html               = view('calender.partials.attachforms',     ['forms' => $forms])->render();
+        $html               = view('calender.partials.attachforms',     ['forms' => $forms , 'clientname'        => $clientName])->render();
         $existingformshtml  = view('calender.partials.copy-form-list',  ['forms' => $forms])->render();
 
         return response()->json([
