@@ -152,7 +152,7 @@
 
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                             <a class="dropdown-item edit-btn font-13" href="javascript:void(0)" waitlist_id="{{ $waitlists->id }}" id="edit_waitlist_clients" client_id="{{ $waitlists->client_id }}" category_id="{{ $waitlists->category_id }}" duration="{{ $dur }}" service_name="{{ $ser_names_str }}" services_id="{{ $ser_ids_str }}" preferred-from-date="{{ $waitlists->preferred_from_date }}" user-id="{{ $waitlists->user_id }}" preferred-to-date="{{ $waitlists->preferred_to_date }}" additional-notes="{{ $waitlists->additional_notes }}" client-name="{{ $waitlists->firstname.' '.$waitlists->lastname }}">Edit</a>
-                                            <a class="dropdown-item delete-btn delete_waitlist_client form-13" href="#" waitlist_id="{{ $waitlists->id }}">Delete</a>
+                                            <a class="dropdown-item delete-btn delete_waitlist_client font-13" href="#" waitlist_id="{{ $waitlists->id }}">Delete</a>
                                         </div>
                                     </div>
                                     @if(!empty($waitlists->additional_notes))
@@ -2586,7 +2586,7 @@
                                             </a>
                                             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                                 <a class="dropdown-item edit-btn font-13" href="javascript:void(0)" waitlist_id="${item.id}" client_id="${item.client_id}" category_id="${item.category_id}" duration="${item.duration}" service_name="${item.service_name}" services_id="${item.service_id}" preferred-from-date="${item.preferred_from_date}" user-id="${item.user_id}" preferred-to-date="${item.preferred_to_date}" additional-notes="${item.additional_notes}" client-name="${item.firstname+' '+item.lastname}" id="edit_waitlist_clients">Edit</a>
-                                                <a class="dropdown-item delete-btn form-13" href="#">Delete</a>
+                                                <a class="dropdown-item delete-btn font-13" href="#">Delete</a>
                                             </div>
                                         </div>
                                         ${item.additional_notes ? `<a href="#" class="btn btn-primary font-13 alter btn-sm slot-btn show_notes"> Show notes</a>` : `<a href="#" class="btn btn-primary font-13 alter btn-sm slot-btn show_notes" disabled style="color: darkgray;"> Show notes</a>`}
@@ -2847,7 +2847,7 @@
                                                 </a>
                                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                                     <a class="dropdown-item edit-btn font-13" href="javascript:void(0)" waitlist_id="${item.id}" client_id="${item.client_id}" category_id="${item.category_id}" duration="${item.duration}" service_name="${item.service_name}" services_id="${item.service_id}" preferred-from-date="${item.preferred_from_date}" user-id="${item.user_id}" preferred-to-date="${item.preferred_to_date}" additional-notes="${item.additional_notes}" client-name="${item.firstname+' '+item.lastname}" id="edit_waitlist_clients" client-name="${item.firstname} ${item.lastname}">Edit</a>
-                                                    <a class="dropdown-item delete-btn form-13" href="#">Delete</a>
+                                                    <a class="dropdown-item delete-btn font-13" href="#">Delete</a>
                                                 </div>
                                             </div>
                                             ${item.additional_notes ? `<a href="#" class="btn btn-primary font-13 alter btn-sm slot-btn show_notes"> Show notes</a>` : `<a href="#" class="btn btn-primary font-13 alter btn-sm slot-btn show_notes" disabled  style="color: darkgray;"> Show notes</a>`}
