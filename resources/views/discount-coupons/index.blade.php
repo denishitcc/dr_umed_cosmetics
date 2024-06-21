@@ -320,7 +320,6 @@ $(document).ready(function() {
 		}
 	});
     $(document).on('submit','#edit_discount_coupons',function(e){
-        debugger;
 		e.preventDefault();
 		var valid= $("#edit_discount_coupons").validate();
 			if(valid.errorList.length == 0){
@@ -341,8 +340,6 @@ $(document).ready(function() {
     });
 });
     $(document).on('click', '.dt-edit', function(e) {
-
-        debugger;
       e.preventDefault();
       $('#hdn_id').val($(this).attr('ids'));
       $('#edit_locations').val($(this).attr('location_id'));

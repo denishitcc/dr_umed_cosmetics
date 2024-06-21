@@ -3061,7 +3061,7 @@
     // Assuming you have a function to trigger opening the modal with a specific client id
     // For example, if you have a button or link to open the modal, you can attach a click event handler to it
     $(document).on('click','.open-client-card-btn',function(e){
-        debugger;
+
         var clientId = $(this).data('client-id'); // Use data('client-id') to access the attribute
         var clientName = $(this).parent().parent().find('.client-info').find('[name="client_first_name"]').val();
         openClientCard(clientId,clientName);
@@ -6878,7 +6878,6 @@
 
     // Assuming you have a function to open the modal
     function openClientCard(clientId,ClientName) {
-        debugger;
         var client_details=[];
         $.ajax({
             type: "POST",
@@ -7006,7 +7005,6 @@
             // You can add more fields as needed
 
             // clien details bind
-            debugger;
             $('#id').val(client.id);
             $('#location_name').val(client.location_id);
             $('#firstname').val(client.name);
