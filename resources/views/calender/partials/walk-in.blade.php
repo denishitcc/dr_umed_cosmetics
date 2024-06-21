@@ -1,7 +1,7 @@
 <div class="edit_invoice_date"></div>
 <div class="edit_invoice_number"></div>
-<div class="form-group invoice_date">
-    <label>Invoice Date</label>
+<div class="form-group invoice_date mt-3">
+    <label class="form-label">Invoice Date</label>
     <input type="date" id="datePicker1" name="casual_invoice_date" class="form-control" placeholder="date" value="<?php echo date('Y-m-d'); ?>">
 </div>
 <div class="form-group icon">

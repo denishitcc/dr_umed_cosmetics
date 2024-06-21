@@ -651,22 +651,22 @@
                             <input type='hidden' id="hdn_main_discount_reason" name='hdn_main_discount_reason' value='' class="hdn_main_discount_reason">
                             <div class="tab-pane fade show" id="new_customer" role="tabpanel">
                                 <div class="row">
-                                    <div class="form-group icon col-lg-4">
-                                        <label>First Name</label>
+                                    <div class="form-group col-lg-4">
+                                        <label class="form-label">First Name</label>
                                         <input type="text" id="walkin_first_name" name="walkin_first_name" class="form-control" placeholder="First">
                                     </div>
-                                    <div class="form-group icon col-lg-4">
-                                        <label>Last Name</label>
+                                    <div class="form-group col-lg-4">
+                                        <label class="form-label">Last Name</label>
                                         <input type="text" id="walkin_last_name" name="walkin_last_name" class="form-control" placeholder="Last">
                                     </div>
-                                    <div class="form-group icon col-lg-4">
-                                        <label>Email</label>
+                                    <div class="form-group col-lg-4">
+                                        <label class="form-label">Email</label>
                                         <input type="text" id="walkin_email" name="walkin_email" class="form-control" placeholder="Email">
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="form-group icon col-lg-4">
-                                        <label>Phone</label>
+                                    <div class="form-group col-lg-4">
+                                        <label class="form-label">Phone</label>
                                             <select class="form-select form-control" name="walkin_phone_type" id="walkin_phone_type">
                                                 <option selected="" value=""> -- select an option -- </option>
                                                 <option>Mobile</option>
@@ -674,11 +674,11 @@
                                                 <option>Work</option>
                                             </select>
                                     </div>
-                                    <div class="form-group icon col-lg-4">
-                                        <label></label>
+                                    <div class="form-group col-lg-4">
+                                        <label class="form-label"></label>
                                         <input type="text" id="walkin_phone_no" name="walkin_phone_no" class="form-control">
                                     </div>
-                                    <div class="col-lg-3">
+                                    <div class="col-lg-4">
                                         <label class="form-label">Gender</label>
                                         <div class="toggle form-group">
                                             <input type="radio" name="walkin_gender" value="Male" id="males" checked="checked" />
