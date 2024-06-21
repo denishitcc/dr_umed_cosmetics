@@ -36,6 +36,21 @@
                     @php
                     $user = Auth::user();
                     if ($user->role_type == 'admin' || $user->is_staff_memeber == 0) {
+                        $new_enquiry = \App\Models\Enquiries::where('enquiry_status', 'New Enquiry')->get();
+                    } else {
+                        $new_enquiry = \App\Models\Enquiries::where([
+                            ['enquiry_status', '=', 'New Enquiry'],
+                            ['location_name', '=', $user->staff_member_location]
+                        ])->get();
+                    }
+                    @endphp
+                <div class="font-24 mb-1">{{count($new_enquiry)}}</div>
+                    <b class="text-new-enquiry">New Enquiry </b>
+                </li>
+                <li>
+                    @php
+                    $user = Auth::user();
+                    if ($user->role_type == 'admin' || $user->is_staff_memeber == 0) {
                         $follow_up_done = \App\Models\Enquiries::where('enquiry_status', 'Follow Up Done')->get();
                     } else {
                         $follow_up_done = \App\Models\Enquiries::where([
@@ -217,7 +232,12 @@ $(document).ready(function() {
         // {data: 'enquiry_status', name: 'enquiry_status'},
         {data: 'enquiry_status', name: 'enquiry_status',
             "render": function(data, type, row, meta){
-                if(data=='Follow Up Done')
+                if(data=='New Enquiry')
+                {
+                    data = '<span class="badge new-enquiry-bg badge-md">' + data;
+                    return data;
+                }
+                else if(data=='Follow Up Done')
                 {
                     data = '<span class="badge text-bg-green badge-md">' + data;
                     return data;

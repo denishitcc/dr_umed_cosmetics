@@ -564,6 +564,9 @@ div.dataTables_filter { text-align: right; float: right;}
 
 .text-succes-light{color:#84C529;}
 
+.new-enquiry-bg{ background: #d66ad7;}
+.text-new-enquiry{ color: #d66ad7;}
+
 .text-bg-green{ background: #5CB85C;}
 .text-succes{ color: #5CB85C;}
 
@@ -1104,6 +1107,7 @@ progress.pink-progress{accent-color: #D04ED6;}
 
 .progressText .counter{background-color: #000; padding:4px; font-weight:500; font-size:11px; color: #fff; border: 0; border-radius: 50px; min-width: 26px; line-height: normal; text-align: center;}
 
+#mycalendar .ui-datepicker table{ width: 90%;}
 
 @-webkit-keyframes progress-bar-stripes {
   from {
@@ -1185,6 +1189,27 @@ progress.pink-progress{accent-color: #D04ED6;}
   background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
 }
 
+/* prtk */
+.hasDatepicker .ui-state-default, .hasDatepicker .ui-widget-content .ui-state-default, .hasDatepicker .ui-widget-header .ui-state-default, .hasDatepicker .ui-button, html .hasDatepicker .ui-button.ui-state-disabled:hover, html .hasDatepicker .ui-button.ui-state-disabled:active {
+  border: 0;
+  background: transparent;
+  font-weight: normal;
+  color: #4B4F52;
+  border-radius: 50px;
+  line-height: 2;
+  height: 2.4em;
+}
+
+.ui-datepicker td .ui-state-default {
+  display: inline-block;
+  width: 2.4em;
+  height: 2.4em;
+}
+
+#mycalendar .ui-datepicker table {
+  width: 100%;
+}
+/* prtk */
 
 /*  Responsive  */
 

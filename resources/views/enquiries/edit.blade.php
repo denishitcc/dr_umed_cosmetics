@@ -97,6 +97,7 @@
                     <label class="form-label">Enquiry Status</label>
                     <select class="form-select form-control" name="enquiry_status" id="enquiry_status">
                         <option selected value=""> -- select an option -- </option>
+                        <option value="New Enquiry" {{ ($enquiries->enquiry_status == "New Enquiry")? "selected" : "" }} >New Enquiry</option>
                         <option value="Follow Up Done" {{ ($enquiries->enquiry_status == "Follow Up Done")? "selected" : "" }} >Follow Up Done</option>
                         <option value="First Call Done" {{ ($enquiries->enquiry_status == "First Call Done")? "selected" : "" }} >First Call Done</option>
                         <option value="Client Contacted" {{ ($enquiries->enquiry_status == "Client Contacted")? "selected" : "" }} >Client Contacted</option>

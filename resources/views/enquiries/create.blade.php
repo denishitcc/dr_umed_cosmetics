@@ -96,6 +96,7 @@
                     <label class="form-label">Enquiry Status</label>
                     <select class="form-select form-control" name="enquiry_status" id="enquiry_status">
                         <option selected value=""> -- select an option -- </option>
+                        <option>New Enquiry</option>
                         <option>Follow Up Done</option>
                         <option>First Call Done</option>
                         <option>Client Contacted</option>
