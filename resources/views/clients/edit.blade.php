@@ -80,7 +80,7 @@
                                             <!-- <span class="btn btn-primary btn-sm pointer"><i class="ico-right-arrow fs-4"></i></span> -->
                                             <div class="his-detaiils">
                                                 <h5 class="black">{{ $appointment->services->service_name }} </h5>
-                                                <p>{{ $appointment->duration }}m with {{ $appointment->staff->name }}<br>
+                                                <p>{{ $appointment->duration }}m with {{ isset($appointment->staff->name)?$appointment->staff->name:'' }}<br>
                                                     {{-- <span class="font-13">(Uninvoiced) : $0.00</span> --}}
                                                 </p>
                                                 @if (isset($appointment->note->notescount))
@@ -127,7 +127,7 @@
                                         <div class="appt-details">
                                             <div class="his-detaiils">
                                                 <h5 class="black">{{ $appointment->services->service_name }}</h5>
-                                                <p>{{ $appointment->duration }}m with {{ $appointment->staff->name }}<br>
+                                                <p>{{ $appointment->duration }}m with {{ isset($appointment->staff->name)?$appointment->staff->name:'' }}<br>
                                                     {{-- <span class="font-13">(Uninvoiced) : $0.00</span> --}}
                                                 </p>
                                                 @if (isset($appointment->note->notescount))
