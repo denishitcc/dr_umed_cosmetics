@@ -20,7 +20,7 @@ class AppointmentListResource extends JsonResource
             'title'         => $this->services->service_name,
             'start'         => $this->start_date,
             'end'           => $this->end_date,
-            'color'         => $this->staff->calendar_color,
+            'color'         => isset($this->staff->calendar_color) ? $this->staff->calendar_color : '#0b5ed7',
             'className'     => "edit_appointment",
             'extendedProps' =>[
                 'client_id'     => $this->client_id,
