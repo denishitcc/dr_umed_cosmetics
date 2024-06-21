@@ -55,6 +55,7 @@ var DU = {};
             context.openeditServiceFormModal();
             context.CompleteClientForms();
             context.updateAppointmentStatus();
+            context.deleteFormsCard();
 
             $('#clientmodal').hide();
             $('#service_error').hide();
@@ -1443,6 +1444,43 @@ var DU = {};
                             }).then(function() {
                                 context.selectors.copyexistingFormModal.modal('hide');
                                 context.getAppointmentForms(appointmentId);
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Error!",
+                                text: data.message,
+                                icon: "error",
+                            });
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Error fetching events:', error);
+                    }
+                });
+            });
+        },
+
+        deleteFormsCard: function(){
+            var context = this;
+            $(document).on('click','#delete_forms_card',function(e){
+                var $this               = $(this),
+                apptform_id         = $this.data('apptform_id'),
+                appointmentId       = $this.data('appointment_id');
+
+                $.ajax({
+                    url: moduleConfig.deleteAppointmentForms.replace(':ID',apptform_id),
+                    type: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function (data) {
+                        if (data.success) {
+                            Swal.fire({
+                                title: "Appointment Forms!",
+                                text: data.message,
+                                icon: "success",
+                            }).then(function() {
+                                location.reload();
                             });
                         } else {
                             Swal.fire({

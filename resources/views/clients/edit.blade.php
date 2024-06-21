@@ -633,7 +633,7 @@
                 <div class="form-group mb-0 docs">
                 @if(count($client_documents)>0)
                     @foreach($client_documents as $doc)
-                    <a href="#" class="btn tag icon-btn-left skyblue mb-2"><span><i class="ico-pdf me-2 fs-2 align-middle"></i> {{$doc->client_documents}}</span> <span class="file-date">{{date('d F h:i A', strtotime($doc->created_at))}}</span><i class="del ico-trash remove_doc" ids="{{$doc->id}}"></i></a>
+                    <a href="{{asset('storage/images/clients_documents/').'/'.$doc->client_documents}}" class="btn tag icon-btn-left skyblue mb-2" download=""><span><i class="ico-pdf me-2 fs-2 align-middle"></i> {{$doc->client_documents}}</span> <span class="file-date">{{date('d F h:i A', strtotime($doc->created_at))}}</span><i class="del ico-trash remove_doc" ids="{{$doc->id}}"></i></a>
                     @endforeach
                 @endif
                 </div>
@@ -667,7 +667,7 @@
                                     @endif
                                 </td>
                                 <td class="text-center">
-                                    <button type="button" class="btn btn-sm black-btn round-6 dt-delete" id="delete_forms" data-apptformid="{{ $userforms->id }}">
+                                    <button type="button" class="btn btn-sm black-btn round-6 dt-delete" id="delete_forms_page" data-apptformid="{{ $userforms->id }}">
                                         <i class="ico-trash"></i>
                                     </button>
                                 </td>
@@ -1101,6 +1101,42 @@
                 }
             });
         });
+        $(document).on('click','#delete_forms_page', function(e){
+            e.preventDefault();
+            var $this               = $(this),
+                apptform_id         = $this.data('apptformid'),
+                appointmentId       = $this.data('appointment_id');
+                var url = "{!! route('calendar.delete-appointment-forms', ":id" ) !!}";
+                url = url.replace(':id', apptform_id);
+                console.log(url);
+                $.ajax({
+                    url: url,
+                    type: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function (data) {
+                    if (data.success) {
+                            Swal.fire({
+                                title: "Appointment Forms!",
+                                text: data.message,
+                                icon: "success",
+                            }).then(function() {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Error!",
+                                text: data.message,
+                                icon: "error",
+                            });
+                        }
+                },
+                error: function (error) {
+                    console.error('Error fetching events:', error);
+                }
+            });
+        });
         $("#update_client_photos").validate({
             rules: {
                 filepond: {
@@ -1325,7 +1361,7 @@
                             var fileName = file.name;
                             var fileContents = e.target.result;
                             // Append the document and delete button to the gallery
-                            gallery.append('<a href="#" class="btn tag icon-btn-left skyblue mb-2 latest_remove_doc"><span><i class="ico-pdf me-2 fs-2 align-middle"></i> ' + fileName + '</span> <span class="file-date">' + fulldate + '</span><i class="del ico-trash remove_doc"></i></a>');
+                            gallery.append('<a href="" class="btn tag icon-btn-left skyblue mb-2 latest_remove_doc"><span><i class="ico-pdf me-2 fs-2 align-middle"></i> ' + fileName + '</span> <span class="file-date">' + fulldate + '</span><i class="del ico-trash remove_doc"></i></a>');
                         };
                     })(currFile);
                     reader.readAsDataURL(this.files[i]);

@@ -22,7 +22,7 @@
                     @endif
                 </td>
                 <td class="text-center">
-                    <button type="button" class="btn btn-sm black-btn round-6 dt-delete" id="delete_forms">
+                    <button type="button" class="btn btn-sm black-btn round-6 dt-delete" id="delete_forms_card" data-apptform_id="{{ $userforms->id }}" data-appointment_id="{{ $userforms->appointment_id }}" >
                         <i class="ico-trash"></i>
                     </button>
                 </td>
