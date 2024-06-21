@@ -355,7 +355,7 @@
                                 </ul>
                             </div>
                         </div>
-                        <div><label style="color: red" id="service_error">Please select at least one service for this appointment.</label></div>
+                        <div><label style="color: red" class="service_error" id="service_error">Please select at least one service for this appointment.</label></div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -573,7 +573,7 @@
                                 </ul>
                             </div>
                         </div>
-                        <div><label style="color: red" id="service_error">Please select at least one service for this appointment.</label></div>
+                        <div><label style="color: red" class="service_error" id="service_error">Please select at least one service for this appointment.</label></div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -3129,10 +3129,16 @@
         $('#event_id').val(event_id);
         // Use the clientId and clientName as needed
         console.log("Client ID:", clientId);
-        console.log("Client Name:", staff_id);
+        // console.log("Client Name:", staff_id);
+
         // Trigger the modal to open
         $('#Edit_appointment').modal('show');
-        $('.clientEditModal').hide();
+
+        $('.clientEditModal').show();
+        $('#clienteditmodal').hide();
+
+        $('.service_error').attr('style','display:none !important');
+
         $("#clienteditDetailsModal").html(`<i class='ico-user2 me-2 fs-6'></i>  ${clientName}`);
         $('#edit_selected_services').empty();
         // Loop through each service item
