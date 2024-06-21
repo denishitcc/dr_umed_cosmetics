@@ -22,7 +22,11 @@
                             <span class="me-3">Or</span>
                             <button type="button" class="btn btn-primary btn-md add_new_client">Add a New Client</button>
                         </div>
-                        <strong class="new_client_head" style="display:none;">New client details</strong><span class="sep new_client_head" style="display:none">|</span><a href="#" class="new_client_head cancel_client" style="display:none">Cancel</a>
+                        <div class="form-group">
+                            <strong class="new_client_head" style="display:none;">New client details</strong>
+                            <span class="sep new_client_head mx-2" style="display:none">|</span>
+                            <a href="#" class="new_client_head cancel_client" style="display:none">Cancel</a>
+                        </div>
                         <div class="mb-5 client_form" style="display:none;">
                             <div class="row">
                                 <div class="col-lg-3">
