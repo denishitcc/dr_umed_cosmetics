@@ -418,7 +418,7 @@ var DU = {};
                         </div>
                     </div>
                     <div class="text-end">
-                        <a href="javascript:void(0)" class="btn btn-primary btn-md blue-alter cancel_rebook">Cancel rebook</a>
+                        <a href="javascript:void(0)" class="btn btn-primary btn-md blue-alter cancel_rebook btn-sm mb-3">Cancel rebook</a>
                     </div>`);
                 // });
 
@@ -480,7 +480,7 @@ var DU = {};
                         </div>
                     </div>
                     <div class="text-end">
-                        <a href="javascript:void(0)" class="btn btn-primary btn-md blue-alter cancel_rebook">Cancel rebook</a>
+                        <a href="javascript:void(0)" class="btn btn-primary btn-md blue-alter cancel_rebook btn-sm mb-3">Cancel rebook</a>
                     </div>`);
                 // });
 
@@ -540,7 +540,7 @@ var DU = {};
                         </div>
                     </div>
                     <div class="text-end">
-                        <a href="javascript:void(0)" class="btn btn-primary btn-md blue-alter cancel_rebook">Cancel rebook</a>
+                        <a href="javascript:void(0)" class="btn btn-primary btn-md blue-alter cancel_rebook btn-sm mb-3">Cancel rebook</a>
                     </div>`);
                 // });
 

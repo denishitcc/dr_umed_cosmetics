@@ -133,18 +133,17 @@
                                                 @if (isset($appointment->note->notescount))
                                                     <a href="javascript:void(0);" class="badge badge-alter badge-icon badge-note my-2 show_notes" data-appointment_id="{{ $appointment->id }}"><i class="ico-file-text me-2 fs-4 align-middle"></i> {{ $appointment->note->notescount }} Notes </a>
                                                     <div class="add-note-btn-box">
-                                                        @if($appointment->note->treatment_notes == null)
-                                                        <a href="javascript:void(0);" class="btn btn-primary font-13 alter" id="add_treatment_notes" data-appointment_id="{{ $appointment->id }}"> Add treatment notes </a>
-                                                        @endif
                                                         @if($appointment->note->common_notes == null)
                                                         <a href="javascript:void(0);" class="btn btn-primary font-13 me-2" id="add_notes" data-appointment_id="{{ $appointment->id }}"> Add Notes </a>
+                                                        @endif
+                                                        @if($appointment->note->treatment_notes == null)
+                                                        <a href="javascript:void(0);" class="btn btn-primary font-13 alter" id="add_treatment_notes" data-appointment_id="{{ $appointment->id }}"> Add treatment notes </a>
                                                         @endif
                                                     </div>
                                                 @else
                                                 <div class="add-note-btn-box">
-                                                    <a href="javascript:void(0);" class="btn btn-primary font-13 alter" id="add_treatment_notes" data-appointment_id="{{ $appointment->id }}"> Add treatment notes </a>
-
                                                     <a href="javascript:void(0);" class="btn btn-primary font-13 me-2" id="add_notes" data-appointment_id="{{ $appointment->id }}"> Add Notes </a>
+                                                    <a href="javascript:void(0);" class="btn btn-primary font-13 alter" id="add_treatment_notes" data-appointment_id="{{ $appointment->id }}"> Add treatment notes </a>
                                                 </div>
                                                 @endif
                                             </div>
@@ -356,10 +355,10 @@
                         <div id="ClientNotesData">
                             <h4 class="d-grey mb-4">Notes</h4>
                             <div class="yellow-note-box common_notes">
-                                <strong>Common Notes:</strong>
+                                <strong class="form-label d-block">Common Notes:</strong>
                                 @if (isset($appointmentNotes))
                                 <div class="viewnotes">
-                                    <p> <br>
+                                    <p>
                                         {{ $appointmentNotes->common_notes }}
                                     </p>
                                     <div class="add-note-btn-box">
@@ -371,20 +370,23 @@
                                     <form method="post" >
                                         @if(isset($appointmentNotes))
                                             <input type="hidden" name="appointment_id" value="{{ $appointmentNotes->appointment_id }}" >
-                                            <textarea name="common_notes" id="common_notes" cols="80" rows="5" class="form=control" > {{ $appointmentNotes->common_notes }} </textarea>
+                                            <div class="mb-3">
+                                                <textarea name="common_notes" id="common_notes" cols="80" rows="5" class="form-control" > {{ $appointmentNotes->common_notes }} </textarea>
+                                            </div>
                                         @else
                                             <input type="hidden" name="appointment_id" >
-                                            <textarea name="common_notes" id="common_notes" cols="80" rows="5" class="form=control" > </textarea>
+                                            <div class="mb-3">
+                                                <textarea name="common_notes" id="common_notes" cols="80" rows="5" class="form-control" > </textarea>
+                                            </div>
                                         @endif
                                         <div class="add-note-btn-box">
-                                            <br>
                                             <button type="button" class="btn btn-primary font-13 me-2" id="add_common_notes">Add Notes </button>
                                         </div>
                                     </form>
                                 </div>
                             </div>
                             <div class="yellow-note-box treatment_notes">
-                                <strong>Treatment Notes:</strong><br>
+                                <strong class="form-label d-block">Treatment Notes:</strong>
                                 @if (isset($appointmentNotes))
                                     <div class="treatmentviewnotes">
                                         <p>
@@ -399,14 +401,17 @@
                                     <form method="post">
                                         @if(isset($appointmentNotes))
                                             <input type="hidden" name="appointment_id" value="{{ $appointmentNotes->appointment_id }}">
-                                            <textarea name="treatment_notes" id="treatment_notes" cols="80" rows="5" class="form=control">  {{ $appointmentNotes->treatment_notes }}  </textarea>
+                                            <div class="mb-3">
+                                                <textarea name="treatment_notes" id="treatment_notes" cols="80" rows="5" class="form-control">  {{ $appointmentNotes->treatment_notes }}  </textarea>
+                                            </div>
                                         @else
                                             <input type="hidden" name="appointment_id" >
-                                            <textarea name="treatment_notes" id="treatment_notes" cols="80" rows="5" class="form=control" > </textarea>
+                                            <div class="mb-3">
+                                                <textarea name="treatment_notes" id="treatment_notes" cols="80" rows="5" class="form-control" > </textarea>
+                                            </div>
                                         @endif
                                     </form>
                                     <div class="add-note-btn-box">
-                                        <br>
                                         <button type="button" class="btn btn-primary font-13 me-2" id="submit_treatment_notes">Add Notes </button>
                                     </div>
                                 </div>
@@ -1081,7 +1086,7 @@
                 clientId      = $('#clientcardid').data('client_id');
 
                 $.ajax({
-                url: "{!! route('calendar.add-appointment-notes') !!}",
+                url: "{!! route('calendar.add-appointment-treatment-notes') !!}",
                 type: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
