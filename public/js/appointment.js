@@ -66,6 +66,7 @@ var DU = {};
         initialCalender: function(){
             var context     = this;
             // Calender
+            var scrollTime = moment().format("HH:mm:ss");
             var calendarEl = document.getElementById('calendar');
                 context.calendar = new FullCalendar.Calendar(calendarEl, {
                 selectable: true,
@@ -73,6 +74,8 @@ var DU = {};
                 droppable: true,
                 aspectRatio: 1.8,
                 forceEventDuration: true,
+                nowIndicator: true,
+                scrollTime: scrollTime,
                 defaultAllDayEventDuration: "01:00",
                 initialView: 'resourceTimeGridDay',
                 // titleFormat: 'dddd, MMMM D, YYYY',
