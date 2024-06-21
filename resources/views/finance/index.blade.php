@@ -181,7 +181,7 @@
             </div>
             
             <div class="modal-body">
-                <ul class="nav nav-pills nav-fill nav-group mb-3 main_walkin" role="tablist">
+                <ul class="nav nav-pills nav-fill nav-group mb-4 main_walkin" role="tablist">
                     <li class="nav-item" role="presentation">
                         <a class="nav-link active casual_cus" data-bs-toggle="tab" href="#casual_customer" aria-selected="true" role="tab">Casual Customer <i class="ico-tick ms-1"></i></a>
                     </li>
@@ -259,7 +259,7 @@
                                         </select>
                                 </div>
                                 <div class="form-group icon col-lg-4">
-                                    <label class="form-label"></label>
+                                    <label class="form-label">&nbsp</label>
                                     <input type="text" id="walkin_phone_no" name="walkin_phone_no" class="form-control">
                                 </div>
                                 <div class="col-lg-3">

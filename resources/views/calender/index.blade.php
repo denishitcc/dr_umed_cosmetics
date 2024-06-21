@@ -143,18 +143,18 @@
                                     <p>{{ $dur }} Mins with {{ $userName ?: 'Anyone' }}</p>
                                 @endforeach
 
-                                <p class="additional_notes" style="display:none;">{{ $waitlists->additional_notes }}</p>
-                                <div class="mt-2">
-                                    <span class="dropdown show">
-                                        <a class="btn btn-primary font-13 alter btn-sm slot-btn me-1 dropdown-toggle more-options-btn" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <p class="additional_notes yellow-note-box p-2" style="display:none;">{{ $waitlists->additional_notes }}</p>
+                                <div class="mt-2 d-flexs">
+                                    <div class="dropdown show">
+                                        <a class="btn btn-primary font-13 alter btn-sm slot-btn me-2 dropdown-toggle more-options-btn" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             More Options
                                         </a>
 
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                            <a class="dropdown-item edit-btn" href="javascript:void(0)" waitlist_id="{{ $waitlists->id }}" id="edit_waitlist_clients" client_id="{{ $waitlists->client_id }}" category_id="{{ $waitlists->category_id }}" duration="{{ $dur }}" service_name="{{ $ser_names_str }}" services_id="{{ $ser_ids_str }}" preferred-from-date="{{ $waitlists->preferred_from_date }}" user-id="{{ $waitlists->user_id }}" preferred-to-date="{{ $waitlists->preferred_to_date }}" additional-notes="{{ $waitlists->additional_notes }}" client-name="{{ $waitlists->firstname.' '.$waitlists->lastname }}">Edit</a>
+                                            <a class="dropdown-item edit-btn font-13" href="javascript:void(0)" waitlist_id="{{ $waitlists->id }}" id="edit_waitlist_clients" client_id="{{ $waitlists->client_id }}" category_id="{{ $waitlists->category_id }}" duration="{{ $dur }}" service_name="{{ $ser_names_str }}" services_id="{{ $ser_ids_str }}" preferred-from-date="{{ $waitlists->preferred_from_date }}" user-id="{{ $waitlists->user_id }}" preferred-to-date="{{ $waitlists->preferred_to_date }}" additional-notes="{{ $waitlists->additional_notes }}" client-name="{{ $waitlists->firstname.' '.$waitlists->lastname }}">Edit</a>
                                             <a class="dropdown-item delete-btn delete_waitlist_client" href="#" waitlist_id="{{ $waitlists->id }}">Delete</a>
                                         </div>
-                                    </span>
+                                    </div>
                                     @if(!empty($waitlists->additional_notes))
                                         <a href="#" class="btn btn-primary font-13 alter btn-sm slot-btn show_notes"> Show notes</a>
                                     @else
@@ -595,7 +595,7 @@
                 </div>
                 
                 <div class="modal-body">
-                        <ul class="nav nav-pills nav-fill nav-group mb-3 main_walkin" role="tablist">
+                        <ul class="nav nav-pills nav-fill nav-group mb-4 main_walkin" role="tablist">
                             <li class="nav-item" role="presentation">
                                 <a class="nav-link active casual_cus" data-bs-toggle="tab" href="#casual_customer" aria-selected="true" role="tab">Casual Customer <i class="ico-tick ms-1"></i></a>
                             </li>
@@ -675,7 +675,7 @@
                                             </select>
                                     </div>
                                     <div class="form-group col-lg-4">
-                                        <label class="form-label"></label>
+                                        <label class="form-label">&nbsp</label>
                                         <input type="text" id="walkin_phone_no" name="walkin_phone_no" class="form-control">
                                     </div>
                                     <div class="col-lg-4">
@@ -2578,17 +2578,17 @@
                                         <p>${service}</p>
                                         <p>${item.duration[index]} Mins with ${item.user_firstname ? item.user_firstname + ' ' + item.user_lastname : 'Anyone'}</p>
                                     `).join('')}
-                                    <p class="additional_notes" style="display:none;">${item.additional_notes}</p>
-                                    <div class="mt-2">
-                                        <span class="dropdown show">
-                                            <a class="btn btn-primary font-13 alter btn-sm slot-btn me-1 dropdown-toggle more-options-btn" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <p class="additional_notes yellow-note-box p-2" style="display:none;">${item.additional_notes}</p>
+                                    <div class="mt-2 d-flexs">
+                                        <div class="dropdown show">
+                                            <a class="btn btn-primary font-13 alter btn-sm slot-btn me-2 dropdown-toggle more-options-btn" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                 More Options
                                             </a>
                                             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                                <a class="dropdown-item edit-btn" href="javascript:void(0)" waitlist_id="${item.id}" client_id="${item.client_id}" category_id="${item.category_id}" duration="${item.duration}" service_name="${item.service_name}" services_id="${item.service_id}" preferred-from-date="${item.preferred_from_date}" user-id="${item.user_id}" preferred-to-date="${item.preferred_to_date}" additional-notes="${item.additional_notes}" client-name="${item.firstname+' '+item.lastname}" id="edit_waitlist_clients">Edit</a>
+                                                <a class="dropdown-item edit-btn font-13" href="javascript:void(0)" waitlist_id="${item.id}" client_id="${item.client_id}" category_id="${item.category_id}" duration="${item.duration}" service_name="${item.service_name}" services_id="${item.service_id}" preferred-from-date="${item.preferred_from_date}" user-id="${item.user_id}" preferred-to-date="${item.preferred_to_date}" additional-notes="${item.additional_notes}" client-name="${item.firstname+' '+item.lastname}" id="edit_waitlist_clients">Edit</a>
                                                 <a class="dropdown-item delete-btn" href="#">Delete</a>
                                             </div>
-                                        </span>
+                                        </div>
                                         ${item.additional_notes ? `<a href="#" class="btn btn-primary font-13 alter btn-sm slot-btn show_notes"> Show notes</a>` : `<a href="#" class="btn btn-primary font-13 alter btn-sm slot-btn show_notes" disabled style="color: darkgray;"> Show notes</a>`}
                                     </div>
                                 </li>`;
@@ -2839,17 +2839,17 @@
                                             <p>${service}</p>
                                             <p>${item.duration[index]} Mins with ${item.user_firstname ? item.user_firstname + ' ' + item.user_lastname : 'Anyone'}</p>
                                         `).join('')}
-                                        <p class="additional_notes" style="display:none;">${item.additional_notes}</p>
-                                        <div class="mt-2">
-                                            <span class="dropdown show">
-                                                <a class="btn btn-primary font-13 alter btn-sm slot-btn me-1 dropdown-toggle more-options-btn" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <p class="additional_notes yellow-note-box p-2" style="display:none;">${item.additional_notes}</p>
+                                        <div class="mt-2 d-flexs">
+                                            <div class="dropdown show">
+                                                <a class="btn btn-primary font-13 alter btn-sm slot-btn me-2 dropdown-toggle more-options-btn" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     More Options
                                                 </a>
                                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                                    <a class="dropdown-item edit-btn" href="javascript:void(0)" waitlist_id="${item.id}" client_id="${item.client_id}" category_id="${item.category_id}" duration="${item.duration}" service_name="${item.service_name}" services_id="${item.service_id}" preferred-from-date="${item.preferred_from_date}" user-id="${item.user_id}" preferred-to-date="${item.preferred_to_date}" additional-notes="${item.additional_notes}" client-name="${item.firstname+' '+item.lastname}" id="edit_waitlist_clients" client-name="${item.firstname} ${item.lastname}">Edit</a>
+                                                    <a class="dropdown-item edit-btn font-13" href="javascript:void(0)" waitlist_id="${item.id}" client_id="${item.client_id}" category_id="${item.category_id}" duration="${item.duration}" service_name="${item.service_name}" services_id="${item.service_id}" preferred-from-date="${item.preferred_from_date}" user-id="${item.user_id}" preferred-to-date="${item.preferred_to_date}" additional-notes="${item.additional_notes}" client-name="${item.firstname+' '+item.lastname}" id="edit_waitlist_clients" client-name="${item.firstname} ${item.lastname}">Edit</a>
                                                     <a class="dropdown-item delete-btn" href="#">Delete</a>
                                                 </div>
-                                            </span>
+                                            </div>
                                             ${item.additional_notes ? `<a href="#" class="btn btn-primary font-13 alter btn-sm slot-btn show_notes"> Show notes</a>` : `<a href="#" class="btn btn-primary font-13 alter btn-sm slot-btn show_notes" disabled  style="color: darkgray;"> Show notes</a>`}
                                         </div>
                                     </li>`;
