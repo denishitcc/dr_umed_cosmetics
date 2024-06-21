@@ -9,6 +9,7 @@ use App\Models\ClientsPhotos;
 use App\Models\ClientsDocuments;
 use App\Models\Locations;
 use App\Models\Appointment;
+use App\Models\AppointmentForms;
 use App\Models\Category;
 use App\Models\Services;
 use App\Models\User;
@@ -245,9 +246,15 @@ class ClientsController extends Controller
 
             $futureappointments = $client->allappointments()->where('created_at','>=', $todayDate)->orderby('created_at','desc')->get();
             $pastappointments   = $client->allappointments()->where('created_at','<=', $todayDate)->orderby('created_at','desc')->get();
-            
+
+            $allappointments    = $client->allAppointments()->pluck('id');
+            $allformscount      = AppointmentForms::whereIn('appointment_id', $allappointments)->count();
+            $allforms           = AppointmentForms::whereIn('appointment_id', $allappointments)->get()->groupBy(function ($val) {
+                return Carbon::parse($val->created_at)->format('d M Y');
+            });
+            // dd($allforms);
             $location = Locations::get();
-            return view('clients.edit',compact('client','client_photos','client_documents','futureappointments','pastappointments','location'));
+            return view('clients.edit',compact('client','client_photos','client_documents','futureappointments','pastappointments','location','allformscount','allforms'));
         } else {
             abort(403, 'You are not authorized to access this page.');
         }

@@ -823,6 +823,7 @@ var DU = {};
                 else{
                     var location_id           = $('#locations').find(':selected').val();
                     sessionStorage.setItem("loc_ids", location_id);
+
                     $.ajax({
                         url: moduleConfig.getStaffList,
                         type: 'POST',
@@ -1424,8 +1425,8 @@ var DU = {};
             var context = this;
             $(document).on('click','#delete_forms',function(e){
                 var $this               = $(this),
-                    apptform_id         = $this.data('apptform_id'),
-                    appointmentId       = $this.data('appointment_id');
+                apptform_id         = $this.data('apptform_id'),
+                appointmentId       = $this.data('appointment_id');
 
                 $.ajax({
                     url: moduleConfig.deleteAppointmentForms.replace(':ID',apptform_id),
@@ -1544,7 +1545,6 @@ var DU = {};
 
         // For events list
         eventsList: function(start_date, end_date,resourceId){
-            console.log('test');
             var context = this,
                 todayDt = moment(context.calendar.currentData.dateProfile.currentDate).format('YYYY-MM-DD');
 

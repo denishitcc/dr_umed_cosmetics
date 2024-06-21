@@ -22,7 +22,7 @@
                     @endif
                 </td>
                 <td class="text-center">
-                    <button type="button" class="btn btn-sm black-btn round-6 dt-delete">
+                    <button type="button" class="btn btn-sm black-btn round-6 dt-delete" id="delete_forms">
                         <i class="ico-trash"></i>
                     </button>
                 </td>
