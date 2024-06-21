@@ -1157,20 +1157,24 @@ var DU = {};
                         },
                         success: function (data) {
                             if (data.success) {
-
-                                $('.summry-header').remove();
-                                $('#editEventData').remove();
-                                // context.calendar.refetchEvents();
-                                // console.log(context.calendar.refetchEvents());
-                                // $('#calendar').fullCalendar( 'refetchEvents' );
-                                // context.calendar.render();
                                 Swal.fire({
                                     title: "Appointment!",
                                     text: data.message,
                                     icon: "success",
                                 }).then(function() {
-                                    // Reload the current page
-                                    location.reload();
+                                    $('.summry-header').remove();
+                                    $('#editEventData').remove();
+
+                                    const resources = context.calendar.getOption('resources');
+                                    var resourceId  = $('#staff').find(":selected").val();
+                                    var calendarEl = document.getElementById('calendar');
+                                    var calendar = new FullCalendar.Calendar(calendarEl);
+
+                                    var start_date  = moment(calendar.currentData.dateProfile.currentRange.start).format('YYYY-MM-DD');
+                                        end_date    = moment(calendar.currentData.dateProfile.currentRange.end).format('YYYY-MM-DD');
+
+                                    // Make an AJAX call to fetch events for the new date range
+                                    context.eventsList(start_date, end_date,resourceId);
                                 });
                             } else {
                                 Swal.fire({
