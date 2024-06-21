@@ -152,18 +152,18 @@
                     <label class="form-label"><strong>Send receipt by email</strong></label>
                     <div class="row">
                         <div class="col-lg-10">
-                            <input type="text" class="form-control send_email_receipt" placeholder="admin@tenderresponse.com.au (use comma for multiple email)"  {{ $permission == 'View Only' ? 'disabled' : '' }}>
+                            <input type="text" class="form-control send_email_receipt" placeholder="admin@tenderresponse.com.au (use comma for multiple email)" {{ $permission === 'View & Make Changes' || $permission === 'Both' || $permission === true ? '' : 'disabled' }}>
                         </div>
                         <div class="col-auto">
-                            <button type="button" class="btn btn-primary btn-md send_receipt_payment_mail" {{ $permission == 'View Only' ? 'disabled' : '' }}>Send</button>
+                            <button type="button" class="btn btn-primary btn-md send_receipt_payment_mail" {{ $permission === 'View & Make Changes' || $permission === 'Both' || $permission === true ? '' : 'disabled' }}>Send</button>
                         </div>
                     </div>
                 </div>
             </div>
             <!-- Modal footer -->
             <div class="modal-footer">
-            <button type="button" class="btn btn-light btn-md delete_invoice" delete_id="" {{ $permission == 'View Only' ? 'disabled' : '' }}>Delete</button>
-            <button type="button" class="btn btn-light btn-md edit_invoice" edit_id="" {{ $permission == 'View Only' ? 'disabled' : '' }}>Edit</button>
+            <button type="button" class="btn btn-light btn-md delete_invoice" delete_id="" {{ $permission === 'View & Make Changes' || $permission === 'Both' || $permission === true ? '' : 'disabled' }}>Delete</button>
+            <button type="button" class="btn btn-light btn-md edit_invoice" edit_id="" {{ $permission === 'View & Make Changes' || $permission === 'Both' || $permission === true ? '' : 'disabled' }}>Edit</button>
             <button type="button" class="btn btn-light btn-md cancel_invoice">Cancel</button>
             <button type="button" class="btn btn-primary btn-md print_invoice" ids="">Print</button>
             </div>
