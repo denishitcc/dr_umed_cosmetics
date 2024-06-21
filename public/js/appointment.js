@@ -988,6 +988,14 @@ var DU = {};
                     var userArray      = response.data.client_id;
                     var userHtml       = '';
 
+                    $('.main_calendar').show();
+                    $('.searh_data').show();
+                    $('#mycalendar').show();
+                    $('.waitlist').hide();
+                    $('.client_list_box').show();
+                    $('#clientDetails').show();
+                    $('.history_appointments').show();
+                    $('.client_list_box').hide();
                     if (userArray != 0 && userArray != null) {
                         userHtml = `<div class="client-name">
                                 <div class="drop-cap" style="background: #D0D0D0; color:#fff;">${response.data.client_data.first_name.charAt(0).toUpperCase()}
