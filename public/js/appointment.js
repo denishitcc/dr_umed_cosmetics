@@ -284,7 +284,6 @@ var DU = {};
                     // info.start and info.end represent the new date range resourceTimeGridWeek
                     var start_date  = moment(info.startStr).format('YYYY-MM-DD'),
                         end_date    = moment(info.endStr).format('YYYY-MM-DD');
-
                     // Make an AJAX call to fetch events for the new date range
                     context.eventsList(start_date, end_date,resourceId);
                 },
@@ -1631,6 +1630,17 @@ var DU = {};
                         }).then(function() {
                             $('.summry-header').remove();
                             $('#external-events').empty();
+
+                            const resources = context.calendar.getOption('resources');
+                            var resourceId  = $('#staff').find(":selected").val();
+                            var calendarEl = document.getElementById('calendar');
+                            var calendar = new FullCalendar.Calendar(calendarEl);
+
+                            var start_date  = moment(calendar.currentData.dateProfile.currentRange.start).format('YYYY-MM-DD');
+                                end_date    = moment(calendar.currentData.dateProfile.currentRange.end).format('YYYY-MM-DD');
+
+                            // Make an AJAX call to fetch events for the new date range
+                            context.eventsList(start_date, end_date,resourceId);
                         });
                     } else {
                         Swal.fire({
