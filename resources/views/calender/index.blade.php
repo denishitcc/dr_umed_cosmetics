@@ -2206,6 +2206,7 @@
             $('.client_list_box').show();
             $('#clientDetails').show();
             $('.history_appointments').show();
+            $('.client_list_box').hide();
         })
         $(document).on('click', '.close_payment', function(e) {
             $('#payment_completed').modal('hide');
