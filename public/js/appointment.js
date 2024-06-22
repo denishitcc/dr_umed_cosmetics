@@ -866,6 +866,7 @@ var DU = {};
         },
 
         locationDropdown: function(){
+            debugger;
             var context = this;
 
             $.ajax({
@@ -969,11 +970,47 @@ var DU = {};
                 headers: {
                     'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
                 },
-                success: function (data) {
+                success: function (data) {debugger;
                     if(data.type != 'admin')
                     {
-                        $('#locations').val(data.staff_loc);
+                        // $('#locations').val(data.staff_loc);
                     }
+
+                    var location_id           = $('#locations').val();//$(this).val();
+                    sessionStorage.setItem("loc_ids", location_id);
+                    var selected_loc_id = $('#locations').val();
+                    var selected_loc_name = $('#locations option:selected').text();
+                    $('.walkin_loc_name').text(selected_loc_name);
+                    $('.walk_in_location_id').val(selected_loc_id);
+                    $.ajax({
+                        url: moduleConfig.getStaffList,
+                        type: 'POST',
+                        data: {
+                            'location_id'    : location_id,
+                        },
+                        headers: {
+                            'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function (data) {
+                            // Update the FullCalendar resources with the retrieved data
+                            context.calendar.setOption('resources', data);
+                            context.calendar.refetchEvents(); // Refresh events if needed
+
+                            $('#staff').empty();
+                            $('#staff').append(`<option value="all">All staff</option>
+                                    <option disabled>Individual staff</option>`);
+                            if (data && data.length > 0) {
+                                data.forEach(function (name) {
+                                    let fullName = name.title;
+                                    let id = name.id;
+                                    $('#staff').append($('<option>', { value: id, text: fullName }));
+                                });
+                            }
+                        },
+                        error: function (error) {
+                            console.error('Error fetching resources:', error);
+                        }
+                    });
                 }
             });
         },

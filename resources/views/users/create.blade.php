@@ -105,9 +105,10 @@
                     </div>
                     <div class="col-lg-4 staff_hide">
                         <div class="form-group">
-                            <label class="form-label">Staff member at</label>
-                            <select class="form-select form-control" id="choices-multiple-remove-button" name="staff_member_location[]" placeholder="-- select an staff location --" multiple>
-                                @if(count($locations)>0)
+                            <label class="form-label staff_labels">Staff member at</label>
+                            <select class="form-select form-control" id="choices-multiple-remove-button" name="staff_member_location[]" multiple>
+                                <option value="" disabled>-- select a staff location --</option>
+                                @if(count($locations) > 0)
                                     @foreach($locations as $location)
                                         <option value="{{$location->id}}">{{$location->location_name}}</option>
                                     @endforeach
@@ -292,13 +293,21 @@
                     access_level: {
                         required: true
                     },
-                    staff_member_location: {
-                        required: true
+                    'staff_member_location[]': {
+                        required: true,
+                        minlength: 1 // Ensure at least one selection is made
                     }
                 },
-                errorPlacement: function(error, element) {
+                messages: {
+                    'staff_member_location[]': {
+                        required: "Please select at least one location."
+                    }
+                },
+                errorPlacement: function(error, element) {debugger;
                     if (element.attr("name") === "image") {
                         error.insertAfter(".gl-upload");
+                    } else if (element.attr("name") === "staff_member_location[]") {
+                        error.insertAfter(".staff_labels");
                     } else {
                         error.insertAfter(element);
                     }

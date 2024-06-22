@@ -125,14 +125,16 @@
                         @php
                             $selectedLocations = explode(',', $users->staff_member_location);
                         @endphp
-                        <select class="form-select form-control" name="staff_member_location[]">
-                            <option selected="" value=""> -- select an option -- </option>
-                            
+                        <select class="form-select form-control" id="choices-multiple-remove-button"
+                            name="staff_member_location[]" multiple>
+                            <option value="" disabled>-- select an option --</option>
+
                             @if (count($locations) > 0)
-                                @foreach ($locations as $location)
-                                    <option value="{{ $location->id }}"
-                                        {{ $location->id == $users->staff_member_location ? 'selected' : '' }}>
-                                        {{ $location->location_name }} </option>
+                                @foreach ($locations as $loc)
+                                    <option value="{{ $loc->id }}"
+                                        {{ in_array($loc->id, $selectedLocations) ? 'selected' : '' }}>
+                                        {{ $loc->location_name }}
+                                    </option>
                                 @endforeach
                             @endif
                         </select>

@@ -120,10 +120,15 @@ class FinanceController extends Controller
             {
                 $locations = Locations::all();
             }else{
-                $locations = Locations::where('id',$user->staff_member_location)->get();
+                $loc_exp = explode(',',$user->staff_member_location);
+                $locations = [];
+                foreach($loc_exp as $loc)
+                {
+                    $locations_query = Locations::where('id',$loc)->first();
+                    $locations[] = array('id'=>$locations_query->id,'location_name'=>$locations_query->location_name);
+                }
             }
             $staffs     = User::all();
-
             return view('finance.index', compact('walkin','locations','staffs','permission'));
         }else{
             abort(403, 'You are not authorized to access this page.');

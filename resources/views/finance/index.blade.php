@@ -29,7 +29,7 @@
                         <select class="form-select" id="locations">
                             @if(count($locations)>0)
                                 @foreach($locations as $loc)
-                                    <option value="{{$loc->id}}">{{$loc->location_name}}</option>
+                                    <option value="{{$loc['id']}}">{{$loc['location_name']}}</option>
                                 @endforeach
                             @endif
                         </select>

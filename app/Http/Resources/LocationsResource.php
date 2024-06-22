@@ -15,8 +15,8 @@ class LocationsResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'              => $this->id,
-            'location_name'   => $this->location_name,
+            'id'              => $this['id'],
+            'location_name'   => $this['location_name'],
         ];
     }
 }

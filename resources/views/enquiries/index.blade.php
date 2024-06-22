@@ -35,89 +35,119 @@
                 <li>
                     @php
                     $user = Auth::user();
-                    if ($user->role_type == 'admin' || $user->is_staff_memeber == 0) {
-                        $new_enquiry = \App\Models\Enquiries::where('enquiry_status', 'New Enquiry')->get();
+                    if ($user->role_type == 'admin' || $user->is_staff_member == 0) {
+                        $new_enquiries = \App\Models\Enquiries::where('enquiry_status', 'New Enquiry')->get();
                     } else {
-                        $new_enquiry = \App\Models\Enquiries::where([
-                            ['enquiry_status', '=', 'New Enquiry'],
-                            ['location_name', '=', $user->staff_member_location]
-                        ])->get();
+                        $new_enquiries = \App\Models\Enquiries::where('enquiry_status', 'New Enquiry')
+                                        ->where('location_name', $user->staff_member_location)
+                                        ->get();
                     }
                     @endphp
-                <div class="font-24 mb-1">{{count($new_enquiry)}}</div>
-                    <b class="text-new-enquiry">New Enquiry </b>
+                    <div class="font-24 mb-1">{{ $new_enquiries->count() }}</div>
+                    <b class="text-new-enquiry">New Enquiry</b>
                 </li>
                 <li>
-                    @php
+                @php
                     $user = Auth::user();
                     if ($user->role_type == 'admin' || $user->is_staff_memeber == 0) {
                         $follow_up_done = \App\Models\Enquiries::where('enquiry_status', 'Follow Up Done')->get();
                     } else {
-                        $follow_up_done = \App\Models\Enquiries::where([
-                            ['enquiry_status', '=', 'Follow Up Done'],
-                            ['location_name', '=', $user->staff_member_location]
-                        ])->get();
+                        $staff_member_locations = explode(',', $user->staff_member_location);
+                        $follow_up_done = collect(); // Initialize an empty collection to store enquiries
+
+                        foreach ($staff_member_locations as $loc) {
+                            $enquiriesForLocation = \App\Models\Enquiries::where('enquiry_status', 'Follow Up Done')
+                                                        ->where('location_name', $loc)
+                                                        ->get();
+                            $follow_up_done = $follow_up_done->merge($enquiriesForLocation); // Merge enquiries into the collection
+                        }
                     }
-                    @endphp
-                <div class="font-24 mb-1">{{count($follow_up_done)}}</div>
-                    <b class="text-succes">Follow Up Done </b>
+                @endphp
+
+                <div class="font-24 mb-1">{{ $follow_up_done->count() }}</div>
+                <b class="text-succes">Follow Up Done</b>
+
                 </li>
                 <li>
                     @php
-                    $user = Auth::user();
-                    if ($user->role_type == 'admin' || $user->is_staff_memeber == 0) {
-                        $first_call_done = \App\Models\Enquiries::where('enquiry_status', 'First Call Done')->get();
-                    } else {
-                        $first_call_done = \App\Models\Enquiries::where([
-                            ['enquiry_status', '=', 'First Call Done'],
-                            ['location_name', '=', $user->staff_member_location]
-                        ])->get();
-                    }
+                        $user = Auth::user();
+                        if ($user->role_type == 'admin' || $user->is_staff_memeber == 0) {
+                            $first_call_done = \App\Models\Enquiries::where('enquiry_status', 'First Call Done')->get();
+                        } else {
+                            $staff_member_locations = explode(',', $user->staff_member_location);
+                            $first_call_done = collect(); // Initialize an empty collection to store enquiries
+
+                            foreach ($staff_member_locations as $loc) {
+                                $enquiriesForLocation = \App\Models\Enquiries::where('enquiry_status', 'First Call Done')
+                                                        ->where('location_name', $loc)
+                                                        ->get();
+                                $first_call_done = $first_call_done->merge($enquiriesForLocation); // Merge enquiries into the collection
+                            }
+                        }
+                        
                     @endphp
+
                     <div class="font-24 mb-1">{{count($first_call_done)}}</div>
                     <b class="text-yellow">First Call Done</b>
                 </li>
                 <li>
                     @php
-                    $user = Auth::user();
-                    if ($user->role_type == 'admin' || $user->is_staff_memeber == 0) {
-                        $client_contacted = \App\Models\Enquiries::where('enquiry_status', 'Client Contacted')->get();
-                    } else {
-                        $client_contacted = \App\Models\Enquiries::where([
-                            ['enquiry_status', '=', 'Client Contacted'],
-                            ['location_name', '=', $user->staff_member_location]
-                        ])->get();
-                    }
+                        $user = Auth::user();
+                        if ($user->role_type == 'admin' || $user->is_staff_memeber == 0) {
+                            $client_contacted = \App\Models\Enquiries::where('enquiry_status', 'Client Contacted')->get();
+                        } else {
+                            $staff_member_locations = explode(',', $user->staff_member_location);
+                            $client_contacted = collect(); // Initialize an empty collection to store enquiries
+
+                            foreach ($staff_member_locations as $loc) {
+                                $enquiriesForLocation = \App\Models\Enquiries::where('enquiry_status', 'Client Contacted')
+                                                        ->where('location_name', $loc)
+                                                        ->get();
+                                $client_contacted = $client_contacted->merge($enquiriesForLocation); // Merge enquiries into the collection
+                            }
+                        }
+                        
                     @endphp
                     <div class="font-24 mb-1">{{count($client_contacted)}}</div>
                     <b class="text-cyan">Client Contacted</b>
                 </li>
                 <li>
                     @php
-                    $user = Auth::user();
-                    if ($user->role_type == 'admin' || $user->is_staff_memeber == 0) {
-                        $no_response = \App\Models\Enquiries::where('enquiry_status', 'No Response')->get();
-                    } else {
-                        $no_response = \App\Models\Enquiries::where([
-                            ['enquiry_status', '=', 'No Response'],
-                            ['location_name', '=', $user->staff_member_location]
-                        ])->get();
-                    }
+                        $user = Auth::user();
+                        if ($user->role_type == 'admin' || $user->is_staff_memeber == 0) {
+                            $no_response = \App\Models\Enquiries::where('enquiry_status', 'No Response')->get();
+                        } else {
+                            $staff_member_locations = explode(',', $user->staff_member_location);
+                            $no_response = collect(); // Initialize an empty collection to store enquiries
+
+                            foreach ($staff_member_locations as $loc) {
+                                $enquiriesForLocation = \App\Models\Enquiries::where('enquiry_status', 'No Response')
+                                                        ->where('location_name', $loc)
+                                                        ->get();
+                                $no_response = $no_response->merge($enquiriesForLocation); // Merge enquiries into the collection
+                            }
+                        }
+                        
                     @endphp
                     <div class="font-24 mb-1">{{count($no_response)}}</div>
                     <b class="text-light-red">No Response</b>
                 </li>
                 <li>
                     @php
-                    $user = Auth::user();
-                    if ($user->role_type == 'admin' || $user->is_staff_memeber == 0) {
-                        $not_intrested = \App\Models\Enquiries::where('enquiry_status', 'Not Intrested')->get();
-                    } else {
-                        $not_intrested = \App\Models\Enquiries::where([
-                            ['enquiry_status', '=', 'Not Intrested'],
-                            ['location_name', '=', $user->staff_member_location]
-                        ])->get();
-                    }
+                        $user = Auth::user();
+                        if ($user->role_type == 'admin' || $user->is_staff_memeber == 0) {
+                            $not_intrested = \App\Models\Enquiries::where('enquiry_status', 'Not Intrested')->get();
+                        } else {
+                            $staff_member_locations = explode(',', $user->staff_member_location);
+                            $not_intrested = collect(); // Initialize an empty collection to store enquiries
+
+                            foreach ($staff_member_locations as $loc) {
+                                $enquiriesForLocation = \App\Models\Enquiries::where('enquiry_status', 'Not Intrested')
+                                                        ->where('location_name', $loc)
+                                                        ->get();
+                                $not_intrested = $not_intrested->merge($enquiriesForLocation); // Merge enquiries into the collection
+                            }
+                        }
                     @endphp
                     <div class="font-24 mb-1">{{count($not_intrested)}}</div>
                     <b class="text-red">Not Intrested</b>

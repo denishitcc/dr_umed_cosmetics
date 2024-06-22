@@ -25,9 +25,16 @@ class EnquiriesController extends Controller
             {
                 $enquiries = Enquiries::all();
             }else{
-                $enquiries = Enquiries::where('location_name',$user->staff_member_location)->get();
+                $loc_exp = explode(',',$user->staff_member_location);
+                $enquiries = collect(); // Initialize an empty collection
+                // dd($loc_exp);
+                $locations = [];
+                foreach($loc_exp as $loc)
+                {
+                    $enquiriesForLocation = Enquiries::where('location_name', $loc)->get();
+                    $enquiries = $enquiries->merge($enquiriesForLocation);
+                }
             }
-
             
             if ($request->ajax()) {
                 $user = Auth::user();
@@ -35,7 +42,14 @@ class EnquiriesController extends Controller
                 {
                     $data = Enquiries::all();
                 }else{
-                    $data = Enquiries::where('location_name',$user->staff_member_location)->get();
+
+                    $loc_exp = explode(',', $user->staff_member_location);
+                    $data = collect(); // Initialize an empty collection
+
+                    foreach ($loc_exp as $loc) {
+                        $enquiriesForLocation = Enquiries::where('location_name', $loc)->get();
+                        $data = $data->merge($enquiriesForLocation); // Merge the current location's enquiries into the collection
+                    }
                 }
                 return Datatables::of($data)
                     

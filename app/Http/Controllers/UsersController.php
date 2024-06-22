@@ -51,9 +51,18 @@ class UsersController extends Controller
                         return $row->first_name.' '.$row->last_name;
                     })
                     ->addColumn('locations', function ($row) {
-                        $loc = Locations::where('id',$row->staff_member_location)->first(); 
-                        return $loc->location_name??null;
-                    })
+                        $locs = explode(',', $row->staff_member_location);
+                        $locationNames = [];
+                    
+                        foreach ($locs as $loc) {
+                            $location = Locations::where('id', $loc)->first();
+                            if ($location) {
+                                $locationNames[] = $location->location_name;
+                            }
+                        }
+                    
+                        return implode(', ', $locationNames) ?: null;
+                    })                   
                     ->addColumn('status_bar', function($row){
                         if($row->status == 'active')
                         {
@@ -173,11 +182,11 @@ class UsersController extends Controller
                 $sub = $data['subject'];
 
                 $to_email = $request->email;
-                Mail::send('email.registration', $data, function($message) use ($to_email,$sub) {
-                    $message->to($to_email)
-                    ->subject($sub);
-                    $message->from('support@itcc.net.au',$sub);
-                });
+                // Mail::send('email.registration', $data, function($message) use ($to_email,$sub) {
+                //     $message->to($to_email)
+                //     ->subject($sub);
+                //     $message->from('support@itcc.net.au',$sub);
+                // });
             }
 
             $response = [
@@ -248,6 +257,7 @@ class UsersController extends Controller
                 $img    = $getImg['image'];
             }
         }
+        $staff_loc = implode(',',$request->staff_member_location);
         $newUser = User::updateOrCreate(['id' => $request->id],[
             'first_name'                        => $request->first_name,
             'last_name'                         => $request->last_name,
@@ -258,7 +268,7 @@ class UsersController extends Controller
             'role_type'                         => $request->role_type,
             'access_level'                      => $request->access_level,
             'is_staff_memeber'                  => $request->is_staff_memeber,
-            'staff_member_location'             => $request->is_staff_memeber!='0'?$request->staff_member_location:null,
+            'staff_member_location'             => $request->is_staff_memeber!='0'?$staff_loc:null,
             'image'                             => $img,
             'available_in_online_booking'       => $request->available_in_online_booking,
             'calendar_color'                    => $request->calendar_color,
@@ -365,7 +375,15 @@ class UsersController extends Controller
         {
             $loc = Locations::all();
         }else{
-            $loc = Locations::where('id',$user->staff_member_location)->get();
+            $loc_exp = explode(',', $user->staff_member_location);
+            $loc = [];
+
+            foreach ($loc_exp as $loc_id) {
+                $location = Locations::where('id', $loc_id)->first();
+                if ($location) {
+                    $loc[] = ['id' => $location->id, 'location_name' => $location->location_name];
+                }
+            }
         }
         return response()->json(LocationsResource::collection($loc));
         // return response()->json($loc);
