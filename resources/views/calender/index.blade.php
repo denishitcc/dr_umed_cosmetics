@@ -5606,7 +5606,8 @@
                                     client_details[existingRecordIndex !== -1 ? existingRecordIndex : i].client_documents.push({
                                         doc_id: res[i].documents[j].id,
                                         doc_name: res[i].documents[j].doc_name,
-                                        created_at: res[i].documents[j].created_at
+                                        created_at: res[i].documents[j].created_at,
+                                        doc_url: res[i].documents[j].doc_url
                                     });
                                 }
                             }
@@ -5754,7 +5755,8 @@
                                     client_details[existingRecordIndex !== -1 ? existingRecordIndex : i].client_documents.push({
                                         doc_id: res[i].documents[j].id,
                                         doc_name: res[i].documents[j].doc_name,
-                                        created_at: res[i].documents[j].created_at
+                                        created_at: res[i].documents[j].created_at,
+                                        doc_url: res[i].documents[j].doc_url
                                     });
                                 }
                             }
@@ -5871,7 +5873,8 @@
                                     client_details[existingRecordIndex !== -1 ? existingRecordIndex : i].client_documents.push({
                                         doc_id: res[i].documents[j].id,
                                         doc_name: res[i].documents[j].doc_name,
-                                        created_at: res[i].documents[j].created_at
+                                        created_at: res[i].documents[j].created_at,
+                                        doc_url: res[i].documents[j].doc_url
                                     });
                                 }
                             }
@@ -6940,7 +6943,8 @@
                                     client_details[existingRecordIndex !== -1 ? existingRecordIndex : i].client_documents.push({
                                         doc_id: res[i].documents[j].id,
                                         doc_name: res[i].documents[j].doc_name,
-                                        created_at: res[i].documents[j].created_at
+                                        created_at: res[i].documents[j].created_at,
+                                        doc_url: res[i].documents[j].doc_url,
                                     });
                                 }
                             }
@@ -7064,7 +7068,7 @@
                     // Assuming each document object has a property called 'created_at' representing its creation date
                     var createdDate = new Date(doc.created_at);
                     var formattedDate = formatDate(createdDate); // Assuming formatDate function formats the date appropriately
-                    var link = $('<a>').addClass('btn tag icon-btn-left skyblue mb-2').html('<span><i class="ico-pdf me-2 fs-2 align-middle"></i>' + doc.doc_name + '</span><span class="file-date">' + formattedDate + '</span><i class="del ico-trash remove_doc" ids = "'+ doc.doc_id+ '"></i>');
+                    var link = $('<a href='+doc.doc_url+' download>').addClass('btn tag icon-btn-left skyblue mb-2').html('<span><i class="ico-pdf me-2 fs-2 align-middle"></i>' + doc.doc_name + '</span><span class="file-date">' + formattedDate + '</span><i class="del ico-trash remove_doc" ids = "'+ doc.doc_id+ '"></i>');
                     var listItem = $('<span>').append(link);
                     documentListContainer.append(listItem);
                 });

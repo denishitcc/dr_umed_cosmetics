@@ -55,6 +55,7 @@ var DU = {};
             context.openeditServiceFormModal();
             context.CompleteClientForms();
             context.updateAppointmentStatus();
+            context.deleteFormsCard();
 
             $('#clientmodal').hide();
             $('#service_error').hide();
@@ -65,6 +66,7 @@ var DU = {};
         initialCalender: function(){
             var context     = this;
             // Calender
+            var scrollTime = moment().format("HH:mm:ss");
             var calendarEl = document.getElementById('calendar');
                 context.calendar = new FullCalendar.Calendar(calendarEl, {
                 selectable: true,
@@ -72,6 +74,8 @@ var DU = {};
                 droppable: true,
                 aspectRatio: 1.8,
                 forceEventDuration: true,
+                nowIndicator: true,
+                scrollTime: scrollTime,
                 defaultAllDayEventDuration: "01:00",
                 initialView: 'resourceTimeGridDay',
                 // titleFormat: 'dddd, MMMM D, YYYY',
@@ -823,6 +827,7 @@ var DU = {};
                 else{
                     var location_id           = $('#locations').find(':selected').val();
                     sessionStorage.setItem("loc_ids", location_id);
+
                     $.ajax({
                         url: moduleConfig.getStaffList,
                         type: 'POST',
@@ -983,6 +988,14 @@ var DU = {};
                     var userArray      = response.data.client_id;
                     var userHtml       = '';
 
+                    $('.main_calendar').show();
+                    $('.searh_data').show();
+                    $('#mycalendar').show();
+                    $('.waitlist').hide();
+                    $('.client_list_box').show();
+                    $('#clientDetails').show();
+                    $('.history_appointments').show();
+                    $('.client_list_box').hide();
                     if (userArray != 0 && userArray != null) {
                         userHtml = `<div class="client-name">
                                 <div class="drop-cap" style="background: #D0D0D0; color:#fff;">${response.data.client_data.first_name.charAt(0).toUpperCase()}
@@ -1424,8 +1437,8 @@ var DU = {};
             var context = this;
             $(document).on('click','#delete_forms',function(e){
                 var $this               = $(this),
-                    apptform_id         = $this.data('apptform_id'),
-                    appointmentId       = $this.data('appointment_id');
+                apptform_id         = $this.data('apptform_id'),
+                appointmentId       = $this.data('appointment_id');
 
                 $.ajax({
                     url: moduleConfig.deleteAppointmentForms.replace(':ID',apptform_id),
@@ -1442,6 +1455,43 @@ var DU = {};
                             }).then(function() {
                                 context.selectors.copyexistingFormModal.modal('hide');
                                 context.getAppointmentForms(appointmentId);
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Error!",
+                                text: data.message,
+                                icon: "error",
+                            });
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Error fetching events:', error);
+                    }
+                });
+            });
+        },
+
+        deleteFormsCard: function(){
+            var context = this;
+            $(document).on('click','#delete_forms_card',function(e){
+                var $this               = $(this),
+                apptform_id         = $this.data('apptform_id'),
+                appointmentId       = $this.data('appointment_id');
+
+                $.ajax({
+                    url: moduleConfig.deleteAppointmentForms.replace(':ID',apptform_id),
+                    type: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function (data) {
+                        if (data.success) {
+                            Swal.fire({
+                                title: "Appointment Forms!",
+                                text: data.message,
+                                icon: "success",
+                            }).then(function() {
+                                location.reload();
                             });
                         } else {
                             Swal.fire({
@@ -1544,7 +1594,6 @@ var DU = {};
 
         // For events list
         eventsList: function(start_date, end_date,resourceId){
-            console.log('test');
             var context = this,
                 todayDt = moment(context.calendar.currentData.dateProfile.currentDate).format('YYYY-MM-DD');
 
