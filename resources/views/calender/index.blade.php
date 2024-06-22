@@ -156,9 +156,9 @@
                                         </div>
                                     </div>
                                     @if(!empty($waitlists->additional_notes))
-                                        <a href="#" class="btn btn-primary font-13 alter btn-sm slot-btn show_notes">Show notes</a>
+                                        <a href="#" class="btn btn-primary font-13 alter btn-sm slot-btn show_wait_notes">Show notes</a>
                                     @else
-                                        <a href="#" class="btn btn-primary font-13 alter btn-sm slot-btn show_notes" disabled style="color: darkgray;">Show notes</a>
+                                        <a href="#" class="btn btn-primary font-13 alter btn-sm slot-btn show_wait_notes" disabled style="color: darkgray;">Show notes</a>
                                     @endif
                                 </div>
                             </li>
@@ -2472,7 +2472,7 @@
                 }
             });
         });
-        $(document).on('click', '.show_notes', function(e) {
+        $(document).on('click', '.show_wait_notes', function(e) {
             e.preventDefault();
             var isDisabled = $(this).attr('disabled') !== undefined;
             if(isDisabled == false)
@@ -2596,7 +2596,7 @@
                                                 <a class="dropdown-item delete-btn font-13 delete_waitlist_client" href="javascript:void(0)" waitlist_id="${item.id}">Delete</a> 
                                             </div>
                                         </div>
-                                        ${item.additional_notes ? `<a href="#" class="btn btn-primary font-13 alter btn-sm slot-btn show_notes">Show notes</a>` : `<a href="#" class="btn btn-primary font-13 alter btn-sm slot-btn show_notes" disabled style="color: darkgray;">Show notes</a>`}
+                                        ${item.additional_notes ? `<a href="#" class="btn btn-primary font-13 alter btn-sm slot-btn show_wait_notes">Show notes</a>` : `<a href="#" class="btn btn-primary font-13 alter btn-sm slot-btn show_wait_notes" disabled style="color: darkgray;">Show notes</a>`}
                                     </div>
                                 </li>`;
                         });
@@ -2857,7 +2857,7 @@
                                                     <a class="dropdown-item delete-btn font-13 delete_waitlist_client" href="javascript:void(0)" waitlist_id="${item.id}">Delete</a> 
                                                 </div>
                                             </div>
-                                            ${item.additional_notes ? `<a href="#" class="btn btn-primary font-13 alter btn-sm slot-btn show_notes">Show notes</a>` : `<a href="#" class="btn btn-primary font-13 alter btn-sm slot-btn show_notes" disabled  style="color: darkgray;">Show notes</a>`}
+                                            ${item.additional_notes ? `<a href="#" class="btn btn-primary font-13 alter btn-sm slot-btn show_wait_notes">Show notes</a>` : `<a href="#" class="btn btn-primary font-13 alter btn-sm slot-btn show_wait_notes" disabled  style="color: darkgray;">Show notes</a>`}
                                         </div>
                                     </li>`;
                             });

@@ -2602,7 +2602,7 @@ var DU = {};
                 });
 
                 // add common note ajax
-                $(document).on('click','#add_common_notes', function(e){
+                $(document).on('click','#add_common_notes', function(e){debugger
                     e.preventDefault();
                     var appointmentId = $('.common_notes').find('input:hidden[name=appointment_id]').val(),
                         commonNotes   = $('#common_notes').val(),
@@ -2652,6 +2652,7 @@ var DU = {};
         },
 
         commonNoteAddUpdateAjax: function(appointmentId,commonNotes,clientId){
+            debugger;
             $.ajax({
                 url: moduleConfig.addNotes,
                 type: 'POST',
