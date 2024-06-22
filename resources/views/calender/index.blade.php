@@ -7387,7 +7387,14 @@
         document.body.appendChild(printContainer);
 
         // Print the page
-        window.print();
+        // window.print();
+        // Print the page
+        // window.print();
+
+        w=window.open();
+        w.document.write($(printContainer).html());
+        w.print();
+        w.close();
 
         // Remove the container from the document body
         document.body.removeChild(printContainer);
