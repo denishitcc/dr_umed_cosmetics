@@ -11,24 +11,29 @@
     <link rel="stylesheet" href="{{ asset('js/@formio/contrib/dist/formio-contrib.css') }}">
 </head>
 <body>
-    <div class="content">
-        <div id="topBannerSection">
+    <div class="w-50 m-auto">
+        <div class="card">
+            <div class="content">
+                <div id="topBannerSection" class="text-center">
+                </div>
+                <div class="form-group text-center">
+                    @if($user->banner_image!='')
+                        <img src="{{ asset('/storage/images/banner_image/'.$user->banner_image) }}" alt="" id="imgBannerPreview">
+                        @else
+                        <img src="{{ asset('/storage/images/banner_image/no-image.jpg') }}" alt="" id="imgBannerPreview">
+                    @endif
+                </div>
+                <div class="p-4">
+                    <h4>{{ $forms->title }}</h4>
+                    <input type="hidden" id="appointment_id" name="appointment_id" value="{{ $appointment->appointment_id }}">
+                    <input type="hidden" id="form_id" name="form_id" value="{{ $appointment->form_id }}">
+                    <input type="hidden" id="appointment_form_id" name="appointment_form_id" value="{{ $appointment->id }}">
+                    <hr>
+                    <label data-form_json="{{ $forms->form_json }}" id="formxml"></label>
+                    <div id="fb-editor"></div>
+                </div>
+            </div>
         </div>
-        <div class="form-group">
-            @if($user->banner_image!='')
-                <div class="form-group"><img src="{{ asset('/storage/images/banner_image/'.$user->banner_image) }}" alt="" id="imgBannerPreview"></div>
-                @else
-                <div class="form-group"><img src="{{ asset('/storage/images/banner_image/no-image.jpg') }}" alt="" id="imgBannerPreview"></div>
-            @endif
-        </div>
-        <h4>{{ $forms->title }}</h4>
-        <input type="hidden" id="appointment_id" name="appointment_id" value="{{ $appointment->appointment_id }}">
-        <input type="hidden" id="form_id" name="form_id" value="{{ $appointment->form_id }}">
-        <input type="hidden" id="appointment_form_id" name="appointment_form_id" value="{{ $appointment->id }}">
-        {{-- <input type="hidden" name="csrf_token" id="csrf_token" value="{{ csrf_token() }}"> --}}
-        <hr>
-            <label data-form_json="{{ $forms->form_json }}" id="formxml"></label>
-        <div id="fb-editor"></div>
     </div>
     <script src="{{ asset('js/jquery/dist/jquery.min.js') }}"></script>
     <script src="{{ asset('js/@formio/js/dist/formio.form.min.js') }}"></script>
