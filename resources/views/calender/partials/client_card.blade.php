@@ -14,7 +14,7 @@
             @if (isset($client->last_appointment))
                 <div class="d-grey">
                     Last appt at {{ $client->last_appointment->staff->staff_location->location_name }} on {{  $client->last_appointment->start_date }}
-                    <br>{{ $client->last_appointment->services->service_name }} with {{ $client->last_appointment->staff->name }} ({{ $client->last_appointment->appointment_status }})
+                    <br>{{ $client->last_appointment->services->service_name }} with {{ isset($client->last_appointment->staff->name) ? $client->last_appointment->staff->name : '' }} ({{ $client->last_appointment->appointment_status }})
                 </div>
             @endif
         </div>
