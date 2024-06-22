@@ -122,7 +122,7 @@
 </div>
 <div class="table-card-footer">
     <div class="tf-left">
-        <a href="#" class="btn btn-primary btn-md icon-btn-left"><i class="ico-user2 me-2 fs-6"></i>
+        <a href="{{ route('serviceforms.download',$clientforms->id) }}" class="btn btn-primary btn-md icon-btn-left" ><i class="ico-user2 me-2 fs-6"></i>
             Download</a>
     </div>
     <div class="tf-right">

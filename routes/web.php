@@ -186,6 +186,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('forms/preview/{id}',[FormsController::class, 'formPreview'])->name('serviceforms.formPreview');
         Route::post('forms/deleteform',[FormsController::class, 'formDelete'])->name('serviceforms.formDelete');
         Route::post('forms/updateform',[FormsController::class, 'serviceFormUpdate'])->name('serviceforms.serviceFormUpdate');
+        Route::get('forms/download/{id}',[FormsController::class, 'download'])->name('serviceforms.download');
     });
 
     //Calender

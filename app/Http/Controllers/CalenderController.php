@@ -342,16 +342,18 @@ class CalenderController extends Controller
                                 // Delete the ICS file after sending the email
                                 Storage::delete($icsFileName);
                             }
+
+                            if ($single_ser->forms != null) {
+                                $this->attachForms($single_ser, $appointment);
+                                $this->sendForms($request, $single_ser, $location, $appointment);
+                            }
                         }
+
                         $response = [
                             'success'   => true,
                             'message'   => 'Appt Confirmation send successfully!',
                             'type'      => 'success',
                         ];
-                    }
-                    if ($single_ser->forms != null) {
-                        $this->attachForms($single_ser, $appointment);
-                        $this->sendForms($request, $single_ser, $location, $appointment);
                     }
 
                     $data[] = [
@@ -467,17 +469,20 @@ class CalenderController extends Controller
                                 // Delete the ICS file after sending the email
                                 Storage::delete($icsFileName);
                             }
+
+                            if ($single_ser->forms != null) {
+                                $this->attachForms($single_ser, $findAppointment);
+                                $this->sendForms($request, $single_ser, $location, $findAppointment);
+                            }
                         }
+
                         $response = [
                             'success'   => true,
                             'message'   => 'Appt Confirmation send successfully!',
                             'type'      => 'success',
                         ];
                     }
-                    if ($single_ser->forms != null) {
-                        $this->attachForms($single_ser, $findAppointment);
-                        $this->sendForms($request, $single_ser, $location, $findAppointment);
-                    }
+
                 } else {
                     $appointmentsData['status'] = Appointment::BOOKED;
                     $appointment = Appointment::create($appointmentsData);

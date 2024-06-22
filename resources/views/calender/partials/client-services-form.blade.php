@@ -1,5 +1,5 @@
 <div class="modal fade" id="client_service_forms" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-xxl">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Client Form</h4>

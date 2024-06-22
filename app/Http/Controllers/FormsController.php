@@ -6,6 +6,8 @@ use App\Models\Appointment;
 use App\Models\AppointmentForms;
 use Illuminate\Http\Request;
 use App\Models\FormSummary;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+use Barryvdh\DomPDF\PDF;
 use DataTables;
 use Illuminate\Support\Facades\Auth;
 
@@ -298,7 +300,6 @@ class FormsController extends Controller
                 'type'    => 'success',
             ];
         } catch (\Throwable $th) {
-
             $data = [
                 'success' => false,
                 'message' => $th,
@@ -307,5 +308,34 @@ class FormsController extends Controller
         }
 
         return response()->json($data);
+    }
+
+    /**
+     * Method download
+     *
+     * @return void
+     */
+    public function download($id)
+    {
+        $user               = Auth()->user();
+        $appointmentform    = AppointmentForms::find($id);
+        $data               = json_decode($appointmentform->form_user_data, true);
+        $originalform       = json_decode($appointmentform->forms->form_json, true);
+
+        // dd($data);
+        foreach ($data['data'] as $key => $value) {
+            $formanswers[] = $value;
+        }
+
+        foreach ($originalform['components'] as $index => &$item) {
+            if (isset($formanswers[$index])) {
+                $item['ans'] = $formanswers[$index];
+            }
+        }
+        $originalform = $originalform['components'];
+        $pdf                = FacadePdf::loadView('pdf_template', compact('data','appointmentform','user','originalform'));
+        $pdfname            = $appointmentform->forms->title.'.pdf';
+        // return $pdf->stream($pdfname);
+        return $pdf->download($pdfname);
     }
 }
