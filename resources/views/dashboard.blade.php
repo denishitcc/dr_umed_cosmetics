@@ -13,24 +13,27 @@
 }
 </style>
 <meta name="csrf-token" content="{{ csrf_token() }}">
-<div class="app-header mb-4">
-    <h4 class="small-title mb-0">Dashboard</h4>
+<div class="row mb-4">
+    <div class="col-lg-6 col-md-12 col-sm-12">
+        <h4 class="small-title mb-0">Dashboard</h4>
+    </div>
+    <div class="col-lg-6 col-md-12 col-sm-12">
+        <div class="right d-flex">
+            <!-- <input type="date" class="form-control"> -->
+            <div id="reportrange" class="form-control d-flex align-items-center me-3">
+                <i class="fa fa-calendar me-2"></i>
+                <span></span> <i class="fa fa-caret-down ms-2"></i>
+            </div>
 
-    <div class="right d-flex">
-        <!-- <input type="date" class="form-control"> -->
-        <div id="reportrange" class="form-control d-flex align-items-center me-3">
-            <i class="fa fa-calendar me-2"></i>
-            <span></span> <i class="fa fa-caret-down ms-2"></i>
+            <select class="form-select" id="locations">
+                <option>All</option>
+                @if(count($locations)>0)
+                    @foreach($locations as $loc)
+                        <option value="{{$loc->id}}">{{$loc->location_name}}</option>
+                    @endforeach
+                @endif
+            </select>
         </div>
-
-        <select class="form-select" id="locations">
-            <option>All</option>
-            @if(count($locations)>0)
-                @foreach($locations as $loc)
-                    <option value="{{$loc->id}}">{{$loc->location_name}}</option>
-                @endforeach
-            @endif
-        </select>
     </div>
 </div>
 

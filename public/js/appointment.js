@@ -2135,7 +2135,7 @@ var DU = {};
                                             <button class="btn btn-secondary btn-sm">Messages</button>
                                         </div>
                                         <div class="text-end">
-                                            <a href="#" class="btn btn-primary btn-md blue-alter" id="appointment_cancel">Cancel</a>
+                                            <a href="#" class="btn btn-primary btn-sm mb-4" id="appointment_cancel">Cancel</a>
                                         </div>`);
                                 } else if (count > 1) {
                                     $('.drag-box').append(`
@@ -2205,7 +2205,7 @@ var DU = {};
                                         <button class="btn btn-secondary btn-sm">Messages</button>
                                     </div>
                                     <div class="text-end">
-                                        <a href="#" class="btn btn-primary btn-md blue-alter" id="appointment_cancel">Cancel</a>
+                                        <a href="#" class="btn btn-primary btn-sm mb-4" id="appointment_cancel">Cancel</a>
                                     </div>`);
                             } else if (count > 1) {
                                 $('.drag-box').append(`

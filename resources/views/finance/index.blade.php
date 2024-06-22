@@ -22,8 +22,8 @@
                 </div>
               </div>
               <div class="card-head py-3">
-                <div class="toolbar">
-                    <div class="tool-left">
+                <div class="row">
+                    <div class="col-lg-4 col-md-12 col-sm-12">
                         <!-- <div class="cst-drop-select"><select class="location" multiple="multiple" id="MultiSelect_DefaultValues"></select></div> -->
                         <div class="tool-right">
                         <select class="form-select" id="locations">
@@ -35,7 +35,8 @@
                         </select>
                         </div>
                     </div>
-                    <div class="tool-right">
+                    <div class="col-lg-5 col-md-12 col-sm-12"></div>
+                    <div class="col-lg-3 col-md-12 col-sm-12">
                         <div class="tool-right">
                             <input class="form-control form-control-solid" placeholder="Pick date range" id="kt_daterangepicker_1" autocomplete="off"/>
                         </div>
