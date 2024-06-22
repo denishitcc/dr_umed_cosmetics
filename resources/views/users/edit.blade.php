@@ -109,11 +109,32 @@
                 <div class="col-lg-4 staff_hide">
                     <div class="form-group">
                         <label class="form-label">Staff member at</label>
-                        <select class="form-select form-control" name="staff_member_location" id="staff_member_location">
+                        <!-- <select class="form-select form-control" name="staff_member_location" id="staff_member_location">
                         <option selected value> -- select an option -- </option>
                             @foreach($locations as $location)
                             <option value="{{ $location->id }}" {{ ( $location->id == $users->staff_member_location) ? 'selected' : '' }}> {{ $location->location_name }} </option>
                             @endforeach
+                        </select> -->
+                        <!-- <select class="form-select form-control" id="choices-multiple-remove-button" name="staff_member_location[]" placeholder="-- select an staff location --" multiple>
+                            @if(count($locations)>0)
+                                @foreach($locations as $location)
+                                    <option value="{{ $location->id }}" {{ ( $location->id == $users->staff_member_location) ? 'selected' : '' }}> {{ $location->location_name }} </option>
+                                @endforeach
+                            @endif
+                        </select> -->
+                        @php
+                            $selectedLocations = explode(',', $users->staff_member_location);
+                        @endphp
+                        <select class="form-select form-control" name="staff_member_location[]">
+                            <option selected="" value=""> -- select an option -- </option>
+                            
+                            @if (count($locations) > 0)
+                                @foreach ($locations as $location)
+                                    <option value="{{ $location->id }}"
+                                        {{ $location->id == $users->staff_member_location ? 'selected' : '' }}>
+                                        {{ $location->location_name }} </option>
+                                @endforeach
+                            @endif
                         </select>
                     </div>
                 </div>
@@ -230,6 +251,9 @@
     }, "Only PNG, JPEG, or JPG images are allowed.");
 
     $(document).ready(function() {
+        var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
+            removeItemButton: true,
+        });
         var staffs = $("input[type=radio][name='is_staff_memeber']:checked").val();
         if(staffs== 0) {
             $('.staff_hide').hide();

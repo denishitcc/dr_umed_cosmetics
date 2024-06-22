@@ -97,7 +97,7 @@
                                                 <div class="add-note-btn-box">
                                                     <a href="#" class="btn btn-primary font-13 me-2" id="add_notes" data-appointment_id="{{ $appointment->id }}"> Add
                                                         Notes</a>
-                                                    <a href="#" class="btn btn-primary font-13 alter"id="add_treatment_notes" data-appointment_id="{{ $appointment->id }}">
+                                                    <a href="#" class="btn btn-primary font-13 alter" id="add_treatment_notes" data-appointment_id="{{ $appointment->id }}">
                                                         Add treatment notes </a>
                                                 </div>
                                                 @endif

@@ -116,6 +116,7 @@ class UsersController extends Controller
                 $img='';
             }
         }
+        $staff_loc = implode(',',$request->staff_member_location);
         $newUser = User::create([
             'first_name'                        => $request->first_name,
             'last_name'                         => $request->last_name,
@@ -127,7 +128,7 @@ class UsersController extends Controller
             'access_level'                      => $request->access_level,
             'image'                             => $img,
             'is_staff_memeber'                  => $request->is_staff_memeber,
-            'staff_member_location'             => $request->staff_member_location,
+            'staff_member_location'             => $staff_loc,
             'available_in_online_booking'       => $request->available_in_online_booking,
             'calendar_color'                    => $request->calendar_color,
             'all_services'                      => $request->all_services,

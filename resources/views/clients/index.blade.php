@@ -848,12 +848,12 @@ $(document).ready(function() {
 
                             // Add common notes
                             if (commonNotesArray.length > index && commonNotesArray[index]) {
-                                formattedCommonNotes = '<br><div class="yellow-note-box"><p> <strong>Common Notes:</strong><br> ' + commonNotesArray[index] + ' </p></div>';
+                                formattedCommonNotes = '<br><div class="yellow-note-box mt-2"><strong>Common Notes:</strong><br> ' + commonNotesArray[index] + ' </div>';
                             }
 
                             // Add treatment notes
                             if (treatmentNotesArray.length > index && treatmentNotesArray[index]) {
-                                formattedTreatmentNotes = '<div class="yellow-note-box"><p> <strong>Treatment Notes:</strong><br> ' + treatmentNotesArray[index] + ' </p></div>';
+                                formattedTreatmentNotes = '<div class="yellow-note-box mt-2"><strong>Treatment Notes:</strong><br> ' + treatmentNotesArray[index] + ' </div>';
                             }
 
                             html_app += '<div class="user-appnt">' + formattedDate + formattedStatus + formattedCommonNotes + formattedTreatmentNotes + '</div>';

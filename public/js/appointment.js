@@ -414,6 +414,7 @@ var DU = {};
 
                     // $('#mycalendar').remove();
                     $('#external-events').removeAttr('style');
+                    $('#external-events').addClass('detaild-theos');
                     $('#external-events').append(`
                     <div class="drag-box mb-3">
                         <div class="head mb-2"><b>Drag and drop on</b> to a day on the appointment book
@@ -476,6 +477,7 @@ var DU = {};
 
                     // $('#mycalendar').remove();
                     $('#external-events').removeAttr('style');
+                    $('#external-events').addClass('detaild-theos');
                     $('#external-events').append(`
                     <div class="drag-box mb-3">
                         <div class="head mb-2"><b>Drag and drop on</b> to a day on the appointment book
@@ -536,6 +538,7 @@ var DU = {};
                     appt_type           = 'rebook';
                     // $('#mycalendar').remove();
                     $('#external-events').removeAttr('style');
+                    $('#external-events').addClass('detaild-theos');
                     $('#external-events').append(`
                     <div class="drag-box mb-3">
                         <div class="head mb-2"><b>Drag and drop on</b> to a day on the appointment book
@@ -1088,7 +1091,7 @@ var DU = {};
                             <hr>
                             <div class="form-group">
                                 <label class="form-label">Notes</label>
-                                <textarea rows="4" class="form-control" placeholder="Click to edit" id="commonNotes" ${disabledAttr}>${response.data.common_notes ?? ''}</textarea>
+                                <textarea rows="4" class="form-control mb-3" placeholder="Click to edit" id="commonNotes" ${disabledAttr}>${response.data.common_notes ?? ''}</textarea>
                                 <label class="form-label">Treatment Notes</label>
                                 <textarea rows="4" class="form-control" placeholder="Click to edit" id="treatmentNotes" ${disabledAttr}>${response.data.treatment_notes ?? ''}</textarea>
                             </div>
@@ -2120,6 +2123,7 @@ var DU = {};
                                 count++;
                                 // $('#mycalendar').remove();
                                 $('#external-events').removeAttr('style');
+                                $('#external-events').addClass('detaild-theos');
                                 if (count === 1) {
                                     $('#external-events').append(`
                                         <div class="drag-box mb-3">
@@ -2135,7 +2139,7 @@ var DU = {};
                                             <button class="btn btn-secondary btn-sm">Messages</button>
                                         </div>
                                         <div class="text-end">
-                                            <a href="#" class="btn btn-primary btn-sm mb-4" id="appointment_cancel">Cancel</a>
+                                            <a href="#" class="btn btn-primary btn-md mb-4" id="appointment_cancel">Cancel</a>
                                         </div>`);
                                 } else if (count > 1) {
                                     $('.drag-box').append(`
@@ -2190,6 +2194,7 @@ var DU = {};
                             count++;
                             // $('#mycalendar').remove();
                             $('#external-events').removeAttr('style');
+                            $('#external-events').addClass('detaild-theos');
                             if (count === 1) {
                                 $('#external-events').append(`
                                     <div class="drag-box mb-3">
@@ -2205,7 +2210,7 @@ var DU = {};
                                         <button class="btn btn-secondary btn-sm">Messages</button>
                                     </div>
                                     <div class="text-end">
-                                        <a href="#" class="btn btn-primary btn-sm mb-4" id="appointment_cancel">Cancel</a>
+                                        <a href="#" class="btn btn-primary btn-md mb-4" id="appointment_cancel">Cancel</a>
                                     </div>`);
                             } else if (count > 1) {
                                 $('.drag-box').append(`
