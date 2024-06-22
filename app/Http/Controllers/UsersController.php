@@ -252,7 +252,7 @@ class UsersController extends Controller
             'last_name'                         => $request->last_name,
             'phone'                             => $request->phone,
             // 'email'                          => $request->email,
-            'password'                          => Hash::make($password),
+            // 'password'                          => Hash::make($password),
             'gender'                            => $request->gender,
             'role_type'                         => $request->role_type,
             'access_level'                      => $request->access_level,
