@@ -2,7 +2,7 @@
     <div class="client-invo-notice">
         <div class="inv-left">
             <div class="client-name">
-                <div class="drop-cap" style="background: #D0D0D0; color: #000;">A</div>
+                <div class="drop-cap" style="background: #D0D0D0; color: #000;">{{ucfirst(substr($client->name, 0, 1))}}</div>
                 <div class="client-info">
                     <h4 class="blue-bold" id="clientcardid" data-client_id="{{ $client->id }}">{{ $client->name }}</h4>
                     <a href="#" class="river-bed"><b> {{ $client->email  }} </b></a><br>
