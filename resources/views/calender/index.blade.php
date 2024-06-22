@@ -6,9 +6,9 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <div class="card">
     <div class="card-head">
-        <div class="toolbar">
-            <div class="tool-left"><h4 class="small-title mb-0">Appointments</h4></div>
-            <div class="tool-right">@include('calender.partials.appointment-dropdown')</div>
+        <div class="row card-dropdown">
+            <div class="col-lg-5 col-md-12 col-sm-12"><h4 class="small-title mb-0">Appointments</h4></div>
+            <div class="col-lg-7 col-md-12 col-sm-12">@include('calender.partials.appointment-dropdown')</div>
         </div>
     </div>
 
