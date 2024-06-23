@@ -182,11 +182,11 @@ class UsersController extends Controller
                 $sub = $data['subject'];
 
                 $to_email = $request->email;
-                // Mail::send('email.registration', $data, function($message) use ($to_email,$sub) {
-                //     $message->to($to_email)
-                //     ->subject($sub);
-                //     $message->from('support@itcc.net.au',$sub);
-                // });
+                Mail::send('email.registration', $data, function($message) use ($to_email,$sub) {
+                    $message->to($to_email)
+                    ->subject($sub);
+                    $message->from('support@itcc.net.au',$sub);
+                });
             }
 
             $response = [

@@ -106,14 +106,15 @@
                     <div class="col-lg-4 staff_hide">
                         <div class="form-group">
                             <label class="form-label staff_labels">Staff member at</label>
-                            <select class="form-select form-control" id="choices-multiple-remove-button" name="staff_member_location[]" multiple>
-                                <option value="" disabled>-- select a staff location --</option>
+                            <select class="multiple-select one" id="staff_loc" data-placeholder="Select" name="staff_member_location[]" multiple>
+                                <!-- <option value="" disabled>-- select a staff location --</option> -->
                                 @if(count($locations) > 0)
                                     @foreach($locations as $location)
-                                        <option value="{{$location->id}}">{{$location->location_name}}</option>
+                                        <option value="{{ $location->id }}" @if($location->selected) selected @endif>{{ $location->location_name }}</option>
                                     @endforeach
                                 @endif
                             </select>
+                            <span class="validate_loc">
                         </div>
                     </div>
                     <div class="col-lg-4">
@@ -214,6 +215,7 @@
 @stop
 @section('script')
     <script>
+        $('.multiple-select.one').multipleSelect();
         var moduleConfig = {
             copyCapabilities:   "{!! route('user.copyCapabilities') !!}",
         };
@@ -223,9 +225,6 @@
         }, "Only PNG, JPEG, or JPG images are allowed.");
 
         $(document).ready(function() {
-            var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
-                removeItemButton: true,
-            });
             $('input[type=radio][name=is_staff_memeber]').change(function() {
                 if (this.value == '1') {
                     $('.staff_hide').show();
@@ -298,16 +297,11 @@
                         minlength: 1 // Ensure at least one selection is made
                     }
                 },
-                messages: {
-                    'staff_member_location[]': {
-                        required: "Please select at least one location."
-                    }
-                },
                 errorPlacement: function(error, element) {debugger;
                     if (element.attr("name") === "image") {
                         error.insertAfter(".gl-upload");
                     } else if (element.attr("name") === "staff_member_location[]") {
-                        error.insertAfter(".staff_labels");
+                        error.insertAfter(".validate_loc");
                     } else {
                         error.insertAfter(element);
                     }

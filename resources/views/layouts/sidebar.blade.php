@@ -32,6 +32,7 @@
     <link rel="stylesheet" href="https://unpkg.com/@fullcalendar/timeline@4.4.0/main.min.css">
     <link rel="stylesheet" href="https://unpkg.com/@fullcalendar/resource-timeline@4.4.0/main.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.9.0/fullcalendar.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://unpkg.com/multiple-select@1.5.2/dist/multiple-select.min.css">
 </head>
 
 <body>
@@ -368,6 +369,7 @@
     <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
     <script src="{{ asset('js/fullcalendar-scheduler-6.1.10/dist/index.global.js') }}"></script>
     <script src="{{ asset('js/fullcalendar-scheduler-6.1.10/dist/index.global.min.js') }}"></script>
+    <script src="https://unpkg.com/multiple-select@1.5.2/dist/multiple-select.min.js"></script>
     @yield('script')
     <script>
         $(document).ready(function(){

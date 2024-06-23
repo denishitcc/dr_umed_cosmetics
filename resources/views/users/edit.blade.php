@@ -125,12 +125,10 @@
                         @php
                             $selectedLocations = explode(',', $users->staff_member_location);
                         @endphp
-                        <select class="form-select form-control" id="choices-multiple-remove-button"
-                            name="staff_member_location[]" multiple>
-                            <option value="" disabled>-- select an option --</option>
-
-                            @if (count($locations) > 0)
-                                @foreach ($locations as $loc)
+                        <select class="multiple-select one" id="staff_loc" data-placeholder="Select" name="staff_member_location[]" multiple>
+                                <!-- <option value="" disabled>-- select a staff location --</option> -->
+                            @if(count($locations) > 0)
+                                @foreach($locations as $loc)
                                     <option value="{{ $loc->id }}"
                                         {{ in_array($loc->id, $selectedLocations) ? 'selected' : '' }}>
                                         {{ $loc->location_name }}
@@ -138,6 +136,7 @@
                                 @endforeach
                             @endif
                         </select>
+                        <span class="validate_loc">
                     </div>
                 </div>
                 <div class="col-lg-4">
@@ -244,6 +243,7 @@
 @endsection
 @section('script')
 <script>
+    $('.multiple-select.one').multipleSelect();
     var moduleConfig = {
         copyCapabilities:   "{!! route('user.copyCapabilities') !!}",
     };
@@ -311,13 +311,16 @@
                 access_level:{
                     required:true
                 },
-                staff_member_location:{
-                    required:true
+                'staff_member_location[]': {
+                    required: true,
+                    minlength: 1 // Ensure at least one selection is made
                 }
             },
             errorPlacement: function (error, element) {
                 if (element.attr("name") === "image") {
                     error.insertAfter(".gl-upload");
+                } else if (element.attr("name") === "staff_member_location[]") {
+                    error.insertAfter(".validate_loc");
                 } else {
                     error.insertAfter(element);
                 }
