@@ -1587,7 +1587,7 @@ class CalenderController extends Controller
                     'service_name' => $service_name,
                     'category_id' => $category_id,
                     'client_name' => $client_name,
-                    'loc_name' =>$loc_id[$i]
+                    'loc_name' => $loc_id[$i]
                 ];
             }
         }
