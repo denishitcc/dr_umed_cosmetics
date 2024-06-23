@@ -2757,6 +2757,7 @@
 
 
         $(document).on('change', '.all_staffs', function(e) {
+            debugger;
             // Get the selected option value
             var selectedValue = $(this).val();
             
@@ -2809,7 +2810,7 @@
                                 </div>
                                 <div class="mb-3">
                                     <label class="cst-check d-flex align-items-center">
-                                        <input type="checkbox" value="" class="current_date_checked">
+                                        <input type="checkbox" value="" class="current_date_checked" checked>
                                         <span class="checkmark me-2"></span>Filter waitlist by current calendar date
                                     </label>
                                 </div>
