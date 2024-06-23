@@ -18,6 +18,7 @@
             </div>
             <div class="tool-right d-flex align-items-center">
                 <div>
+                    <span data-form_json="{{ $forms->form_json }}" id="formxml" style="margin:0;"></span>
                     <a href="#" class="mb-3 btn btn-primary btn-md" id="formOptionsBtn" data-bs-toggle="modal" data-bs-target="#edit_form">Options</a>
                     <a href="javascript:void(0)" class="mb-3  btn btn-primary btn-md deleteFormBtn" id="deleteFormBtn" data-formid="{{ $forms->id }}">Delete</a>
                     <a href="{{ route('serviceforms.formPreview', $forms->id )}}" target="_blank" class="btn btn-primary btn-md mb-3 ">Preview</a>
