@@ -19,7 +19,6 @@
                 </h2>
             </td>
          </tr>
-         {{-- {{ dd($originalform) }} --}}
          @foreach ($originalform as $key => $form)
             <tr>
                 {{-- <td style="padding-bottom: 10px;">
@@ -50,11 +49,30 @@
                     <td style="padding-bottom: 10px;">
                         {!! $form['html']  !!}
                     </td>
-                 @endif
-                @if ($form['type'] == 'signature')
+                @endif
+                @if ($form['type'] == 'rating')
+                    <td style="padding-bottom: 10px;">
+                        <hr>
+                    </td>
+                @endif
+                @if ($form['type'] == 'rating')
+                    <td style="padding-bottom: 10px;">
+                        <hr>
+                    </td>
+                @endif
+                @if ($form['type'] == 'selectboxes')
+                    {{  $selectedvalue = $form['key'] }}
+
                     <td style="padding-bottom: 10px;">
                         <strong> {{ $form['label'] }} </strong><br>
-                        <img src="{{ $data['data']['signature'] }}" alt="">
+                        @foreach ($form['values'] as $key => $check)
+                            {{ $selectedvalue[$check['value']] }}
+                            <input type="checkbox"
+                            id="{{ $check['value'] }}"
+                            value="true"
+                            name="{{ $form['key'] }}[{{ $check['value'] }}]"
+ @if(isset($selectedvalue[$check['value']]) && $selectedvalue[$check['value']] == "true") checked @endif>  <label for="{{ $check['value'] }}">{{ $check['label'] }}</label><br>
+                        @endforeach
                     </td>
                 @endif
                 @if ($form['type'] == 'datetime')

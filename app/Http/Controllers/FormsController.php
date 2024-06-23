@@ -335,7 +335,7 @@ class FormsController extends Controller
         $originalform = $originalform['components'];
         $pdf                = FacadePdf::loadView('pdf_template', compact('data','appointmentform','user','originalform'));
         $pdfname            = $appointmentform->forms->title.'.pdf';
-        // return $pdf->stream($pdfname);
+        return $pdf->stream($pdfname);
         return $pdf->download($pdfname);
     }
 }
