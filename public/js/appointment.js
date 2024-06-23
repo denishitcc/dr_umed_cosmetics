@@ -884,7 +884,10 @@ var DU = {};
                             $('#locations').append($('<option>', { value: location.id, text: location.location_name }));
                         });
                     }
-                    $('#locations').val(sessionStorage.getItem('latest_loc_id'));
+                    if(sessionStorage.getItem('latest_loc_id') != null)
+                    {
+                        $('#locations').val(sessionStorage.getItem('latest_loc_id'));    
+                    }
                     var selected_loc_id = $('#locations').val();
                     var selected_loc_name = $('#locations option:selected').text();
                     $('.walkin_loc_name').text(selected_loc_name);
@@ -1009,7 +1012,10 @@ var DU = {};
                                     let id = name.id;
                                     $('#staff').append($('<option>', { value: id, text: fullName }));
                                 });
-                                $('#staff').val(sessionStorage.getItem('latest_staff_id'));
+                                if(sessionStorage.getItem('latest_staff_id') != null)
+                                {
+                                    $('#staff').val(sessionStorage.getItem('latest_staff_id'));    
+                                }
                             }
                         },
                         error: function (error) {
