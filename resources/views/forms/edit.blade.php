@@ -5,31 +5,30 @@
     <div class="card-head">
         <div class="toolbar mb-0">
             <div class="tool-left">
+                <div class="d-flex align-items-center">
                 <h4 class="small-title mb-0">Edit Forms</h4>
-            </div>
-            <div class="tool-right d-flex align-items-center">
+                <span class="mx-2">|</span>
                 <h5 class="blue-bold me-3 mb-0">{{ $forms->title }}</h5>
                     @if ($forms->status == 0)
                         <span class="badge text-bg-grey badge-md">Draft</span>
                     @else
                         <span class="badge text-bg-green badge-md">Live</span><br>
                     @endif
+                </div>
+            </div>
+            <div class="tool-right d-flex align-items-center">
+                <div class="mb-4">
+                    <a href="#" class="btn btn-primary btn-md" id="formOptionsBtn" data-bs-toggle="modal" data-bs-target="#edit_form">Options</a>
+                    <a href="javascript:void(0)" class="btn btn-primary btn-md deleteFormBtn" id="deleteFormBtn" data-formid="{{ $forms->id }}">Delete</a>
+                    <a href="{{ route('serviceforms.formPreview', $forms->id )}}" target="_blank" class="btn btn-primary btn-md">Preview</a>
+                </div>
             </div>
         </div>
-        
     </div>
     <link rel="stylesheet" href="{{ asset('js/formiojs/dist/formio.full.min.css') }}">
     <link rel="stylesheet" href="{{ asset('js/@formio/contrib/dist/formio-contrib.css') }}">
 
     <div class="card-body">
-            <div class="mb-4">
-                <span data-form_json="{{ $forms->form_json }}" id="formxml" style="margin:0;"></span>
-                    <div class="tool-right">
-                        <a href="#" class="btn btn-primary btn-md" id="formOptionsBtn" data-bs-toggle="modal" data-bs-target="#edit_form">Options</a>
-                        <a href="javascript:void(0)" class="btn btn-primary btn-md deleteFormBtn" id="deleteFormBtn" data-formid="{{ $forms->id }}">Delete</a>
-                        <a href="{{ route('serviceforms.formPreview', $forms->id )}}" target="_blank" class="btn btn-primary btn-md">Preview</a>
-                    </div>
-            </div>
         <div id="form-editor"></div>
     </div>
 </div>

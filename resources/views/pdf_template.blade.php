@@ -6,15 +6,17 @@
     <title>{{ $appointmentform->forms->title }}</title>
 </head>
 <body>
-    <table style="width: 40%; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, Geneva, Tahoma, sans-serif; font-weight: 400; vertical-align: middle; line-height: 1.5em; background-color: #fff; margin: auto;">
+    <table style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, Geneva, Tahoma, sans-serif; font-weight: 400; vertical-align: middle; line-height: 1.5em; background-color: #fff; margin: auto;">
         <tr>
             <td style="text-align: center;">
-               <img src="https://drumed.itcc.net.au/storage/images/banner_image/demo-banner%20(1).jpg" alt="company-logo">
+               <img src="https://drumed.itcc.net.au/storage/images/banner_image/demo-banner%20(1).jpg" alt="company-logo" style="width: auto; max-width: 100% !important;">
             </td>
          </tr>
          <tr>
             <td>
-               <h2 style="margin: 20px 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 40px; border-bottom: 2px solid #333; padding-bottom: 25px;"> {{ $appointmentform->forms->title }} </h2>
+               <h2 style="margin: 20px 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 1.5em; border-bottom: 2px solid #333; padding-bottom: 25px; line-height: normal;">
+                 {{ $appointmentform->forms->title }}
+                </h2>
             </td>
          </tr>
          {{-- {{ dd($originalform) }} --}}
@@ -29,13 +31,13 @@
                 @if ($form['type'] == 'textfield')
                     <td style="padding-bottom: 10px;">
                         <strong> {{ $form['label'] }} </strong><br>
-                        <input type="text" style="width: 100%; height: 35px;" value="{{ $form['ans'] }}">
+                        <input type="text" style="height: 35px; width: 100%;" value="{{ $form['ans'] }}">
                     </td>
                 @endif
                 @if ($form['type'] == 'textarea')
                     <td style="padding-bottom: 10px;">
                         <strong> {{ $form['label'] }} </strong><br>
-                        <textarea cols="30" rows="10" style="width: 100%; height: 35px;">{{ $form['ans'] }}</textarea>
+                        <textarea cols="30" rows="10" style="height: 35px; width: 100%;">{{ $form['ans'] }}</textarea>
                     </td>
                 @endif
                 @if ($form['type'] == 'radio')
@@ -46,7 +48,7 @@
                 @endif
                 @if ($form['type'] == 'content')
                     <td style="padding-bottom: 10px;">
-                        {{ $form['html']  }}
+                        {!! $form['html']  !!}
                     </td>
                  @endif
                 @if ($form['type'] == 'signature')
