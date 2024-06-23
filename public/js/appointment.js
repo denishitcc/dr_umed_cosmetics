@@ -412,6 +412,7 @@ var DU = {};
                     duration            = $(this).parent().find('#duration').val();
                     clientName          = $(this).parent().find('#client_name').val();
                     clientId            = $(this).parent().find('#client_id').val();
+                    locationId          = $(this).parent().find('#location_id').val();
 
                     // $('#mycalendar').remove();
                     $('#external-events').removeAttr('style');
@@ -420,7 +421,7 @@ var DU = {};
                     <div class="drag-box mb-3">
                         <div class="head mb-2"><b>Drag and drop on</b> to a day on the appointment book
                             <i class="ico-noun-arrow"></i></div>
-                        <div class="treatment fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event" data-service_id="${eventId}" data-client_name="${clientName}" data-duration="${duration}" data-client_id="${clientId}" data-category_id="${categoryId}">${eventName}
+                        <div class="treatment fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event" data-service_id="${eventId}" data-client_name="${clientName}" data-duration="${duration}" data-client_id="${clientId}" data-category_id="${categoryId}" data-location_id="${locationId}">${eventName}
                         </div>
                     </div>
                     <div class="text-end">

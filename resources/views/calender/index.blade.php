@@ -2152,7 +2152,8 @@
                             <input type="hidden" id="category_id" value="${appointment.category_id}">
                             <input type="hidden" id="client_id" value="${appointment.id}">
                             <input type="hidden" id="client_name" value="${appointment.client_name}">
-                            <input type="hidden" id="duration" value="${appointment.durations}"><b> ${appointmentDetails[0]}  ${appointmentDetails[1]} ${appointmentDetails[2]} </b>`; // Concatenate the date, time, and AM/PM together
+                            <input type="hidden" id="duration" value="${appointment.durations}">
+                            <input type="hidden" id="location_id" value="${appointment.loc_name}"><b> ${appointmentDetails[0]}  ${appointmentDetails[1]} ${appointmentDetails[2]} </b>`; // Concatenate the date, time, and AM/PM together
                             var restOfDetails = appointmentDetails.slice(3).join(' '); // Joining the rest of the details without modification
 
                             // Adding buttons for rebook and go to
