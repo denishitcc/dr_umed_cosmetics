@@ -66,7 +66,7 @@
                     <td style="padding-bottom: 10px;">
                         <strong> {{ $form['label'] }} </strong><br>
                         @foreach ($form['values'] as $key => $check)
-                            {{ $selectedvalue[$check['value']] }}
+                            {{-- $selectedvalue[$check['value']] --}}
                             <input type="checkbox"
                             id="{{ $check['value'] }}"
                             value="true"
