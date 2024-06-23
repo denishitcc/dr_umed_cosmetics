@@ -2053,6 +2053,7 @@
         
         //upcoming appointment
         $(document).on('click', '.upcoming', function(e) {
+            
             var client_id = $(this).attr('data-client-id');
             var clickedElement = $(this); // store a reference to the clicked element
             var conflict = $('.conflict_upcoming_appointment').prop('checked') ? '1' : '0';
@@ -2062,6 +2063,7 @@
                 type: "POST",
                 data: {'id': client_id, 'conflict': conflict},
                 success: function(response) {
+                    
                     // Show a Sweet Alert message after the form is submitted.
                     if (response.success) {
                         // Remove existing div with class "user-appent"
@@ -2098,7 +2100,7 @@
                                                 (${appointment.durations} mins) - ${appointment.app_status}
                                             </p>
                                             <a href="#" class="btn btn-primary font-13 alter slot-btn btn-sm me-2 rebook_upcoming"> Rebook</a>
-                                            <a href="#" class="btn btn-primary font-13 alter slot-btn btn-sm upcoming_go_to" date_time= "${appointmentDetails[0]} ${appointmentDetails[1]} ${appointmentDetails[2]}"> Go to</a>
+                                            <a href="#" class="btn btn-primary font-13 alter slot-btn btn-sm upcoming_go_to" loc-id="${appointment.loc_name}" date_time= "${appointmentDetails[0]} ${appointmentDetails[1]} ${appointmentDetails[2]}"> Go to</a>
                                         </div>`;
                             });
                         } else {
@@ -2163,7 +2165,7 @@
                                                 (${appointment.durations} mins) - ${appointment.app_status}
                                             </p>
                                             <a href="#" class="btn btn-primary font-13 alter slot-btn btn-sm me-2 rebook_histroy"> Rebook</a>
-                                            <a href="#" class="btn btn-primary font-13 alter slot-btn btn-sm history_go_to" date_time= "${appointmentDetails[0]} ${appointmentDetails[1]} ${appointmentDetails[2]}"> Go to</a>
+                                            <a href="#" class="btn btn-primary font-13 alter slot-btn btn-sm history_go_to" loc-id="${appointment.loc_name}" date_time= "${appointmentDetails[0]} ${appointmentDetails[1]} ${appointmentDetails[2]}"> Go to</a>
                                         </div>`;
                         });
                     }else{

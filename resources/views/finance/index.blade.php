@@ -263,7 +263,7 @@
                                     <label class="form-label">&nbsp</label>
                                     <input type="text" id="walkin_phone_no" name="walkin_phone_no" class="form-control">
                                 </div>
-                                <div class="col-lg-3">
+                                <div class="col-lg-4">
                                     <label class="form-label">Gender</label>
                                     <div class="toggle form-group">
                                         <input type="radio" name="walkin_gender" value="Male" id="males" checked="checked" />
@@ -286,7 +286,7 @@
                                             <option>Don't send reminders</option>
                                         </select>
                                 </div>
-                                <div class="col-lg-3">
+                                <div class="col-lg-4">
                                     <label class="form-label">Send promotions</label>
                                     <div class="toggle mb-0">
                                         <input type="radio" name="walkin_send_promotions" value="1" id="walkin_yes" checked="checked">

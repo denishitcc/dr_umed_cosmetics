@@ -332,7 +332,7 @@ var DU = {};
                 
                 // Extracting the calendar object from the context
                 var calendar = context.calendar;
-                
+                $('#locations').val($(this).attr('loc-id'));
                 // Parsing the date and time using Moment.js
                 var selectedDateTime = moment(date + ' ' + time, 'YYYY-MM-DD hh:mm A');
                 
@@ -358,6 +358,7 @@ var DU = {};
             });            
 
             $(document).on('click', '.upcoming_go_to', function(e) {
+                
                 e.preventDefault();
                 // Scroll the page slightly bcs if time is 3:30 Go to and after that click 4:30 then not scroll
                 window.scrollBy(0, 1); // Adjust the amount to scroll as needed
@@ -366,7 +367,7 @@ var DU = {};
                 var dateTimeComponents = date_time.split(' ');
                 var date = dateTimeComponents[0];
                 var time = dateTimeComponents[1] + ' ' + dateTimeComponents[2];
-                
+                $('#locations').val($(this).attr('loc-id'));
                 // Extracting the calendar object from the context
                 var calendar = context.calendar;
                 
@@ -705,6 +706,7 @@ var DU = {};
             jQuery('#locations').on('change', function(e) {
                 var location_id           = $(this).val();
                 sessionStorage.setItem("loc_ids", location_id);
+                sessionStorage.setItem("latest_loc_id", location_id);
                 var selected_loc_id = $('#locations').val();
                 var selected_loc_name = $('#locations option:selected').text();
                 $('.walkin_loc_name').text(selected_loc_name);
@@ -813,6 +815,7 @@ var DU = {};
             var context = this;
             jQuery('#staff').on('change', function(e) {
                 var resourceId    = $(this).val();
+                sessionStorage.setItem("latest_staff_id", resourceId);
                 const resources = context.calendar.getOption('resources');
                 console.log(resourceId);
                 if(resourceId != 'all')
@@ -866,7 +869,7 @@ var DU = {};
         },
 
         locationDropdown: function(){
-            debugger;
+            
             var context = this;
 
             $.ajax({
@@ -881,6 +884,7 @@ var DU = {};
                             $('#locations').append($('<option>', { value: location.id, text: location.location_name }));
                         });
                     }
+                    $('#locations').val(sessionStorage.getItem('latest_loc_id'));
                     var selected_loc_id = $('#locations').val();
                     var selected_loc_name = $('#locations option:selected').text();
                     $('.walkin_loc_name').text(selected_loc_name);
@@ -970,7 +974,7 @@ var DU = {};
                 headers: {
                     'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
                 },
-                success: function (data) {debugger;
+                success: function (data) {
                     if(data.type != 'admin')
                     {
                         // $('#locations').val(data.staff_loc);
@@ -1005,6 +1009,7 @@ var DU = {};
                                     let id = name.id;
                                     $('#staff').append($('<option>', { value: id, text: fullName }));
                                 });
+                                $('#staff').val(sessionStorage.getItem('latest_staff_id'));
                             }
                         },
                         error: function (error) {
@@ -2694,7 +2699,7 @@ var DU = {};
         },
 
         commonNoteAddUpdateAjax: function(appointmentId,commonNotes,clientId){
-            debugger;
+            
             $.ajax({
                 url: moduleConfig.addNotes,
                 type: 'POST',

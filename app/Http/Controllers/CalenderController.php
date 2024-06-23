@@ -1374,7 +1374,8 @@ class CalenderController extends Controller
                 DB::raw('GROUP_CONCAT(appointment.duration) as durations'),
                 'services.id as service_id',
                 'services.service_name',
-                'services.category_id'
+                'services.category_id',
+                DB::raw('GROUP_CONCAT(appointment.location_id) as loc_id'), 
             )
             ->groupBy(
                 'clients.id',
@@ -1395,12 +1396,14 @@ class CalenderController extends Controller
         foreach ($data as $datas) {
             $appointment_dates = explode(',', $datas->appointment_dates);
             $app_status = explode(',', $datas->app_status);
+            $loc_id = explode(',', $datas->loc_id);
             $staff_locations = explode(',', $datas->staff_locations);
             $durations = explode(',', $datas->durations);
             // Ensure all arrays have the same length
             $count = max(count($appointment_dates), count($app_status), count($staff_locations));
             $appointment_dates = array_pad($appointment_dates, $count, '');
             $app_status = array_pad($app_status, $count, '');
+            $loc_id = array_pad($loc_id, $count, '');
             $staff_locations = array_pad($staff_locations, $count, '');
             $durations = array_pad($durations, $count, '');
             $service_id = $datas->service_id;
@@ -1424,7 +1427,8 @@ class CalenderController extends Controller
                     'service_id' => $service_id,
                     'service_name' => $service_name,
                     'category_id' => $category_id,
-                    'client_name' => $client_name
+                    'client_name' => $client_name,
+                    'loc_name' =>$loc_id[$i]
                 ];
             }
         }
@@ -1529,7 +1533,8 @@ class CalenderController extends Controller
                 DB::raw('GROUP_CONCAT(appointment.duration) as durations'),
                 'services.id as service_id',
                 'services.service_name',
-                'services.category_id'
+                'services.category_id',
+                DB::raw('GROUP_CONCAT(appointment.location_id) as loc_id'), 
             )
             ->groupBy(
                 'clients.id',
@@ -1550,12 +1555,14 @@ class CalenderController extends Controller
         foreach ($data as $datas) {
             $appointment_dates = explode(',', $datas->appointment_dates);
             $app_status = explode(',', $datas->app_status);
+            $loc_id = explode(',', $datas->loc_id);
             $staff_locations = explode(',', $datas->staff_locations);
             $durations = explode(',', $datas->durations);
             // Ensure all arrays have the same length
             $count = max(count($appointment_dates), count($app_status), count($staff_locations));
             $appointment_dates = array_pad($appointment_dates, $count, '');
             $app_status = array_pad($app_status, $count, '');
+            $loc_id = array_pad($loc_id, $count, '');
             $staff_locations = array_pad($staff_locations, $count, '');
             $durations = array_pad($durations, $count, '');
             $service_id = $datas->service_id;
@@ -1579,7 +1586,8 @@ class CalenderController extends Controller
                     'service_id' => $service_id,
                     'service_name' => $service_name,
                     'category_id' => $category_id,
-                    'client_name' => $client_name
+                    'client_name' => $client_name,
+                    'loc_name' =>$loc_id[$i]
                 ];
             }
         }
