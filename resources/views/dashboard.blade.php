@@ -1,4 +1,5 @@
 @extends('layouts/sidebar')
+@section('title', 'Dashboard')
 @section('content')
 <style>
 #clientchartdiv, #enquirychartdiv {
