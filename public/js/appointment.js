@@ -890,6 +890,7 @@ var DU = {};
                         });
                         // Check if sessionStorage contains 'latest_loc_id'
                         var latestLocId = sessionStorage.getItem('latest_loc_id');
+                        debugger;
                         if (latestLocId !== null) {
                             // Check if the latestLocId matches any option value
                             var optionExists = $('#locations').find('option[value="' + latestLocId + '"]').length > 0;
@@ -1023,14 +1024,27 @@ var DU = {};
                             $('#staff').append(`<option value="all">All staff</option>
                                     <option disabled>Individual staff</option>`);
                             if (data && data.length > 0) {
+                                // Clear existing options
+                                // $('#staff').empty();
                                 data.forEach(function (name) {
                                     let fullName = name.title;
                                     let id = name.id;
                                     $('#staff').append($('<option>', { value: id, text: fullName }));
                                 });
-                                if(sessionStorage.getItem('latest_staff_id') != null)
-                                {
-                                    $('#staff').val(sessionStorage.getItem('latest_staff_id'));    
+                                // if(sessionStorage.getItem('latest_staff_id') != null)
+                                // {
+                                //     $('#staff').val(sessionStorage.getItem('latest_staff_id'));    
+                                // }
+                                 // Check if sessionStorage contains 'latest_loc_id'
+                                var latestStaffId = sessionStorage.getItem('latest_staff_id');
+                                if (latestStaffId !== null) {
+                                    // Check if the latestStaffId matches any option value
+                                    var optionExists = $('#staff').find('option[value="' + latestStaffId + '"]').length > 0;
+                                    
+                                    if (optionExists) {
+                                        // Set the value of #locations to latestStaffId if it exists
+                                        $('#staff').val(latestStaffId);
+                                    }
                                 }
                             }
                         },
