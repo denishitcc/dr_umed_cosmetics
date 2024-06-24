@@ -135,7 +135,8 @@ class CalenderController extends Controller
             $location = $loc->id;
         }
         if ($location) {
-            $user = $user->where('role_type', '!=', 'admin')->where('staff_member_location', '=', $location);
+            // $user = $user->where('role_type', '!=', 'admin')->where('staff_member_location', '=', $location);
+            $user = $user->where('staff_member_location', '=', $location);
         } else {
             $user = $user->where('role_type', '!=', 'admin');
         }

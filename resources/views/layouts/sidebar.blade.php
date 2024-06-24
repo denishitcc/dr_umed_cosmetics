@@ -324,7 +324,7 @@
                     <div class="popup-search-outer">
                         <!-- code for search input -->
                         <div class="form-group icon">
-                            <input type="text" id="search_sidebar_client"  onkeyup="searhCustomers(this.value)" class="form-control" placeholder="Search for services, products or scan barcode">
+                            <input type="text" id="search_sidebar_client"  onkeyup="searhCustomers(this.value)" class="form-control" placeholder="Search for clients" autocomplete="off">
                             <i class="ico-search"></i>
 
                             
