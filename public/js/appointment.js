@@ -1799,6 +1799,7 @@ var DU = {};
 
             context.selectors.newAppointmentBtn.on('click', function(e)
             {
+                $('.client_list_box').hide();
                 var locationId = jQuery('#locations').val();
                 $('#appointmentlocationId').val(locationId);
                 context.getCategoriesAndServices(locationId);
