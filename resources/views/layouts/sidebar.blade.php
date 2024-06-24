@@ -247,10 +247,10 @@
                         </div>
                         <div class="app-navbar">
                             <ul class="items"> 
-                                <li><a href="#" class="tap"><i class="ico-search"></i></a></li>
+                                <li><a href="#" class="tap" onclick="openSearch()"><i class="ico-search"></i></a></li>
                                 <li><a href="#" class="tap"><i class="ico-equalizer"></i></a></li>
-                                <li><a href="#" class="tap"><i class="ico-notification"></i><span class="badge badge-circle text-bg-blue notification">25</span></a></li>
-                                <li><a href="#" class="tap"><i class="ico-settings"></i></a></li>
+                                <!-- <li><a href="#" class="tap"><i class="ico-notification"></i><span class="badge badge-circle text-bg-blue notification">25</span></a></li> -->
+                                <li><a href="{{ route('settings') }}" class="tap"><i class="ico-settings"></i></a></li>
                                 <!-- <li class="profile" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">Hi, <span>{{Auth::user()->first_name.' '.Auth::user()->last_name}}</span> 
                                 @if(Auth::user()->image=='')
                                 <figure><img src="{{URL::to('/images/banner_image/no-image.jpg')}}" alt=""></figure>
@@ -316,6 +316,27 @@
              
 
              @yield('content')
+             <!-- search popup -->
+             <div id="myOverlay" class="overlay">
+                <span class="closebtn" onclick="closeSearch()" title="Close Overlay">×</span>
+                <div class="overlay-content">
+
+                    <div class="popup-search-outer">
+                        <!-- code for search input -->
+                        <div class="form-group icon">
+                            <input type="text" id="search" onkeyup="changeInput(this.value)" class="form-control" placeholder="Search for services, products or scan barcode">
+                            <i class="ico-search"></i>
+
+                            
+                            <div id="result" class="list-group"></div>
+                        </div>
+                        <!-- code for search input -->
+                    </div>
+                    
+                </div>
+                </div>
+
+            <!-- search pop -->
              </main>
         </div>
     </div>
@@ -434,7 +455,7 @@
                                 </div>
                             </div>
                             <div class="mb-2">
-                                <a href="#" class="river-bed"><b>${response.data.client_data.mobile_no}</b></a><br>
+                                <a href="#" class="river-bed"><b>${response.data.client_data.mobile_no || response.data.client_data.home_phone || response.data.client_data.work_phone || ''}</b></a><br>
                                 <a href="#" class="river-bed"><b>${response.data.client_data.email}</b></a>
                             </div>
                             <hr>
@@ -636,6 +657,12 @@
             });
         }
     });
+    function openSearch() {
+        document.getElementById("myOverlay").style.display = "block";
+    }
+    function closeSearch() {
+        document.getElementById("myOverlay").style.display = "none";
+    }
     </script>
 </body>
 

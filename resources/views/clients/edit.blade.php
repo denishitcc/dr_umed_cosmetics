@@ -14,7 +14,7 @@
                     <div class="drop-cap" style="background: #D0D0D0; color: #000;">{{ucfirst(substr($client->firstname, 0, 1))}}</div>
                     <div class="client-info">
                         <h4 class="blue-bold" id="clientcardid" data-client_id="{{ $client->id }}">{{$client->firstname.' '.$client->lastname}}</h4>
-                        <a href="#" class="river-bed"><b>{{$client->mobile_number}}</b></a><br>
+                        <a href="#" class="river-bed"><b>{{ $client->mobile_number ?? $phone_number ?? $work_phone }}</b></a><br>
                         <a href="#" class="river-bed"><b>{{$client->email}}</b></a>
                     </div>
                 </div>
