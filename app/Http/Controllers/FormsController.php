@@ -322,18 +322,14 @@ class FormsController extends Controller
         $data               = json_decode($appointmentform->form_user_data, true);
         $originalform       = json_decode($appointmentform->forms->form_json, true);
 
-        // dd($data);
         foreach ($data['data'] as $key => $value) {
             $formanswers[] = $value;
         }
-
         foreach ($originalform['components'] as $index => &$item) {
-            // dump($item);
             if (isset($formanswers[$index])) {
                 $item['ans'] = $formanswers[$index];
             }
         }
-        // exit;
         $originalform = $originalform['components'];
         $pdf                = FacadePdf::loadView('pdf_template', compact('data','appointmentform','user','originalform'));
         $pdfname            = $appointmentform->forms->title.'.pdf';
