@@ -23,7 +23,7 @@ jQuery(function ($) {
                 },
                 success: function (data) {
                     if (data.success) {
-                        alert('Form filled successfully.');
+                        window.location.href = '/thank-you/'+appointment_id+'/'+form_id;
                     } else {
                         alert('Something went wrong');
                     }

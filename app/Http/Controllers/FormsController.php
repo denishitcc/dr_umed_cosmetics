@@ -328,14 +328,24 @@ class FormsController extends Controller
         }
 
         foreach ($originalform['components'] as $index => &$item) {
+            // dump($item);
             if (isset($formanswers[$index])) {
                 $item['ans'] = $formanswers[$index];
             }
         }
+        // exit;
         $originalform = $originalform['components'];
         $pdf                = FacadePdf::loadView('pdf_template', compact('data','appointmentform','user','originalform'));
         $pdfname            = $appointmentform->forms->title.'.pdf';
         // return $pdf->stream($pdfname);
         return $pdf->download($pdfname);
+    }
+
+    public function thankYou($apptid,$formid)
+    {
+        $apptid     = $apptid;
+        $formid     = $formid;
+        $user       = Auth::user();
+        return view('forms.thank-you',compact('user','apptid','formid'));
     }
 }
