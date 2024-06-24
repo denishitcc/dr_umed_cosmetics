@@ -19,18 +19,13 @@
                 </h2>
             </td>
          </tr>
+         {{-- {{ dd($originalform) }} --}}
          @foreach ($originalform as $key => $form)
-            <tr>
-                {{-- <td style="padding-bottom: 10px;">
-                    <strong>Are you worried about your appearance in any way?</strong><br>
-                    [X] Yes <br>
-                    [&nbsp;] no
-                </td> --}}
-
+             <tr>
                 @if ($form['type'] == 'textfield')
                     <td style="padding-bottom: 10px;">
                         <strong> {{ $form['label'] }} </strong><br>
-                        <input type="text" style="height: 35px; width: 100%;" value="{{ $form['ans'] }}">
+                        <input type="text" style="height: 35px; width: 100%;" value="{{ isset($form['ans']) ?  $form['ans'] : '' }}">
                     </td>
                 @endif
                 @if ($form['type'] == 'textarea')
@@ -42,8 +37,10 @@
                 @if ($form['type'] == 'radio')
                     <td style="padding-bottom: 10px;">
                         <strong> {{ $form['label'] }} </strong><br>
-                        @if ( array_key_exists($form['key'],$data['data']) )
-                            {{ $data['data'][$form['key']] }}
+                        @if(isset($data['data']))
+                            @if ( array_key_exists($form['key'],$data['data']) )
+                                {{ $data['data'][$form['key']] }}
+                            @endif
                         @endif
                     </td>
                 @endif
@@ -55,14 +52,17 @@
                 @if ($form['type'] == 'signature')
                     <td style="padding-bottom: 10px;">
                         <strong> {{ $form['label'] }} </strong><br>
-                        <img src="{{ $data['data']['signature'] }}" alt="" style="width: auto; max-width: 100% !important;">
+                        <img src="{{ isset($data['data']['signature']) ? $data['data']['signature'] : '' }}" alt="" style="width: auto; max-width: 100% !important;">
                     </td>
                 @endif
-                @if ($form['type'] == 'selectboxes')
-                    <?php
-                        $selectedvalue = $data['data'][$form['key']];
-                    ?>
 
+                @if ( $form['type'] == 'selectboxes')
+                    <?php
+                        if(isset($data['data'][$form['key']]))
+                        {
+                            $selectedvalue = $data['data'][$form['key']];
+                        }
+                    ?>
                     <td style="padding-bottom: 10px;">
                         <strong> {{ $form['label'] }} </strong><br>
                         @foreach ($form['values'] as $key => $check)
@@ -70,14 +70,16 @@
                         id="{{ $check['value'] }}"
                         value="true"
                         name="{{ $form['key'] }}[{{ $check['value'] }}]"
-@if(isset($selectedvalue[$check['value']]) && $selectedvalue[$check['value']] == "true") checked @endif>  <label for="{{ $check['value'] }}">{{ $check['label'] }}</label><br>
+                            @if(isset($selectedvalue[$check['value']]) && $selectedvalue[$check['value']] == "true") checked @endif>  <label for="{{ $check['value'] }}">{{ $check['label'] }}</label><br>
                         @endforeach
                     </td>
                 @endif
                 @if ($form['type'] == 'datetime')
                     <td style="padding-bottom: 10px;">
                         <strong> {{ $form['label'] }} </strong><br>
-                        {{ \Carbon\Carbon::parse($data['data']['dateTime'])->format('h:i a d M Y')}}
+                        @if (isset($data['data']['dateTime']))
+                            {{ \Carbon\Carbon::parse($data['data']['dateTime'])->format('h:i a d M Y')}}
+                        @endif
                     </td>
                 @endif
             </tr>
