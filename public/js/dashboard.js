@@ -501,13 +501,13 @@ function amchart(ClientFilterData = [],EnquiryFilterData = [], filterType = 'mon
         var data = [
             {
                 category: "Women", 
-                value: parseInt(genderRatioData.Female), 
-                sliceSettings: { fill: am5.color(0xdc4534) }
+                value: genderRatioData.Female ? parseInt(genderRatioData.Female) : 0, 
+                sliceSettings: { fill: am5.color(0x00B678) }
             }, 
             {
                 category: "Men", 
-                value: parseInt(genderRatioData.Male), 
-                sliceSettings: { fill: am5.color(0xd7a700) }
+                value: genderRatioData.Male ? parseInt(genderRatioData.Male) : 0, 
+                sliceSettings: { fill: am5.color(0x82BEFC) }
             }
         ];
 
@@ -572,6 +572,15 @@ function amchart(ClientFilterData = [],EnquiryFilterData = [], filterType = 'mon
                 pieSeries.slices.getIndex(0).set("active", true);
             }
         });
+        // Add legend
+        var legend = pieChart.children.push(am5.Legend.new(gender_ration_root, {
+            centerX: am5.p50,
+            x: am5.p50,
+            marginTop: 15,
+            marginBottom: 15
+        }));
+
+        legend.data.setAll(pieSeries.dataItems);
     });
 }
 function fetchSalesData(period, callback) {
