@@ -91,7 +91,26 @@ class DashboardController extends Controller
             ->whereBetween('enquiry_date', [$startOfMonth, $endOfMonth])
             ->groupBy(DB::raw('DATE(enquiry_date)'))
             ->get();
-            return view('dashboard', compact('locations', 'made_so_far', 'expected', 'scheduled_app', 'completed_app', 'cancelled_app', 'total_app', 'total_month_clients', 'total_month_enquiries','client_graph','enquiry_graph'));
+
+            // Fetch gender ratio
+            $gender_ratio = Clients::select('gender', DB::raw('count(*) as count'))
+            ->whereIn('id', function ($query) use ($startOfMonth, $endOfMonth) {
+                $query->select('client_id')->from('walk_in_retail_sale')->whereBetween('invoice_date', [$startOfMonth, $endOfMonth])
+                ->union(
+                    Appointment::select('client_id')->whereBetween('start_date', [$startOfMonth, $endOfMonth])
+                );
+            })
+            ->groupBy('gender')
+            ->get()
+            ->mapWithKeys(function ($item) {
+                return [$item['gender'] => $item['count']];
+            });
+
+            // Ensure gender_ratio includes both 'Men' and 'Women' keys with default values if they are not present
+            $gender_ratio = array_merge(['Men' => 0, 'Women' => 0], $gender_ratio->toArray());
+
+
+            return view('dashboard', compact('locations', 'made_so_far', 'expected', 'scheduled_app', 'completed_app', 'cancelled_app', 'total_app', 'total_month_clients', 'total_month_enquiries','client_graph','enquiry_graph','gender_ratio'));
         } else {
             return redirect()->route('login');
         }

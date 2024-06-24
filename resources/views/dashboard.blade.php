@@ -187,10 +187,10 @@
             <div class="col-lg-4">
                 <div class="card p-3 h-100">
                     <h5 class="bright-gray mb-5">Gender Ratio</h5>
-                    <img src="img/Group 15180.png" alt="">
-                    <!-- <div class="card-body">
+                    <!-- <img src="img/Group 15180.png" alt=""> -->
+                    <div class="card-body">
                         <div id="GenderRatiochartdiv"></div>
-                    </div> -->
+                    </div>
                 </div>
             </div>
             <div class="col-lg-12 mt-4">
@@ -326,5 +326,6 @@
     var EnquiryGraph = {!! json_encode($enquiry_graph) !!};
     var FilterRoute = "{{ route('dashboard.filter') }}"; 
     var SalesPerformanceFilter = "{{ route('dashboard.sales_performance_filter') }}"; 
+    var gender_ratio = {!! json_encode($gender_ratio) !!};
 </script>
 @endsection

@@ -496,71 +496,82 @@ function amchart(ClientFilterData = [],EnquiryFilterData = [], filterType = 'mon
 
         //Gender ratio start
         // Set up data
-        // var data = [{
-        //     category: "Critical", value: 89, sliceSettings: { fill: am5.color(0xdc4534) }
-        //   }, {
-        //     category: "Acceptable", value: 71, sliceSettings: { fill: am5.color(0xd7a700) }
-        //   }, {
-        //     category: "Good", value: 120, sliceSettings: { fill: am5.color(0x68ad5c) }
-        //   }];
-          
-        //   var root = am5.Root.new("GenderRatiochartdiv");
-        //   root.setThemes([am5themes_Animated.new(root)]);
-          
-        //   var pieChart = root.container.children.push(am5percent.PieChart.new(root, {
-        //     width: am5.p100,
-        //     height: am5.p100,
-        //     innerRadius: am5.percent(50)
-        //   }));
-          
-        //   var pieSeries = pieChart.series.push(am5percent.PieSeries.new(root, {
-        //     valueField: "value",
-        //     categoryField: "category"
-        //   }));
-          
-        //   pieSeries.slices.template.setAll({
-        //     templateField: "sliceSettings",
-        //     strokeOpacity: 0
-        //   });
-          
-        //   var currentSlice;
-        //   pieSeries.slices.template.on("active", function(active, slice) {
-        //     if (currentSlice && currentSlice != slice && active) currentSlice.set("active", false);
-          
-        //     label1.setAll({
-        //       fill: slice.get("fill"),
-        //       text: root.numberFormatter.format(slice.dataItem.get("valuePercentTotal"), "#.'%'")
-        //     });
-          
-        //     label2.set("text", slice.dataItem.get("category"));
-          
-        //     currentSlice = slice;
-        //   });
-          
-        //   pieSeries.labels.template.set("forceHidden", true);
-        //   pieSeries.ticks.template.set("forceHidden", true);
-        //   pieSeries.data.setAll(data);
-          
-        //   var label1 = pieChart.seriesContainer.children.push(am5.Label.new(root, {
-        //     text: "",
-        //     fontSize: 35,
-        //     fontweight: "bold",
-        //     centerX: am5.p50,
-        //     centerY: am5.p50
-        //   }));
-          
-        //   var label2 = pieChart.seriesContainer.children.push(am5.Label.new(root, {
-        //     text: "",
-        //     fontSize: 12,
-        //     centerX: am5.p50,
-        //     centerY: am5.p50,
-        //     dy: 30
-        //   }));
-          
-        //   pieSeries.events.on("datavalidated", function() {
-        //     pieSeries.slices.getIndex(0).set("active", true);
-        //   });
-        //Gender ratio end
+        var genderRatioData = gender_ratio;
+        console.log(genderRatioData);
+        var data = [
+            {
+                category: "Women", 
+                value: parseInt(genderRatioData.Female), 
+                sliceSettings: { fill: am5.color(0xdc4534) }
+            }, 
+            {
+                category: "Men", 
+                value: parseInt(genderRatioData.Male), 
+                sliceSettings: { fill: am5.color(0xd7a700) }
+            }
+        ];
+
+        var gender_ration_root = am5.Root.new("GenderRatiochartdiv");
+        gender_ration_root.setThemes([am5themes_Animated.new(gender_ration_root)]);
+
+        // Remove logo
+        gender_ration_root._logo.dispose();
+
+        var pieChart = gender_ration_root.container.children.push(am5percent.PieChart.new(gender_ration_root, {
+            width: am5.p100,
+            height: am5.p100,
+            innerRadius: am5.percent(50)
+        }));
+
+        var pieSeries = pieChart.series.push(am5percent.PieSeries.new(gender_ration_root, {
+            valueField: "value",
+            categoryField: "category"
+        }));
+
+        pieSeries.slices.template.setAll({
+            templateField: "sliceSettings",
+            strokeOpacity: 0
+        });
+
+        var currentSlice;
+        pieSeries.slices.template.on("active", function(active, slice) {
+            if (currentSlice && currentSlice != slice && active) currentSlice.set("active", false);
+
+            label1.setAll({
+                fill: slice.get("fill"),
+                text: gender_ration_root.numberFormatter.format(slice.dataItem.get("valuePercentTotal"), "#.'%'")
+            });
+
+            label2.set("text", slice.dataItem.get("category"));
+
+            currentSlice = slice;
+        });
+
+        pieSeries.labels.template.set("forceHidden", true);
+        pieSeries.ticks.template.set("forceHidden", true);
+        pieSeries.data.setAll(data);
+
+        var label1 = pieChart.seriesContainer.children.push(am5.Label.new(gender_ration_root, {
+            text: "",
+            fontSize: 35,
+            fontWeight: "bold",
+            centerX: am5.p50,
+            centerY: am5.p50
+        }));
+
+        var label2 = pieChart.seriesContainer.children.push(am5.Label.new(gender_ration_root, {
+            text: "",
+            fontSize: 12,
+            centerX: am5.p50,
+            centerY: am5.p50,
+            dy: 30
+        }));
+
+        pieSeries.events.on("datavalidated", function() {
+            if (pieSeries.slices.length > 0) {
+                pieSeries.slices.getIndex(0).set("active", true);
+            }
+        });
     });
 }
 function fetchSalesData(period, callback) {
