@@ -1207,11 +1207,14 @@ progress.pink-progress{accent-color: #D04ED6;}
 /* search */
 .overlay { height: 100%; width: 100%; display: none; position: fixed; z-index: 15; top: 0; left: 0; background-color: #000000bd;}
 
-.overlay-content { position: relative; top: 46%; width: 60%; text-align: center; margin-top: 30px; margin: auto; }
+.overlay-content { margin: auto; height: 100%; display: flex; justify-content: center; align-items: center;}
 
 .overlay .closebtn { position: absolute; top: 20px; right: 45px; font-size: 60px; cursor: pointer; color: white; }
 
 .overlay .closebtn:hover { color: #ccc;}
+
+.popup-search-outer{ width: 30%;}
+.popup-search-outer .drop-list{ margin-bottom: 0; max-height: 44vh; padding: 15px; background: #fff;}
 
 
 
@@ -1299,6 +1302,7 @@ progress.pink-progress{accent-color: #D04ED6;}
     .fc .fc-toolbar.fc-header-toolbar{ flex-wrap: wrap; gap: 10px;}
     .brand-tabs{ gap: 0px;}
     .brand-tabs li{ flex: 100%;}
+    .popup-search-outer { width: 90%;  }
 }
 
 @media (max-width: 500px) {
