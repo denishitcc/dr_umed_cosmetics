@@ -459,7 +459,6 @@ var DU = {};
             })
 
             $(document).on('click','.rebook_upcoming',function(e){
-                debugger;
                 $('.upcoming_appointments').hide();
                 //appointment rebook start
 
@@ -890,7 +889,6 @@ var DU = {};
                         });
                         // Check if sessionStorage contains 'latest_loc_id'
                         var latestLocId = sessionStorage.getItem('latest_loc_id');
-                        debugger;
                         if (latestLocId !== null) {
                             // Check if the latestLocId matches any option value
                             var optionExists = $('#locations').find('option[value="' + latestLocId + '"]').length > 0;
@@ -3060,7 +3058,7 @@ var DU = {};
         clientformrender: function(formjson,originalForm){
             var json        = $.parseJSON(originalForm),
                 formvalue   = $.parseJSON(formjson);
-
+            console.log(formvalue);
             Formio.createForm(document.getElementById('fb-editor'), json, {
                 readOnly: true
             }).then((form) => {
