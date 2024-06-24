@@ -128,7 +128,7 @@
                                     </div>
                                 </div>
                                 <div class="mb-2">
-                                    <a href="#" class="river-bed"><b>{{ $waitlists->mobile_number }}</b></a><br>
+                                    <a href="#" class="river-bed"><b>{{ $waitlists->mobile_number ?? ($waitlists->home_phone ?? $waitlists->work_phone) }}</b></a><br>
                                     <a href="#" class="river-bed"><b>{{ $waitlists->email }}</b></a>
                                 </div>
 
@@ -2099,7 +2099,7 @@
                                                 <b> ${appointment.staff_locations} </b>
                                                 (${appointment.durations} mins) - ${appointment.app_status}
                                             </p>
-                                            <a href="#" class="btn btn-primary font-13 alter slot-btn btn-sm me-2 rebook_upcoming"> Rebook</a>
+                                            <a href="#" class="btn btn-primary font-13 alter slot-btn btn-sm me-2 rebook_upcoming" loc-id="${appointment.loc_name}"> Rebook</a>
                                             <a href="#" class="btn btn-primary font-13 alter slot-btn btn-sm upcoming_go_to" loc-id="${appointment.loc_name}" date_time= "${appointmentDetails[0]} ${appointmentDetails[1]} ${appointmentDetails[2]}"> Go to</a>
                                         </div>`;
                             });
@@ -2580,7 +2580,7 @@
                                         </div>
                                     </div>
                                     <div class="mb-2">
-                                        <a href="#" class="river-bed"><b>${item.client_id ? item.mobile_number : ''}</b></a><br>
+                                        <a href="#" class="river-bed"><b>${item.client_id ? (item.mobile_number || item.home_phone || item.work_phone || '') : ''}</b></a><br>
                                         <a href="#" class="river-bed"><b>${item.client_id ? item.email : ''}</b></a>
                                     </div>
                                     <!-- Your other content -->
@@ -2843,7 +2843,7 @@
                                             <div class="drop-cap" style="background: #D0D0D0; color:#fff;">${item.firstname.charAt(0).toUpperCase()}</div>
                                             <div class="client-info"><h4 class="blue-bold">${item.firstname} ${item.lastname}</h4></div>
                                         </div>
-                                        <div class="mb-2"><a href="#" class="river-bed"><b>${item.mobile_number}</b></a><br>
+                                        <div class="mb-2"><a href="#" class="river-bed"><b>${item.mobile_number || item.home_phone || item.work_phone || ''}</b></a><br>
                                         <a href="#" class="river-bed"><b>${item.email}</b></a></div>
                                         <!-- Your other content -->
                                         ${item.service_name.map((service, index) => `
@@ -5692,7 +5692,7 @@
                                 </div>
                             </div>
                             <div class="mb-2">
-                                <a href="#" class="river-bed"><b> ${person.mobile_number} </b></a><br>
+                                <a href="#" class="river-bed"><b>${person.mobile_number || person.home_phone || person.work_phone || ''}</b></a><br><br>
                                 <a href="#" class="river-bed"><b> ${person.email} </b></a>
                             </div>
                             ${appointment}
@@ -5810,7 +5810,7 @@
                                 </div>
                             </div>
                             <div class="mb-2">
-                                <a href="#" class="river-bed"><b> ${person.mobile_number} </b></a><br>
+                                <a href="#" class="river-bed"><b>${person.mobile_number || person.home_phone || person.work_phone || ''}</b></a><br><br>
                                 <a href="#" class="river-bed"><b> ${person.email} </b></a>
                             </div>
                             ${appointment}
@@ -5928,7 +5928,7 @@
                                 </div>
                             </div>
                             <div class="mb-2">
-                                <a href="#" class="river-bed"><b> ${person.mobile_number} </b></a><br>
+                                <a href="#" class="river-bed"><b>${person.mobile_number || person.home_phone || person.work_phone || ''}</b></a><br><br>
                                 <a href="#" class="river-bed"><b> ${person.email} </b></a>
                             </div>
                             ${appointment}
@@ -6048,7 +6048,7 @@
                                 </div>
                             </div>
                             <div class="mb-2">
-                                <a href="#" class="river-bed"><b> ${person.mobile_number} </b></a><br>
+                                <a href="#" class="river-bed"><b>${person.mobile_number || person.home_phone || person.work_phone || ''}</b></a><br><br>
                                 <a href="#" class="river-bed"><b> ${person.email} </b></a>
                             </div>
                             ${appointment}
@@ -6165,7 +6165,7 @@
                                 </div>
                             </div>
                             <div class="mb-2">
-                                <a href="#" class="river-bed"><b> ${person.mobile_number} </b></a><br>
+                                <a href="#" class="river-bed"><b>${person.mobile_number || person.home_phone || person.work_phone || ''}</b></a><br><br>
                                 <a href="#" class="river-bed"><b> ${person.email} </b></a>
                             </div>
                             ${appointment}
@@ -6212,7 +6212,7 @@
                         </div>
                     </div>
                     <div class="mb-2">
-                        <a href="#" class="river-bed"><b>${client.mobile_number}</b></a><br>
+                        <a href="#" class="river-bed"><b>${client.mobile_number || client.home_phone || client.work_phone || ''}</b></a><br>
                         <a href="#" class="river-bed"><b>${client.email}</b></a>
                     </div>
                     <hr>
@@ -6278,7 +6278,7 @@
                                 </div>
                             </div>
                             <div class="mb-2">
-                                <a href="#" class="river-bed"><b>${client.mobile_number}</b></a><br>
+                                <a href="#" class="river-bed"><b>${client.mobile_number || client.home_phone || client.work_phone || ''}</b></a><br>
                                 <a href="#" class="river-bed"><b>${client.email}</b></a>
                             </div>
                             <hr>
@@ -6357,7 +6357,7 @@
                                 </div>
                             </div>
                             <div class="mb-2">
-                                <a href="#" class="river-bed"><b>${client.mobile_number}</b></a><br>
+                                <a href="#" class="river-bed"><b>${client.mobile_number || client.home_phone || client.work_phone || ''}</b></a><br>
                                 <a href="#" class="river-bed"><b>${client.email}</b></a>
                             </div>
                             <hr>
@@ -6407,7 +6407,7 @@
                                 </div>
                             </div>
                             <div class="mb-2">
-                                <a href="#" class="river-bed"><b>${client.mobile_number}</b></a><br>
+                                <a href="#" class="river-bed"><b>${client.mobile_number || client.home_phone || client.work_phone || ''}</b></a><br>
                                 <a href="#" class="river-bed"><b>${client.email}</b></a>
                             </div>
                             <hr>

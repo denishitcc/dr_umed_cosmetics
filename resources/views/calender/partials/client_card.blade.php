@@ -6,7 +6,7 @@
                 <div class="client-info">
                     <h4 class="blue-bold" id="clientcardid" data-client_id="{{ $client->id }}">{{ $client->name }}</h4>
                     <a href="#" class="river-bed"><b> {{ $client->email  }} </b></a><br>
-                    <a href="#" class="river-bed"><b> {{ $client->mobile_number }} </b></a>
+                    <a href="#" class="river-bed"><b> {{ $client->mobile_number ?? $phone_number ?? $work_phone }}                    </b></a>
                 </div>
             </div>
         </div>

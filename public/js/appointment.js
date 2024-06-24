@@ -459,6 +459,7 @@ var DU = {};
             })
 
             $(document).on('click','.rebook_upcoming',function(e){
+                debugger;
                 $('.upcoming_appointments').hide();
                 //appointment rebook start
 
@@ -476,6 +477,7 @@ var DU = {};
                     duration            = $(this).parent().find('#duration').val();
                     clientName          = $(this).parent().find('#client_name').val();
                     clientId            = $(this).parent().find('#client_id').val();
+                    locationId          = $('#locations').val();
 
                     // $('#mycalendar').remove();
                     $('#external-events').removeAttr('style');
@@ -484,7 +486,7 @@ var DU = {};
                     <div class="drag-box mb-3">
                         <div class="head mb-2"><b>Drag and drop on</b> to a day on the appointment book
                             <i class="ico-noun-arrow"></i></div>
-                        <div class="treatment fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event" data-service_id="${eventId}" data-client_name="${clientName}" data-duration="${duration}" data-client_id="${clientId}" data-category_id="${categoryId}"> ${eventName}
+                        <div class="treatment fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event" data-location_id="${locationId}" data-service_id="${eventId}" data-client_name="${clientName}" data-duration="${duration}" data-client_id="${clientId}" data-category_id="${categoryId}"> ${eventName}
                         </div>
                     </div>
                     <div class="text-end">
@@ -1064,7 +1066,7 @@ var DU = {};
                                 </div>
                             </div>
                             <div class="mb-2">
-                                <a href="#" class="river-bed"><b>${response.data.client_data.mobile_no}</b></a><br>
+                                <a href="#" class="river-bed"><b>${response.data.client_data.mobile_no || response.data.client_data.home_phone || response.data.client_data.work_phone || ''}</b></a><br>
                                 <a href="#" class="river-bed"><b>${response.data.client_data.email}</b></a>
                             </div>
                             <hr>
@@ -3171,7 +3173,7 @@ var DU = {};
                                 </div>
                             </div>
                             <div class="mb-2">
-                                <a href="#" class="river-bed"><b>${response.data.mobile_number}</b></a><br>
+                                <a href="#" class="river-bed"><b>${response.data.mobile_number || response.data.home_phone || response.data.work_phone || ''}</b></a><br>
                                 <a href="#" class="river-bed"><b>${response.data.email}</b></a>
                             </div>
                             <hr>
@@ -3250,7 +3252,7 @@ var DU = {};
                                 </div>
                             </div>
                             <div class="mb-2">
-                                <a href="#" class="river-bed"><b>${response.data.mobile_number}</b></a><br>
+                                <a href="#" class="river-bed"><b>${response.data.mobile_number || response.data.home_phone || response.data.work_phone || ''}</b></a><br>
                                 <a href="#" class="river-bed"><b>${response.data.email}</b></a>
                             </div>
                             <hr>

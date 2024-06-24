@@ -1393,7 +1393,7 @@ const changeInputModal = debounce((val) =>
                             </div>
                         </div>
                         <div class="mb-2">
-                            <a href="#" class="river-bed"><b> ${person.mobile_number} </b></a><br>
+                            <a href="#" class="river-bed"><b>${person.mobile_number || person.home_phone || person.work_phone || ''}</b></a><br>
                             <a href="#" class="river-bed"><b> ${person.email} </b></a>
                         </div>
                         ${appointment}
