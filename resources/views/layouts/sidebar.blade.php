@@ -718,6 +718,7 @@
             dataType: "json",
             success: function(res) {
                 if (res.length > 0) {
+                    $('#resultsearchsmodal').show();
                     $('.searchs_client_list_box').show();
                     for (var i = 0; i < res.length; ++i) {
                         // Check if the record with the same id already exists in the array
@@ -770,6 +771,7 @@
                         }
                     }
                 } else {
+                    $('#resultsearchsmodal').hide();
                     $('.table-responsive').empty();
                 }
             },
