@@ -297,7 +297,7 @@
                         minlength: 1 // Ensure at least one selection is made
                     }
                 },
-                errorPlacement: function(error, element) {debugger;
+                errorPlacement: function(error, element) {
                     if (element.attr("name") === "image") {
                         error.insertAfter(".gl-upload");
                     } else if (element.attr("name") === "staff_member_location[]") {
