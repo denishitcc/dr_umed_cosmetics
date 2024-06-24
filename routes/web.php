@@ -265,3 +265,4 @@ Route::middleware(['auth'])->group(function () {
 Route::post('/get-staff-list', [CalenderController::class,'getStaffList'])->name('get-staff-list');
 Route::post('forms/deleteform',[FormsController::class, 'formDelete'])->name('serviceforms.formDelete');
 Route::get('forms/userform/{apptid}/{id}',[FormsController::class, 'formUser'])->name('serviceforms.formUser');
+Route::get('/thank-you/{apptid}/{id}',[FormsController::class, 'thankYou']);

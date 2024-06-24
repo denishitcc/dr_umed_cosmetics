@@ -9,7 +9,13 @@
     <table style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, Geneva, Tahoma, sans-serif; font-weight: 400; vertical-align: middle; line-height: 1.5em; background-color: #fff; margin: auto;">
         <tr>
             <td style="text-align: center;">
-               <img src="https://drumed.itcc.net.au/storage/images/banner_image/demo-banner%20(1).jpg" alt="company-logo" style="width: auto; max-width: 100% !important;">
+                @if ($user->banner_image != '')
+                        <img src="{{ asset('/storage/images/banner_image/' . $user->banner_image) }}" alt=""
+                            id="imgBannerPreview" alt="company-logo" style="width: auto; max-width: 100% !important;">
+                    @else
+                        <img src="{{ asset('/storage/images/banner_image/no-image.jpg') }}" alt=""
+                            id="imgBannerPreview" alt="company-logo" style="width: auto; max-width: 100% !important;">
+                    @endif
             </td>
          </tr>
          <tr>
