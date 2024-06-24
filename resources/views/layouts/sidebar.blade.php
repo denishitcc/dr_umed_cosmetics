@@ -791,37 +791,37 @@
             } else {
                 resultElement.innerHTML = ""; // Clear previous message if records are found
                 for (var i = 0, limit = 10, len = autoCompleteResult.length; i < len && i < limit; i++) {
-                    var person = autoCompleteResult[i];
-                    var firstCharacter = person.name.charAt(0).toUpperCase();
-                    
-                    // Construct the HTML for each result item
-                    var listItem = document.createElement("li");
-                    listItem.innerHTML = `<div class='client-name'>
-                                            <div class="client-info">
-                                                <h4 class="blue-bold">${person.name} ${person.lastname}</h4>
+                    (function(person) {
+                        var firstCharacter = person.name.charAt(0).toUpperCase();
+                        
+                        // Construct the HTML for each result item
+                        var listItem = document.createElement("li");
+                        listItem.innerHTML = `<div class='client-name'>
+                                                <div class="client-info">
+                                                    <h4 class="blue-bold">${person.name} ${person.lastname}</h4>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="mb-2">
-                                            <a href="#" class="river-bed"><b>${person.mobile_number || person.home_phone || person.work_phone || ''}</b></a><br>
-                                            <a href="#" class="river-bed"><b>${person.email}</b></a>
-                                        </div>`;
+                                            <div class="mb-2">
+                                                <a href="#" class="river-bed"><b>${person.mobile_number || person.home_phone || person.work_phone || ''}</b></a><br>
+                                                <a href="#" class="river-bed"><b>${person.email}</b></a>
+                                            </div>`;
 
-                    // Add onclick event to redirect to client page
-                    listItem.onclick = function() {
-                        redirectToClientPage(person.id); // Replace 'person.id' with the actual client ID
-                    };
+                        // Use a closure to ensure the correct client ID is passed to the redirect function
+                        listItem.onclick = function() {
+                            redirectToClientPage(person.id);
+                        };
 
-                    resultElement.appendChild(listItem); // Append the created li element to resultElement
+                        resultElement.appendChild(listItem); // Append the created li element to resultElement
+                    })(autoCompleteResult[i]);
+                }
+
+                // Function to redirect to client page
+                function redirectToClientPage(clientId) {
+                    // Replace with your actual client page URL, passing the client ID as a parameter
+                    window.location.href = '/clients/' + clientId;
                 }
             }
         }
-
-        // Function to redirect to client page
-        function redirectToClientPage(clientId) {
-            // Replace with your actual client page URL, passing the client ID as a parameter
-            window.location.href = '/clients/' + clientId;
-        }
-
     });
     </script>
 </body>
