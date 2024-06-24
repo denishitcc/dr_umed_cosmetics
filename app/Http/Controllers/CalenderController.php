@@ -135,7 +135,8 @@ class CalenderController extends Controller
             $location = $loc->id;
         }
         if ($location) {
-            $user = $user->where('role_type', '!=', 'admin')->where('staff_member_location', '=', $location);
+            // $user = $user->where('role_type', '!=', 'admin')->where('staff_member_location', '=', $location);
+            $user = $user->where('staff_member_location', '=', $location);
         } else {
             $user = $user->where('role_type', '!=', 'admin');
         }
@@ -221,7 +222,15 @@ class CalenderController extends Controller
     {
         if(isset($request->name))
         {
-            $clients = Clients::where('firstname', 'like', '%' . $request->name . '%')->where('status', 'active')->get();
+            $name = $request->input('name');
+
+            // Query to search for clients by firstname or lastname
+            $clients = Clients::where(function ($query) use ($name) {
+                $query->where('firstname', 'like', '%' . $name . '%')
+                        ->orWhere('lastname', 'like', '%' . $name . '%');
+            })
+            ->where('status', 'active')
+            ->get();
         }else{
             $clients = Clients::where('id', $request->id)->where('status', 'active')->get();
         }

@@ -324,11 +324,15 @@
                     <div class="popup-search-outer">
                         <!-- code for search input -->
                         <div class="form-group icon">
-                            <input type="text" id="search" onkeyup="changeInput(this.value)" class="form-control" placeholder="Search for services, products or scan barcode">
+                            <input type="text" id="search_sidebar_client"  onkeyup="searhCustomers(this.value)" class="form-control" placeholder="Search for clients" autocomplete="off">
                             <i class="ico-search"></i>
 
                             
                             <div id="result" class="list-group"></div>
+                            
+                        </div>
+                        <div class="searchs_client_list_box" style="display:none;">
+                            <ul class="drop-list" id="resultsearchsmodal"></ul>
                         </div>
                         <!-- code for search input -->
                     </div>
@@ -663,6 +667,162 @@
     function closeSearch() {
         document.getElementById("myOverlay").style.display = "none";
     }
+
+    //search client
+    function debounce(func, timeout = 300){
+        let timer;
+        return (...args) => {
+            clearTimeout(timer);
+            timer = setTimeout(() => { func.apply(this, args); }, timeout);
+        };
+    }
+    function matchSearchClient(input) {
+        var reg = new RegExp(input.trim(), "i");
+        var res = [];
+        if (input.trim().length === 0) {
+            return res;
+        }
+        for (var i = 0, len = client_details.length; i < len; i++) {
+            var person = client_details[i];
+            // Check specifically for the mobile_number number field
+            if (person.mobile_number && person.mobile_number.match(reg)) {
+                res.push(person);
+            } else {
+                // If mobile_number number didn't match, check other fields
+                for (var key in person) {
+                    if (person.hasOwnProperty(key) && typeof person[key] === 'string' && person[key].match(reg)) {
+                        res.push(person);
+                        break; // Break loop if any field matches
+                    }
+                }
+            }
+        }
+        return res;
+    }
+    var client_details = [];
+    //change input event
+    const searhCustomers = debounce((val) =>
+    {
+        $('#clientDetails').empty();
+        // ajax call
+        $.ajax({
+            type: "POST",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: "{{route('calendar.get-all-clients')}}",
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content'),
+                name: $('#search_sidebar_client').val(),
+            },
+            dataType: "json",
+            success: function(res) {
+                if (res.length > 0) {
+                    $('#resultsearchsmodal').show();
+                    $('.searchs_client_list_box').show();
+                    for (var i = 0; i < res.length; ++i) {
+                        // Check if the record with the same id already exists in the array
+                        var existingRecordIndex = client_details.findIndex(record => record.id === res[i].id);
+
+                        // If the record doesn't exist in the array, add it
+                        if (existingRecordIndex === -1) {
+                            // Push client details to the client_details array
+                            client_details.push({
+                                id: res[i].id,
+                                name: res[i].first_name,
+                                lastname: res[i].last_name,
+                                email: res[i].email,
+                                mobile_number: res[i].mobile_no,
+                                date_of_birth: res[i].date_of_birth,
+                                gender: res[i].gender,
+                                home_phone: res[i].home_phone,
+                                work_phone: res[i].work_phone,
+                                contact_method: res[i].contact_method,
+                                send_promotions: res[i].send_promotions,
+                                street_address: res[i].street_address,
+                                suburb: res[i].suburb,
+                                city: res[i].city,
+                                postcode: res[i].postcode,
+                                client_photos:res[i].client_photos,
+                                client_documents: [], // Initialize an empty array for client documents
+                                service_name: res[i].last_appointment.service_name,
+                                staff_name: res[i].last_appointment.staff_name,
+                                start_date: res[i].last_appointment.appointment_date,
+                                status: res[i].last_appointment.status,
+                                location_name: res[i].last_appointment.location_name
+                            });
+                        }
+                        // Iterate over client documents and push only doc_name and created_at
+                        if (res[i].documents && res[i].documents.length > 0) {
+                            for (var j = 0; j < res[i].documents.length; j++) {
+                                // If the record with the same doc_id already exists in the array, skip
+                                if (existingRecordIndex !== -1 && client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].documents[j].doc_id)) {
+                                    continue;
+                                }
+                                // If the record doesn't exist in the array or the doc_id doesn't exist in the documents array, add it
+                                if (existingRecordIndex === -1 || !client_details[existingRecordIndex].client_documents.some(doc => doc.doc_id === res[i].documents[j].doc_id)) {
+                                    client_details[existingRecordIndex !== -1 ? existingRecordIndex : i].client_documents.push({
+                                        doc_id: res[i].documents[j].doc_id,
+                                        doc_name: res[i].documents[j].doc_name,
+                                        created_at: res[i].documents[j].created_at
+                                    });
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    $('#resultsearchsmodal').hide();
+                    $('.table-responsive').empty();
+                }
+            },
+            error: function(jqXHR, exception) {
+                // Handle error
+            }
+        });
+
+        var autoCompleteResult = matchSearchClient(val);
+        var resultElement = document.getElementById("resultsearchsmodal"); 
+
+        if (val.trim() === "") {
+            resultElement.innerHTML = ""; // Clear the result if search box is empty
+        } else {
+            if (autoCompleteResult.length === 0) {
+                resultElement.innerHTML = "<p>No records found</p>";
+            } else {
+                resultElement.innerHTML = ""; // Clear previous message if records are found
+                for (var i = 0, limit = 10, len = autoCompleteResult.length; i < len && i < limit; i++) {
+                    var person = autoCompleteResult[i];
+                    var firstCharacter = person.name.charAt(0).toUpperCase();
+                    
+                    // Construct the HTML for each result item
+                    var listItem = document.createElement("li");
+                    listItem.innerHTML = `<div class='client-name'>
+                                            <div class="client-info">
+                                                <h4 class="blue-bold">${person.name} ${person.lastname}</h4>
+                                            </div>
+                                        </div>
+                                        <div class="mb-2">
+                                            <a href="#" class="river-bed"><b>${person.mobile_number || person.home_phone || person.work_phone || ''}</b></a><br>
+                                            <a href="#" class="river-bed"><b>${person.email}</b></a>
+                                        </div>`;
+
+                    // Add onclick event to redirect to client page
+                    listItem.onclick = function() {
+                        redirectToClientPage(person.id); // Replace 'person.id' with the actual client ID
+                    };
+
+                    resultElement.appendChild(listItem); // Append the created li element to resultElement
+                }
+            }
+        }
+
+        // Function to redirect to client page
+        function redirectToClientPage(clientId) {
+            // Replace with your actual client page URL, passing the client ID as a parameter
+            window.location.href = '/clients/' + clientId;
+        }
+
+    });
     </script>
 </body>
 
