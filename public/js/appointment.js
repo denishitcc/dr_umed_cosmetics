@@ -2193,7 +2193,7 @@ var DU = {};
                                 eventId             = $(this).data('services_id'),
                                 categoryId          = $(this).data('category_id'),
                                 duration            = $(this).data('duration'),
-                                clientName          = $('#clientDetails').find('input:hidden[name=client_name]').val() ? $('#clientDetails').find('input:hidden[name=client_name]').val() : 0,
+                                clientName          = $('#clientDetails').find('input:hidden[name=client_name]').val() ? $('#clientDetails').find('input:hidden[name=client_name]').val() : 'No Client',
                                 clientId            = $('#clientDetails').find('input:hidden[name=client_id]').val() ? $('#clientDetails').find('input:hidden[name=client_id]').val() : '';
 
                                 // Increment the counter
@@ -2265,7 +2265,7 @@ var DU = {};
                             eventId             = $(this).data('services_id'),
                             categoryId          = $(this).data('category_id'),
                             duration            = $(this).data('duration'),
-                            clientName          = $('#clientDetails').find('input:hidden[name=client_name]').val() ? $('#clientDetails').find('input:hidden[name=client_name]').val() : 0,
+                            clientName          = $('#clientDetails').find('input:hidden[name=client_name]').val() ? $('#clientDetails').find('input:hidden[name=client_name]').val() : 'No client',
                             clientId            = $('#clientDetails').find('input:hidden[name=client_id]').val() ? $('#clientDetails').find('input:hidden[name=client_id]').val() : '';
                             // Increment the counter
                             count++;
