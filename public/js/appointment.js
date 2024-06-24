@@ -883,14 +883,27 @@ var DU = {};
                 },
                 success: function (data) {
                     if (data && data.length > 0) {
+                        // Clear existing options
+                        $('#locations').empty();
                         data.forEach(function (location) {
                             $('#locations').append($('<option>', { value: location.id, text: location.location_name }));
                         });
+                        // Check if sessionStorage contains 'latest_loc_id'
+                        var latestLocId = sessionStorage.getItem('latest_loc_id');
+                        if (latestLocId !== null) {
+                            // Check if the latestLocId matches any option value
+                            var optionExists = $('#locations').find('option[value="' + latestLocId + '"]').length > 0;
+                            
+                            if (optionExists) {
+                                // Set the value of #locations to latestLocId if it exists
+                                $('#locations').val(latestLocId);
+                            }
+                        }
                     }
-                    if(sessionStorage.getItem('latest_loc_id') != null)
-                    {
-                        $('#locations').val(sessionStorage.getItem('latest_loc_id'));    
-                    }
+                    // if(sessionStorage.getItem('latest_loc_id') != null)
+                    // {
+                    //     $('#locations').val(sessionStorage.getItem('latest_loc_id'));    
+                    // }
                     var selected_loc_id = $('#locations').val();
                     var selected_loc_name = $('#locations option:selected').text();
                     $('.walkin_loc_name').text(selected_loc_name);
