@@ -9,13 +9,7 @@
     <table style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, Geneva, Tahoma, sans-serif; font-weight: 400; vertical-align: middle; line-height: 1.5em; background-color: #fff; margin: auto;">
         <tr>
             <td style="text-align: center;">
-                @if ($user->banner_image != '')
-                        <img src="{{ asset('/storage/images/banner_image/' . $user->banner_image) }}" alt=""
-                            id="imgBannerPreview" alt="company-logo" style="width: auto; max-width: 100% !important;">
-                    @else
-                        <img src="{{ asset('/storage/images/banner_image/no-image.jpg') }}" alt=""
-                            id="imgBannerPreview" alt="company-logo" style="width: auto; max-width: 100% !important;">
-                    @endif
+               <img src="https://drumed.itcc.net.au/storage/images/banner_image/demo-banner%20(1).jpg" alt="company-logo" style="width: auto; max-width: 100% !important;">
             </td>
          </tr>
          <tr>
@@ -48,36 +42,35 @@
                 @if ($form['type'] == 'radio')
                     <td style="padding-bottom: 10px;">
                         <strong> {{ $form['label'] }} </strong><br>
-                        {{ $form['ans']  }}
+                        @if ( array_key_exists($form['key'],$data['data']) )
+                            {{ $data['data'][$form['key']] }}
+                        @endif
                     </td>
                 @endif
                 @if ($form['type'] == 'content')
                     <td style="padding-bottom: 10px;">
                         {!! $form['html']  !!}
                     </td>
-                @endif
-                @if ($form['type'] == 'rating')
+                 @endif
+                @if ($form['type'] == 'signature')
                     <td style="padding-bottom: 10px;">
-                        <hr>
-                    </td>
-                @endif
-                @if ($form['type'] == 'rating')
-                    <td style="padding-bottom: 10px;">
-                        <hr>
+                        <strong> {{ $form['label'] }} </strong><br>
+                        <img src="{{ $data['data']['signature'] }}" alt="" style="width: auto; max-width: 100% !important;">
                     </td>
                 @endif
                 @if ($form['type'] == 'selectboxes')
-                    {{  $selectedvalue = $form['key'] }}
+                    <?php
+                        $selectedvalue = $data['data'][$form['key']];
+                    ?>
 
                     <td style="padding-bottom: 10px;">
                         <strong> {{ $form['label'] }} </strong><br>
                         @foreach ($form['values'] as $key => $check)
-                            {{-- $selectedvalue[$check['value']] --}}
-                            <input type="checkbox"
-                            id="{{ $check['value'] }}"
-                            value="true"
-                            name="{{ $form['key'] }}[{{ $check['value'] }}]"
- @if(isset($selectedvalue[$check['value']]) && $selectedvalue[$check['value']] == "true") checked @endif>  <label for="{{ $check['value'] }}">{{ $check['label'] }}</label><br>
+                        <input type="checkbox"
+                        id="{{ $check['value'] }}"
+                        value="true"
+                        name="{{ $form['key'] }}[{{ $check['value'] }}]"
+@if(isset($selectedvalue[$check['value']]) && $selectedvalue[$check['value']] == "true") checked @endif>  <label for="{{ $check['value'] }}">{{ $check['label'] }}</label><br>
                         @endforeach
                     </td>
                 @endif
