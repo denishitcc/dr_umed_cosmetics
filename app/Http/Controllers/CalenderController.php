@@ -1353,7 +1353,8 @@ class CalenderController extends Controller
 
         $data = Clients::leftJoin('appointment', function ($join) use ($currentDateTime) {
             $join->on('clients.id', '=', 'appointment.client_id')
-                ->where('appointment.start_date', '>=', $currentDateTime);
+                ->where('appointment.start_date', '>=', $currentDateTime)
+                ->whereNull('appointment.deleted_at'); 
         })
             ->leftJoin('services', 'appointment.service_id', '=', 'services.id')
             ->leftJoin('users', 'appointment.staff_id', '=', 'users.id')
@@ -1512,7 +1513,8 @@ class CalenderController extends Controller
 
         $data = Clients::leftJoin('appointment', function ($join) use ($currentDateTime) {
             $join->on('clients.id', '=', 'appointment.client_id')
-                ->where('appointment.start_date', '<=', $currentDateTime);
+                ->where('appointment.start_date', '<=', $currentDateTime)
+                ->whereNull('appointment.deleted_at');
         })
             ->leftJoin('services', 'appointment.service_id', '=', 'services.id')
             ->leftJoin('users', 'appointment.staff_id', '=', 'users.id')
