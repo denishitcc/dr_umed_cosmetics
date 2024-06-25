@@ -201,6 +201,25 @@ class DashboardController extends Controller
             ->whereBetween('enquiry_date', [$startDate, $endDate])
             ->groupBy(DB::raw('DATE(enquiry_date)'))
             ->get();
+             // Gender ratio filter
+                $gender_ratio = Clients::select('gender', DB::raw('count(*) as count'))
+                ->whereIn('id', function ($query) use ($startDate, $endDate) {
+                    $query->select('client_id')->from('walk_in_retail_sale')->whereBetween('invoice_date', [$startDate, $endDate])
+                        ->union(
+                            Appointment::select('client_id')->whereBetween('start_date', [$startDate, $endDate])
+                        );
+                })
+                ->groupBy('gender')
+                ->get()
+                ->mapWithKeys(function ($item) {
+                    return [$item->gender => $item->count];
+                })
+                ->toArray();
+
+            // Ensure gender_ratio includes both 'Men' and 'Women' keys with default values if they are not present
+            $gender_ratio = array_merge(['Male' => 0, 'Female' => 0], $gender_ratio);
+            // dd($gender_ratio);
+            //gender ratio filter end
         }else{
             //total sales filter
             $totalSales = WalkInRetailSale::whereBetween('invoice_date', [$startDate, $endDate])
@@ -276,6 +295,25 @@ class DashboardController extends Controller
             ->where('location_name',$location)
             ->groupBy(DB::raw('DATE(enquiry_date)'))
             ->get();
+            
+            //gender ratio filter start
+            $gender_ratio = Clients::select('gender', DB::raw('count(*) as count'))
+            ->whereIn('id', function ($query) use ($startDate, $endDate,$location) {
+                $query->select('client_id')->from('walk_in_retail_sale')->where('location_id',$location)->whereBetween('invoice_date', [$startDate, $endDate])
+                ->union(
+                    Appointment::select('client_id')->where('location_id',$location)->whereBetween('start_date', [$startDate, $endDate])
+                );
+            })
+            ->groupBy('gender')
+            
+            ->get()
+            ->mapWithKeys(function ($item) {
+                return [$item['gender'] => $item['count']];
+            });
+
+            // Ensure gender_ratio includes both 'Men' and 'Women' keys with default values if they are not present
+            $gender_ratio = array_merge(['Men' => 0, 'Women' => 0], $gender_ratio->toArray());
+            //gender ratio filter end
         }
         
         // You can add more queries here to retrieve other data based on the filters
@@ -292,6 +330,7 @@ class DashboardController extends Controller
             'clientGraph'   => $client_graph,
             'totalFilterEnquiries' => $total_filter_enquiries,
             'enquiryGraph'   => $enquiry_graph,
+            'genderGraph'   => $gender_ratio
         ]);
     }
     public function sales_performance_filter(Request $request)
