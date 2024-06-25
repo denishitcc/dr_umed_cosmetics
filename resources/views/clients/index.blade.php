@@ -1119,40 +1119,47 @@ $(document).ready(function() {
         // Define a date filter to get the data for today, tomorrow, or a future date
         var dateFilter = [];
 
+        // Function to format date to dd-mm-yyyy
+        function formatDateToDDMMYYYY(date) {
+            var dd = String(date.getDate()).padStart(2, '0');
+            var mm = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero based
+            var yyyy = date.getFullYear();
+            return dd + '-' + mm + '-' + yyyy;
+        }
+        
         // Loop through each selected value
         if (selectedValues != null) {
-        selectedValues.forEach(function(selectedValue) {
-            switch (selectedValue) {
-                case 'No appointment':
-                    dateFilter.push('No appointment'); // Filter for 'No appointment'
-                    break;
-                case 'All Days':
-                    // Filter for today, tomorrow, and future appointments
-                    var today = new Date().toISOString().slice(0, 10);
-                    var tomorrow = new Date();
-                    tomorrow.setDate(tomorrow.getDate() + 1);
-                    var future = tomorrow.toISOString().slice(0, 10);
-                    dateFilter.push(today, tomorrow, future);
-                    break;
-                case 'Today':
-                    dateFilter.push(new Date().toISOString().slice(0, 10)); // Filter for today's appointments
-                    break;
-                case 'Tomorrow':
-                    var tomorrow = new Date();
-                    tomorrow.setDate(tomorrow.getDate() + 1); // Filter for tomorrow's appointments
-                    dateFilter.push(tomorrow.toISOString().slice(0, 10));
-                    break;
-                case 'Feature Appointments':
-                    var future = new Date();
-                    future.setDate(future.getDate() + 1); // Filter for feature appointments
-                    dateFilter.push(future.toISOString().slice(0, 10));
-                    // Assuming 'feature' is a placeholder for the actual date of the last feature appointment,
+            selectedValues.forEach(function(selectedValue) {
+                switch (selectedValue) {
+                    case 'No appointment':
+                        dateFilter.push('No appointment'); // Filter for 'No appointment'
+                        break;
+                    case 'All Days':
+                        // Filter for today, tomorrow, and future appointments
+                        var today = new Date();
+                        var tomorrow = new Date();
+                        tomorrow.setDate(tomorrow.getDate() + 1);
+                        var future = new Date(tomorrow);
+                        dateFilter.push(formatDateToDDMMYYYY(today), formatDateToDDMMYYYY(tomorrow), formatDateToDDMMYYYY(future));
+                        break;
+                    case 'Today':
+                        dateFilter.push(formatDateToDDMMYYYY(new Date())); // Filter for today's appointments
+                        break;
+                    case 'Tomorrow':
+                        var tomorrow = new Date();
+                        tomorrow.setDate(tomorrow.getDate() + 1); // Filter for tomorrow's appointments
+                        dateFilter.push(formatDateToDDMMYYYY(tomorrow));
+                        break;
+                    case 'Feature Appointments':
+                        var future = new Date();
+                        future.setDate(future.getDate() + 1); // Filter for feature appointments
+                        dateFilter.push(formatDateToDDMMYYYY(future));
+                        // Assuming 'feature' is a placeholder for the actual date of the last feature appointment,
                         // use the actual date instead of 'feature' in the future.
                         break;
                 }
             });
         }
-
         // If no value is selected, remove the filter
         if (selectedValues === null || selectedValues.length === 0) {
             selectedValues = null;
