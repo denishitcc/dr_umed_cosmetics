@@ -66,7 +66,6 @@ var DU = {};
         initialCalender: function(){
             var context     = this;
             // Calender
-            var scrollTime = moment().format("HH:mm:ss");
             var calendarEl = document.getElementById('calendar');
                 context.calendar = new FullCalendar.Calendar(calendarEl, {
                 selectable: true,
@@ -75,7 +74,7 @@ var DU = {};
                 aspectRatio: 1.8,
                 forceEventDuration: true,
                 nowIndicator: true,
-                scrollTime: scrollTime,
+                scrollTime: moment().format("HH:mm:ss"),
                 defaultAllDayEventDuration: "01:00",
                 initialView: 'resourceTimeGridDay',
                 // titleFormat: 'dddd, MMMM D, YYYY',
@@ -108,7 +107,7 @@ var DU = {};
                 headerToolbar: {
                     left: 'prev,today,next',
                     center: 'title',
-                    right: 'resourceTimeGridDay,dayGridMonth,resourceTimelineYear'
+                    right: 'timeGridDay,dayGridMonth,resourceTimelineYear'
                 },
                 loading: function (isLoading) {
                     // if (isLoading) {
@@ -282,14 +281,16 @@ var DU = {};
                     }
                 },
                 datesSet: function (info) {
-                    const resources = context.calendar.getOption('resources');
-                    var resourceId  = $('#staff').find(":selected").val();
-
-                    // info.start and info.end represent the new date range resourceTimeGridWeek
-                    var start_date  = moment(info.startStr).format('YYYY-MM-DD'),
-                        end_date    = moment(info.endStr).format('YYYY-MM-DD');
-                    // Make an AJAX call to fetch events for the new date range
-                    context.eventsList(start_date, end_date,resourceId);
+                    var resourceId  = $('#staff').val();
+                    // var latestStaffId = sessionStorage.getItem('latest_staff_id');
+                    // if(latestStaffId == 'all')
+                    // {
+                        // info.start and info.end represent the new date range resourceTimeGridWeek
+                        var start_date  = moment(info.startStr).format('YYYY-MM-DD'),
+                            end_date    = moment(info.endStr).format('YYYY-MM-DD');
+                        // Make an AJAX call to fetch events for the new date range
+                        context.eventsList(start_date, end_date,resourceId);
+                    // }
                 },
                 dateClick: function(){
                     var locationId = jQuery('#locations').val();
@@ -726,7 +727,6 @@ var DU = {};
                         // Update the FullCalendar resources with the retrieved data
                         context.calendar.setOption('resources', data);
                         context.calendar.refetchEvents(); // Refresh events if needed
-
                         $('#staff').empty();
                         $('#staff').append(`<option value="all">All staff</option>
                                 <option disabled>Individual staff</option>`);
@@ -742,6 +742,7 @@ var DU = {};
                         console.error('Error fetching resources:', error);
                     }
                 });
+
                 $.ajax({
                     url: moduleConfig.getSelectedLocation,
                     type: 'POST',
@@ -819,7 +820,6 @@ var DU = {};
                 var resourceId    = $(this).val();
                 sessionStorage.setItem("latest_staff_id", resourceId);
                 const resources = context.calendar.getOption('resources');
-                console.log(resourceId);
                 if(resourceId != 'all')
                 {
                     const filteredResources = resources.filter(resource => resource.id === resourceId);
@@ -854,16 +854,6 @@ var DU = {};
                             console.error('Error fetching resources:', error);
                         }
                     });
-
-                    // context.staffList();
-                    // var start_date = moment(context.calendar.currentData.dateProfile.currentRange.start).format('YYYY-MM-DD');
-                    // var end_date   = moment(context.calendar.currentData.dateProfile.currentRange.end).format('YYYY-MM-DD');
-                    // context.eventsList(start_date, end_date,resourceId);
-
-                    // console.log(resources);
-                    // const filteredResources = resources.filter(resource => resource.id === resourceId);
-                    // context.calendar.setOption('resources', filteredResources);
-
                     context.calendar.changeView('resourceTimeGridDay');
                 }
                 context.calendar.render();
@@ -871,7 +861,6 @@ var DU = {};
         },
 
         locationDropdown: function(){
-            
             var context = this;
 
             $.ajax({
@@ -892,17 +881,12 @@ var DU = {};
                         if (latestLocId !== null) {
                             // Check if the latestLocId matches any option value
                             var optionExists = $('#locations').find('option[value="' + latestLocId + '"]').length > 0;
-                            
                             if (optionExists) {
                                 // Set the value of #locations to latestLocId if it exists
                                 $('#locations').val(latestLocId);
                             }
                         }
                     }
-                    // if(sessionStorage.getItem('latest_loc_id') != null)
-                    // {
-                    //     $('#locations').val(sessionStorage.getItem('latest_loc_id'));    
-                    // }
                     var selected_loc_id = $('#locations').val();
                     var selected_loc_name = $('#locations option:selected').text();
                     $('.walkin_loc_name').text(selected_loc_name);
@@ -1029,20 +1013,20 @@ var DU = {};
                                     let id = name.id;
                                     $('#staff').append($('<option>', { value: id, text: fullName }));
                                 });
-                                // if(sessionStorage.getItem('latest_staff_id') != null)
-                                // {
-                                //     $('#staff').val(sessionStorage.getItem('latest_staff_id'));    
-                                // }
-                                 // Check if sessionStorage contains 'latest_loc_id'
+
+                                // Check if sessionStorage contains 'latest_loc_id'
                                 var latestStaffId = sessionStorage.getItem('latest_staff_id');
                                 if (latestStaffId !== null) {
                                     // Check if the latestStaffId matches any option value
                                     var optionExists = $('#staff').find('option[value="' + latestStaffId + '"]').length > 0;
-                                    
                                     if (optionExists) {
                                         // Set the value of #locations to latestStaffId if it exists
                                         $('#staff').val(latestStaffId);
                                     }
+                                    // context.calendar.changeView('timeGridWeek');
+                                    // var start_date = moment(context.calendar.currentData.dateProfile.currentRange.start).format('YYYY-MM-DD');
+                                    // var end_date   = moment(context.calendar.currentData.dateProfile.currentRange.end).format('YYYY-MM-DD');
+                                    // context.eventsList(start_date, end_date,latestStaffId);
                                 }
                             }
                         },
@@ -1833,15 +1817,6 @@ var DU = {};
                 // get all the services related to location
                 context.selectors.appointmentModal.modal('show');
             });
-
-            // var openModal = sessionStorage.getItem('openModal');
-            // if (openModal === 'true') {
-            //     // Clear session storage value
-            //     sessionStorage.removeItem('openModal');
-
-            //     // Open the modal
-            //     context.selectors.appointmentModal.modal('show');
-            // }
         },
 
         getCategoriesAndServices: function(locationId){
@@ -3035,9 +3010,11 @@ var DU = {};
                     success: function (response) {
                         $('#clientformsmodal').empty();
                         $('#clientformsmodal').html(response.data);
+
                         var formjson        = response.formjson,
-                            originalForm    = response.original_form;
-                        context.clientformrender(formjson,originalForm);
+                            originalForm    = response.original_form,
+                            status          = response.status;
+                        context.clientformrender(formjson,originalForm,status);
                     },
                     error: function (error) {
                         console.error('Error fetching resources:', error);
@@ -3058,7 +3035,7 @@ var DU = {};
         clientformrender: function(formjson,originalForm){
             var json        = $.parseJSON(originalForm),
                 formvalue   = $.parseJSON(formjson);
-            console.log(formvalue);
+
             Formio.createForm(document.getElementById('fb-editor'), json, {
                 readOnly: true
             }).then((form) => {
