@@ -2668,7 +2668,7 @@ var DU = {};
                     $('.treatment_notes').find('input:hidden[name=appointment_id]').val(appointment_id);
                     $(".treatmentviewnotes").remove();
                     $(".treatment_common").removeClass('d-none');
-                    $("#treatment_common").val('');
+                    $("#treatment_notes").val('');
                 });
 
                 // Open form on edit custom notes button

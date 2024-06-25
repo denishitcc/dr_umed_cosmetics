@@ -27,7 +27,7 @@
                             <div class="add-note-btn-box">
                                 <a href="javascript:void(0);" class="btn btn-primary font-13 me-2" id="add_notes" data-appointment_id="{{ $appointment->id }}"> Add
                                     Notes</a>
-                                <a href="javascript:void(0);" id="add_treatment_notes" class="btn btn-primary font-13 alter" data-appointment_id="{{ $appointment->id }}">>
+                                <a href="javascript:void(0);" id="add_treatment_notes" class="btn btn-primary font-13 alter" data-appointment_id="{{ $appointment->id }}">
                                     Add treatment notes </a>
                             </div>
                             @endif
