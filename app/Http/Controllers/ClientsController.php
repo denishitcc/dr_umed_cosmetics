@@ -46,7 +46,7 @@ class ClientsController extends Controller
                             'clients.email', 
                             'clients.mobile_number', 
                             'clients.status', 
-                            DB::raw('GROUP_CONCAT(DISTINCT CONCAT(DATE_FORMAT(appointment.start_date, "%d-%m-%Y %h:%i %p"), "", services.service_name, " with ", CONCAT(users.first_name, " ", users.last_name))) as appointment_dates'),
+                            DB::raw('GROUP_CONCAT(CONCAT(DATE_FORMAT(appointment.start_date, "%d-%m-%Y %h:%i %p"), "", services.service_name, " with ", CONCAT(users.first_name, " ", users.last_name))) as appointment_dates'),
                             DB::raw('GROUP_CONCAT(CASE appointment.status 
                                 WHEN 1 THEN "Booked" 
                                 WHEN 2 THEN "Confirmed"
@@ -60,8 +60,8 @@ class ClientsController extends Controller
                                 WHEN 10 THEN "Cancelled"
                             END) as app_status'),
                             DB::raw('GROUP_CONCAT(users.staff_member_location) as staff_member_location'),
-                            DB::raw('GROUP_CONCAT(DISTINCT appointments_notes.common_notes SEPARATOR ",") as common_notes'),
-                            DB::raw('GROUP_CONCAT(DISTINCT appointments_notes.treatment_notes SEPARATOR ",") as treatment_notes')
+                            DB::raw('GROUP_CONCAT(appointments_notes.common_notes SEPARATOR ",") as common_notes'),
+                            DB::raw('GROUP_CONCAT(appointments_notes.treatment_notes SEPARATOR ",") as treatment_notes')
                     )
                     ->groupBy('clients.id', 
                             'clients.firstname', 
