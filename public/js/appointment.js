@@ -173,7 +173,7 @@ var DU = {};
                     // $("#external-events").remove();
                 },
                 eventReceive: function (info) {
-                    var resourceId          = info.event._def.resourceIds[0],
+                    var resourceId          = info.event._def.resourceIds[0] ?? $('#staff').val(),
                         start_date          = moment(info.event.startStr).format('YYYY-MM-DD'),
                         client_id           = info.event.extendedProps.client_id == "null" ?'':info.event.extendedProps.client_id,
                         service_id          = info.event.extendedProps.service_id,
