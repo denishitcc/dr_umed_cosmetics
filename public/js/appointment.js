@@ -2684,7 +2684,7 @@ var DU = {};
                 });
 
                 // add common note ajax
-                $(document).on('click','#add_common_notes', function(e){debugger
+                $(document).on('click','#add_common_notes', function(e){
                     e.preventDefault();
                     var appointmentId = $('.common_notes').find('input:hidden[name=appointment_id]').val(),
                         commonNotes   = $('#common_notes').val(),
