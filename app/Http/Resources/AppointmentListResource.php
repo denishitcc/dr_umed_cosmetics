@@ -23,11 +23,12 @@ class AppointmentListResource extends JsonResource
             'color'         => isset($this->staff->calendar_color) ? $this->staff->calendar_color : '#0b5ed7',
             'className'     => "edit_appointment",
             'extendedProps' =>[
-                'client_id'     => $this->client_id,
-                'client_name'   => (isset($this->clients->firstname) ? $this->clients->firstname : '') . ' ' . (isset($this->clients->lastname) ? $this->clients->lastname : ''),
-                'service_id'    => $this->service_id,
-                'category_id'   => $this->category_id
+                'client_id'         => $this->client_id,
+                'client_name'       => (isset($this->clients->firstname) ? $this->clients->firstname : '') . ' ' . (isset($this->clients->lastname) ? $this->clients->lastname : ''),
+                'service_id'        => $this->service_id,
+                'category_id'       => $this->category_id,
+                'booking_notes'     => isset($this->note->common_notes) ? $this->note->common_notes : ''
             ],
-        ];        
+        ];
     }
 }
