@@ -57,6 +57,14 @@ var DU = {};
             context.updateAppointmentStatus();
             context.deleteFormsCard();
 
+            //dashboard appointment view all redirect to particular date start
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('appt_date')) {
+                const apptDate = urlParams.get('appt_date');
+                context.calendar.gotoDate(apptDate);
+            }
+            //dashboard appointment view all redirect to particular date end
+            
             $('#clientmodal').hide();
             $('#service_error').hide();
             $('#client').hide();

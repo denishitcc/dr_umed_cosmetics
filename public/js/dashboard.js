@@ -68,7 +68,6 @@ $(".fc-today-button").click(function() {
 
 // Change calendar view based on user input
 $('#mycalendar').change(function (e) {
-    debugger;
     e.preventDefault();
     var inputValue = $(this).val();
     $('.view_all_appt').attr('appt-date',inputValue);
@@ -78,7 +77,7 @@ $('#mycalendar').change(function (e) {
 
     // Fetch today's appointments if selected date matches today's date
     var isToday = moment(inputValue).isSame(todayDate, 'day');
-    var headerText = isToday ? "Today's Appointments" : `Appointments for ${moment(inputValue).format('DD-MM-YYYY')}`;
+    var headerText = isToday ? "Today's appointment" : `${moment(inputValue).format('DD MMMM')} Appointments`;
     
     //fetch today's appointments
     $.ajax({
@@ -98,13 +97,15 @@ $('#mycalendar').change(function (e) {
                 data.forEach(function(appt) {
                     var clientName = appt.firstname && appt.lastname ? `${appt.firstname} ${appt.lastname}` : "No Client";
                     var appointmentHtml = `
-                        <li class="mb-1">
-                            <div class="doc_name">${clientName}</div>
-                            <div class="app_time">${moment(appt.start_date).format('h:mm A')}</div>
-                            <div class="ser_name">${appt.service_name} with ${appt.staff.first_name} ${appt.staff.last_name}</div>`;
+                        <li>
+                            <div class="d-flex justify-content-between">
+                                <b class="doc_name">${clientName}</b>
+                                <span class="app_time">${moment(appt.start_date).format('h:mm A')}</b>
+                            </div>
+                            <span class="service_name">${appt.service_name} with <b>${appt.staff.first_name} ${appt.staff.last_name}</b></span>`;
                     
                     if (appt.note && appt.note.common_notes) {
-                        appointmentHtml += `<div class="note">Booking Note : ${appt.note.common_notes}</div>`;
+                        appointmentHtml += `<div class="notes">Booking Note : ${appt.note.common_notes}</div>`;
                     }
 
                     appointmentHtml += `</li>`;
@@ -120,10 +121,10 @@ $('#mycalendar').change(function (e) {
     });
 });
 
-$('.view_all_appt').click(function(){
+$('.view_all_appt').click(function() {
     var date = $(this).attr('appt-date');
-    window.location.href = '/calender';
-})
+    window.location.href = '/calender?appt_date=' + date;
+});
 
 //appointments calendar end
 

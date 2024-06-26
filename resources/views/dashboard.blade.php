@@ -207,30 +207,30 @@
         </div>
     </div>
     <div class="col-lg-3">
-        <div class="card p-3 h-100">
-            <div class="calendar h-100" style="background-color:#FFFFFF; border-radius:12px;">
-                <div id="mycalendar"> 
-                    <h5 class="bright-gray mb-5">Appointments</h5>
-                </div>
-                <div class="all_appt">
-                    <h5>Today's Appointments</h5>
-                    <button class='sm-3 view_all_appt' appt-date="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">View All</button>
+        <div class="black-card p-3 h-100">
+            <div class="calendar h-100">
+            <h5 class="bright-gray mb-3">Appointments</h5>
+                <div id="mycalendar"></div>
+                <div class="all_appt mt-3 d-flex justify-content-between mb-3">
+                    <h5 class="mb-0">Today's appointments</h5>
+                    <a href="#" style="text-decoration:none;" class='sm-3 view_all_appt font-12' appt-date="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">View All</a>
                 </div>
                 
                 @if(count($today_appointments) > 0)
                 <ul class="black_calendar_appointment">
                     @foreach($today_appointments as $appts)
-                        <li class="mb-1">
-                            <div class="doc_name">
-                                @if(!empty($appts['firstname']) && !empty($appts['lastname']))
-                                    {{ $appts['firstname'].' '.$appts['lastname'] }}
-                                @else
-                                    No Client
-                                @endif
-
-                                {{ \Carbon\Carbon::parse($appts->start_date)->format('g:i A') }}
+                        <li>
+                            <div class="d-flex justify-content-between">
+                                <b class="doc_name">
+                                    @if(!empty($appts['firstname']) && !empty($appts['lastname']))
+                                        {{ $appts['firstname'].' '.$appts['lastname'] }}
+                                    @else
+                                        No Client
+                                    @endif
+                                </b>
+                                <span class="app_time"> {{ \Carbon\Carbon::parse($appts->start_date)->format('g:i A') }}</span>
                             </div>
-                            <div class="app_time">{{$appts['service_name']}} with {{$appts->staff->first_name.' '.$appts->staff->last_name}}</div>
+                            <span class="service_name">{{$appts['service_name']}} with <b>{{$appts->staff->first_name.' '.$appts->staff->last_name}}</b></span>
                             @if(isset($appts->note->common_notes))
                                 <div class="notes">Booking Note : {{$appts->note->common_notes}} </div>
                             @endif
