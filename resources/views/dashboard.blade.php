@@ -7,7 +7,12 @@
     height: 100px;
     max-width: 100%
 }
-#Salesperformancechartdiv ,#GenderRatiochartdiv{
+#Salesperformancechartdiv{
+    width: 100%;
+    height: 300px;
+    max-width: 100%
+}
+#GenderRatiochartdiv{
     width: 100%;
     height: 300px;
     max-width: 100%
@@ -203,8 +208,28 @@
         </div>
     </div>
     <div class="col-lg-3">
-        <div class="calendar h-100" style="background-color:#242424; border-radius:12px;">
-            <img src="img/Frame 2.png" alt="" class="mb-3 w-100">
+        <div class="card p-3 h-100">
+            <div class="calendar h-100" style="background-color:#FFFFFF; border-radius:12px;">
+                <div id="mycalendar"> 
+                    <h5 class="bright-gray mb-5">Appointment's</h5>
+                </div>
+                <div class="all_appt">
+                    <h5>Today's Appointments</h5>
+                    <button class='sm-3'>View All</button>
+                </div>
+                
+                @if(count($today_appointments) > 0)
+                <ul class="black_calendar_appointment">
+                    @foreach($today_appointments as $appts)
+                        <li class="mb-1">
+                            <div class="doc_name">{{$appts['firstname'].' '.$appts['lastname']}}</div>
+                            <div class="app_time">{{ \Carbon\Carbon::parse($appts->start_date)->format('g:i A') }}</div>
+                            <div class="ser_name">{{$appts['service_name']}}</div>
+                        </li>   
+                    @endforeach
+                </ul>
+                @endif
+            </div>
         </div>
     </div>
 </div>
@@ -328,5 +353,6 @@
     var FilterRoute = "{{ route('dashboard.filter') }}"; 
     var SalesPerformanceFilter = "{{ route('dashboard.sales_performance_filter') }}"; 
     var gender_ratio = {!! json_encode($gender_ratio) !!};
+    var TodayAppointments = "{{ route('dashboard.today_appointments') }}"; 
 </script>
 @endsection

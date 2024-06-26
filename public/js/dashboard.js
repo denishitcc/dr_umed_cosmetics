@@ -56,6 +56,64 @@ $('#locations').change(function() {
     filterData(reportRange, location);
 });
 
+//appointments calendar start
+$( "#mycalendar" ).datepicker({
+    dateFormat: 'yy-mm-dd' // Customize the date format as needed
+});
+
+$(".fc-today-button").click(function() {
+    var todayDt = moment(context.calendar.currentData.dateProfile.currentDate).format('YYYY-MM-DD');
+    $('#mycalendar').datepicker().datepicker('setDate', new Date(todayDt));
+});
+
+// Change calendar view based on user input
+$('#mycalendar').change(function (e) {
+    e.preventDefault();
+    var inputValue = $(this).val();
+
+    // Fetch today's date
+    var todayDate = moment().format('YYYY-MM-DD');
+
+    // Fetch today's appointments if selected date matches today's date
+    var isToday = moment(inputValue).isSame(todayDate, 'day');
+    var headerText = isToday ? "Today's Appointments" : `Appointments for ${moment(inputValue).format('DD-MM-YYYY')}`;
+    
+    //fetch today's appointments
+    $.ajax({
+        url: TodayAppointments, // Replace with your actual API endpoint
+        type: 'POST',
+        dataType: 'json',
+        data: { date: inputValue }, // Send the period as a parameter to the server
+        success: function(data) {
+            var appointmentsContainer = $('.black_calendar_appointment');
+            var appointmentHeader = $('.all_appt h5');
+
+            appointmentHeader.text(headerText); // Update the header text
+
+            appointmentsContainer.empty(); // Clear the current list
+
+            if (data.length > 0) {
+                data.forEach(function(appt) {
+                    var appointmentHtml = `
+                        <li class="mb-1">
+                            <div class="doc_name">${appt.firstname} ${appt.lastname}</div>
+                            <div class="app_time">${moment(appt.start_date).format('h:mm A')}</div>
+                            <div class="ser_name">${appt.service_name}</div>
+                        </li>`;
+                    appointmentsContainer.append(appointmentHtml);
+                });
+            } else {
+                appointmentsContainer.append('<li>No appointments for the selected date.</li>');
+            }
+        },
+        error: function(error) {
+            console.error('Error fetching data:', error);
+        }
+    });
+});
+
+//appointments calendar end
+
 // Function to handle data filtering based on report range and location
 // Declare variables for the series globally
 var ClientFilterData = [];
@@ -639,6 +697,8 @@ function amchart(ClientFilterData = [],EnquiryFilterData = [], GenderFilterData=
         var legend = pieChart.children.push(am5.Legend.new(gender_ration_root, {
             centerX: am5.p50,
             x: am5.p50,
+            y: am5.p100,
+            dy: -60,  // Adjust this value to position the legend properly
             marginTop: 15,
             marginBottom: 15
         }));
