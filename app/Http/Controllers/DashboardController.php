@@ -113,13 +113,13 @@ class DashboardController extends Controller
             $today = Carbon::today()->toDateString(); // Get today's date in YYYY-MM-DD format
 
             // Fetch appointments for today and include client firstname, lastname, and service_name
-            $today_appointments = Appointment::leftJoin('clients', 'appointment.client_id', '=', 'clients.id')
+            $today_appointments = Appointment::with('staff','note')->leftJoin('clients', 'appointment.client_id', '=', 'clients.id')
                 ->leftJoin('services', 'appointment.service_id', '=', 'services.id')
                 ->whereDate('appointment.start_date', $today)
                 ->orderBy('appointment.start_date', 'asc') // Sort by start_date in descending order
                 ->limit(5) // Limit to the latest 5 appointment
                 ->get(['appointment.*', 'clients.firstname', 'clients.lastname', 'services.service_name']);
-
+            // dd($today_appointments);
             return view('dashboard', compact('locations', 'made_so_far', 'expected', 'scheduled_app', 'completed_app', 'cancelled_app', 'total_app', 'total_month_clients', 'total_month_enquiries','client_graph','enquiry_graph','gender_ratio','today_appointments'));
         } else {
             return redirect()->route('login');
@@ -519,14 +519,13 @@ class DashboardController extends Controller
     public function today_appointments(Request $request)
     {
         // Fetch appointments for today and include client firstname, lastname, and service_name
-        $other_appointments = Appointment::leftJoin('clients', 'appointment.client_id', '=', 'clients.id')
+        $other_appointments = Appointment::with('staff','note')->leftJoin('clients', 'appointment.client_id', '=', 'clients.id')
             ->leftJoin('services', 'appointment.service_id', '=', 'services.id')
             ->whereDate('appointment.start_date', $request->date)
             ->orderBy('appointment.start_date', 'asc') // Sort by start_date in descending order
             ->limit(5) // Limit to the latest 5 appointment
             ->get(['appointment.*', 'clients.firstname', 'clients.lastname', 'services.service_name']);
 
-        // Return the formatted data as JSON
         return response()->json($other_appointments);
     }
 }

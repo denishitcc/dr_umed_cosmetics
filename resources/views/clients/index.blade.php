@@ -848,7 +848,7 @@ $(document).ready(function() {
 
                             // Add common notes
                             if (commonNotesArray.length > index && commonNotesArray[index]) {
-                                formattedCommonNotes = '<br><div class="yellow-note-box mt-2"><strong>Common Notes:</strong><br> ' + commonNotesArray[index] + ' </div>';
+                                formattedCommonNotes = '<br><div class="yellow-note-box mt-2"><strong>Booking Notes:</strong><br> ' + commonNotesArray[index] + ' </div>';
                             }
 
                             // Add treatment notes

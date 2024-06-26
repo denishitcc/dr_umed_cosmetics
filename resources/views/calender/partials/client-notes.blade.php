@@ -1,7 +1,7 @@
 <div id="ClientNotesData">
     <h4 class="d-grey mb-4">Notes</h4>
     <div class="yellow-note-box common_notes">
-        <strong class="form-label d-block">Common Notes:</strong>
+        <strong class="form-label d-block">Booking Notes:</strong>
         @if ($appointmentNotes)
         <div class="viewnotes">
             <p>
@@ -26,7 +26,7 @@
                     </div>
                 @endif
                 <div class="add-note-btn-box">
-                    <button type="button" class="btn btn-primary font-13 me-2" id="add_common_notes">Add Notes </button>
+                    <button type="button" class="btn btn-primary font-13 me-2" id="add_common_notes">Add Booking Notes </button>
                 </div>
             </form>
         </div>

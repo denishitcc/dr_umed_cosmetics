@@ -191,12 +191,11 @@
                 </div>
             </div>
             <div class="col-lg-4">
-                <div class="card p-3 h-100">
-                    <h5 class="bright-gray mb-5">Gender Ratio</h5>
-                    <!-- <img src="img/Group 15180.png" alt=""> -->
-                    <div class="card-body">
-                        <div id="GenderRatiochartdiv"></div>
+                <div class="card h-100">
+                    <div class="card-head p-4">
+                        <h5 class="bright-gray mb-0">Gender Ratio</h5>
                     </div>
+                    <div id="GenderRatiochartdiv"></div>
                 </div>
             </div>
             <div class="col-lg-12 mt-4">
@@ -215,7 +214,7 @@
                 </div>
                 <div class="all_appt">
                     <h5>Today's Appointments</h5>
-                    <button class='sm-3'>View All</button>
+                    <button class='sm-3 view_all_appt' appt-date="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">View All</button>
                 </div>
                 
                 @if(count($today_appointments) > 0)
@@ -228,9 +227,11 @@
                                 @else
                                     No Client
                                 @endif
+
+                                {{ \Carbon\Carbon::parse($appts->start_date)->format('g:i A') }}
                             </div>
-                            <div class="app_time">{{ \Carbon\Carbon::parse($appts->start_date)->format('g:i A') }}</div>
-                            <div class="ser_name">{{$appts['service_name']}}</div>
+                            <div class="app_time">{{$appts['service_name']}} with {{$appts->staff->first_name.' '.$appts->staff->last_name}}</div>
+                            <div class="notes">Booking Note : {{isset($appts->note->common_notes)?$appts->note->common_notes:''}}</div>
                         </li>   
                     @endforeach
                 </ul>

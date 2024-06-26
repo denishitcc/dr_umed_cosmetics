@@ -20,13 +20,13 @@
                                     <a href="javascript:void(0);" class="btn btn-primary font-13 alter" id="add_treatment_notes" data-appointment_id="{{ $appointment->id }}"> Add treatment notes </a>
                                     @endif
                                     @if($appointment->note->common_notes == null)
-                                    <a href="javascript:void(0);" class="btn btn-primary font-13 me-2" id="add_notes" data-appointment_id="{{ $appointment->id }}"> Add Notes </a>
+                                    <a href="javascript:void(0);" class="btn btn-primary font-13 me-2" id="add_notes" data-appointment_id="{{ $appointment->id }}"> Add Booking Notes </a>
                                     @endif
                                 </div>
                             @else
                             <div class="add-note-btn-box">
                                 <a href="javascript:void(0);" class="btn btn-primary font-13 me-2" id="add_notes" data-appointment_id="{{ $appointment->id }}"> Add
-                                    Notes</a>
+                                    Booking Notes</a>
                                 <a href="javascript:void(0);" id="add_treatment_notes" class="btn btn-primary font-13 alter" data-appointment_id="{{ $appointment->id }}">
                                     Add treatment notes </a>
                             </div>
@@ -65,7 +65,7 @@
                             <div class="add-note-btn-box">
                                 
                                 @if($appointment->note->common_notes == null)
-                                <a href="javascript:void(0);" class="btn btn-primary font-13 me-2" id="add_notes" data-appointment_id="{{ $appointment->id }}"> Add Notes </a>
+                                <a href="javascript:void(0);" class="btn btn-primary font-13 me-2" id="add_notes" data-appointment_id="{{ $appointment->id }}"> Add Booking Notes </a>
                                 @endif
                                 @if($appointment->note->treatment_notes == null)
                                 <a href="javascript:void(0);" class="btn btn-primary font-13 alter" id="add_treatment_notes" data-appointment_id="{{ $appointment->id }}"> Add treatment notes </a>
@@ -75,7 +75,7 @@
                             <div class="add-note-btn-box">
                                 
 
-                                <a href="javascript:void(0);" class="btn btn-primary font-13 me-2" id="add_notes" data-appointment_id="{{ $appointment->id }}"> Add Notes </a>
+                                <a href="javascript:void(0);" class="btn btn-primary font-13 me-2" id="add_notes" data-appointment_id="{{ $appointment->id }}"> Add Booking Notes </a>
                                 <a href="javascript:void(0);" class="btn btn-primary font-13 alter" id="add_treatment_notes" data-appointment_id="{{ $appointment->id }}"> Add treatment notes </a>
                             </div>
                         @endif

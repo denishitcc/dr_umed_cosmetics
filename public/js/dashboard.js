@@ -68,8 +68,10 @@ $(".fc-today-button").click(function() {
 
 // Change calendar view based on user input
 $('#mycalendar').change(function (e) {
+    debugger;
     e.preventDefault();
     var inputValue = $(this).val();
+    $('.view_all_appt').attr('appt-date',inputValue);
 
     // Fetch today's date
     var todayDate = moment().format('YYYY-MM-DD');
@@ -97,9 +99,9 @@ $('#mycalendar').change(function (e) {
                     var clientName = appt.firstname && appt.lastname ? `${appt.firstname} ${appt.lastname}` : "No Client";
                     var appointmentHtml = `
                         <li class="mb-1">
-                            <div class="doc_name">${clientName}</div>
-                            <div class="app_time">${moment(appt.start_date).format('h:mm A')}</div>
-                            <div class="ser_name">${appt.service_name}</div>
+                            <div class="doc_name">${clientName}  ${moment(appt.start_date).format('h:mm A')}</div>
+                            <div class="app_time">${appt.service_name} with ${appt.staff.first_name} ${appt.staff.last_name}</div>
+                            <div class="note">Booking Note : ${appt.note.common_notes?appt.note.common_notes:''} </div>
                         </li>`;
                     appointmentsContainer.append(appointmentHtml);
                 });
@@ -112,6 +114,11 @@ $('#mycalendar').change(function (e) {
         }
     });
 });
+
+$('.view_all_appt').click(function(){
+    var date = $(this).attr('appt-date');
+    window.location.href = '/calender';
+})
 
 //appointments calendar end
 
@@ -699,7 +706,7 @@ function amchart(ClientFilterData = [],EnquiryFilterData = [], GenderFilterData=
             centerX: am5.p50,
             x: am5.p50,
             y: am5.p100,
-            dy: -60,  // Adjust this value to position the legend properly
+            dy: -28,  // Adjust this value to position the legend properly
             marginTop: 15,
             marginBottom: 15
         }));

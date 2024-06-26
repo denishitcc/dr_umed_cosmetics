@@ -1039,6 +1039,7 @@ var DU = {};
         },
 
         editEvent:function (eventId){
+            debugger;
             var context       = this;
             $.ajax({
                 url: moduleConfig.EventById.replace(':ID', eventId),
@@ -1150,7 +1151,7 @@ var DU = {};
                             ${response.data.status_no != 4 ? `<div class="text-end"><button class="btn btn-primary btn-md blue-alter" id="deleteAppointment" ${disabledAttr}>Delete</button></div>`:''}
                             <hr>
                             <div class="form-group">
-                                <label class="form-label">Notes</label>
+                                <label class="form-label">Booking Notes</label>
                                 <textarea rows="4" class="form-control mb-3" placeholder="Click to edit" id="commonNotes" ${disabledAttr}>${response.data.common_notes ?? ''}</textarea>
                                 <label class="form-label">Treatment Notes</label>
                                 <textarea rows="4" class="form-control" placeholder="Click to edit" id="treatmentNotes" ${disabledAttr}>${response.data.treatment_notes ?? ''}</textarea>
