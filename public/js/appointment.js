@@ -62,6 +62,7 @@ var DU = {};
             if (urlParams.has('appt_date')) {
                 const apptDate = urlParams.get('appt_date');
                 context.calendar.gotoDate(apptDate);
+                $('#mycalendar').datepicker().datepicker('setDate', new Date(apptDate));
             }
             //dashboard appointment view all redirect to particular date end
             
