@@ -213,7 +213,7 @@
                 <div id="mycalendar"></div>
                 <div class="all_appt mt-3 d-flex justify-content-between mb-3">
                     <h5 class="mb-0">Today's appointments</h5>
-                    <a href="#" style="text-decoration:none;" class='sm-3 view_all_appt font-12' appt-date="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">View All</a>
+                    <a href="javascript:void(0);" style="text-decoration:none;" class='sm-3 view_all_appt font-12' appt-date="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">View All</a>
                 </div>
                 
                 @if(count($today_appointments) > 0)
