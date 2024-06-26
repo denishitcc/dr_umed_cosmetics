@@ -232,7 +232,14 @@
                             </div>
                             <span class="service_name">{{$appts['service_name']}} with <b>{{$appts->staff->first_name.' '.$appts->staff->last_name}}</b></span>
                             @if(isset($appts->note->common_notes))
-                                <div class="notes">Booking Note : {{$appts->note->common_notes}} </div>
+                            <div class="notes">
+                                Booking Note : 
+                                @if(strlen($appts->note->common_notes) > 20)
+                                    {{ substr($appts->note->common_notes, 0, 20) . '...' }}
+                                @else
+                                    {{ $appts->note->common_notes }}
+                                @endif
+                            </div>
                             @endif
                         </li>   
                     @endforeach

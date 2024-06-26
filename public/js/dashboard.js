@@ -104,9 +104,11 @@ $('#mycalendar').change(function (e) {
                             </div>
                             <span class="service_name">${appt.service_name} with <b>${appt.staff.first_name} ${appt.staff.last_name}</b></span>`;
                     
-                    if (appt.note && appt.note.common_notes) {
-                        appointmentHtml += `<div class="notes">Booking Note : ${appt.note.common_notes}</div>`;
-                    }
+                        if (appt.note && appt.note.common_notes) {
+                            let commonNotes = appt.note.common_notes;
+                            let truncatedNotes = commonNotes.length > 20 ? commonNotes.substring(0, 20) + '...' : commonNotes;
+                            appointmentHtml += `<div class="notes">Booking Note: ${truncatedNotes}</div>`;
+                        }                            
 
                     appointmentHtml += `</li>`;
                     appointmentsContainer.append(appointmentHtml);
