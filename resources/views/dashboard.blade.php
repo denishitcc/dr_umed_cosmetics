@@ -211,7 +211,7 @@
         <div class="card p-3 h-100">
             <div class="calendar h-100" style="background-color:#FFFFFF; border-radius:12px;">
                 <div id="mycalendar"> 
-                    <h5 class="bright-gray mb-5">Appointment's</h5>
+                    <h5 class="bright-gray mb-5">Appointments</h5>
                 </div>
                 <div class="all_appt">
                     <h5>Today's Appointments</h5>
