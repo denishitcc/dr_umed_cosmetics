@@ -47,4 +47,25 @@ class AppointmentNotes extends Model
 
         return 0;
     }
+
+
+    public function getBookingNotesAttribute()
+    {
+        $booking_note = '';
+
+        if(isset($this->common_notes) && (strlen($this->common_notes) > 20))
+        {
+            $booking_note = substr($this->common_notes, 0, 20) . '...';
+        }
+        else if(isset($this->common_notes))
+        {
+            $booking_note = $this->common_notes;
+        }
+        else
+        {
+            $booking_note = '';
+        }
+
+        return $booking_note;
+    }
 }
