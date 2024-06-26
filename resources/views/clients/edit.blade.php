@@ -33,7 +33,7 @@
                 @endif
             </div>
             <div class="inv-right">
-                <a href="#" class="btn btn-primary btn-md icon-btn-left"><i class="ico-user2 me-2 fs-6"></i> Give to Alana to Update Details</a>
+                <a href="#" class="btn btn-primary btn-md icon-btn-left"><i class="ico-user2 me-2 fs-6"></i> Give to {{ $client->firstname}} to Update Details</a>
             </div>
         </div>
     </div>
