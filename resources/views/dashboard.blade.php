@@ -231,7 +231,9 @@
                                 {{ \Carbon\Carbon::parse($appts->start_date)->format('g:i A') }}
                             </div>
                             <div class="app_time">{{$appts['service_name']}} with {{$appts->staff->first_name.' '.$appts->staff->last_name}}</div>
-                            <div class="notes">Booking Note : {{isset($appts->note->common_notes)?$appts->note->common_notes:''}}</div>
+                            @if(isset($appts->note->common_notes))
+                                <div class="notes">Booking Note : {{$appts->note->common_notes}} </div>
+                            @endif
                         </li>   
                     @endforeach
                 </ul>

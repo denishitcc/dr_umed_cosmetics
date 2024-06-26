@@ -99,10 +99,15 @@ $('#mycalendar').change(function (e) {
                     var clientName = appt.firstname && appt.lastname ? `${appt.firstname} ${appt.lastname}` : "No Client";
                     var appointmentHtml = `
                         <li class="mb-1">
-                            <div class="doc_name">${clientName}  ${moment(appt.start_date).format('h:mm A')}</div>
-                            <div class="app_time">${appt.service_name} with ${appt.staff.first_name} ${appt.staff.last_name}</div>
-                            <div class="note">Booking Note : ${appt.note.common_notes?appt.note.common_notes:''} </div>
-                        </li>`;
+                            <div class="doc_name">${clientName}</div>
+                            <div class="app_time">${moment(appt.start_date).format('h:mm A')}</div>
+                            <div class="ser_name">${appt.service_name} with ${appt.staff.first_name} ${appt.staff.last_name}</div>`;
+                    
+                    if (appt.note && appt.note.common_notes) {
+                        appointmentHtml += `<div class="note">Booking Note : ${appt.note.common_notes}</div>`;
+                    }
+
+                    appointmentHtml += `</li>`;
                     appointmentsContainer.append(appointmentHtml);
                 });
             } else {
