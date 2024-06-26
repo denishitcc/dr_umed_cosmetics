@@ -222,7 +222,13 @@
                 <ul class="black_calendar_appointment">
                     @foreach($today_appointments as $appts)
                         <li class="mb-1">
-                            <div class="doc_name">{{$appts['firstname'].' '.$appts['lastname']}}</div>
+                            <div class="doc_name">
+                                @if(!empty($appts['firstname']) && !empty($appts['lastname']))
+                                    {{ $appts['firstname'].' '.$appts['lastname'] }}
+                                @else
+                                    No Client
+                                @endif
+                            </div>
                             <div class="app_time">{{ \Carbon\Carbon::parse($appts->start_date)->format('g:i A') }}</div>
                             <div class="ser_name">{{$appts['service_name']}}</div>
                         </li>   

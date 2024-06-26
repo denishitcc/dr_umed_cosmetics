@@ -94,9 +94,10 @@ $('#mycalendar').change(function (e) {
 
             if (data.length > 0) {
                 data.forEach(function(appt) {
+                    var clientName = appt.firstname && appt.lastname ? `${appt.firstname} ${appt.lastname}` : "No Client";
                     var appointmentHtml = `
                         <li class="mb-1">
-                            <div class="doc_name">${appt.firstname} ${appt.lastname}</div>
+                            <div class="doc_name">${clientName}</div>
                             <div class="app_time">${moment(appt.start_date).format('h:mm A')}</div>
                             <div class="ser_name">${appt.service_name}</div>
                         </li>`;
