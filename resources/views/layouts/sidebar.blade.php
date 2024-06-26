@@ -443,7 +443,7 @@
                     var userArray      = response.data.client_id;
                     var userHtml       = '';
 
-                    if (userArray != 0) {
+                    if (userArray != null) {//userArray != 0 || 
                         userHtml = `<div class="client-name">
                                 <div class="drop-cap" style="background: #D0D0D0; color:#fff;">${response.data.client_data.first_name.charAt(0).toUpperCase()}
                                 </div>

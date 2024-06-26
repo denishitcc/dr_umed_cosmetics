@@ -219,7 +219,7 @@
                 @if(count($today_appointments) > 0)
                 <ul class="black_calendar_appointment">
                     @foreach($today_appointments as $appts)
-                        <li>
+                        <li class="edit_appt" id="{{$appts->id}}" loc-id="{{$appts->location_id}}">
                             <div class="d-flex justify-content-between">
                                 <b class="doc_name">
                                     @if(!empty($appts['firstname']) && !empty($appts['lastname']))

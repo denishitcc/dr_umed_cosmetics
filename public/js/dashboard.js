@@ -77,7 +77,7 @@ $('#mycalendar').change(function (e) {
 
     // Fetch today's appointments if selected date matches today's date
     var isToday = moment(inputValue).isSame(todayDate, 'day');
-    var headerText = isToday ? "Today's appointment" : `${moment(inputValue).format('DD MMMM')} Appointments`;
+    var headerText = isToday ? "Today's appointments" : `${moment(inputValue).format('DD MMMM')} appointments`;
     
     //fetch today's appointments
     $.ajax({
@@ -97,7 +97,7 @@ $('#mycalendar').change(function (e) {
                 data.forEach(function(appt) {
                     var clientName = appt.firstname && appt.lastname ? `${appt.firstname} ${appt.lastname}` : "No Client";
                     var appointmentHtml = `
-                        <li>
+                        <li class="edit_appt" id="${appt.id}" loc-id="${appt.location_id}">
                             <div class="d-flex justify-content-between">
                                 <b class="doc_name">${clientName}</b>
                                 <span class="app_time">${moment(appt.start_date).format('h:mm A')}</b>
@@ -126,6 +126,16 @@ $('.view_all_appt').click(function() {
     window.location.href = '/calender?appt_date=' + date;
 });
 
+$(document).on('click', '.edit_appt', function(e) {
+    var appointmentId = $(this).attr('id');
+    var locationId = $(this).attr('loc-id');
+
+    // Store the appointment ID in local storage
+    localStorage.setItem('appointmentId', appointmentId);
+    localStorage.setItem('locationId', locationId);
+    // Redirect to the calendar page
+    window.location.href = '/calender';
+})
 //appointments calendar end
 
 // Function to handle data filtering based on report range and location

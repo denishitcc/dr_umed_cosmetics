@@ -1057,7 +1057,6 @@ var DU = {};
         },
 
         editEvent:function (eventId){
-            debugger;
             var context       = this;
             $.ajax({
                 url: moduleConfig.EventById.replace(':ID', eventId),
