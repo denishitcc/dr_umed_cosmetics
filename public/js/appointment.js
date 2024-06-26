@@ -265,7 +265,7 @@ var DU = {};
                     let italicEl = document.createElement('div');
                     italicEl.classList.add("fc-event-main-frame");
                     italicEl.innerHTML = `<div class='fc-event-time'>${info.timeText}</div>
-                    <div class='fc-event-title-container'><div class='fc-event-title fc-sticky'>${info.event.extendedProps.client_name} ${info.event.title}</div></div>`;
+                    <div class='fc-event-title-container'><div class='fc-event-title fc-sticky'>${info.event.extendedProps.client_name} ${info.event.title}<br>${info.event.extendedProps.booking_notes}</div></div>`;
 
                     let arrayOfDomNodes = [italicEl]
 					return {
@@ -338,19 +338,19 @@ var DU = {};
                 var dateTimeComponents = date_time.split(' ');
                 var date = dateTimeComponents[0];
                 var time = dateTimeComponents[1] + ' ' + dateTimeComponents[2];
-                
+
                 // Extracting the calendar object from the context
                 var calendar = context.calendar;
                 $('#locations').val($(this).attr('loc-id'));
                 // Parsing the date and time using Moment.js
                 var selectedDateTime = moment(date + ' ' + time, 'YYYY-MM-DD hh:mm A');
-                
+
                 console.log('Selected date and time:', selectedDateTime.format());
-                
+
                 // Navigating to the updated date
                 calendar.gotoDate(selectedDateTime.toDate());
                 console.log('Navigated to date:', selectedDateTime.format('YYYY-MM-DD'));
-                
+
                 // Scroll to the desired time slot after a short delay
                 setTimeout(function() {
                     var timeSlot = selectedDateTime.format('HH:mm:ss');
@@ -364,10 +364,10 @@ var DU = {};
                         console.log('Time slot not found:', timeSlot);
                     }
                 }, 100); // Adjust the delay as needed
-            });            
+            });
 
             $(document).on('click', '.upcoming_go_to', function(e) {
-                
+
                 e.preventDefault();
                 // Scroll the page slightly bcs if time is 3:30 Go to and after that click 4:30 then not scroll
                 window.scrollBy(0, 1); // Adjust the amount to scroll as needed
@@ -379,16 +379,14 @@ var DU = {};
                 $('#locations').val($(this).attr('loc-id'));
                 // Extracting the calendar object from the context
                 var calendar = context.calendar;
-                
+
                 // Parsing the date and time using Moment.js
                 var selectedDateTime = moment(date + ' ' + time, 'YYYY-MM-DD hh:mm A');
-                
-                console.log('Selected date and time:', selectedDateTime.format());
-                
+
                 // Navigating to the updated date
                 calendar.gotoDate(selectedDateTime.toDate());
-                console.log('Navigated to date:', selectedDateTime.format('YYYY-MM-DD'));
-                
+                calendar.changeView('timeGridDay');
+
                 // Scroll to the desired time slot after a short delay
                 setTimeout(function() {
                     var timeSlot = selectedDateTime.format('HH:mm:ss');
@@ -402,7 +400,7 @@ var DU = {};
                         console.log('Time slot not found:', timeSlot);
                     }
                 }, 100); // Adjust the delay as needed
-            });                         
+            });
             $(document).on('click','.rebook_histroy',function(e){
                 $('.history_appointments').hide();
                 //appointment rebook start
@@ -671,14 +669,15 @@ var DU = {};
                     return {
                         title: eventEl.innerText,
                         extendedProps:{
-                            client_name :dataset.client_name,
-                            service_id  :dataset.service_id,
-                            client_id   :dataset.client_id,
-                            category_id :dataset.category_id,
-                            duration    :dataset.duration,
-                            app_id      :dataset.app_id,
-                            location_id :dataset.location_id,
-                            appt_type :dataset.appt_type
+                            client_name     :dataset.client_name,
+                            service_id      :dataset.service_id,
+                            client_id       :dataset.client_id,
+                            category_id     :dataset.category_id,
+                            duration        :dataset.duration,
+                            app_id          :dataset.app_id,
+                            location_id     :dataset.location_id,
+                            appt_type       :dataset.appt_type,
+                            booking_notes   :dataset.booking_notes
                         }
                     };
                 }
@@ -711,6 +710,16 @@ var DU = {};
                 }
             });
         },
+
+        // Next5Appt: function(appointmentId){
+        //     var context = this;
+        //     var locationId = localStorage.getItem('locationId');
+        //     var response = context.editEvent(appointmentId);
+        //     console.log(response);
+
+        //     console.log('calling from appoinment js'+appointmentId);
+        //     console.log('calling from appoinment js'+locationId);
+        // },
 
         staffchangeafterlocation: function(){
             var context = this;
