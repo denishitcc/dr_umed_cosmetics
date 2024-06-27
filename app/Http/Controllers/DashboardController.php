@@ -120,7 +120,24 @@ class DashboardController extends Controller
                 ->limit(5) // Limit to the latest 5 appointment
                 ->get(['appointment.*', 'clients.firstname', 'clients.lastname', 'services.service_name']);
             // dd($today_appointments);
-            return view('dashboard', compact('locations', 'made_so_far', 'expected', 'scheduled_app', 'completed_app', 'cancelled_app', 'total_app', 'total_month_clients', 'total_month_enquiries','client_graph','enquiry_graph','gender_ratio','today_appointments'));
+
+            //Client's Ratio start
+            //casusal count
+            $casual_client_walk_in = WalkInRetailSale::whereBetween('invoice_date', [$startOfMonth, $endOfMonth])->where('appt_id',null)->where('customer_type','casual')->count();
+            
+            //new count
+            $new_client_appt = Appointment::whereBetween('start_date', [$startOfMonth, $endOfMonth])->where('client_type','New Clients')->count();
+            $new_client_walk_in = WalkInRetailSale::whereBetween('invoice_date', [$startOfMonth, $endOfMonth])->where('appt_id',null)->where('customer_type','new')->count();
+            $new_clients = $new_client_appt + $new_client_walk_in;
+
+            //returning client
+            $returning_client_appt = Appointment::whereBetween('start_date', [$startOfMonth, $endOfMonth])->where('client_type','Returning Clients')->count();
+
+            //rebooked client
+            $rebooked_client_appt = Appointment::whereBetween('start_date', [$startOfMonth, $endOfMonth])->where('client_type','Rebooked Clients')->count();
+
+            //Client's Ratio end
+            return view('dashboard', compact('locations', 'made_so_far', 'expected', 'scheduled_app', 'completed_app', 'cancelled_app', 'total_app', 'total_month_clients', 'total_month_enquiries','client_graph','enquiry_graph','gender_ratio','today_appointments','casual_client_walk_in','new_clients','returning_client_appt','rebooked_client_appt'));
         } else {
             return redirect()->route('login');
         }
@@ -562,5 +579,150 @@ class DashboardController extends Controller
         
 
         return response()->json($other_appointments);
+    }
+    public function client_ratio_filter(Request $request)
+    {
+        $period = $request->period;
+        if ($period == 'month') {
+            $formattedData = [];
+            $months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            
+            for ($month = 1; $month <= 12; $month++) {
+                $startOfMonth = Carbon::create(null, $month, 1)->startOfMonth();
+                $endOfMonth = Carbon::create(null, $month, 1)->endOfMonth();
+
+                //Client's Ratio start
+                //casusal count
+                $casual_client_walk_in = WalkInRetailSale::whereBetween('invoice_date', [$startOfMonth, $endOfMonth])->where('appt_id',null)->where('customer_type','casual')->count();
+                
+                //new count
+                $new_client_appt = Appointment::whereBetween('start_date', [$startOfMonth, $endOfMonth])->where('client_type','New Clients')->count();
+                $new_client_walk_in = WalkInRetailSale::whereBetween('invoice_date', [$startOfMonth, $endOfMonth])->where('appt_id',null)->where('customer_type','new')->count();
+                $new_clients = $new_client_appt + $new_client_walk_in;
+
+                //returning client
+                $returning_client_appt = Appointment::whereBetween('start_date', [$startOfMonth, $endOfMonth])->where('client_type','Returning Clients')->count();
+
+                //rebooked client
+                $rebooked_client_appt = Appointment::whereBetween('start_date', [$startOfMonth, $endOfMonth])->where('client_type','Rebooked Clients')->count();
+
+                //Client's Ratio end
+
+                // Calculate achieved sales
+                $achieved = WalkInRetailSale::whereBetween('invoice_date', [$startOfMonth, $endOfMonth])
+                    ->sum('total');
+
+                $formattedData[] = [
+                    'category' => $months[$month - 1],
+                    'casual_clients' => $casual_client_walk_in,
+                    'new_clients' => $new_clients,
+                    'returning_client_appt'=>$returning_client_appt,
+                    'rebooked_client_appt'=>$rebooked_client_appt
+                ];
+            }
+            // Return the formatted data as JSON
+            return response()->json($formattedData);
+        }else if ($period == 'week') {
+            $formattedData = [];
+            $carbonNow = Carbon::now();
+            $currentDate = $carbonNow->copy(); // Current date
+        
+            // Define the specific week ranges based on today's date
+            $weeks = [
+                ['start' => $currentDate->copy()->subWeeks(1)->startOfWeek(), 'end' => $currentDate->copy()->subWeeks(1)->endOfWeek()],
+                ['start' => $currentDate->copy()->subWeeks(2)->startOfWeek(), 'end' => $currentDate->copy()->subWeeks(2)->endOfWeek()],
+                ['start' => $currentDate->copy()->subWeeks(3)->startOfWeek(), 'end' => $currentDate->copy()->subWeeks(3)->endOfWeek()],
+                ['start' => $currentDate->copy()->subWeeks(4)->startOfWeek(), 'end' => $currentDate->copy()->subWeeks(4)->endOfWeek()]
+            ];
+        
+            // Fetch data for each specific week range
+            foreach ($weeks as $index => $week) {
+                $startOfWeek = $week['start'];
+                $endOfWeek = $week['end'];
+        
+                // Query for client ratio data within the current week
+                $casual_client_walk_in = WalkInRetailSale::whereBetween('invoice_date', [$startOfWeek, $endOfWeek])
+                    ->where('appt_id', null)
+                    ->where('customer_type', 'casual')
+                    ->count();
+        
+                $new_client_appt = Appointment::whereBetween('start_date', [$startOfWeek, $endOfWeek])
+                    ->where('client_type', 'New Clients')
+                    ->count();
+        
+                $new_client_walk_in = WalkInRetailSale::whereBetween('invoice_date', [$startOfWeek, $endOfWeek])
+                    ->where('appt_id', null)
+                    ->where('customer_type', 'new')
+                    ->count();
+        
+                $new_clients = $new_client_appt + $new_client_walk_in;
+        
+                $returning_client_appt = Appointment::whereBetween('start_date', [$startOfWeek, $endOfWeek])
+                    ->where('client_type', 'Returning Clients')
+                    ->count();
+        
+                $rebooked_client_appt = Appointment::whereBetween('start_date', [$startOfWeek, $endOfWeek])
+                    ->where('client_type', 'Rebooked Clients')
+                    ->count();
+        
+                $formattedData[] = [
+                    // 'period' => $startOfWeek->format('d M') . ' - ' . $endOfWeek->format('d M'), // Week start and end dates
+                    'category' => $startOfWeek->format('d M') . ' - ' . $endOfWeek->format('d M'),
+                    'casual_clients' => $casual_client_walk_in,
+                    'new_clients' => $new_clients,
+                    'returning_client_appt' => $returning_client_appt,
+                    'rebooked_client_appt' => $rebooked_client_appt
+                ];
+            }
+            // Return the formatted data as JSON
+            return response()->json($formattedData);
+        }else if ($period == 'day') {
+            $formattedData = [];
+            $carbonNow = Carbon::now();
+        
+            for ($i = 0; $i < 7; $i++) {
+                // Calculate start and end dates for each day
+                $startOfDay = $carbonNow->copy()->subDays($i)->startOfDay();
+                $endOfDay = $carbonNow->copy()->subDays($i)->endOfDay();
+        
+                // Query for client ratio data within the current day
+                $casual_client_walk_in = WalkInRetailSale::whereBetween('invoice_date', [$startOfDay, $endOfDay])
+                    ->where('appt_id', null)
+                    ->where('customer_type', 'casual')
+                    ->count();
+        
+                $new_client_appt = Appointment::whereBetween('start_date', [$startOfDay, $endOfDay])
+                    ->where('client_type', 'New Clients')
+                    ->count();
+        
+                $new_client_walk_in = WalkInRetailSale::whereBetween('invoice_date', [$startOfDay, $endOfDay])
+                    ->where('appt_id', null)
+                    ->where('customer_type', 'new')
+                    ->count();
+        
+                $new_clients = $new_client_appt + $new_client_walk_in;
+        
+                $returning_client_appt = Appointment::whereBetween('start_date', [$startOfDay, $endOfDay])
+                    ->where('client_type', 'Returning Clients')
+                    ->count();
+        
+                $rebooked_client_appt = Appointment::whereBetween('start_date', [$startOfDay, $endOfDay])
+                    ->where('client_type', 'Rebooked Clients')
+                    ->count();
+        
+                $formattedData[] = [
+                    // 'period' => $startOfDay->format('d-m-y'), // Format as desired, e.g., '2024-06-18'
+                    'category' => $startOfDay->format('d-m-y'), // Format as desired, e.g., '18 Jun 2024'
+                    'casual_clients' => $casual_client_walk_in,
+                    'new_clients' => $new_clients,
+                    'returning_client_appt' => $returning_client_appt,
+                    'rebooked_client_appt' => $rebooked_client_appt
+                ];
+            }
+            // Return the formatted data as JSON
+            return response()->json($formattedData);
+        }
+        // Default response if no valid period is provided
+        return response()->json(['error' => 'Invalid period'], 400);
     }
 }

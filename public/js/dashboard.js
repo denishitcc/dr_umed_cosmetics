@@ -155,6 +155,13 @@ var isfilter_sales_performance = 0;
 var SalesPerformanceFilterData=[];
 var dayData, weekData, monthData;
 var salesfilter = 1;
+var salesPerformanceRoot; // Declare salesPerformanceRoot globally
+var chart; // Declare chart globally
+var xAxis; // Declare xAxis globally
+var SalesPerformanceyAxis; // Declare SalesPerformanceyAxis globally
+var currentData = []; // Declare currentData globally
+var legend; // Declare legend globally
+var clientGraphRoot, clientGraphChart, clientGraphXAxis, clientGraphLegend;
 
 function filterData(reportRange, location) {
     //for appointment component start
@@ -565,108 +572,7 @@ function amchart(ClientFilterData = [],EnquiryFilterData = [], GenderFilterData=
         // Sales Performance Chart start
         if(salesfilter == undefined)
         {
-            var salesPerformanceRoot = am5.Root.new("Salesperformancechartdiv");
-
-            var currentData = [];
-
-            // Set themes
-            salesPerformanceRoot.setThemes([
-                am5themes_Animated.new(salesPerformanceRoot)
-            ]);
-
-            salesPerformanceRoot._logo.dispose();
-            
-            // Create chart
-            chart = salesPerformanceRoot.container.children.push(am5xy.XYChart.new(salesPerformanceRoot, {
-                panX: false,
-                panY: false,
-                paddingLeft: 0,
-                wheelX: "panX",
-                wheelY: "zoomX",
-                layout: salesPerformanceRoot.verticalLayout
-            }));
-
-            // Add legend
-            var legend = chart.children.push(
-                am5.Legend.new(salesPerformanceRoot, {
-                    centerX: am5.p50,
-                    x: am5.p50
-                })
-            );
-
-            // Create axes
-            var xRenderer = am5xy.AxisRendererX.new(salesPerformanceRoot, {
-                minorGridEnabled: true,
-                minGridDistance: 30,
-            });
-
-            xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(salesPerformanceRoot, {
-                categoryField: "period",
-                renderer: xRenderer,
-                tooltip: am5.Tooltip.new(salesPerformanceRoot, {})
-            }));
-
-            xRenderer.grid.template.setAll({
-                location: 1
-            });
-
-            var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(salesPerformanceRoot, {
-                renderer: am5xy.AxisRendererY.new(salesPerformanceRoot, {
-                    strokeOpacity: 0.1
-                })
-            }));
-            
-            // Add "IN AUD" label to y-axis
-            yAxis.children.push(am5.Label.new(salesPerformanceRoot, {
-                rotation: -90,
-                text: "IN AUD",
-                y: am5.p50,
-                centerX: am5.p50
-            }));
-
-            // Add series
-            function makeSeries(name, fieldName, color) {
-                var series = chart.series.push(am5xy.ColumnSeries.new(salesPerformanceRoot, {
-                    name: name,
-                    xAxis: xAxis,
-                    yAxis: yAxis,
-                    valueYField: fieldName,
-                    categoryXField: "period",
-                    fill: color
-                }));
-
-                series.columns.template.setAll({
-                    tooltipText: "{name}, {categoryX}: {valueY}",
-                    width: am5.percent(90),
-                    tooltipY: 0,
-                    strokeOpacity: 0
-                });
-
-                series.data.setAll(currentData);
-
-                series.bullets.push(function() {
-                    return am5.Bullet.new(salesPerformanceRoot, {
-                        locationY: 0,
-                        sprite: am5.Label.new(salesPerformanceRoot, {
-                            text: "{valueY}",
-                            fill: salesPerformanceRoot.interfaceColors.get("alternativeText"),
-                            centerY: 0,
-                            centerX: am5.p50,
-                            populateText: true
-                        })
-                    });
-                });
-
-                legend.data.push(series);
-            }
-
-            // Initial chart setup
-            makeSeries("Expected", "expected", am5.color(0x2E93FA)); // Blue color
-            makeSeries("Achieved", "achieved", am5.color(0xFFAD33)); // Orange color
-
-            // Call updateSalesPerformanceChart to set initial data
-            filterSalesPerformaceData('month');
-            //Sales performance chart end
+            createSalesPerformanceChart();
         }
 
         //Gender ratio start
@@ -778,7 +684,114 @@ function amchart(ClientFilterData = [],EnquiryFilterData = [], GenderFilterData=
         }));
 
         legend.data.setAll(pieSeries.dataItems);
+        
+        // Client's Ratio Chart start
+        // Create new instances of charts
+        createClientRatioChart();
+
+        // Fetch and update client ratio chart data
+        filterClientRatioData('month');
+        // Client's Ratio Chart end
     });
+}
+function createSalesPerformanceChart() {
+    salesPerformanceRoot = am5.Root.new("Salesperformancechartdiv");
+
+    // Set themes
+    salesPerformanceRoot.setThemes([
+        am5themes_Animated.new(salesPerformanceRoot)
+    ]);
+
+    salesPerformanceRoot._logo.dispose();
+
+    // Create chart
+    chart = salesPerformanceRoot.container.children.push(am5xy.XYChart.new(salesPerformanceRoot, {
+        panX: false,
+        panY: false,
+        paddingLeft: 0,
+        wheelX: "panX",
+        wheelY: "zoomX",
+        layout: salesPerformanceRoot.verticalLayout
+    }));
+
+    // Add legend
+    legend = chart.children.push(
+        am5.Legend.new(salesPerformanceRoot, {
+            centerX: am5.p50,
+            x: am5.p50
+        })
+    );
+
+    // Create axes
+    var xRenderer = am5xy.AxisRendererX.new(salesPerformanceRoot, {
+        minorGridEnabled: true,
+        minGridDistance: 30,
+    });
+
+    xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(salesPerformanceRoot, {
+        categoryField: "period",
+        renderer: xRenderer,
+        tooltip: am5.Tooltip.new(salesPerformanceRoot, {})
+    }));
+
+    xRenderer.grid.template.setAll({
+        location: 1
+    });
+
+    SalesPerformanceyAxis = chart.yAxes.push(am5xy.ValueAxis.new(salesPerformanceRoot, {
+        renderer: am5xy.AxisRendererY.new(salesPerformanceRoot, {
+            strokeOpacity: 0.1
+        })
+    }));
+
+    // Add "IN AUD" label to y-axis
+    SalesPerformanceyAxis.children.push(am5.Label.new(salesPerformanceRoot, {
+        rotation: -90,
+        text: "IN AUD",
+        y: am5.p50,
+        centerX: am5.p50
+    }));
+
+    // Initial chart setup
+    createSalesPerformanceSeries("Expected", "expected", am5.color(0x2E93FA)); // Blue color
+    createSalesPerformanceSeries("Achieved", "achieved", am5.color(0xFFAD33)); // Orange color
+
+    // Call updateSalesPerformanceChart to set initial data
+    filterSalesPerformaceData('month');
+}
+function createSalesPerformanceSeries(name, fieldName, color) {
+    var series = chart.series.push(am5xy.ColumnSeries.new(salesPerformanceRoot, {
+        name: name,
+        xAxis: xAxis,
+        yAxis: SalesPerformanceyAxis,
+        valueYField: fieldName,
+        categoryXField: "period",
+        fill: color
+    }));
+
+    series.columns.template.setAll({
+        tooltipText: "{name}, {categoryX}: {valueY}",
+        width: am5.percent(90),
+        tooltipY: 0,
+        strokeOpacity: 0
+    });
+
+    series.data.setAll(currentData);
+
+    series.bullets.push(function () {
+        return am5.Bullet.new(salesPerformanceRoot, {
+            locationY: 0,
+            sprite: am5.Label.new(salesPerformanceRoot, {
+                text: "{valueY}",
+                fill: salesPerformanceRoot.interfaceColors.get("alternativeText"),
+                centerY: 0,
+                centerX: am5.p50,
+                populateText: true
+            })
+        });
+    });
+
+    legend.data.push(series);
 }
 function fetchSalesData(period, callback) {
     $.ajax({
@@ -800,12 +813,111 @@ function filterSalesPerformaceData(period) {
         updateSalesPerformanceChart();
     });
 }
-
 function updateSalesPerformanceChart() {
     xAxis.data.setAll(currentData);
     chart.series.each(function(series) {
         series.data.setAll(currentData);
     });
+}
+function createClientRatioChart() {
+    clientGraphRoot = am5.Root.new("ClientRatioChartdiv");
+    clientGraphRoot.setThemes([am5themes_Animated.new(clientGraphRoot)]);
+    clientGraphRoot._logo.dispose();
+
+    clientGraphChart = clientGraphRoot.container.children.push(am5xy.XYChart.new(clientGraphRoot, {
+        panX: false,
+        panY: false,
+        wheelX: "panX",
+        wheelY: "zoomX",
+        layout: clientGraphRoot.verticalLayout
+    }));
+
+    clientGraphLegend = clientGraphChart.children.push(am5.Legend.new(clientGraphRoot, {
+        centerX: am5.p50,
+        x: am5.p50
+    }));
+
+    clientGraphXAxis = clientGraphChart.xAxes.push(am5xy.CategoryAxis.new(clientGraphRoot, {
+        categoryField: "category",
+        renderer: am5xy.AxisRendererX.new(clientGraphRoot, {
+            cellStartLocation: 0.1,
+            cellEndLocation: 0.9,
+            minGridDistance: 10
+        }),
+        tooltip: am5.Tooltip.new(clientGraphRoot, {})
+    }));
+
+    clientGraphXAxis.get("renderer").labels.template.adapters.add("text", function(text, target) {
+        if (target.dataItem) {
+            var category = target.dataItem.get("category");
+            return category;
+        }
+        return text;
+    });
+
+    clientGraphXAxis.get("renderer").grid.template.set("forceHidden", true);
+
+    clientGraphYAxis = clientGraphChart.yAxes.push(am5xy.ValueAxis.new(clientGraphRoot, {
+        renderer: am5xy.AxisRendererY.new(clientGraphRoot, {})
+    }));
+
+    // Example function to create series for client ratio chart
+    createClientRatioSeries("Returning Clients", "returning_client_appt", am5.color(0xFF6165));
+    createClientRatioSeries("New Clients", "new_clients", am5.color(0x00E396));
+    createClientRatioSeries("Rebooked Clients", "rebooked_client_appt", am5.color(0xFFAD33));
+    createClientRatioSeries("Casual Clients", "casual_clients", am5.color(0x58A9FB));
+
+    clientGraphChart.appear(1000, 100);
+}
+function createClientRatioSeries(name, fieldName, color) {
+    var clientGraphSeries = clientGraphChart.series.push(am5xy.ColumnSeries.new(clientGraphRoot, {
+        name: name,
+        xAxis: clientGraphXAxis,
+        yAxis: clientGraphYAxis,
+        stacked: true,
+        valueYField: fieldName,
+        categoryXField: "category",
+        stroke: color,
+        fill: color
+    }));
+
+    clientGraphSeries.columns.template.setAll({
+        tooltipText: "{name}, {categoryX}: {valueY}",
+        width: am5.percent(90),
+        tooltipY: 0
+    });
+
+    clientGraphLegend.data.push(clientGraphSeries);
+}
+function filterClientRatioData(period) {
+    fetchClientRatioData(period, function(data) {
+        updateClientRatioChart(data);
+    });
+}
+function fetchClientRatioData(period, callback) {
+    $.ajax({
+        url: ClientRatioFilter, // Replace with your actual API endpoint
+        type: 'POST',
+        dataType: 'json',
+        data: { period: period }, // Send the period as a parameter to the server
+        success: function(data) {
+            callback(data);
+        },
+        error: function(error) {
+            console.error('Error fetching data:', error);
+        }
+    });
+}
+function updateClientRatioChart(data) {
+    console.log('Updating Client Ratio Chart:', data);
+    if (clientGraphXAxis && clientGraphChart) {
+        clientGraphXAxis.data.setAll(data);
+        clientGraphChart.series.each(function(series) {
+            series.data.setAll(data);
+        });
+    } else {
+        console.error('clientGraphXAxis or clientGraphChart is undefined.');
+    }
 }
 // Initial call to setup the graphs
 amchart();

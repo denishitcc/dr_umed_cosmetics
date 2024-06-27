@@ -262,6 +262,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('dashboard/filter',[DashboardController::class, 'filter'])->name('dashboard.filter');
     Route::post('dashboard/sales-performance-filter',[DashboardController::class, 'sales_performance_filter'])->name('dashboard.sales_performance_filter');
     Route::post('dashboard/today-appointments',[DashboardController::class, 'today_appointments'])->name('dashboard.today_appointments');
+    Route::post('dashboard/client-ratio-filter',[DashboardController::class, 'client_ratio_filter'])->name('dashboard.client_ratio_filter');
 });
 Route::post('/get-staff-list', [CalenderController::class,'getStaffList'])->name('get-staff-list');
 Route::post('forms/deleteform',[FormsController::class, 'formDelete'])->name('serviceforms.formDelete');

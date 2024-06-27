@@ -7,7 +7,7 @@
     height: 100px;
     max-width: 100%
 }
-#Salesperformancechartdiv{
+#Salesperformancechartdiv ,#ClientRatioChartdiv{
     width: 100%;
     height: 300px;
     max-width: 100%
@@ -199,9 +199,23 @@
                 </div>
             </div>
             <div class="col-lg-12 mt-4">
-                <div class="card p-3">
-                    <h5 class="bright-gray mb-4">Client’s Ratio</h5>
-                    <img src="img/Group 15181.png" alt="">
+                <div class="card p-3 h-100">
+                    <div class="toolbar d-flex justify-content-between mb-4">
+                        <div class="tool-left">
+                            <h5 class="bright-gray mb-0">Client’s Ratio</h5>
+                        </div>
+                        <div class="tool-right">
+                            <div class="text-right">
+                                <button class="btn btn-primary btn-sm mr-2" onclick="filterClientRatioData('month')">Month</button>
+                                <button class="btn btn-primary btn-sm mr-2" onclick="filterClientRatioData('week')">Week</button>
+                                <button class="btn btn-primary btn-sm" onclick="filterClientRatioData('day')">Day</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- <img src="img/Group 15181.png" alt=""> -->
+                        <div id="ClientRatioChartdiv"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -373,5 +387,6 @@
     var SalesPerformanceFilter = "{{ route('dashboard.sales_performance_filter') }}"; 
     var gender_ratio = {!! json_encode($gender_ratio) !!};
     var TodayAppointments = "{{ route('dashboard.today_appointments') }}"; 
+    var ClientRatioFilter = "{{ route('dashboard.client_ratio_filter') }}"; 
 </script>
 @endsection
