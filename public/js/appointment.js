@@ -678,7 +678,7 @@ var DU = {};
                             app_id          :dataset.app_id,
                             location_id     :dataset.location_id,
                             appt_type       :dataset.appt_type,
-                            booking_notes   :dataset.booking_notes
+                            booking_notes   :dataset.booking_notes ? dataset.booking_notes : ''
                         }
                     };
                 }
