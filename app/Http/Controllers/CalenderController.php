@@ -135,8 +135,7 @@ class CalenderController extends Controller
             $location = $loc->id;
         }
         if ($location) {
-            // $user = $user->where('role_type', '!=', 'admin')->where('staff_member_location', '=', $location);
-            $user = $user->where('staff_member_location', '=', $location);
+            $user = $user->where(['staff_member_location' => $location,'available_in_online_booking' => 1]);
         } else {
             $user = $user->where('role_type', '!=', 'admin');
         }
@@ -839,6 +838,8 @@ class CalenderController extends Controller
         $pastappointments   = $client->allappointments()->with(['note'])->where('created_at', '<=', $todayDate)->orderby('created_at', 'desc')->get();
         // dd($pastappointments->staff);
         $clientPhotos       = $client->photos;
+
+        // dd($futureappointments);
 
         $allappointments    = $client->allAppointments()->pluck('id');
         $allforms           = AppointmentForms::whereIn('appointment_id', $allappointments)->get()->groupBy(function ($val) {
