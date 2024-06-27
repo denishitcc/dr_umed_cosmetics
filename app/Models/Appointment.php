@@ -35,7 +35,8 @@ class Appointment extends Model
         'forms',
         'forms_sent_sms',
         'forms_sent_email',
-        'status'
+        'status',
+        'client_type'
     ];
 
     const BOOKED        = 1;

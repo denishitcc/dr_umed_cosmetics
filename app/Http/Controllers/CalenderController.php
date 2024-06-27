@@ -245,7 +245,15 @@ class CalenderController extends Controller
      */
     public function createAppointments(Request $request)
     {
-        // dd($request->all());
+        $chk_exist = Appointment::where('client_id',$request->client_id)->get();
+        if($request->appt_type = 'rebook')
+        {
+            $client_type = 'Rebooked Clients';
+        }else if(count($chk_exist) > 0 ){
+            $client_type = 'Returning Clients';
+        }else{
+            $client_type = 'New Clients';
+        }
         $location = Locations::find($request->location_id);
         if (!isset($request->app_id) || $request->appt_type != 'move_appt') {
             $service_ex = explode(',', $request->service_id);
@@ -282,7 +290,8 @@ class CalenderController extends Controller
                         'duration'      => $duration,
                         'status'        => Appointment::BOOKED,
                         'current_date'  => $request->start_date,
-                        'location_id'   => $request->location_id
+                        'location_id'   => $request->location_id,
+                        'client_type'   => $client_type
                     ];
                     // dd($request->appt_type);
                     $appointment = Appointment::create($appointmentsData);
@@ -1074,6 +1083,12 @@ class CalenderController extends Controller
      */
     public function repeatAppointment(Request $request)
     {
+        $chk_exist = Appointment::where('client_id',$request->client_id)->get();
+        if(count($chk_exist) > 0 ){
+            $client_type = 'Returning Clients';
+        }else{
+            $client_type = 'New Clients';
+        }
         try {
             // dd($request->all());
             DB::beginTransaction();
@@ -1085,6 +1100,7 @@ class CalenderController extends Controller
                 'duration'      => $request->duration,
                 'status'        => Appointment::BOOKED,
                 'location_id'   => $request->location_id,
+                'client_type'   => $client_type
             ];
 
             $repeat_every   = $request->repeat_every;
@@ -1685,6 +1701,12 @@ class CalenderController extends Controller
             $endDateTime = null; // Initialize endDateTime
 
             foreach ($appointments as $key => $appointmentData) {
+                $chk_exist = Appointment::where('client_id',$appointmentData['client_id'])->get();
+                if(count($chk_exist) > 0 ){
+                    $client_type = 'Returning Clients';
+                }else{
+                    $client_type = 'New Clients';
+                }
                 $duration = $appointmentData['duration'];
 
                 // Calculate start time for first iteration or update start time for subsequent iterations
@@ -1709,6 +1731,7 @@ class CalenderController extends Controller
                     'status'        => Appointment::BOOKED,
                     'current_date'  => $startDateTime->toDateString(),
                     'location_id'   => $appointmentData['location_id'],
+                    'client_type'   => $client_type
                 ];
 
                 $appointment = Appointment::create($appointmentsData);
