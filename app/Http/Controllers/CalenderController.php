@@ -246,12 +246,11 @@ class CalenderController extends Controller
     public function createAppointments(Request $request)
     {
         $chk_exist = Appointment::where('client_id',$request->client_id)->get();
-        if(count($chk_exist) > 0 ){
-            $client_type = 'Returning Clients';
-        }
-        else if($request->appt_type = 'rebook')
+        if($request->appt_type == 'rebook')
         {
             $client_type = 'Rebooked Clients';
+        }else if(count($chk_exist) > 0 ){
+            $client_type = 'Returning Clients';
         }else{
             $client_type = 'New Clients';
         }
