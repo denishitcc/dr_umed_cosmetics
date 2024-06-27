@@ -228,8 +228,18 @@ class DashboardController extends Controller
 
             // Ensure gender_ratio includes both 'Men' and 'Women' keys with default values if they are not present
             $gender_ratio = array_merge(['Male' => 0, 'Female' => 0], $gender_ratio);
-            // dd($gender_ratio);
             //gender ratio filter end
+
+            //appointments filter 
+            if(isset($request->date))
+            {
+                $other_appointments = Appointment::with('staff','note')->leftJoin('clients', 'appointment.client_id', '=', 'clients.id')
+                ->leftJoin('services', 'appointment.service_id', '=', 'services.id')
+                ->whereDate('appointment.start_date', $request->date)
+                ->orderBy('appointment.start_date', 'asc') // Sort by start_date in descending order
+                ->limit(5) // Limit to the latest 5 appointment
+                ->get(['appointment.*', 'clients.firstname', 'clients.lastname', 'services.service_name']);
+            }
         }else{
             //total sales filter
             $totalSales = WalkInRetailSale::whereBetween('invoice_date', [$startDate, $endDate])
@@ -324,10 +334,20 @@ class DashboardController extends Controller
             // Ensure gender_ratio includes both 'Men' and 'Women' keys with default values if they are not present
             $gender_ratio = array_merge(['Men' => 0, 'Women' => 0], $gender_ratio->toArray());
             //gender ratio filter end
-        }
-        
-        // You can add more queries here to retrieve other data based on the filters
 
+            //appointments filter 
+            if(isset($request->date))
+            {
+                $other_appointments = Appointment::with('staff','note')->leftJoin('clients', 'appointment.client_id', '=', 'clients.id')
+                ->leftJoin('services', 'appointment.service_id', '=', 'services.id')
+                ->whereDate('appointment.start_date', $request->date)
+                ->orderBy('appointment.start_date', 'asc') // Sort by start_date in descending order
+                ->limit(5) // Limit to the latest 5 appointment
+                ->where('appointment.location_id',$location)
+                ->get(['appointment.*', 'clients.firstname', 'clients.lastname', 'services.service_name']);
+            }
+        }
+        // You can add more queries here to retrieve other data based on the filters
         // Return the data as JSON response
         return response()->json([
             'totalSales' => $totalSales,
@@ -340,7 +360,8 @@ class DashboardController extends Controller
             'clientGraph'   => $client_graph,
             'totalFilterEnquiries' => $total_filter_enquiries,
             'enquiryGraph'   => $enquiry_graph,
-            'genderGraph'   => $gender_ratio
+            'genderGraph'   => $gender_ratio,
+            'appointmentComp' => $other_appointments
         ]);
     }
     public function sales_performance_filter(Request $request)
@@ -518,13 +539,27 @@ class DashboardController extends Controller
     }
     public function today_appointments(Request $request)
     {
-        // Fetch appointments for today and include client firstname, lastname, and service_name
-        $other_appointments = Appointment::with('staff','note')->leftJoin('clients', 'appointment.client_id', '=', 'clients.id')
+        $location_id = $request->location_ids;
+        if($location_id == 'All')
+        {
+            // Fetch appointments for today and include client firstname, lastname, and service_name
+            $other_appointments = Appointment::with('staff','note')->leftJoin('clients', 'appointment.client_id', '=', 'clients.id')
             ->leftJoin('services', 'appointment.service_id', '=', 'services.id')
             ->whereDate('appointment.start_date', $request->date)
             ->orderBy('appointment.start_date', 'asc') // Sort by start_date in descending order
             ->limit(5) // Limit to the latest 5 appointment
             ->get(['appointment.*', 'clients.firstname', 'clients.lastname', 'services.service_name']);
+        }else{
+            // Fetch appointments for today and include client firstname, lastname, and service_name
+            $other_appointments = Appointment::with('staff','note')->leftJoin('clients', 'appointment.client_id', '=', 'clients.id')
+            ->leftJoin('services', 'appointment.service_id', '=', 'services.id')
+            ->whereDate('appointment.start_date', $request->date)
+            ->where('appointment.location_id',$location_id)
+            ->orderBy('appointment.start_date', 'asc') // Sort by start_date in descending order
+            ->limit(5) // Limit to the latest 5 appointment
+            ->get(['appointment.*', 'clients.firstname', 'clients.lastname', 'services.service_name']);
+        }
+        
 
         return response()->json($other_appointments);
     }
