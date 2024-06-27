@@ -78,13 +78,15 @@ $('#mycalendar').change(function (e) {
     // Fetch today's appointments if selected date matches today's date
     var isToday = moment(inputValue).isSame(todayDate, 'day');
     var headerText = isToday ? "Today's appointments" : `${moment(inputValue).format('DD MMMM')} appointments`;
-    
+    $('.error').remove();
     //fetch today's appointments
+
+    var location_ids = $('#locations').val();
     $.ajax({
         url: TodayAppointments, // Replace with your actual API endpoint
         type: 'POST',
         dataType: 'json',
-        data: { date: inputValue }, // Send the period as a parameter to the server
+        data: { date: inputValue,location_ids:location_ids }, // Send the period as a parameter to the server
         success: function(data) {
             var appointmentsContainer = $('.black_calendar_appointment');
             var appointmentHeader = $('.all_appt h5');
@@ -114,7 +116,7 @@ $('#mycalendar').change(function (e) {
                     appointmentsContainer.append(appointmentHtml);
                 });
             } else {
-                appointmentsContainer.append('<li>No appointments for the selected date.</li>');
+                $('.all_appt').after('<span class="error">No appointments for the selected date.</span>');
             }
         },
         error: function(error) {
@@ -155,12 +157,20 @@ var dayData, weekData, monthData;
 var salesfilter = 1;
 
 function filterData(reportRange, location) {
+    //for appointment component start
+    $('.error').remove();
+    var todayDate = moment().format('YYYY-MM-DD');
+    var inputValue = $('#mycalendar').val();
+    var isToday = moment(inputValue).isSame(todayDate, 'day');
+    var headerText = isToday ? "Today's appointments" : `${moment(inputValue).format('DD MMMM')} appointments`;
+    //for appointment component end
     $.ajax({
         url: FilterRoute,
         type: 'POST',
         data: {
             reportRange: reportRange,
-            location: location
+            location: location,
+            date:inputValue//for appointment component
         },
         success: function(response) {
             // Handle success response from server
@@ -274,6 +284,44 @@ function filterData(reportRange, location) {
             isfilter_enquiry=1;
             isfilter_gender=1;
             salesfilter=0;
+
+            //Appointment location filter
+            if (response.appointmentComp.length > 0) {
+                var appointmentsContainer = $('.black_calendar_appointment');
+                var appointmentHeader = $('.all_appt h5');
+
+                appointmentHeader.text(headerText); // Update the header text
+
+                appointmentsContainer.empty(); // Clear the current list
+
+                response.appointmentComp.forEach(function(appt) {
+                    var clientName = appt.firstname && appt.lastname ? `${appt.firstname} ${appt.lastname}` : "No Client";
+                    var appointmentHtml = `
+                        <li class="edit_appt" id="${appt.id}" loc-id="${appt.location_id}">
+                            <div class="d-flex justify-content-between">
+                                <b class="doc_name">${clientName}</b>
+                                <span class="app_time">${moment(appt.start_date).format('h:mm A')}</b>
+                            </div>
+                            <span class="service_name">${appt.service_name} with <b>${appt.staff.first_name} ${appt.staff.last_name}</b></span>`;
+                    
+                        if (appt.note && appt.note.common_notes) {
+                            let commonNotes = appt.note.common_notes;
+                            let truncatedNotes = commonNotes.length > 20 ? commonNotes.substring(0, 20) + '...' : commonNotes;
+                            appointmentHtml += `<div class="notes">Booking Note: ${truncatedNotes}</div>`;
+                        }                            
+
+                    appointmentHtml += `</li>`;
+                    appointmentsContainer.append(appointmentHtml);
+                });
+            }else{
+                var appointmentsContainer = $('.black_calendar_appointment');
+                var appointmentHeader = $('.all_appt h5');
+
+                appointmentHeader.text(headerText); // Update the header text
+
+                appointmentsContainer.empty(); // Clear the current list
+                $('.all_appt').after('<span class="error">No appointments for the selected date.</span>');
+            }
             amchart(ClientFilterData,EnquiryFilterData,GenderFilterData,salesfilter);
         },
         error: function(xhr, status, error) {

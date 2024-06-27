@@ -216,8 +216,8 @@
                     <a href="javascript:void(0);" style="text-decoration:none;" class='sm-3 view_all_appt font-12' appt-date="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">View All</a>
                 </div>
                 
-                @if(count($today_appointments) > 0)
                 <ul class="black_calendar_appointment">
+                @if(count($today_appointments) > 0)
                     @foreach($today_appointments as $appts)
                         <li class="edit_appt" id="{{$appts->id}}" loc-id="{{$appts->location_id}}">
                             <div class="d-flex justify-content-between">
@@ -243,8 +243,11 @@
                             @endif
                         </li>   
                     @endforeach
+                    @else
+                        <span class="error">No appointments for the selected date.</span>
+                    @endif
                 </ul>
-                @endif
+                
             </div>
         </div>
     </div>
