@@ -757,18 +757,11 @@ class DashboardController extends Controller
             $formattedData = [];
             $months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
         
-            // Initialize an array to store treatments for each month
-            foreach ($months as $index => $monthName) {
-                $formattedData[$index] = [
-                    'category' => $monthName,
-                    'value' => 0 // Initialize with zero value
-                ];
-            }
-        
-            // Fetch top selling treatments for each month
+            // Get current month and year
             $currentMonth = Carbon::now()->month;
             $currentYear = Carbon::now()->year;
         
+            // Iterate over the last 12 months
             for ($i = 0; $i < 12; $i++) {
                 // Calculate month and year for each iteration
                 $month = $currentMonth - $i;
@@ -782,6 +775,7 @@ class DashboardController extends Controller
                 $startOfMonth = Carbon::createFromDate($year, $month, 1)->startOfMonth();
                 $endOfMonth = Carbon::createFromDate($year, $month, 1)->endOfMonth();
         
+                // Fetch top selling treatments for the month
                 $top_selling_treatments = WalkInRetailSale::leftJoin('walk_in_products', 'walk_in_retail_sale.id', '=', 'walk_in_products.walk_in_id')
                     ->select('walk_in_products.product_name', 'walk_in_products.product_price', DB::raw('SUM(walk_in_products.product_quantity) as total_product_quantity'), DB::raw('SUM(walk_in_products.product_price) as total_product_price'))
                     ->where('walk_in_products.product_type', 'service')
@@ -795,10 +789,17 @@ class DashboardController extends Controller
                 $totalMonthPrice = $top_selling_treatments->sum('total_product_price');
         
                 // Store the total product price for the month
-                $formattedData[$month - 1]['value'] = $totalMonthPrice;
+                $formattedData[] = [
+                    'category' => $months[$month - 1],
+                    'value' => $totalMonthPrice
+                ];
             }
+        
+            // Reverse the array to get the data in chronological order (latest month first)
+            $formattedData = array_reverse($formattedData);
+        
             // Return the formatted data as JSON
-            return response()->json(['data' => array_reverse($formattedData)]);
+            return response()->json(['data' => $formattedData]);
         }else if ($period == 'week') {
             $formattedData = [];
             $carbonNow = Carbon::now();
@@ -853,7 +854,6 @@ class DashboardController extends Controller
         
             // Return the formatted data as JSON
             return response()->json(array_reverse($formattedData));
-        
         } else if ($period == 'day') {
             $formattedData = [];
             $carbonNow = Carbon::now();
@@ -916,7 +916,7 @@ class DashboardController extends Controller
         
             // Return the formatted data as JSON
             return response()->json(array_reverse($formattedData));
-        }
+        }        
         // Default response if no valid period is provided
         return response()->json(['error' => 'Invalid period'], 400);
     }

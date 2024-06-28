@@ -401,6 +401,6 @@
     var gender_ratio = {!! json_encode($gender_ratio) !!};
     var TodayAppointments = "{{ route('dashboard.today_appointments') }}"; 
     var ClientRatioFilter = "{{ route('dashboard.client_ratio_filter') }}"; 
-    // var SellingTreatmentsFilter = "{{ route('dashboard.selling_treatments_filter') }}"; 
+    var SellingTreatmentsFilter = "{{ route('dashboard.selling_treatments_filter') }}"; 
 </script>
 @endsection
