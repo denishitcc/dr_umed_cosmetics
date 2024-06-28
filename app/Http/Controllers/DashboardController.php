@@ -749,175 +749,175 @@ class DashboardController extends Controller
         // Default response if no valid period is provided
         return response()->json(['error' => 'Invalid period'], 400);
     }
-    // public function selling_treatments_filter(Request $request)
-    // {
-    //     $period = $request->period;
-    //     // dd($period);
-    //     if ($period == 'month') {
-    //         $formattedData = [];
-    //         $months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    public function selling_treatments_filter(Request $request)
+    {
+        $period = $request->period;
+        // dd($period);
+        if ($period == 'month') {
+            $formattedData = [];
+            $months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
         
-    //         // Initialize an array to store treatments for each month
-    //         foreach ($months as $index => $monthName) {
-    //             $formattedData[$index] = [
-    //                 'category' => $monthName,
-    //                 'value' => 0 // Initialize with zero value
-    //             ];
-    //         }
+            // Initialize an array to store treatments for each month
+            foreach ($months as $index => $monthName) {
+                $formattedData[$index] = [
+                    'category' => $monthName,
+                    'value' => 0 // Initialize with zero value
+                ];
+            }
         
-    //         // Fetch top selling treatments for each month
-    //         $currentMonth = Carbon::now()->month;
-    //         $currentYear = Carbon::now()->year;
+            // Fetch top selling treatments for each month
+            $currentMonth = Carbon::now()->month;
+            $currentYear = Carbon::now()->year;
         
-    //         for ($i = 0; $i < 12; $i++) {
-    //             // Calculate month and year for each iteration
-    //             $month = $currentMonth - $i;
-    //             $year = $currentYear;
+            for ($i = 0; $i < 12; $i++) {
+                // Calculate month and year for each iteration
+                $month = $currentMonth - $i;
+                $year = $currentYear;
         
-    //             if ($month <= 0) {
-    //                 $month += 12;
-    //                 $year--;
-    //             }
+                if ($month <= 0) {
+                    $month += 12;
+                    $year--;
+                }
         
-    //             $startOfMonth = Carbon::createFromDate($year, $month, 1)->startOfMonth();
-    //             $endOfMonth = Carbon::createFromDate($year, $month, 1)->endOfMonth();
+                $startOfMonth = Carbon::createFromDate($year, $month, 1)->startOfMonth();
+                $endOfMonth = Carbon::createFromDate($year, $month, 1)->endOfMonth();
         
-    //             $top_selling_treatments = WalkInRetailSale::leftJoin('walk_in_products', 'walk_in_retail_sale.id', '=', 'walk_in_products.walk_in_id')
-    //                 ->select('walk_in_products.product_name', 'walk_in_products.product_price', DB::raw('SUM(walk_in_products.product_quantity) as total_product_quantity'), DB::raw('SUM(walk_in_products.product_price) as total_product_price'))
-    //                 ->where('walk_in_products.product_type', 'service')
-    //                 ->whereBetween('walk_in_retail_sale.invoice_date', [$startOfMonth, $endOfMonth])
-    //                 ->groupBy('walk_in_products.product_name', 'walk_in_products.product_price')
-    //                 ->orderByDesc('total_product_quantity')
-    //                 ->take(4)
-    //                 ->get();
+                $top_selling_treatments = WalkInRetailSale::leftJoin('walk_in_products', 'walk_in_retail_sale.id', '=', 'walk_in_products.walk_in_id')
+                    ->select('walk_in_products.product_name', 'walk_in_products.product_price', DB::raw('SUM(walk_in_products.product_quantity) as total_product_quantity'), DB::raw('SUM(walk_in_products.product_price) as total_product_price'))
+                    ->where('walk_in_products.product_type', 'service')
+                    ->whereBetween('walk_in_retail_sale.invoice_date', [$startOfMonth, $endOfMonth])
+                    ->groupBy('walk_in_products.product_name', 'walk_in_products.product_price')
+                    ->orderByDesc('total_product_quantity')
+                    ->take(4)
+                    ->get();
         
-    //             // Sum up total product price for the month
-    //             $totalMonthPrice = $top_selling_treatments->sum('total_product_price');
+                // Sum up total product price for the month
+                $totalMonthPrice = $top_selling_treatments->sum('total_product_price');
         
-    //             // Store the total product price for the month
-    //             $formattedData[$month - 1]['value'] = $totalMonthPrice;
-    //         }
-    //         // Return the formatted data as JSON
-    //         return response()->json(['data' => array_reverse($formattedData)]);
-    //     }else if ($period == 'week') {
-    //         $formattedData = [];
-    //         $carbonNow = Carbon::now();
-    //         $currentDate = $carbonNow->copy(); // Current date
+                // Store the total product price for the month
+                $formattedData[$month - 1]['value'] = $totalMonthPrice;
+            }
+            // Return the formatted data as JSON
+            return response()->json(['data' => array_reverse($formattedData)]);
+        }else if ($period == 'week') {
+            $formattedData = [];
+            $carbonNow = Carbon::now();
+            $currentDate = $carbonNow->copy(); // Current date
         
-    //         // Define the specific week ranges based on today's date
-    //         $weeks = [
-    //             ['start' => $currentDate->copy()->startOfWeek(), 'end' => $currentDate->copy()->endOfWeek()],
-    //             ['start' => $currentDate->copy()->subWeeks(1)->startOfWeek(), 'end' => $currentDate->copy()->subWeeks(1)->endOfWeek()],
-    //             ['start' => $currentDate->copy()->subWeeks(2)->startOfWeek(), 'end' => $currentDate->copy()->subWeeks(2)->endOfWeek()],
-    //             ['start' => $currentDate->copy()->subWeeks(3)->startOfWeek(), 'end' => $currentDate->copy()->subWeeks(3)->endOfWeek()]
-    //         ];
+            // Define the specific week ranges based on today's date
+            $weeks = [
+                ['start' => $currentDate->copy()->startOfWeek(), 'end' => $currentDate->copy()->endOfWeek()],
+                ['start' => $currentDate->copy()->subWeeks(1)->startOfWeek(), 'end' => $currentDate->copy()->subWeeks(1)->endOfWeek()],
+                ['start' => $currentDate->copy()->subWeeks(2)->startOfWeek(), 'end' => $currentDate->copy()->subWeeks(2)->endOfWeek()],
+                ['start' => $currentDate->copy()->subWeeks(3)->startOfWeek(), 'end' => $currentDate->copy()->subWeeks(3)->endOfWeek()]
+            ];
         
-    //         // Fetch data for each specific week range
-    //         foreach ($weeks as $index => $week) {
-    //             $startOfWeek = $week['start'];
-    //             $endOfWeek = $week['end'];
+            // Fetch data for each specific week range
+            foreach ($weeks as $index => $week) {
+                $startOfWeek = $week['start'];
+                $endOfWeek = $week['end'];
         
-    //             // Query for client ratio data within the current week
-    //             $casual_client_walk_in = WalkInRetailSale::whereBetween('invoice_date', [$startOfWeek, $endOfWeek])
-    //                 ->where('appt_id', null)
-    //                 ->where('customer_type', 'casual')
-    //                 ->count();
+                // Query for client ratio data within the current week
+                $casual_client_walk_in = WalkInRetailSale::whereBetween('invoice_date', [$startOfWeek, $endOfWeek])
+                    ->where('appt_id', null)
+                    ->where('customer_type', 'casual')
+                    ->count();
         
-    //             $new_client_appt = Appointment::whereBetween('start_date', [$startOfWeek, $endOfWeek])
-    //                 ->where('client_type', 'New Clients')
-    //                 ->count();
+                $new_client_appt = Appointment::whereBetween('start_date', [$startOfWeek, $endOfWeek])
+                    ->where('client_type', 'New Clients')
+                    ->count();
         
-    //             $new_client_walk_in = WalkInRetailSale::whereBetween('invoice_date', [$startOfWeek, $endOfWeek])
-    //                 ->where('appt_id', null)
-    //                 ->where('customer_type', 'new')
-    //                 ->count();
+                $new_client_walk_in = WalkInRetailSale::whereBetween('invoice_date', [$startOfWeek, $endOfWeek])
+                    ->where('appt_id', null)
+                    ->where('customer_type', 'new')
+                    ->count();
         
-    //             $new_clients = $new_client_appt + $new_client_walk_in;
+                $new_clients = $new_client_appt + $new_client_walk_in;
         
-    //             $returning_client_appt = Appointment::whereBetween('start_date', [$startOfWeek, $endOfWeek])
-    //                 ->where('client_type', 'Returning Clients')
-    //                 ->count();
+                $returning_client_appt = Appointment::whereBetween('start_date', [$startOfWeek, $endOfWeek])
+                    ->where('client_type', 'Returning Clients')
+                    ->count();
         
-    //             $rebooked_client_appt = Appointment::whereBetween('start_date', [$startOfWeek, $endOfWeek])
-    //                 ->where('client_type', 'Rebooked Clients')
-    //                 ->count();
+                $rebooked_client_appt = Appointment::whereBetween('start_date', [$startOfWeek, $endOfWeek])
+                    ->where('client_type', 'Rebooked Clients')
+                    ->count();
         
-    //             $formattedData[] = [
-    //                 'category' => $startOfWeek->format('d M') . ' - ' . $endOfWeek->format('d M'),
-    //                 'casual_clients' => $casual_client_walk_in,
-    //                 'new_clients' => $new_clients,
-    //                 'returning_client_appt' => $returning_client_appt,
-    //                 'rebooked_client_appt' => $rebooked_client_appt
-    //             ];
-    //         }
+                $formattedData[] = [
+                    'category' => $startOfWeek->format('d M') . ' - ' . $endOfWeek->format('d M'),
+                    'casual_clients' => $casual_client_walk_in,
+                    'new_clients' => $new_clients,
+                    'returning_client_appt' => $returning_client_appt,
+                    'rebooked_client_appt' => $rebooked_client_appt
+                ];
+            }
         
-    //         // Return the formatted data as JSON
-    //         return response()->json(array_reverse($formattedData));
+            // Return the formatted data as JSON
+            return response()->json(array_reverse($formattedData));
         
-    //     } else if ($period == 'day') {
-    //         $formattedData = [];
-    //         $carbonNow = Carbon::now();
-    //         $currentDate = $carbonNow->copy(); // Current date
+        } else if ($period == 'day') {
+            $formattedData = [];
+            $carbonNow = Carbon::now();
+            $currentDate = $carbonNow->copy(); // Current date
         
-    //         // Define the specific day ranges based on today's date
-    //         $days = [
-    //             ['date' => $currentDate->copy()->toDateString()],
-    //             ['date' => $currentDate->copy()->subDays(1)->toDateString()],
-    //             ['date' => $currentDate->copy()->subDays(2)->toDateString()],
-    //             ['date' => $currentDate->copy()->subDays(3)->toDateString()],
-    //             ['date' => $currentDate->copy()->subDays(4)->toDateString()],
-    //             ['date' => $currentDate->copy()->subDays(5)->toDateString()],
-    //             ['date' => $currentDate->copy()->subDays(6)->toDateString()]
-    //         ];
+            // Define the specific day ranges based on today's date
+            $days = [
+                ['date' => $currentDate->copy()->toDateString()],
+                ['date' => $currentDate->copy()->subDays(1)->toDateString()],
+                ['date' => $currentDate->copy()->subDays(2)->toDateString()],
+                ['date' => $currentDate->copy()->subDays(3)->toDateString()],
+                ['date' => $currentDate->copy()->subDays(4)->toDateString()],
+                ['date' => $currentDate->copy()->subDays(5)->toDateString()],
+                ['date' => $currentDate->copy()->subDays(6)->toDateString()]
+            ];
         
-    //         // Fetch data for each specific day range
-    //         foreach ($days as $index => $day) {
-    //             $selectedDate = Carbon::parse($day['date']);
+            // Fetch data for each specific day range
+            foreach ($days as $index => $day) {
+                $selectedDate = Carbon::parse($day['date']);
         
-    //             // Query for sales data within the current day
-    //             $total_sales_second_half = Appointment::whereDate('start_date', $selectedDate)
-    //                 ->where('status', '!=', '4')
-    //                 ->get();
+                // Query for sales data within the current day
+                $total_sales_second_half = Appointment::whereDate('start_date', $selectedDate)
+                    ->where('status', '!=', '4')
+                    ->get();
         
-    //             // Calculate expected sales
-    //             $walk_in_count = WalkInRetailSale::whereDate('invoice_date', $selectedDate)
-    //                 ->whereNull('appt_id')
-    //                 ->sum('total');
+                // Calculate expected sales
+                $walk_in_count = WalkInRetailSale::whereDate('invoice_date', $selectedDate)
+                    ->whereNull('appt_id')
+                    ->sum('total');
         
-    //             $walk_in_payment_count = WalkInRetailSale::join('appointment', 'walk_in_retail_sale.appt_id', '=', 'appointment.id')
-    //                 ->whereDate('walk_in_retail_sale.invoice_date', $selectedDate)
-    //                 ->sum('walk_in_retail_sale.total');
+                $walk_in_payment_count = WalkInRetailSale::join('appointment', 'walk_in_retail_sale.appt_id', '=', 'appointment.id')
+                    ->whereDate('walk_in_retail_sale.invoice_date', $selectedDate)
+                    ->sum('walk_in_retail_sale.total');
         
-    //             $expected = (int) $walk_in_count + (int) $walk_in_payment_count;
+                $expected = (int) $walk_in_count + (int) $walk_in_payment_count;
         
-    //             foreach ($total_sales_second_half as $second) {
-    //                 $ck_found_in_walk_in = WalkInRetailSale::where('appt_id', $second->id)->first();
-    //                 if ($ck_found_in_walk_in) {
-    //                     $expected += $ck_found_in_walk_in->total;
-    //                 } else {
-    //                     $service = Services::where('id', $second->service_id)->first();
-    //                     if ($service) {
-    //                         $expected += $service->standard_price;
-    //                     }
-    //                 }
-    //             }
+                foreach ($total_sales_second_half as $second) {
+                    $ck_found_in_walk_in = WalkInRetailSale::where('appt_id', $second->id)->first();
+                    if ($ck_found_in_walk_in) {
+                        $expected += $ck_found_in_walk_in->total;
+                    } else {
+                        $service = Services::where('id', $second->service_id)->first();
+                        if ($service) {
+                            $expected += $service->standard_price;
+                        }
+                    }
+                }
         
-    //             // Calculate achieved sales
-    //             $achieved = WalkInRetailSale::whereDate('invoice_date', $selectedDate)
-    //                 ->sum('total');
+                // Calculate achieved sales
+                $achieved = WalkInRetailSale::whereDate('invoice_date', $selectedDate)
+                    ->sum('total');
         
-    //             // Format the data for the current day
-    //             $formattedData[] = [
-    //                 'category' => $selectedDate->format('d M Y'),
-    //                 'expected' => $expected,
-    //                 'achieved' => $achieved
-    //             ];
-    //         }
+                // Format the data for the current day
+                $formattedData[] = [
+                    'category' => $selectedDate->format('d M Y'),
+                    'expected' => $expected,
+                    'achieved' => $achieved
+                ];
+            }
         
-    //         // Return the formatted data as JSON
-    //         return response()->json(array_reverse($formattedData));
-    //     }
-    //     // Default response if no valid period is provided
-    //     return response()->json(['error' => 'Invalid period'], 400);
-    // }
+            // Return the formatted data as JSON
+            return response()->json(array_reverse($formattedData));
+        }
+        // Default response if no valid period is provided
+        return response()->json(['error' => 'Invalid period'], 400);
+    }
 }
