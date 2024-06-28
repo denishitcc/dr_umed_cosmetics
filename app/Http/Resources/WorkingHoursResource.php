@@ -20,7 +20,9 @@ class WorkingHoursResource extends JsonResource
             'end'            => $this->working_end_time,
             'resourceId'     => $this->staff_id,
             'title'          => $this->working_start_time.' - '.$this->working_end_time,
-            'color_code'     => $this->color
+            // 'color'          => $this->color,
+            'backgroundColor'=> 'blue',
+            'borderColor'    =>'darkblue'
         ];
     }
 }
