@@ -319,9 +319,9 @@
             </div>
             <div class="tool-right">
                 <div class="text-right">
-                    <button class="btn btn-primary btn-sm mr-2" onclick="filterClientRatioData('month')">Month</button>
-                    <button class="btn btn-primary btn-sm mr-2" onclick="filterClientRatioData('week')">Week</button>
-                    <button class="btn btn-primary btn-sm" onclick="filterClientRatioData('day')">Day</button>
+                    <button class="btn btn-primary btn-sm mr-2" onclick="filterTopSellingTreatmentData('month')">Month</button>
+                    <button class="btn btn-primary btn-sm mr-2" onclick="filterTopSellingTreatmentData('week')">Week</button>
+                    <button class="btn btn-primary btn-sm" onclick="filterTopSellingTreatmentData('day')">Day</button>
                 </div>
             </div>
         </div>
