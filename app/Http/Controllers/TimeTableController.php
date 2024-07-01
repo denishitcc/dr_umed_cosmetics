@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\WorkingHoursResource;
 use App\Models\Locations;
+use App\Models\Timetable;
 use App\Models\Workinghours;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Ramsey\Uuid\Type\Time;
 
 class TimeTableController extends Controller
 {
@@ -104,5 +107,76 @@ class TimeTableController extends Controller
         } catch (\Throwable $th) {
             //throw $th;
         }
+    }
+
+    public function saveTimetable(Request $request)
+    {
+        $data       = $request->all();
+        $days       = $request->days;
+        $weekdays   = $request->weekdays;
+
+        try {
+            $period = CarbonPeriod::create($days['start_date'], '1 days', $days['end_date']);
+
+            $timedata = [
+                'staff_id'      => $request->staff_id,
+                'start_date'    => $days['start_date'],
+                'end_date'      => $days['end_date']
+            ];
+            $time = Timetable::create($timedata);
+
+            foreach( $period as $key => $day ){
+
+                $particularDay = $day->format('l');
+
+                foreach ($weekdays as $key => $week) {
+
+                    if($week['day_name'] == $particularDay)
+                    {
+                        $timetable_data[] = [
+                            'staff_id'              => $request->staff_id,
+                            'timetable_id'          => $time->id,
+                            'working_status'        => Workinghours::WORKING,
+                            'calendar_date'         => $day->format('Y-m-d'),
+                            'working_start_time'    => $week['start_time'],
+                            'working_end_time'      => $week['end_time']
+                        ];
+                    }
+                }
+            }
+            $data  = Workinghours::insert($timetable_data);
+            $response = [
+                'success'   => true,
+                'message'   => 'Timetable created successfully!',
+                'type'      => 'success',
+            ];
+        } catch (\Throwable $th) {
+            $response = [
+                'success' => false,
+                'message' => $th->getMessage(),
+                'type'    => 'fail',
+            ];
+        }
+
+        return $response;
+    }
+
+    /**
+     * Method getUserTimetable
+     *
+     * @param $id $id [explicite description]
+     *
+     * @return void
+     */
+    public function getUserTimetable($id)
+    {
+        $timetable          = Timetable::where('staff_id',$id)->get();
+        $timetablehtml      = view('timetable.partials.timetable-list', ['timetable' => $timetable])->render();
+
+        return response()->json([
+            'status'        => true,
+            'message'       => 'Timetable found.',
+            'timetable'     => $timetablehtml,
+        ], 200);
     }
 }
