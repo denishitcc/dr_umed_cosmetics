@@ -14,14 +14,8 @@ return new class extends Migration
         Schema::create('timetable', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('staff_id');
-            $table->string('name',255);
             $table->date('start_date');
-            $table->text('days_of_week');
-            $table->time('lunch');
-            $table->time('break');
-            $table->time('custom_time');
-            $table->text('color_code');
-            $table->integer('status')->comment('1-working,0-non working,2-leave,3-partial leave');
+            $table->date('end_date');
             $table->timestamps();
         });
     }

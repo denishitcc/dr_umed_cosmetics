@@ -5541,7 +5541,7 @@
         return res;
     }
 
-    function debounce(func, timeout = 300){
+    function debounce(func, timeout = 200){
         let timer;
         return (...args) => {
             clearTimeout(timer);
@@ -5555,7 +5555,7 @@
         $('#clientDetails').empty();
         $('.upcoming_appointments').empty();
         $('.history_appointments').empty();
-
+        $('.client_list_box').hide();
         // ajax call
         $.ajax({
             type: "POST",

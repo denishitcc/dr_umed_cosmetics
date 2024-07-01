@@ -21,9 +21,6 @@ return new class extends Migration
             $table->integer('lunch_duration')->nullable();
             $table->time('break_start_time')->nullable();
             $table->integer('break_duration')->nullable();
-            $table->time('custom_start_time')->nullable();
-            $table->time('custom_end_time')->nullable();
-            $table->text('custom_reason')->nullable();
             $table->integer('leave_reason')->nullable()->comment('1-none,2-annual,3-public,4-sick,5-unpaid');
             $table->date('leave_start_date')->nullable();
             $table->date('leave_end_date')->nullable();

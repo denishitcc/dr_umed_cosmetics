@@ -22,9 +22,6 @@ class Workinghours extends Model
         'lunch_duration',
         'break_start_time',
         'break_duration',
-        'custom_start_time',
-        'custom_end_time',
-        'custom_reason',
         'leave_reason',
         'leave_start_date',
         'leave_end_date',
@@ -85,7 +82,28 @@ class Workinghours extends Model
                 $color = '#0076bc';
                 break;
         }
-
         return $color;
+    }
+
+    /**
+     * Method getStartDateAttribute
+     *
+     * @return void
+     */
+    public function getStartDateAttribute()
+    {
+        $date = date_create($this->calendar_date.$this->working_start_time);
+        return date_format($date,'Y-m-d\TH:i:sP');
+    }
+
+    /**
+     * Method getEndDateAttribute
+     *
+     * @return void
+     */
+    public function getEndDateAttribute()
+    {
+        $date = date_create($this->calendar_date.$this->working_end_time);
+        return date_format($date,'Y-m-d\TH:i:sP');
     }
 }

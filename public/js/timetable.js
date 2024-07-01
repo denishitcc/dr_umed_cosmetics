@@ -195,159 +195,8 @@ var DU = {};
                 },
                 editable: true,
                 resourceAreaHeaderContent: 'Staff',
-                resources:  [
-                    {
-                      "id": "a",
-                      "title": "Auditorium A"
-                    },
-                    {
-                      "id": "b",
-                      "title": "Auditorium B",
-                      "eventColor": "green"
-                    },
-                    {
-                      "id": "c",
-                      "title": "Auditorium C",
-                      "eventColor": "orange"
-                    },
-                    {
-                      "id": "d",
-                      "title": "Auditorium D",
-                      "children": [
-                        {
-                          "id": "d1",
-                          "title": "Room D1"
-                        },
-                        {
-                          "id": "d2",
-                          "title": "Room D2"
-                        }
-                      ]
-                    },
-                    {
-                      "id": "e",
-                      "title": "Auditorium E"
-                    },
-                    {
-                      "id": "f",
-                      "title": "Auditorium F",
-                      "eventColor": "red"
-                    },
-                    {
-                      "id": "g",
-                      "title": "Auditorium G"
-                    },
-                    {
-                      "id": "h",
-                      "title": "Auditorium H"
-                    },
-                    {
-                      "id": "i",
-                      "title": "Auditorium I"
-                    },
-                    {
-                      "id": "j",
-                      "title": "Auditorium J"
-                    },
-                    {
-                      "id": "k",
-                      "title": "Auditorium K"
-                    },
-                    {
-                      "id": "l",
-                      "title": "Auditorium L"
-                    },
-                    {
-                      "id": "m",
-                      "title": "Auditorium M"
-                    },
-                    {
-                      "id": "n",
-                      "title": "Auditorium N"
-                    },
-                    {
-                      "id": "o",
-                      "title": "Auditorium O"
-                    },
-                    {
-                      "id": "p",
-                      "title": "Auditorium P"
-                    },
-                    {
-                      "id": "q",
-                      "title": "Auditorium Q"
-                    },
-                    {
-                      "id": "r",
-                      "title": "Auditorium R"
-                    },
-                    {
-                      "id": "s",
-                      "title": "Auditorium S"
-                    },
-                    {
-                      "id": "t",
-                      "title": "Auditorium T"
-                    },
-                    {
-                      "id": "u",
-                      "title": "Auditorium U"
-                    },
-                    {
-                      "id": "v",
-                      "title": "Auditorium V"
-                    },
-                    {
-                      "id": "w",
-                      "title": "Auditorium W"
-                    },
-                    {
-                      "id": "x",
-                      "title": "Auditorium X"
-                    },
-                    {
-                      "id": "y",
-                      "title": "Auditorium Y"
-                    },
-                    {
-                      "id": "z",
-                      "title": "Auditorium Z"
-                    }
-                  ],
-                events: [
-                    {
-                      "resourceId": "66",
-                      "title": "event 1",
-                      "start": "2024-06-26",
-                      "end": "2024-06-28",
-                       "backgroundColor": "blue",
-                        "borderColor"    :"darkblue"
-                    },
-                    {
-                      "resourceId": "65",
-                      "title": "event 3",
-                      "start": "2024-06-27T12:00:00+00:00",
-                      "end": "2024-06-28T06:00:00+00:00"
-                    },
-                    {
-                      "resourceId": "66",
-                      "title": "event 4",
-                      "start": "2024-06-27T07:30:00+00:00",
-                      "end": "2024-06-27T09:30:00+00:00"
-                    },
-                    {
-                      "resourceId": "74",
-                      "title": "event 5",
-                      "start": "2024-06-27T10:00:00+00:00",
-                      "end": "2024-06-27T15:00:00+00:00"
-                    },
-                    {
-                      "resourceId": 65,
-                      "title": "event 2",
-                      "start": "2024-06-27T09:00:00+00:00",
-                      "end": "2024-06-27T14:00:00+00:00"
-                    }
-                ],
+                resources:  [],
+                events: [],
                 slotLabelFormat: [
                     { weekday: "short", day: "2-digit" , month: "2-digit"}, // lower level of text
                 ],
@@ -390,7 +239,7 @@ var DU = {};
                     let italicEl = document.createElement('div');
                         italicEl.classList.add("fc-event-main-frame");
                     if(info.event.start){
-                        italicEl.innerHTML = `<div class='fc-event-time'>${info.timeText}</div>
+                        italicEl.innerHTML = `<div class='fc-event-time'></div>
                         <div class='fc-event-title-container'><div class='fc-event-title fc-sticky'>${info.event.title}</div></div>`;
                     } else {
                         italicEl.innerHTML = `<div class='fc-event-time'>dharit</div>
@@ -411,8 +260,10 @@ var DU = {};
                 var resourceEl = event.target.closest('.resource-label-dharit');
                 if (resourceEl) {
                     var resourceId = resourceEl.dataset.resourceId;
-
+                    $('input[name="staff_id"]').val(resourceId);
                     // Display the modal with resource details
+                    console.log('hi');
+                    context.getTimetableList(resourceId);
                     $('#edit_timetable').modal('show');
                 }
             });
@@ -575,12 +426,30 @@ var DU = {};
                 success: function (data) {
                     console.log(data);
                     context.calendar.setOption('events', data);
+                    context.calendar.render();
                 },
                 error: function (error) {
                     console.error('Error fetching on staff:', error);
                 }
             });
             context.calendar.render();
+        },
+
+        getTimetableList:function(resourceId){
+            var context = this;
+            $.ajax({
+                url: moduleConfig.getUserTimetable.replace(':ID', resourceId),
+                type: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                },
+                success: function (data) {
+                    $('#new').html(data.timetable);
+                },
+                error: function (error) {
+                    console.error('Error fetching on staff:', error);
+                }
+            });
         },
 
         saveTimetable: function(){
@@ -596,80 +465,131 @@ var DU = {};
                 var thrusday    = $('input[name="thu"]').prop("checked");
                 var friday      = $('input[name="fri"]').prop("checked");
                 var saturaday   = $('input[name="sat"]').prop("checked");
+                var staff_id    = $('input[name="staff_id"]').val();
 
                 var timetable1 = {
                     "start_date" : start_date,
                     "end_date"   : end_date
-                }
-                timetable.push(timetable1);
+                };
                 var days = [];
                 if(sunday == true)
                 {
                     var sun_start_time  = $('select[name="sun_start_time"]').find(":selected").val();
                     var sun_end_time    = $('select[name="sun_end_time"]').find(":selected").val();
                     var sun = {
-                        'day_name'  : "sun",
+                        'day_name'  : "Sunday",
                         'start_time': sun_start_time,
-                        'end_time' : sun_end_time
-                    }
+                        'end_time'  : sun_end_time
+                    };
                     days.push(sun);
-                    // timetable.push(days);
-                    // arr1.concat(arr2);
-                    timetable.concat(days);
-                    // call_user_func_array('array_merge', timetable);
-                    console.log(timetable);
-                    var jarray = [];
-                    for (var i=0; i<days.length && i<timetable.length; i++)
-                        jarray[i] = [timetable[i], [days[i]]];
-                    }
-                    console.log(jarray);
+                }
 
                 if(monday == true)
                 {
                     var mon_start_time  = $('select[name="mon_start_time"]').find(":selected").val();
                     var mon_end_time    = $('select[name="mon_end_time"]').find(":selected").val();
                     var mon = {
+                        'day_name'  : "Monday",
                         'start_time': mon_start_time,
-                        'end_time' : sun_end_time
+                        'end_time'  : mon_end_time
                     }
+                    days.push(mon);
                 }
 
                 if(tuesday == true)
                 {
                     var tue_start_time  = $('select[name="tue_start_time"]').find(":selected").val();
                     var tue_end_time    = $('select[name="tue_end_time"]').find(":selected").val();
-                    // console.log(tue_start_time);
+                    var tue = {
+                        'day_name'  : "Tuesday",
+                        'start_time': tue_start_time,
+                        'end_time'  : tue_end_time
+                    }
+                    days.push(tue);
                 }
 
                 if(wednesday == true)
                 {
                     var wed_start_time  = $('select[name="wed_start_time"]').find(":selected").val();
                     var wed_end_time    = $('select[name="wed_end_time"]').find(":selected").val();
-                    // console.log(tue_start_time);
+                    var wed = {
+                        'day_name'  : "Wednesday",
+                        'start_time': wed_start_time,
+                        'end_time'  : wed_end_time
+                    }
+                    days.push(wed);
                 }
 
                 if(thrusday == true)
                 {
                     var thu_start_time  = $('select[name="thu_start_time"]').find(":selected").val();
                     var thu_end_time    = $('select[name="thu_end_time"]').find(":selected").val();
-                    // console.log(tue_start_time);
+                    var thu = {
+                        'day_name'  : "Thrusday",
+                        'start_time': thu_start_time,
+                        'end_time'  : thu_end_time
+                    }
+                    days.push(thu);
                 }
 
                 if(friday == true)
                 {
                     var fri_start_time  = $('select[name="fri_start_time"]').find(":selected").val();
                     var fri_end_time    = $('select[name="fri_end_time"]').find(":selected").val();
-                    // console.log(tue_start_time);
+                    var fri = {
+                        'day_name'  : "Friday",
+                        'start_time': fri_start_time,
+                        'end_time'  : fri_end_time
+                    }
+                    days.push(fri);
                 }
 
                 if(saturaday == true)
                 {
                     var sat_start_time  = $('select[name="sat_start_time"]').find(":selected").val();
                     var sat_end_time    = $('select[name="sat_end_time"]').find(":selected").val();
-                    // console.log(tue_start_time);
+                    var sat = {
+                        'day_name'  : "Saturaday",
+                        'start_time': sat_start_time,
+                        'end_time'  : sat_end_time
+                    }
+                    days.push(sat);
                 }
 
-                // console.log(timetable);
+                $.ajax({
+                    url: moduleConfig.saveTimetable,
+                    type: 'POST',
+                    data: {
+                        'staff_id'  : staff_id,
+                        'days'      : timetable1,
+                        'weekdays'  : days,
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        if (data.success) {
+                            Swal.fire({
+                                title: "Timetable Status!",
+                                text: data.message,
+                                icon: "success",
+                            }).then(function() {
+                                $('.new_timetable_section').attr('style','display:none !important');
+                                context.getTimetableList(staff_id);
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Error!",
+                                text: data.message,
+                                icon: "error",
+                            });
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Error fetching on staff:', error);
+                    }
+                });
             });
         },
     }

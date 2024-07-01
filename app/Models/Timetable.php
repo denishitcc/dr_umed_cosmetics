@@ -21,13 +21,8 @@ class Timetable extends Model
     protected $fillable = [
         'id',
         'staff_id',
-        'name',
         'start_date',
-        'days_of_week',
-        'lunch',
-        'break',
-        'custom_time',
-        'status'
+        'end_date',
     ];
 
     /**

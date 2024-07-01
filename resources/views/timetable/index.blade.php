@@ -62,7 +62,9 @@
     var moduleConfig = {
         getStaffList:       "{!! route('get-staff-list') !!}",
         updateWorkingHours: "{!! route('timetable.updateWorkingHours') !!}",
-        getWorkingHours:    "{!! route('timetable.getWorkingHours') !!}"
+        getWorkingHours:    "{!! route('timetable.getWorkingHours') !!}",
+        saveTimetable:      "{!! route('timetable.saveTimetable') !!}",
+        getUserTimetable:   "{!! route('timetable.getUserTimetable', ':ID') !!}"
     };
     $(document).ready(function()
     {

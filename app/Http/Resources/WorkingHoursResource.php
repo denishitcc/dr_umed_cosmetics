@@ -15,14 +15,12 @@ class WorkingHoursResource extends JsonResource
     public function toArray(Request $request): array
     {
         return[
-            'id'             => $this->id,
-            'start'          => $this->working_start_time,
-            'end'            => $this->working_end_time,
-            'resourceId'     => $this->staff_id,
-            'title'          => $this->working_start_time.' - '.$this->working_end_time,
-            // 'color'          => $this->color,
-            'backgroundColor'=> 'blue',
-            'borderColor'    =>'darkblue'
+            'id'                => $this->id,
+            'start'             => $this->start_date,
+            'end'               => $this->end_date,
+            'resourceId'        => $this->staff_id,
+            'title'             => $this->working_start_time.' - '.$this->working_end_time,
+            'backgroundColor'   => $this->color,
         ];
     }
 }
