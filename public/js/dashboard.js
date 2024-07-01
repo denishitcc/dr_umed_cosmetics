@@ -162,7 +162,10 @@ var SalesPerformanceyAxis; // Declare SalesPerformanceyAxis globally
 var currentData = []; // Declare currentData globally
 var legend; // Declare legend globally
 var clientGraphRoot, clientGraphChart, clientGraphXAxis, clientGraphLegend;
-var chartTopSellingTreatments,rootTopSellingTreatments,xAxisTopSellingTreatments,yAxisTopSellingTreatments;
+// var chartTopSellingTreatments,rootTopSellingTreatments,xAxisTopSellingTreatments,yAxisTopSellingTreatments;
+var rootTopSellingTreatments, chartTopSellingTreatments, xAxisTopSellingTreatments, yAxisTopSellingTreatments;
+var currentData = {};
+var treatmentlegend;
 function filterData(reportRange, location) {
     //for appointment component start
     $('.error').remove();
@@ -696,70 +699,54 @@ function amchart(ClientFilterData = [],EnquiryFilterData = [], GenderFilterData=
         // Generate random data
         // Define static data for each treatment
         createTopSellingTreatmentsChart();
+        filterTopSellingTreatmentData('month');
 
     });
 }
 //start
-function createTopSellingTreatmentsChart() {
-    var dataTopSellingTreatments = {
-        "Anti Wrinkle": [
-            { date: new Date(2023, 0, 1).getTime(), price: 1000 },   // January
-            { date: new Date(2023, 1, 1).getTime(), price: 10 },     // February
-            { date: new Date(2023, 2, 1).getTime(), price: 500 },      // March
-            { date: new Date(2023, 3, 1).getTime(), price: 10000 },      // April
-            { date: new Date(2023, 4, 1).getTime(), price: 1},        // May
-            { date: new Date(2023, 5, 1).getTime(), price:  500},       // June
-            { date: new Date(2023, 6, 1).getTime(), price: 2000},       // July
-            { date: new Date(2023, 7, 1).getTime(), price: 1},     // August
-            { date: new Date(2023, 8, 1).getTime(), price: 5},  // September
-            { date: new Date(2023, 9, 1).getTime(), price: 1000 },    // October
-            { date: new Date(2023, 10, 1).getTime(), price: 1 },  // November
-            { date: new Date(2023, 11, 1).getTime(), price: 2000 }   // December
-        ],
-        "BBL Hero Forever Young": [
-            { date: new Date(2023, 0, 1).getTime(), price: 50 },   // January
-            { date: new Date(2023, 1, 1).getTime(), price: 60 },     // February
-            { date: new Date(2023, 2, 1).getTime(), price: 70 },      // March
-            { date: new Date(2023, 3, 1).getTime(), price: 50 },      // April
-            { date: new Date(2023, 4, 1).getTime(), price: 700},        // May
-            { date: new Date(2023, 5, 1).getTime(), price:  8000},       // June
-            { date: new Date(2023, 6, 1).getTime(), price: 2000},       // July
-            { date: new Date(2023, 7, 1).getTime(), price: 11},     // August
-            { date: new Date(2023, 8, 1).getTime(), price: 24},  // September
-            { date: new Date(2023, 9, 1).getTime(), price: 443 },    // October
-            { date: new Date(2023, 10, 1).getTime(), price: 123 },  // November
-            { date: new Date(2023, 11, 1).getTime(), price: 4444 }   // December
-        ],
-        "Pico Laser": [
-            { date: new Date(2023, 0, 1).getTime(), price: 1 },   // January
-            { date: new Date(2023, 1, 1).getTime(), price: 32 },     // February
-            { date: new Date(2023, 2, 1).getTime(), price: 522 },      // March
-            { date: new Date(2023, 3, 1).getTime(), price: 33333 },      // April
-            { date: new Date(2023, 4, 1).getTime(), price: 12},        // May
-            { date: new Date(2023, 5, 1).getTime(), price:  66},       // June
-            { date: new Date(2023, 6, 1).getTime(), price: 88},       // July
-            { date: new Date(2023, 7, 1).getTime(), price: 66666},     // August
-            { date: new Date(2023, 8, 1).getTime(), price: 54},  // September
-            { date: new Date(2023, 9, 1).getTime(), price: 154 },    // October
-            { date: new Date(2023, 10, 1).getTime(), price: 13 },  // November
-            { date: new Date(2023, 11, 1).getTime(), price: 3344 }   // December
-        ],
-        "Mole Removal": [
-            { date: new Date(2023, 0, 1).getTime(), price: 10000 },   // January
-            { date: new Date(2023, 1, 1).getTime(), price: 1 },     // February
-            { date: new Date(2023, 2, 1).getTime(), price: 33 },      // March
-            { date: new Date(2023, 3, 1).getTime(), price: 888 },      // April
-            { date: new Date(2023, 4, 1).getTime(), price: 3331},        // May
-            { date: new Date(2023, 5, 1).getTime(), price:  2},       // June
-            { date: new Date(2023, 6, 1).getTime(), price: 555},       // July
-            { date: new Date(2023, 7, 1).getTime(), price: 12},     // August
-            { date: new Date(2023, 8, 1).getTime(), price: 51},  // September
-            { date: new Date(2023, 9, 1).getTime(), price: 6666 },    // October
-            { date: new Date(2023, 10, 1).getTime(), price: 1 },  // November
-            { date: new Date(2023, 11, 1).getTime(), price: 2000 }   // December
-        ]
-    };
+$(document).on('click', '#weekButton', function(e) {
+    filterService('week');
+});
+// Function to filter service
+function filterService(period) {
+    $.ajax({
+        url: SellingTreatmentsServiceNameFilter,
+        type: 'POST',
+        dataType: 'json',
+        data: { period: period },
+        success: function(data) {
+            var colors = ["#1f77b4", "#2ca02c", "#ff7f0e", "#d62728"];
+            for (var i = 0; i < 4; i++) { // Loop through a fixed number (4)
+                var serviceName = data[i];
+                if (serviceName) {
+                    var color = colors[i % colors.length];
+                    createTopSellingTreatmentsSeries(serviceName, [], color);
+                }
+            }
 
+            // Add legend after series are created
+            var legend = chartTopSellingTreatments.children.push(
+                am5.Legend.new(rootTopSellingTreatments, {
+                    centerX: am5.p50,
+                    x: am5.p50,
+                    y: am5.percent(100),
+                    dy: -28,
+                    centerY: am5.p100,
+                    layout: rootTopSellingTreatments.horizontalLayout
+                })
+            );
+
+            // Add series to legend
+            legend.data.setAll(chartTopSellingTreatments.series.values);
+        },
+        error: function(error) {
+            console.error('Error fetching data:', error);
+        }
+    });
+}
+
+// Function to create the chart
+function createTopSellingTreatmentsChart() {
     // Create root element
     rootTopSellingTreatments = am5.Root.new("TopSellingTreatmentsChartdiv");
 
@@ -793,7 +780,11 @@ function createTopSellingTreatmentsChart() {
     xAxisTopSellingTreatments = chartTopSellingTreatments.xAxes.push(
         am5xy.DateAxis.new(rootTopSellingTreatments, {
             baseInterval: { timeUnit: "month", count: 1 },
-            renderer: am5xy.AxisRendererX.new(rootTopSellingTreatments, {}),
+            renderer: am5xy.AxisRendererX.new(rootTopSellingTreatments, {
+                cellStartLocation: 0.1,
+                cellEndLocation: 0.9,
+                minGridDistance: 10
+            }),
             tooltip: am5.Tooltip.new(rootTopSellingTreatments, {}),
             tooltipDateFormat: "MMM"
         })
@@ -806,21 +797,12 @@ function createTopSellingTreatmentsChart() {
         })
     );
 
-    // Add series function
-    
-
-    // Create series for each treatment
-    createTopSellingTreatmentsSeries("Anti Wrinkle", dataTopSellingTreatments["Anti Wrinkle"], "#1f77b4");
-    createTopSellingTreatmentsSeries("BBL Hero Forever Young", dataTopSellingTreatments["BBL Hero Forever Young"], "#2ca02c");
-    createTopSellingTreatmentsSeries("Pico Laser", dataTopSellingTreatments["Pico Laser"], "#ff7f0e");
-    createTopSellingTreatmentsSeries("Mole Removal", dataTopSellingTreatments["Mole Removal"], "#d62728");
-
-    // Make chart animate on load
-    chartTopSellingTreatments.appear(1000, 100);
-
-    // Call updateSalesPerformanceChart to set initial data
-    filterTopSellingTreatmentData('month');
+    // Fetch initial data
+    filterService('month'); // Assuming you want to initialize with 'month' period data
 }
+
+
+// Function to create a series
 function createTopSellingTreatmentsSeries(name, data, color) {
     var series = chartTopSellingTreatments.series.push(
         am5xy.LineSeries.new(rootTopSellingTreatments, {
@@ -839,8 +821,10 @@ function createTopSellingTreatmentsSeries(name, data, color) {
 
     series.data.setAll(data); // Set the data array for the series
 
-    return series;
+    return series; // Return the created series if needed
 }
+
+// Function to fetch data
 function fetchTopSellingTreatmentsData(period, callback) {
     $.ajax({
         url: SellingTreatmentsFilter, // Replace with your actual API endpoint
@@ -855,17 +839,34 @@ function fetchTopSellingTreatmentsData(period, callback) {
         }
     });
 }
+
+// Function to filter data based on the period
 function filterTopSellingTreatmentData(period) {
     fetchTopSellingTreatmentsData(period, function(data) {
         currentData = data;
-        updateTopSellingTreatmentsChart();
+        updateTopSellingTreatmentsChart(period);
     });
 }
-function updateTopSellingTreatmentsChart() {
-    xAxisTopSellingTreatments.data.setAll(currentData);
+
+// Function to update the chart with new data
+function updateTopSellingTreatmentsChart(period) {
+    if (!currentData) {
+        console.error('No data fetched or data format incorrect.');
+        return;
+    }
+
+    // Update each series with new data
     chartTopSellingTreatments.series.each(function(series) {
-        series.data.setAll(currentData);
+        
+        var seriesName = series.get("name");
+        if (currentData[seriesName]) {
+            series.data.setAll(currentData[seriesName]);
+        } else {
+            console.warn('Data for series', seriesName, 'not found in currentData.');
+        }
     });
+
+    console.log('Chart updated with new data for period:', period);
 }
 //end
 function createSalesPerformanceChart() {

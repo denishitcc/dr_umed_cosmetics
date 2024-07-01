@@ -320,7 +320,7 @@
             <div class="tool-right">
                 <div class="text-right">
                     <button class="btn btn-primary btn-sm mr-2" onclick="filterTopSellingTreatmentData('month')">Month</button>
-                    <button class="btn btn-primary btn-sm mr-2" onclick="filterTopSellingTreatmentData('week')">Week</button>
+                    <button class="btn btn-primary btn-sm mr-2" id="weekButton" onclick="filterTopSellingTreatmentData('week')">Week</button>
                     <button class="btn btn-primary btn-sm" onclick="filterTopSellingTreatmentData('day')">Day</button>
                 </div>
             </div>
@@ -402,5 +402,6 @@
     var TodayAppointments = "{{ route('dashboard.today_appointments') }}"; 
     var ClientRatioFilter = "{{ route('dashboard.client_ratio_filter') }}"; 
     var SellingTreatmentsFilter = "{{ route('dashboard.selling_treatments_filter') }}"; 
+    var SellingTreatmentsServiceNameFilter = "{{ route('dashboard.selling_treatments_name_filter') }}";
 </script>
 @endsection
