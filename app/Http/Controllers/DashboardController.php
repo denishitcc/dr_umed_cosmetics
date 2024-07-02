@@ -753,20 +753,175 @@ class DashboardController extends Controller
     {
         $period = $request->period;
         if ($period == 'month') {
+            // Get current month and year
             $currentMonth = Carbon::now()->month;
             $currentYear = Carbon::now()->year;
-    
-            // Fetch all distinct services and their total prices over the year
+        
+            // Calculate the start date for 12 months ago
+            $startDate = Carbon::now()->subMonths(11)->startOfMonth();
+        
+            // Fetch top 4 distinct services by total price over the last 12 months including the current month
+            $topServices = WalkInRetailSale::leftJoin('walk_in_products', 'walk_in_retail_sale.id', '=', 'walk_in_products.walk_in_id')
+                ->select('walk_in_products.product_name')
+                ->where('walk_in_products.product_type', 'service')
+                ->whereBetween('walk_in_retail_sale.invoice_date', [$startDate, Carbon::now()->endOfMonth()])
+                ->groupBy('walk_in_products.product_name')
+                ->havingRaw('SUM(walk_in_products.product_price) > 0')
+                ->orderByRaw('SUM(walk_in_products.product_price) DESC')
+                ->limit(4)
+                ->pluck('walk_in_products.product_name')
+                ->toArray(); // Convert pluck result to array
+        
+            // Initialize an array to store valid service names
+            $validServices = [];
+        
+            // Iterate over each service name
+            foreach ($topServices as $service) {
+                // Check if the service has a non-zero price for any month
+                $hasNonZeroPrice = false;
+        
+                // Iterate over 12 months
+                for ($i = 0; $i < 12; $i++) {
+                    $month = $currentMonth - $i;
+                    $year = $currentYear;
+                    if ($month <= 0) {
+                        $year--;
+                        $month = 12 + $month;
+                    }
+        
+                    // Calculate start and end dates for the current month
+                    $startDate = Carbon::createFromDate($year, $month, 1)->startOfMonth();
+                    $endDate = Carbon::createFromDate($year, $month, 1)->endOfMonth();
+        
+                    // Query to check if the service has non-zero price for this month
+                    $totalMonthPrice = WalkInRetailSale::leftJoin('walk_in_products', 'walk_in_retail_sale.id', '=', 'walk_in_products.walk_in_id')
+                        ->where('walk_in_products.product_type', 'service')
+                        ->where('walk_in_products.product_name', $service)
+                        ->whereBetween('walk_in_retail_sale.invoice_date', [$startDate, $endDate])
+                        ->sum('walk_in_products.product_price');
+        
+                    // If any month has non-zero price, set flag and break the loop
+                    if ($totalMonthPrice > 0) {
+                        $hasNonZeroPrice = true;
+                        break;
+                    }
+                }
+        
+                // If service has non-zero price for any month, add it to validServices array
+                if ($hasNonZeroPrice) {
+                    $validServices[] = $service;
+                }
+            }
+        
+            // Return validServices as JSON response
+            return response()->json($validServices);
+        }else if ($period == 'week') {
+            $currentWeek = Carbon::now()->weekOfYear;
+            $currentYear = Carbon::now()->year;
+        
+            // Fetch top 4 distinct services by total price over the current year, excluding services with a total price of 0
+            $topServices = WalkInRetailSale::leftJoin('walk_in_products', 'walk_in_retail_sale.id', '=', 'walk_in_products.walk_in_id')
+                ->select('walk_in_products.product_name')
+                ->where('walk_in_products.product_type', 'service')
+                ->whereYear('walk_in_retail_sale.invoice_date', $currentYear)
+                ->groupBy('walk_in_products.product_name')
+                ->havingRaw('SUM(walk_in_products.product_price) > 0')
+                ->orderByRaw('SUM(walk_in_products.product_price) DESC')
+                ->limit(4)
+                ->pluck('walk_in_products.product_name');
+        
+            // Initialize an array to store valid service names
+            $validServices = [];
+        
+            // Iterate over each service name
+            foreach ($topServices as $service) {
+                // Check if the service has a non-zero price for any week
+                $hasNonZeroPrice = false;
+        
+                for ($i = 0; $i < 4; $i++) {
+                    $week = $currentWeek - $i;
+                    $year = $currentYear;
+                    if ($week <= 0) {
+                        $year--;
+                        $week = Carbon::createFromDate($year, 12, 31)->weekOfYear + $week;
+                    }
+                    $startOfWeek = Carbon::createFromDate($year, 1, 1)->setISODate($year, $week)->startOfWeek();
+                    $endOfWeek = Carbon::createFromDate($year, 1, 1)->setISODate($year, $week)->endOfWeek();
+        
+                    // Query to check if the service has non-zero price for this week
+                    $totalWeekPrice = WalkInRetailSale::leftJoin('walk_in_products', 'walk_in_retail_sale.id', '=', 'walk_in_products.walk_in_id')
+                        ->where('walk_in_products.product_type', 'service')
+                        ->where('walk_in_products.product_name', $service)
+                        ->whereBetween('walk_in_retail_sale.invoice_date', [$startOfWeek, $endOfWeek])
+                        ->sum('walk_in_products.product_price');
+        
+                    // If any week has non-zero price, set flag and break the loop
+                    if ($totalWeekPrice > 0) {
+                        $hasNonZeroPrice = true;
+                        break;
+                    }
+                }
+        
+                // If service has non-zero price for any week, add it to validServices array
+                if ($hasNonZeroPrice) {
+                    $validServices[] = $service;
+                }
+            }
+        
+            // Return validServices as JSON response
+            return response()->json($validServices);
+        } elseif ($period == 'day') {
+            $currentDate = Carbon::now();
+        
+            // Calculate the start date for 7 days ago
+            $startDate = $currentDate->copy()->subDays(6); // 6 days ago from today
+        
+            // Fetch top 4 distinct services by total price over the last 7 days, excluding services with a total price of 0
             $topServices = WalkInRetailSale::leftJoin('walk_in_products', 'walk_in_retail_sale.id', '=', 'walk_in_products.walk_in_id')
                 ->select('walk_in_products.product_name', DB::raw('SUM(walk_in_products.product_price) as total_price'))
                 ->where('walk_in_products.product_type', 'service')
+                ->whereBetween('walk_in_retail_sale.invoice_date', [$startDate, $currentDate])
                 ->groupBy('walk_in_products.product_name')
                 ->orderByDesc('total_price')
                 ->limit(4)
-                ->pluck('walk_in_products.product_name');
-    
-            return response()->json($topServices);
-        }        
+                ->pluck('walk_in_products.product_name')
+                ->toArray(); // Convert pluck result to array
+        
+            // Initialize an array to store valid service names
+            $validServices = [];
+        
+            // Iterate over each service name
+            foreach ($topServices as $service) {
+                // Check if the service has a non-zero price for any day within the last 7 days
+                $hasNonZeroPrice = false;
+        
+                // Iterate over the last 7 days
+                for ($i = 0; $i < 7; $i++) {
+                    $dateToCheck = $currentDate->copy()->subDays($i);
+        
+                    // Query to check if the service has non-zero price for this day
+                    $totalDayPrice = WalkInRetailSale::leftJoin('walk_in_products', 'walk_in_retail_sale.id', '=', 'walk_in_products.walk_in_id')
+                        ->where('walk_in_products.product_type', 'service')
+                        ->where('walk_in_products.product_name', $service)
+                        ->whereDate('walk_in_retail_sale.invoice_date', $dateToCheck)
+                        ->sum('walk_in_products.product_price');
+        
+                    // If any day has non-zero price, set flag and break the loop
+                    if ($totalDayPrice > 0) {
+                        $hasNonZeroPrice = true;
+                        break;
+                    }
+                }
+        
+                // If service has non-zero price for any day, add it to validServices array
+                if ($hasNonZeroPrice) {
+                    $validServices[] = $service;
+                }
+            }
+        
+            // Return validServices as JSON response
+            return response()->json($validServices);
+        }                
     }
     public function selling_treatments_filter(Request $request)
     {
@@ -818,6 +973,7 @@ class DashboardController extends Controller
                     // Always add data for the month to $treatmentData
                     $treatmentData[] = [
                         'date' => $startOfMonth->timestamp * 1000, // Convert to milliseconds
+                        'month' => $months[$month - 1], // Convert to milliseconds
                         'price' => (int)$totalMonthPrice
                     ];
                 }
@@ -877,6 +1033,7 @@ class DashboardController extends Controller
                     // Always add data for the week to $treatmentData
                     $treatmentData[] = [
                         'date' => $startOfWeek->timestamp * 1000, // Convert to milliseconds
+                        'week' => $startOfWeek->format('d M') . ' - ' . $endOfWeek->format('d M'), // Format week range
                         'price' => (int)$totalWeekPrice
                     ];
                 }
@@ -888,10 +1045,9 @@ class DashboardController extends Controller
             }
 
             return response()->json($dataTopSellingTreatments);
-        }              
-        elseif ($period == 'day') {
+        }elseif ($period == 'day') {
             $currentDate = Carbon::now();
-
+        
             // Fetch all distinct services and their total prices over the current year
             $topServices = WalkInRetailSale::leftJoin('walk_in_products', 'walk_in_retail_sale.id', '=', 'walk_in_products.walk_in_id')
                 ->select('walk_in_products.product_name', DB::raw('SUM(walk_in_products.product_price) as total_price'))
@@ -900,14 +1056,20 @@ class DashboardController extends Controller
                 ->orderByDesc('total_price')
                 ->limit(4)
                 ->pluck('walk_in_products.product_name');
-
+        
             $dataTopSellingTreatments = [];
+        
+            // Loop through the last 6 days plus today (total 7 days)
             for ($i = 0; $i < 7; $i++) {
                 $date = $currentDate->copy()->subDays($i);
-
+        
                 $startOfDay = $date->copy()->startOfDay();
                 $endOfDay = $date->copy()->endOfDay();
-
+        
+                // Initialize data array for each day
+                $dailyData = [];
+        
+                // Fetch data for each treatment
                 foreach ($topServices as $treatment) {
                     $top_selling_treatments = WalkInRetailSale::leftJoin('walk_in_products', 'walk_in_retail_sale.id', '=', 'walk_in_products.walk_in_id')
                         ->select('walk_in_products.product_name', 'walk_in_products.product_price', DB::raw('SUM(walk_in_products.product_quantity) as total_product_quantity'), DB::raw('SUM(walk_in_products.product_price) as total_product_price'))
@@ -917,31 +1079,50 @@ class DashboardController extends Controller
                         ->groupBy('walk_in_products.product_name', 'walk_in_products.product_price')
                         ->orderByDesc('total_product_quantity')
                         ->first();
-
+        
                     $totalDayPrice = $top_selling_treatments ? $top_selling_treatments->total_product_price : 0;
-
-                    // Check if total price is greater than 0
-                    if ($totalDayPrice > 0) {
-                        if (!isset($dataTopSellingTreatments[$treatment])) {
-                            $dataTopSellingTreatments[$treatment] = [];
-                        }
-
-                        $dataTopSellingTreatments[$treatment][] = [
-                            'date' => $startOfDay->timestamp * 1000, // Convert to milliseconds
-                            'price' => (int)$totalDayPrice
-                        ];
+        
+                    // Add data for the treatment to the daily data array
+                    $dailyData[$treatment] = [
+                        'date' => $startOfDay->timestamp * 1000, // Convert to milliseconds
+                        'day' => $date->format('Y-m-d'),
+                        'price' => (int)$totalDayPrice
+                    ];
+                }
+        
+                // Store daily data for each treatment
+                foreach ($topServices as $treatment) {
+                    if (!isset($dataTopSellingTreatments[$treatment])) {
+                        $dataTopSellingTreatments[$treatment] = [];
                     }
+        
+                    // Add data for the treatment to the daily data if price is greater than 0
+                    $dataTopSellingTreatments[$treatment][] = [
+                        'date' => $dailyData[$treatment]['date'],
+                        'price' => $dailyData[$treatment]['price']
+                    ];
                 }
             }
-
+        
+            // Remove treatments with all zero prices
+            foreach ($dataTopSellingTreatments as $treatment => $treatmentData) {
+                $countNonZeroPrices = collect($treatmentData)->filter(function ($item) {
+                    return $item['price'] > 0;
+                })->count();
+        
+                if ($countNonZeroPrices === 0) {
+                    unset($dataTopSellingTreatments[$treatment]);
+                }
+            }
+        
             // Reverse each treatment's data to ensure chronological order
             foreach ($dataTopSellingTreatments as $treatment => &$treatmentData) {
                 $treatmentData = array_reverse($treatmentData);
             }
-
-            return response()->json($dataTopSellingTreatments);
-        }    
         
+            return response()->json($dataTopSellingTreatments);
+        }
+                
         return response()->json(['error' => 'Invalid period'], 400);
     }
 }

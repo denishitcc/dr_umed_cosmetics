@@ -319,9 +319,9 @@
             </div>
             <div class="tool-right">
                 <div class="text-right">
-                    <button class="btn btn-primary btn-sm mr-2" onclick="filterTopSellingTreatmentData('month')">Month</button>
+                    <button class="btn btn-primary btn-sm mr-2" id="monthButton" onclick="filterTopSellingTreatmentData('month')">Month</button>
                     <button class="btn btn-primary btn-sm mr-2" id="weekButton" onclick="filterTopSellingTreatmentData('week')">Week</button>
-                    <button class="btn btn-primary btn-sm" onclick="filterTopSellingTreatmentData('day')">Day</button>
+                    <button class="btn btn-primary btn-sm" id="dayButton" onclick="filterTopSellingTreatmentData('day')">Day</button>
                 </div>
             </div>
         </div>

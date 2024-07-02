@@ -1,9 +1,9 @@
 //tooltip with progrssbar
 $(function () {
-    $('[data-toggle="tooltip"]').tooltip({trigger: 'manual'}).tooltip('show');
+    $('[data-toggle="tooltip"]').tooltip({ trigger: 'manual' }).tooltip('show');
 });
 
-$(".progress-bar").each(function(){
+$(".progress-bar").each(function () {
     each_bar_width = $(this).attr('aria-valuenow');
     $(this).width(each_bar_width + '%');
 });
@@ -18,7 +18,7 @@ $.ajaxSetup({
 });
 
 // Date range picker setup
-$(function() {
+$(function () {
     var start = moment().startOf('month');
     var end = moment().endOf('month');
 
@@ -39,7 +39,7 @@ $(function() {
         }
     }, cb);
     // The event listener here.
-    $('#reportrange').on('apply.daterangepicker', function(e, picker) {
+    $('#reportrange').on('apply.daterangepicker', function (e, picker) {
         var reportRange = picker.startDate.format('MMMM D, YYYY') + ' - ' + picker.endDate.format('MMMM D, YYYY');
         var location = $('#locations').val();
         filterData(reportRange, location);
@@ -50,18 +50,18 @@ $(function() {
 
 //filter 
 // Event listener for location dropdown change
-$('#locations').change(function() {
+$('#locations').change(function () {
     var reportRange = $('#reportrange').text().trim(); // This should be adjusted if it doesn't give you the actual date range
     var location = $(this).val();
     filterData(reportRange, location);
 });
 
 //appointments calendar start
-$( "#mycalendar" ).datepicker({
+$("#mycalendar").datepicker({
     dateFormat: 'yy-mm-dd' // Customize the date format as needed
 });
 
-$(".fc-today-button").click(function() {
+$(".fc-today-button").click(function () {
     var todayDt = moment(context.calendar.currentData.dateProfile.currentDate).format('YYYY-MM-DD');
     $('#mycalendar').datepicker().datepicker('setDate', new Date(todayDt));
 });
@@ -70,7 +70,7 @@ $(".fc-today-button").click(function() {
 $('#mycalendar').change(function (e) {
     e.preventDefault();
     var inputValue = $(this).val();
-    $('.view_all_appt').attr('appt-date',inputValue);
+    $('.view_all_appt').attr('appt-date', inputValue);
 
     // Fetch today's date
     var todayDate = moment().format('YYYY-MM-DD');
@@ -86,8 +86,8 @@ $('#mycalendar').change(function (e) {
         url: TodayAppointments, // Replace with your actual API endpoint
         type: 'POST',
         dataType: 'json',
-        data: { date: inputValue,location_ids:location_ids }, // Send the period as a parameter to the server
-        success: function(data) {
+        data: { date: inputValue, location_ids: location_ids }, // Send the period as a parameter to the server
+        success: function (data) {
             var appointmentsContainer = $('.black_calendar_appointment');
             var appointmentHeader = $('.all_appt h5');
 
@@ -96,7 +96,7 @@ $('#mycalendar').change(function (e) {
             appointmentsContainer.empty(); // Clear the current list
 
             if (data.length > 0) {
-                data.forEach(function(appt) {
+                data.forEach(function (appt) {
                     var clientName = appt.firstname && appt.lastname ? `${appt.firstname} ${appt.lastname}` : "No Client";
                     var appointmentHtml = `
                         <li class="edit_appt" id="${appt.id}" loc-id="${appt.location_id}">
@@ -105,12 +105,12 @@ $('#mycalendar').change(function (e) {
                                 <span class="app_time">${moment(appt.start_date).format('h:mm A')}</b>
                             </div>
                             <span class="service_name">${appt.service_name} with <b>${appt.staff.first_name} ${appt.staff.last_name}</b></span>`;
-                    
-                        if (appt.note && appt.note.common_notes) {
-                            let commonNotes = appt.note.common_notes;
-                            let truncatedNotes = commonNotes.length > 20 ? commonNotes.substring(0, 20) + '...' : commonNotes;
-                            appointmentHtml += `<div class="notes">Booking Note: ${truncatedNotes}</div>`;
-                        }                            
+
+                    if (appt.note && appt.note.common_notes) {
+                        let commonNotes = appt.note.common_notes;
+                        let truncatedNotes = commonNotes.length > 20 ? commonNotes.substring(0, 20) + '...' : commonNotes;
+                        appointmentHtml += `<div class="notes">Booking Note: ${truncatedNotes}</div>`;
+                    }
 
                     appointmentHtml += `</li>`;
                     appointmentsContainer.append(appointmentHtml);
@@ -119,18 +119,18 @@ $('#mycalendar').change(function (e) {
                 $('.all_appt').after('<span class="error">No appointments for the selected date.</span>');
             }
         },
-        error: function(error) {
+        error: function (error) {
             console.error('Error fetching data:', error);
         }
     });
 });
 
-$('.view_all_appt').click(function() {
+$('.view_all_appt').click(function () {
     var date = $(this).attr('appt-date');
     window.location.href = '/calender?appt_date=' + date;
 });
 
-$(document).on('click', '.edit_appt', function(e) {
+$(document).on('click', '.edit_appt', function (e) {
     var appointmentId = $(this).attr('id');
     var locationId = $(this).attr('loc-id');
 
@@ -152,7 +152,7 @@ var isfilter_enquiry = 0;
 var isfilter_gender = 0;
 var clientsRoot, enquiryRoot, xAxis, chart, currentData
 var isfilter_sales_performance = 0;
-var SalesPerformanceFilterData=[];
+var SalesPerformanceFilterData = [];
 var dayData, weekData, monthData;
 var salesfilter = 1;
 var salesPerformanceRoot; // Declare salesPerformanceRoot globally
@@ -180,9 +180,9 @@ function filterData(reportRange, location) {
         data: {
             reportRange: reportRange,
             location: location,
-            date:inputValue//for appointment component
+            date: inputValue//for appointment component
         },
-        success: function(response) {
+        success: function (response) {
             // Handle success response from server
             //total sales filter
             var totalSales = parseInt(response.totalSales);
@@ -251,7 +251,7 @@ function filterData(reportRange, location) {
             var cancelledprogressBar = $('.cancelled');
             cancelledprogressBar.css('width', cancelledpercentageRemaining + '%');
             cancelledprogressBar.attr('aria-valuenow', cancelledpercentageRemaining);
-            
+
             // total clients filter
             $('.total_client').text(response.totalFilterClients);
             var ClientFilterData = response.clientGraph.map(item => {
@@ -274,26 +274,26 @@ function filterData(reportRange, location) {
             var GenderFilterData = response.genderGraph;
 
             // console.log(genderRatioData);
-            console.log('all_Data_filter',GenderFilterData);
+            console.log('all_Data_filter', GenderFilterData);
             if (GenderFilterData) {
                 GenderFilterData = [
                     {
-                        category: "Women", 
-                        value: GenderFilterData.Female ? parseInt(GenderFilterData.Female) : 0, 
+                        category: "Women",
+                        value: GenderFilterData.Female ? parseInt(GenderFilterData.Female) : 0,
                         sliceSettings: { fill: am5.color(0x00B678) }
-                    }, 
+                    },
                     {
-                        category: "Men", 
-                        value: GenderFilterData.Male ? parseInt(GenderFilterData.Male) : 0, 
+                        category: "Men",
+                        value: GenderFilterData.Male ? parseInt(GenderFilterData.Male) : 0,
                         sliceSettings: { fill: am5.color(0x82BEFC) }
                     }
                 ];
             }
 
-            isfilter_client=1;
-            isfilter_enquiry=1;
-            isfilter_gender=1;
-            salesfilter=0;
+            isfilter_client = 1;
+            isfilter_enquiry = 1;
+            isfilter_gender = 1;
+            salesfilter = 0;
 
             //Appointment location filter
             if (response.appointmentComp.length > 0) {
@@ -304,7 +304,7 @@ function filterData(reportRange, location) {
 
                 appointmentsContainer.empty(); // Clear the current list
 
-                response.appointmentComp.forEach(function(appt) {
+                response.appointmentComp.forEach(function (appt) {
                     var clientName = appt.firstname && appt.lastname ? `${appt.firstname} ${appt.lastname}` : "No Client";
                     var appointmentHtml = `
                         <li class="edit_appt" id="${appt.id}" loc-id="${appt.location_id}">
@@ -313,17 +313,17 @@ function filterData(reportRange, location) {
                                 <span class="app_time">${moment(appt.start_date).format('h:mm A')}</b>
                             </div>
                             <span class="service_name">${appt.service_name} with <b>${appt.staff.first_name} ${appt.staff.last_name}</b></span>`;
-                    
-                        if (appt.note && appt.note.common_notes) {
-                            let commonNotes = appt.note.common_notes;
-                            let truncatedNotes = commonNotes.length > 20 ? commonNotes.substring(0, 20) + '...' : commonNotes;
-                            appointmentHtml += `<div class="notes">Booking Note: ${truncatedNotes}</div>`;
-                        }                            
+
+                    if (appt.note && appt.note.common_notes) {
+                        let commonNotes = appt.note.common_notes;
+                        let truncatedNotes = commonNotes.length > 20 ? commonNotes.substring(0, 20) + '...' : commonNotes;
+                        appointmentHtml += `<div class="notes">Booking Note: ${truncatedNotes}</div>`;
+                    }
 
                     appointmentHtml += `</li>`;
                     appointmentsContainer.append(appointmentHtml);
                 });
-            }else{
+            } else {
                 var appointmentsContainer = $('.black_calendar_appointment');
                 var appointmentHeader = $('.all_appt h5');
 
@@ -332,9 +332,9 @@ function filterData(reportRange, location) {
                 appointmentsContainer.empty(); // Clear the current list
                 $('.all_appt').after('<span class="error">No appointments for the selected date.</span>');
             }
-            amchart(ClientFilterData,EnquiryFilterData,GenderFilterData,salesfilter);
+            amchart(ClientFilterData, EnquiryFilterData, GenderFilterData, salesfilter);
         },
-        error: function(xhr, status, error) {
+        error: function (xhr, status, error) {
             // Handle error response
             console.error("Error filtering data:", error);
             // Display error message or perform fallback actions
@@ -342,7 +342,7 @@ function filterData(reportRange, location) {
     });
 }
 var gender_ration_root; // Declare variable for root instance
-function amchart(ClientFilterData = [],EnquiryFilterData = [], GenderFilterData= [],salesfilter,filterType = 'month') {
+function amchart(ClientFilterData = [], EnquiryFilterData = [], GenderFilterData = [], salesfilter, filterType = 'month') {
     if (clientsRoot) {
         clientsRoot.dispose();
     }
@@ -366,7 +366,7 @@ function amchart(ClientFilterData = [],EnquiryFilterData = [], GenderFilterData=
     // Remove logo (optional)
     gender_ration_root._logo.dispose();
 
-    am5.ready(function() {
+    am5.ready(function () {
         // Clients Graph start
         clientsRoot = am5.Root.new("clientchartdiv");
 
@@ -432,11 +432,11 @@ function amchart(ClientFilterData = [],EnquiryFilterData = [], GenderFilterData=
                 value: parseInt(item.count) // Ensure value is an integer
             };
         });
-        
+
 
         // Set data for Clients Graph
         if (isfilter_client == 1) {
-            
+
             // Handle single data point case
             if (ClientFilterData.length === 1) {
                 const singleDataPoint = ClientFilterData[0];
@@ -446,10 +446,10 @@ function amchart(ClientFilterData = [],EnquiryFilterData = [], GenderFilterData=
                     { date: singleDataPoint.date + 86400000, value: 0 } // Add a point one day after with value 0
                 ];
             }
-            console.log('ClientFilterData',ClientFilterData);
+            console.log('ClientFilterData', ClientFilterData);
             clientsSeries.data.setAll(ClientFilterData);
         } else {
-            
+
             // Handle single data point case
             if (clientsData.length === 1) {
                 const singleDataPoint = clientsData[0];
@@ -459,7 +459,7 @@ function amchart(ClientFilterData = [],EnquiryFilterData = [], GenderFilterData=
                     { date: singleDataPoint.date + 86400000, value: 0 } // Add a point one day after with value 0
                 ];
             }
-            console.log('clientsData',clientsData);
+            console.log('clientsData', clientsData);
             clientsSeries.data.setAll(clientsData);
         }
         // Make Clients Graph animate on load
@@ -551,7 +551,7 @@ function amchart(ClientFilterData = [],EnquiryFilterData = [], GenderFilterData=
                 ];
             }
             // Handle single data point case end
-            console.log('EnquiryFilterData',EnquiryFilterData);
+            console.log('EnquiryFilterData', EnquiryFilterData);
             enquirySeries.data.setAll(EnquiryFilterData);
         } else {
             // Handle single data point case start
@@ -564,7 +564,7 @@ function amchart(ClientFilterData = [],EnquiryFilterData = [], GenderFilterData=
                 ];
             }
             // Handle single data point case end
-            console.log('EnquiryData',enquiryData);
+            console.log('EnquiryData', enquiryData);
             enquirySeries.data.setAll(enquiryData);
         }
 
@@ -573,8 +573,7 @@ function amchart(ClientFilterData = [],EnquiryFilterData = [], GenderFilterData=
         // Enquiry Chart end
 
         // Sales Performance Chart start
-        if(salesfilter == undefined)
-        {
+        if (salesfilter == undefined) {
             createSalesPerformanceChart();
         }
 
@@ -584,7 +583,7 @@ function amchart(ClientFilterData = [],EnquiryFilterData = [], GenderFilterData=
         if (GenderFilterData.length > 0) {
             // Initialize an array to store pie chart data
             var data = [];
-            console.log('GenderFilterData',GenderFilterData);
+            console.log('GenderFilterData', GenderFilterData);
             // Iterate through each item in GenderFilterData
             GenderFilterData.forEach(item => {
                 // Construct data for each category (Women and Men)
@@ -596,25 +595,25 @@ function amchart(ClientFilterData = [],EnquiryFilterData = [], GenderFilterData=
                     }
                 });
             });
-        } else{
+        } else {
             //if Current month data by default
             var genderRatioData = gender_ratio;
             console.log(genderRatioData);
-    
+
             var data = [
                 {
-                    category: "Women", 
-                    value: genderRatioData.Female ? parseInt(genderRatioData.Female) : 0, 
+                    category: "Women",
+                    value: genderRatioData.Female ? parseInt(genderRatioData.Female) : 0,
                     sliceSettings: { fill: am5.color(0x00B678) }
-                }, 
+                },
                 {
-                    category: "Men", 
-                    value: genderRatioData.Male ? parseInt(genderRatioData.Male) : 0, 
+                    category: "Men",
+                    value: genderRatioData.Male ? parseInt(genderRatioData.Male) : 0,
                     sliceSettings: { fill: am5.color(0x82BEFC) }
                 }
             ];
         }
-        console.log('all_Data',data);
+        console.log('all_Data', data);
 
         var pieChart = gender_ration_root.container.children.push(am5percent.PieChart.new(gender_ration_root, {
             width: am5.p100,
@@ -635,7 +634,7 @@ function amchart(ClientFilterData = [],EnquiryFilterData = [], GenderFilterData=
 
         // Handle slice selection
         var currentSlice;
-        pieSeries.slices.template.on("active", function(active, slice) {
+        pieSeries.slices.template.on("active", function (active, slice) {
             if (currentSlice && currentSlice != slice && active) currentSlice.set("active", false);
 
             label1.setAll({
@@ -670,7 +669,7 @@ function amchart(ClientFilterData = [],EnquiryFilterData = [], GenderFilterData=
         }));
 
         // Ensure first slice is active
-        pieSeries.events.on("datavalidated", function() {
+        pieSeries.events.on("datavalidated", function () {
             if (pieSeries.slices.length > 0) {
                 pieSeries.slices.getIndex(0).set("active", true);
             }
@@ -687,7 +686,7 @@ function amchart(ClientFilterData = [],EnquiryFilterData = [], GenderFilterData=
         }));
 
         legend.data.setAll(pieSeries.dataItems);
-        
+
         // Client's Ratio Chart start
         // Create new instances of charts
         createClientRatioChart();
@@ -703,10 +702,14 @@ function amchart(ClientFilterData = [],EnquiryFilterData = [], GenderFilterData=
 
     });
 }
+
 //start
-$(document).on('click', '#weekButton', function(e) {
-    filterService('week');
-});
+// Function to filter service
+// Define legend variable globally
+var legend,dateFormatter;
+var currentPeriod = 'month';
+var currentData = {};
+
 // Function to filter service
 function filterService(period) {
     $.ajax({
@@ -714,9 +717,16 @@ function filterService(period) {
         type: 'POST',
         dataType: 'json',
         data: { period: period },
-        success: function(data) {
+        success: function (data) {
             var colors = ["#1f77b4", "#2ca02c", "#ff7f0e", "#d62728"];
-            for (var i = 0; i < 4; i++) { // Loop through a fixed number (4)
+
+            // Clear existing legend and series
+            if (legend) {
+                legend.dispose();
+            }
+            chartTopSellingTreatments.series.clear();
+
+            for (var i = 0; i < data.length; i++) {
                 var serviceName = data[i];
                 if (serviceName) {
                     var color = colors[i % colors.length];
@@ -724,8 +734,8 @@ function filterService(period) {
                 }
             }
 
-            // Add legend after series are created
-            var legend = chartTopSellingTreatments.children.push(
+            // Add new legend after series are created
+            legend = chartTopSellingTreatments.children.push(
                 am5.Legend.new(rootTopSellingTreatments, {
                     centerX: am5.p50,
                     x: am5.p50,
@@ -739,12 +749,94 @@ function filterService(period) {
             // Add series to legend
             legend.data.setAll(chartTopSellingTreatments.series.values);
         },
-        error: function(error) {
+        error: function (error) {
             console.error('Error fetching data:', error);
         }
     });
 }
+// Function to set the baseInterval and create the x-axis
+function setBaseIntervalAndXAxis(period) {
 
+    let baseInterval, tooltipDateFormat;
+
+    if (period === 'month') {
+        baseInterval = { timeUnit: "month", count: 1 };
+        tooltipDateFormat = "MMM";
+    } else if (period === 'week') {
+        baseInterval = { timeUnit: "week", count: 1 };
+        tooltipDateFormat = "dd MMM"; // or any other desired format for weeks
+    } else if (period === 'day') {
+        baseInterval = { timeUnit: "day", count: 1 };
+        tooltipDateFormat = "yyyy-MM-dd";
+    }
+
+    // Clear existing x-axis before creating a new one
+    chartTopSellingTreatments.xAxes.clear();
+
+    // Create x-axis
+    xAxisTopSellingTreatments = chartTopSellingTreatments.xAxes.push(
+        am5xy.DateAxis.new(rootTopSellingTreatments, {
+            baseInterval: baseInterval,
+            renderer: am5xy.AxisRendererX.new(rootTopSellingTreatments, {
+                cellStartLocation: 0.1,
+                cellEndLocation: 0.9,
+                minGridDistance: 10
+            }),
+            tooltip: am5.Tooltip.new(rootTopSellingTreatments, {}),
+            tooltipDateFormat: tooltipDateFormat
+        })
+    );
+
+    // Add custom tooltip formatter for x-axis
+    xAxisTopSellingTreatments.get("tooltip").label.adapters.add("text", function (text, target) {
+        var dataItem = target.dataItem;
+        if (dataItem) {
+            var startDate = new Date(dataItem.get("valueX"));
+
+            if (currentPeriod === 'week') {
+                var endDate = new Date(startDate);
+                endDate.setDate(endDate.getDate() + 6); // Set end date to 6 days later
+
+                var startFormat = dateFormatter.format(startDate, "dd MMM");
+                var endFormat = dateFormatter.format(endDate, "dd MMM");
+
+                return startFormat + " - " + endFormat;
+            }
+            if (currentPeriod === 'month') {
+                return dateFormatter.format(startDate, "MMM");
+            }
+            if (currentPeriod === 'day') {
+                return dateFormatter.format(startDate, "yyyy-MM-dd");
+            }
+        }
+        return text;
+    });
+
+    // Add custom label formatter for x-axis
+    xAxisTopSellingTreatments.get("renderer").labels.template.adapters.add("text", function (text, target) {
+        var dataItem = target.dataItem;
+        if (dataItem) {
+            var startDate = new Date(dataItem.get("value"));
+
+            if (currentPeriod === 'week') {
+                var endDate = new Date(startDate);
+                endDate.setDate(endDate.getDate() + 6); // Set end date to 6 days later
+
+                var startFormat = dateFormatter.format(startDate, "dd MMM");
+                var endFormat = dateFormatter.format(endDate, "dd MMM");
+
+                return startFormat + " - " + endFormat;
+            }
+            if (currentPeriod === 'month') {
+                return dateFormatter.format(startDate, "MMM");
+            }
+            if (currentPeriod === 'day') {
+                return dateFormatter.format(startDate, "dd-MM-yy");
+            }
+        }
+        return text;
+    });
+}
 // Function to create the chart
 function createTopSellingTreatmentsChart() {
     // Create root element
@@ -776,32 +868,20 @@ function createTopSellingTreatmentsChart() {
     }));
     cursorTopSellingTreatments.lineY.set("visible", false);
 
-    // Create axes
-    xAxisTopSellingTreatments = chartTopSellingTreatments.xAxes.push(
-        am5xy.DateAxis.new(rootTopSellingTreatments, {
-            baseInterval: { timeUnit: "month", count: 1 },
-            renderer: am5xy.AxisRendererX.new(rootTopSellingTreatments, {
-                cellStartLocation: 0.1,
-                cellEndLocation: 0.9,
-                minGridDistance: 10
-            }),
-            tooltip: am5.Tooltip.new(rootTopSellingTreatments, {}),
-            tooltipDateFormat: "MMM"
-        })
-    );
+    // Create date formatter
+    dateFormatter = am5.DateFormatter.new(rootTopSellingTreatments, {});
 
+    // Set baseInterval and x-axis for the initial period
+    setBaseIntervalAndXAxis(currentPeriod);
+
+    // Create y-axis
     yAxisTopSellingTreatments = chartTopSellingTreatments.yAxes.push(
         am5xy.ValueAxis.new(rootTopSellingTreatments, {
             renderer: am5xy.AxisRendererY.new(rootTopSellingTreatments, {}),
             extraTooltipPrecision: 2
         })
     );
-
-    // Fetch initial data
-    filterService('month'); // Assuming you want to initialize with 'month' period data
 }
-
-
 // Function to create a series
 function createTopSellingTreatmentsSeries(name, data, color) {
     var series = chartTopSellingTreatments.series.push(
@@ -823,31 +903,31 @@ function createTopSellingTreatmentsSeries(name, data, color) {
 
     return series; // Return the created series if needed
 }
-
 // Function to fetch data
 function fetchTopSellingTreatmentsData(period, callback) {
     $.ajax({
-        url: SellingTreatmentsFilter, // Replace with your actual API endpoint
+        url: SellingTreatmentsFilter,
         type: 'POST',
         dataType: 'json',
-        data: { period: period }, // Send the period as a parameter to the server
-        success: function(data) {
+        data: { period: period },
+        success: function (data) {
             callback(data);
         },
-        error: function(error) {
+        error: function (error) {
             console.error('Error fetching data:', error);
         }
     });
 }
-
 // Function to filter data based on the period
 function filterTopSellingTreatmentData(period) {
-    fetchTopSellingTreatmentsData(period, function(data) {
+    currentPeriod = period;
+    setBaseIntervalAndXAxis(period);
+    filterService(period);
+    fetchTopSellingTreatmentsData(period, function (data) {
         currentData = data;
         updateTopSellingTreatmentsChart(period);
     });
 }
-
 // Function to update the chart with new data
 function updateTopSellingTreatmentsChart(period) {
     if (!currentData) {
@@ -856,8 +936,7 @@ function updateTopSellingTreatmentsChart(period) {
     }
 
     // Update each series with new data
-    chartTopSellingTreatments.series.each(function(series) {
-        
+    chartTopSellingTreatments.series.each(function (series) {
         var seriesName = series.get("name");
         if (currentData[seriesName]) {
             series.data.setAll(currentData[seriesName]);
@@ -868,7 +947,6 @@ function updateTopSellingTreatmentsChart(period) {
 
     console.log('Chart updated with new data for period:', period);
 }
-//end
 function createSalesPerformanceChart() {
     salesPerformanceRoot = am5.Root.new("Salesperformancechartdiv");
 
@@ -974,23 +1052,23 @@ function fetchSalesData(period, callback) {
         type: 'POST',
         dataType: 'json',
         data: { period: period }, // Send the period as a parameter to the server
-        success: function(data) {
+        success: function (data) {
             callback(data);
         },
-        error: function(error) {
+        error: function (error) {
             console.error('Error fetching data:', error);
         }
     });
 }
 function filterSalesPerformaceData(period) {
-    fetchSalesData(period, function(data) {
+    fetchSalesData(period, function (data) {
         currentData = data;
         updateSalesPerformanceChart();
     });
 }
 function updateSalesPerformanceChart() {
     xAxis.data.setAll(currentData);
-    chart.series.each(function(series) {
+    chart.series.each(function (series) {
         series.data.setAll(currentData);
     });
 }
@@ -1022,7 +1100,7 @@ function createClientRatioChart() {
         tooltip: am5.Tooltip.new(clientGraphRoot, {})
     }));
 
-    clientGraphXAxis.get("renderer").labels.template.adapters.add("text", function(text, target) {
+    clientGraphXAxis.get("renderer").labels.template.adapters.add("text", function (text, target) {
         if (target.dataItem) {
             var category = target.dataItem.get("category");
             return category;
@@ -1065,7 +1143,7 @@ function createClientRatioSeries(name, fieldName, color) {
     clientGraphLegend.data.push(clientGraphSeries);
 }
 function filterClientRatioData(period) {
-    fetchClientRatioData(period, function(data) {
+    fetchClientRatioData(period, function (data) {
         updateClientRatioChart(data);
     });
 }
@@ -1075,10 +1153,10 @@ function fetchClientRatioData(period, callback) {
         type: 'POST',
         dataType: 'json',
         data: { period: period }, // Send the period as a parameter to the server
-        success: function(data) {
+        success: function (data) {
             callback(data);
         },
-        error: function(error) {
+        error: function (error) {
             console.error('Error fetching data:', error);
         }
     });
@@ -1087,7 +1165,7 @@ function updateClientRatioChart(data) {
     console.log('Updating Client Ratio Chart:', data);
     if (clientGraphXAxis && clientGraphChart) {
         clientGraphXAxis.data.setAll(data);
-        clientGraphChart.series.each(function(series) {
+        clientGraphChart.series.each(function (series) {
             series.data.setAll(data);
         });
     } else {
