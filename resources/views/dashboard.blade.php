@@ -374,7 +374,7 @@
                                     $newUserId = str_pad($lastIncreament, 3, 0, STR_PAD_LEFT);
                                 @endphp
                                 <td>{{$newUserId}}</td>
-                                <td>{{$client->firstname.' '.$client->lastname}}</td>
+                                <td><a class="blue-bold" href="{{ URL::to('clients/' . $lastuserId) }}">{{ $client->firstname . ' ' . $client->lastname }}</a></td>
                                 <td>{{$client->email}}</td>
                                 <td>{{$client->mobile_number}}</td>
                                 <?php

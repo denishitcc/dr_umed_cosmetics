@@ -316,7 +316,7 @@ class ClientsController extends Controller
     }
     public function updateStatus(Request $request){
         $chk = $request->input('chk');
-        if($chk == 'checked')
+        if($chk == 'checked' || $chk == 'active')
         {
             $status= 'deactive';
         }

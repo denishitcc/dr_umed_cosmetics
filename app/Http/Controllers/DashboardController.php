@@ -161,7 +161,9 @@ class DashboardController extends Controller
                     'clients.email', 
                     'clients.mobile_number', 
                     'clients.status'
-            )->orderby('id','desc')->limit('5')
+            )
+            ->where('clients.status','active')
+            ->orderby('id','desc')->limit('5')
             ->get();
             foreach($client_data as $datas){
                 $loc= explode(',',$datas->staff_member_location);

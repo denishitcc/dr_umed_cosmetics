@@ -140,6 +140,48 @@ $(document).on('click', '.edit_appt', function (e) {
     // Redirect to the calendar page
     window.location.href = '/calender';
 })
+//client tab status change start
+$(document).on('click','.flexSwitchCheckDefault',function(){
+    var id =$(this).attr('ids');
+    var chk = $(this).val();
+    var url = "clients/updateStatus";
+    $.ajax({
+        type: "POST",
+        headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        url: url,
+        data: {// change data to this object
+          _token : $('meta[name="csrf-token"]').attr('content'), 
+          id:id,
+          chk:chk
+        },
+        dataType: "json",
+        success: function(response) {
+            if (response.success) {
+      
+      Swal.fire({
+        title: "Client Status!",
+        text: "Client Status updated successfully.",
+        icon: "success",
+      }).then((result) => {
+              window.location = "dashboard"//'/player_detail?username=' + name;
+            // location.reload();
+          });
+    } else {
+      Swal.fire({
+        title: "Error!",
+        text: response.message,
+        icon: "error",
+      });
+    }
+        },
+        error: function (jqXHR, exception) {
+
+        }
+    });
+})
+//client tab status change end
 //appointments calendar end
 
 // Function to handle data filtering based on report range and location
