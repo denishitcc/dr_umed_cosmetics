@@ -121,7 +121,59 @@ class DashboardController extends Controller
                 ->get(['appointment.*', 'clients.firstname', 'clients.lastname', 'services.service_name']);
             // dd($today_appointments);
 
-            return view('dashboard', compact('locations', 'made_so_far', 'expected', 'scheduled_app', 'completed_app', 'cancelled_app', 'total_app', 'total_month_clients', 'total_month_enquiries','client_graph','enquiry_graph','gender_ratio','today_appointments'));
+            //for clients tab data
+            $currentDateTime = now()->timezone('Asia/Kolkata')->format('Y-m-d H:i:s');
+            
+            $client_data = Clients::leftJoin('appointment', function($join) use ($currentDateTime) {
+                $join->on('clients.id', '=', 'appointment.client_id')
+                    ->where('appointment.start_date', '>=', $currentDateTime);
+            })
+            ->leftJoin('services', 'appointment.service_id', '=', 'services.id')
+            ->leftJoin('users', 'appointment.staff_id', '=', 'users.id')
+            ->leftJoin('locations', 'users.staff_member_location', '=', 'locations.id')
+            ->leftJoin('appointments_notes', 'appointments_notes.appointment_id', '=', 'appointment.id')
+            ->select('clients.id', 
+                    'clients.firstname', 
+                    'clients.lastname', 
+                    'clients.email', 
+                    'clients.mobile_number', 
+                    'clients.status', 
+                    DB::raw('GROUP_CONCAT(CONCAT(DATE_FORMAT(appointment.start_date, "%d-%m-%Y %h:%i %p"), "|", services.service_name, " with ", CONCAT(users.first_name, " ", users.last_name))) as appointment_dates'),
+                    DB::raw('GROUP_CONCAT(CASE appointment.status 
+                        WHEN 1 THEN "Booked" 
+                        WHEN 2 THEN "Confirmed"
+                        WHEN 3 THEN "Started" 
+                        WHEN 4 THEN "Completed"
+                        WHEN 5 THEN "No answer" 
+                        WHEN 6 THEN "Left message"
+                        WHEN 7 THEN "Pencilied in" 
+                        WHEN 8 THEN "Turned up"
+                        WHEN 9 THEN "No show" 
+                        WHEN 10 THEN "Cancelled"
+                    END) as app_status'),
+                    DB::raw('GROUP_CONCAT(users.staff_member_location) as staff_member_location'),
+                    DB::raw('GROUP_CONCAT(appointments_notes.common_notes SEPARATOR ",") as common_notes'),
+                    DB::raw('GROUP_CONCAT(appointments_notes.treatment_notes SEPARATOR ",") as treatment_notes')
+            )
+            ->groupBy('clients.id', 
+                    'clients.firstname', 
+                    'clients.lastname', 
+                    'clients.email', 
+                    'clients.mobile_number', 
+                    'clients.status'
+            )->orderby('id','desc')->limit('5')
+            ->get();
+            foreach($client_data as $datas){
+                $loc= explode(',',$datas->staff_member_location);
+                $locationsArray = [];
+                foreach($loc as $locs){
+                    $locations = Locations::where('id', $locs)->pluck('location_name')->toArray();
+                    $locationsArray[] = implode(", ", $locations);
+                }
+                $datas->staff_location = implode(", ", $locationsArray);
+            }
+            // dd($client_data);
+            return view('dashboard', compact('locations', 'made_so_far', 'expected', 'scheduled_app', 'completed_app', 'cancelled_app', 'total_app', 'total_month_clients', 'total_month_enquiries','client_graph','enquiry_graph','gender_ratio','today_appointments','client_data'));
         } else {
             return redirect()->route('login');
         }

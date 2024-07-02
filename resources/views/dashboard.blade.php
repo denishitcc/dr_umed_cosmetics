@@ -348,45 +348,146 @@
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="tab" href="#tab_3"><i class="ico-enquiries"></i> Enquiries</a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#tab_4"><i class="ico-services"></i> Services</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#tab_5"><i class="ico-products"></i> Products</a>
-        </li>
     </ul>
     <div class="tab-content" id="myTabContent">
         <div class="tab-pane fade show active" id="tab_1" role="tabpanel">
             <div class="card-body">
-                <img src="img/demo-table.png" alt="">
+                <div class="row">
+                    <table class="table data-table all-db-table display" style="width:100%;">
+                        <thead>
+                            <tr>
+                            <th>ID</th>
+                            <th>Client Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Next Appointments</th>
+                            <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if(count($client_data)>0)
+                            @foreach($client_data as $client)
+                            <tr>
+                                @php
+                                    $lastuserId = $client->id;
+                                    $lastIncreament = substr($lastuserId, -3);
+                                    $newUserId = str_pad($lastIncreament, 3, 0, STR_PAD_LEFT);
+                                @endphp
+                                <td>{{$newUserId}}</td>
+                                <td>{{$client->firstname.' '.$client->lastname}}</td>
+                                <td>{{$client->email}}</td>
+                                <td>{{$client->mobile_number}}</td>
+                                <?php
+                                    $data = $client->appointment_dates;
+                                    if($data != null)
+                                    {
+                                        // dd($data);
+                                        $datesArray = explode(',', $data);
+                                        $statusArray = explode(',', $client->app_status);
+                                        $locationArray = explode(',', $client->staff_location);
+                                        $commonNotesArray = $client->common_notes ? explode(',', $client->common_notes) : [];
+                                        $treatmentNotesArray = $client->treatment_notes ? explode(',', $client->treatment_notes) : [];
+
+                                        $html_app = '';
+
+                                        foreach ($datesArray as $index => $app) {
+                                            $formattedDate = $app;
+                                            // dd(explode('|',$formattedDate));
+                                            $formattedDate = explode('|',$formattedDate);
+                                            $formattedStatus = '';
+                                            $formattedLocation = '';
+                                            $formattedCommonNotes = '';
+                                            $formattedTreatmentNotes = '';
+
+                                            // Add location
+                                            if (isset($locationArray[$index])) {
+                                                $formattedLocation = $locationArray[$index];
+                                            }
+                                            $app_with = $formattedDate[1];
+                                            // Format date
+                                            // Assuming $formattedDate is in 'Y-m-d H:i:s' format
+                                            // You may need to adjust the format based on your actual date format
+                                            // $formattedDate = date('d-m-Y h:i A', strtotime($formattedDate)) . ' (' . $formattedLocation . ')';
+                                            $formattedDate = date('d-m-Y h:i A', strtotime($formattedDate[0])) . ' (' . $formattedLocation . ')';
+                                            
+                                            // Add status badge
+                                            if (isset($statusArray[$index])) {
+                                                $statusClass = '';
+                                                switch ($statusArray[$index]) {
+                                                    case 'Booked':
+                                                        $statusClass = 'text-bg-yellow';
+                                                        break;
+                                                    case 'Confirmed':
+                                                        $statusClass = 'text-bg-cyan';
+                                                        break;
+                                                    case 'Started':
+                                                        $statusClass = 'text-bg-orange';
+                                                        break;
+                                                    case 'Completed':
+                                                        $statusClass = 'text-bg-blue';
+                                                        break;
+                                                    case 'No answer':
+                                                        $statusClass = 'text-bg-light-red';
+                                                        break;
+                                                    case 'Left message':
+                                                        $statusClass = 'text-bg-green';
+                                                        break;
+                                                    case 'Pencilied in':
+                                                        $statusClass = 'text-bg-black';
+                                                        break;
+                                                    case 'Turned up':
+                                                        $statusClass = 'text-bg-purple';
+                                                        break;
+                                                    case 'No show':
+                                                        $statusClass = 'text-bg-red-purple';
+                                                        break;
+                                                    case 'Cancelled':
+                                                        $statusClass = 'text-bg-red';
+                                                        break;
+                                                }
+                                                $formattedStatus = '<span class="badge ' . $statusClass . ' badge-md ms-1">' . $statusArray[$index] . '</span>';
+                                            }
+
+                                            // Add common notes
+                                            if (isset($commonNotesArray[$index]) && $commonNotesArray[$index]) {
+                                                $formattedCommonNotes = '<br><div class="yellow-note-box mt-2"><strong>Booking Notes:</strong><br> ' . $commonNotesArray[$index] . ' </div>';
+                                            }
+
+                                            // Add treatment notes
+                                            if (isset($treatmentNotesArray[$index]) && $treatmentNotesArray[$index]) {
+                                                $formattedTreatmentNotes = '<div class="yellow-note-box mt-2"><strong>Treatment Notes:</strong><br> ' . $treatmentNotesArray[$index] . ' </div>';
+                                            }
+
+                                            $html_app .= '<div class="user-appnt">' . $formattedDate .'<br>'.$app_with . $formattedStatus  . $formattedCommonNotes . $formattedTreatmentNotes . '</div>';
+                                        }
+                                    }else{
+                                        $html_app = 'No appointment';
+                                    }
+                                ?>
+                                <td>{!! $html_app !!}</td>
+                                <td>
+                                    <div class="form-check form-switch green">
+                                    <input class="form-check-input flexSwitchCheckDefault" id="flexSwitchCheckDefault" type="checkbox" ids="{{$client->id}}" value="{{$client->status}}" {{ $client->status == 'active' ? 'checked' : '' }}>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endforeach
+                            @endif
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            
         </div>
         <div class="tab-pane fade" id="tab_2" role="tabpanel">
-
-            
             <div class="card-body">
                 Appointments       
             </div>
-            
-            
         </div>
         <div class="tab-pane fade" id="tab_3" role="tabpanel">
             <div class="card-body">
-            Enquiries
-                </div>
+                Enquiries
+            </div>
         </div>
-        <div class="tab-pane fade" id="tab_4" role="tabpanel">
-            <div class="card-body">
-            Services
-                </div>
-        </div>
-        <div class="tab-pane fade" id="tab_5" role="tabpanel">
-            <div class="card-body">
-            Products
-                </div>
-        </div>
-        
     </div>
     
 </div>
