@@ -343,7 +343,7 @@ class GiftCardsController extends Controller
     {
         $email = $request->email_card;
         $data = [
-            'from_email'       => 'support@itcc.net.au',
+            'from_email'       => env('MAIL_FROM_ADDRESS'),
             'subject'          => "You've received a gift card",
             'email'            => $email,
             'value'            => $request->value,
@@ -356,7 +356,7 @@ class GiftCardsController extends Controller
         Mail::send('email.received-gift-card', $data, function ($message) use ($email, $data) {
             $message->to(trim($email)) // Trim whitespace from email address
                 ->subject($data['subject']);
-            $message->from('support@itcc.net.au', $data['subject']);
+            $message->from(env('MAIL_FROM_ADDRESS'), $data['subject']);
         });
 
         // Get the current user

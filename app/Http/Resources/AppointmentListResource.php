@@ -17,7 +17,7 @@ class AppointmentListResource extends JsonResource
         return [
             'id'            => $this->id,
             'resourceId'    => $this->staff_id,
-            'title'         => $this->services->service_name,
+            'title'         => isset($this->services->service_name) ? $this->services->service_name : '',
             'start'         => $this->start_date,
             'end'           => $this->end_date,
             'color'         => isset($this->staff->calendar_color) ? $this->staff->calendar_color : '#0b5ed7',

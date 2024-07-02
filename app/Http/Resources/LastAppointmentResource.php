@@ -16,7 +16,7 @@ class LastAppointmentResource extends JsonResource
     {
         return [
             'id'                => $this->id,
-            'service_name'      => $this->services->service_name,
+            'service_name'      => isset($this->services->service_name) ? $this->services->service_name : '',
             'staff_name'        => isset($this->staff->name) ? $this->staff->name : '',
             'location_name'     => isset($this->staff->staff_location) ? $this->staff->staff_location->location_name:'',
             'start_date'        => $this->start_date,

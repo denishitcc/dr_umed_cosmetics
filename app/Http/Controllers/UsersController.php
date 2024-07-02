@@ -174,7 +174,7 @@ class UsersController extends Controller
                     $templateContent
                 );
                 $data = ([
-                    'from_email'    => 'support@itcc.net.au',
+                    'from_email'    => env('MAIL_FROM_ADDRESS'),
                     'emailbody'     => $parsedContent,
                     'subject'       => $_data['subject'],
                     'username'=>$_data['username'],
@@ -185,7 +185,7 @@ class UsersController extends Controller
                 Mail::send('email.registration', $data, function($message) use ($to_email,$sub) {
                     $message->to($to_email)
                     ->subject($sub);
-                    $message->from('support@itcc.net.au',$sub);
+                    $message->from(env('MAIL_FROM_ADDRESS'),$sub);
                 });
             }
 
