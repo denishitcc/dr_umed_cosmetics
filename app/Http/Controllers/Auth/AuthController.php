@@ -166,7 +166,7 @@ class AuthController extends Controller
                 );
 
                 $data = ([
-                    'from_email'=>env('mail_from_address'),
+                    'from_email'=>env('MAIL_FROM_ADDRESS'),
                     'emailbody' => $parsedContent,
                     'subject'=>$_data['subject'],
                     'username'=>$_data['username'],
@@ -176,7 +176,7 @@ class AuthController extends Controller
                 Mail::send('email.forgetPassword', $data, function($message) use ($to_email,$sub) {
                     $message->to($to_email)
                     ->subject($sub);
-                    $message->from(env('mail_from_address'),$sub);
+                    $message->from(env('MAIL_FROM_ADDRESS'),$sub);
                 });
             }
             

@@ -331,7 +331,7 @@ class CalenderController extends Controller
                                     $templateContent
                                 );
                                 $data = ([
-                                    'from_email'    => env('mail_from_address'),
+                                    'from_email'    => env('MAIL_FROM_ADDRESS'),
                                     'emailbody'     => $parsedContent,
                                     'subject'       => $_data['subject'],
                                     'username' => $username,
@@ -351,7 +351,7 @@ class CalenderController extends Controller
                                 Mail::send('email.appt_confirmation', $data, function ($message) use ($to_email, $sub,$icsFileName) {
                                     $message->to($to_email)
                                         ->subject($sub)
-                                        ->from(env('mail_from_address'), $sub)
+                                        ->from(env('MAIL_FROM_ADDRESS'), $sub)
                                     ->attach(storage_path('app/' . $icsFileName), [
                                         'mime' => 'text/calendar'
                                     ]);
@@ -458,7 +458,7 @@ class CalenderController extends Controller
                                     $templateContent
                                 );
                                 $data = ([
-                                    'from_email'    => env('mail_from_address'),
+                                    'from_email'    => env('MAIL_FROM_ADDRESS'),
                                     'emailbody'     => $parsedContent,
                                     'subject'       => $_data['subject'],
                                     'username' => $username,
@@ -478,7 +478,7 @@ class CalenderController extends Controller
                                 Mail::send('email.appt_confirmation', $data, function ($message) use ($to_email, $sub,$icsFileName) { //
                                     $message->to($to_email)
                                         ->subject($sub)
-                                        ->from(env('mail_from_address'), $sub)
+                                        ->from(env('MAIL_FROM_ADDRESS'), $sub)
                                     ->attach(storage_path('app/' . $icsFileName), [
                                         'mime' => 'text/calendar'
                                     ]);
@@ -540,7 +540,7 @@ class CalenderController extends Controller
                                 $templateContent
                             );
                             $data = ([
-                                'from_email'    => env('mail_from_address'),
+                                'from_email'    => env('MAIL_FROM_ADDRESS'),
                                 'emailbody'     => $parsedContent,
                                 'subject'       => $_data['subject'],
                                 'username' => $username,
@@ -560,7 +560,7 @@ class CalenderController extends Controller
                             Mail::send('email.appt_confirmation', $data, function ($message) use ($to_email, $sub,$icsFileName) { //
                                 $message->to($to_email)
                                     ->subject($sub)
-                                    ->from(env('mail_from_address'), $sub)
+                                    ->from(env('MAIL_FROM_ADDRESS'), $sub)
                                 ->attach(storage_path('app/' . $icsFileName), [
                                     'mime' => 'text/calendar'
                                 ]);
@@ -637,7 +637,7 @@ class CalenderController extends Controller
     //     Mail::send('email.forms', $userData, function($message) use ($to_email,$subject) {
     //         $message->to($to_email)
     //         ->subject($subject);
-    //         $message->from(env('mail_from_address'),$subject);
+    //         $message->from(env('MAIL_FROM_ADDRESS'),$subject);
     //     });
 
     //     $dat['forms_sent_email'] = carbon::now();
@@ -695,7 +695,7 @@ class CalenderController extends Controller
         Mail::send('email.forms', $userData, function ($message) use ($to_email, $subject) {
             $message->to($to_email)
                 ->subject($subject);
-            $message->from(env('mail_from_address'), env('APP_NAME'));
+            $message->from(env('MAIL_FROM_ADDRESS'), env('APP_NAME'));
         });
 
         $dat['forms_sent_email'] = \Carbon\Carbon::now();
@@ -1165,7 +1165,7 @@ class CalenderController extends Controller
                             $templateContent
                         );
                         $data = ([
-                            'from_email'    => env('mail_from_address'),
+                            'from_email'    => env('MAIL_FROM_ADDRESS'),
                             'emailbody'     => $parsedContent,
                             'subject'       => $_data['subject'],
                             'username' => $username,
@@ -1185,7 +1185,7 @@ class CalenderController extends Controller
                         Mail::send('email.appt_confirmation', $data, function ($message) use ($to_email, $sub,$icsFileName) { //
                             $message->to($to_email)
                                 ->subject($sub)
-                                ->from(env('mail_from_address'), $sub)
+                                ->from(env('MAIL_FROM_ADDRESS'), $sub)
                             ->attach(storage_path('app/' . $icsFileName), [
                                 'mime' => 'text/calendar'
                             ]);
@@ -1764,7 +1764,7 @@ class CalenderController extends Controller
                                 $templateContent
                             );
                             $data = ([
-                                'from_email'    => env('mail_from_address'),
+                                'from_email'    => env('MAIL_FROM_ADDRESS'),
                                 'emailbody'     => $parsedContent,
                                 'subject'       => $_data['subject'],
                                 'username' => $username,
@@ -1784,7 +1784,7 @@ class CalenderController extends Controller
                             Mail::send('email.appt_confirmation', $data, function ($message) use ($to_email, $sub,$icsFileName) { //
                                 $message->to($to_email)
                                     ->subject($sub)
-                                    ->from(env('mail_from_address'), $sub)
+                                    ->from(env('MAIL_FROM_ADDRESS'), $sub)
                                 ->attach(storage_path('app/' . $icsFileName), [
                                     'mime' => 'text/calendar'
                                 ]);
@@ -1865,7 +1865,7 @@ class CalenderController extends Controller
                         $templateContent
                     );
                     $data = ([
-                        'from_email'    => env('mail_from_address'),
+                        'from_email'    => env('MAIL_FROM_ADDRESS'),
                         'emailbody'     => $parsedContent,
                         'subject'       => $_data['subject'],
                         'username' => $username,
@@ -1876,7 +1876,7 @@ class CalenderController extends Controller
                     Mail::send('email.new_waitlist_client', $data, function ($message) use ($to_email, $sub) {
                         $message->to($to_email)
                             ->subject($sub);
-                        $message->from(env('mail_from_address'), $sub);
+                        $message->from(env('MAIL_FROM_ADDRESS'), $sub);
                     });
                 }
             }
@@ -3067,7 +3067,7 @@ class CalenderController extends Controller
 
         foreach ($emails as $email) {
             $data = [
-                'from_email' => env('mail_from_address'),
+                'from_email' => env('MAIL_FROM_ADDRESS'),
                 'subject' => $_data['subject'],
                 'invoice' => $invoice, // Include the invoice data here
             ];
@@ -3077,7 +3077,7 @@ class CalenderController extends Controller
             Mail::send('email.payment-success', $data, function ($message) use ($email, $sub) {
                 $message->to(trim($email)) // Trim whitespace from email address
                     ->subject($sub);
-                $message->from(env('mail_from_address'), $sub);
+                $message->from(env('MAIL_FROM_ADDRESS'), $sub);
             });
         }
 
@@ -3216,7 +3216,7 @@ class CalenderController extends Controller
     //         Mail::send('email.forms', $userData, function ($message) use ($to_email, $subject) {
     //             $message->to($to_email)
     //                 ->subject($subject);
-    //             $message->from(env('mail_from_address'), $subject);
+    //             $message->from(env('MAIL_FROM_ADDRESS'), $subject);
     //         });
 
     //         $dat['forms_sent_email'] = carbon::now();
@@ -3286,7 +3286,7 @@ class CalenderController extends Controller
             Mail::send('email.forms', $userData, function ($message) use ($to_email, $subject) {
                 $message->to($to_email)
                     ->subject($subject);
-                $message->from(env('mail_from_address'), $subject);
+                $message->from(env('MAIL_FROM_ADDRESS'), $subject);
             });
 
             $dat['forms_sent_email'] = carbon::now();
@@ -3348,7 +3348,7 @@ class CalenderController extends Controller
                     $templateContent
                 );
                 $data = [
-                    'from_email' => env('mail_from_address'),
+                    'from_email' => env('MAIL_FROM_ADDRESS'),
                     'emailbody' => $parsedContent,
                     'subject' => $_data['subject'],
                     'username' => $username,
@@ -3368,7 +3368,7 @@ class CalenderController extends Controller
                 Mail::send('email.appt_confirmation', $data, function ($message) use ($to_email, $sub, $icsFileName) {
                     $message->to($to_email)
                         ->subject($sub)
-                        ->from(env('mail_from_address'), $sub)
+                        ->from(env('MAIL_FROM_ADDRESS'), $sub)
                         ->attach(storage_path('app/' . $icsFileName), [
                             'mime' => 'text/calendar'
                         ]);
